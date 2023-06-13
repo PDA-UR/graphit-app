@@ -4,13 +4,13 @@
 	"description": "The API server for the GraphIT database.",
 	"scripts": {
 		"build": "npm run build:app && npm run build:specs && npm run build:client",
-		"build:clean": "rm -rf out",
+		"build:clean": "rm -rf ../out/api",
 		"build:app": "npm run barrels && tsc --project tsconfig.compile.json",
 		"build:specs": "tsed run generate-swagger -o ../out/api/specs",
 		"build:client": "tsed run generate-http-client -o ../out/api/client",
 		"barrels": "barrelsby --config .barrelsby.json",
-		"start": "npm run barrels && tsnd --inspect --exit-child --cls --ignore-watch ../node_modules --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
-		"start:prod": "cross-env NODE_ENV=production node ../out/api/dist/index.js",
+		"dev": "npm run barrels && tsnd --inspect --exit-child --cls --ignore-watch ../node_modules --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
+		"start": "cross-env NODE_ENV=production node ../out/api/dist/index.js",
 		"test:lint": "eslint '**/*.{ts,js}'",
 		"test:lint:fix": "eslint '**/*.{ts,js}' --fix"
 	},

@@ -5,10 +5,13 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite --force",
+		"build": "tsc && vite build",
 		"build:dev": "tsc && vite build --mode development",
 		"build:test": "tsc && vite build",
 		"build:prod": "tsc && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"start": "vite preview",
+		"update:api": "./update_api_client.sh"
 	},
 	"devDependencies": {
 		"@types/cytoscape": "^3.19.9",
