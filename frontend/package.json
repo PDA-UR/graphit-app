@@ -1,0 +1,40 @@
+{
+	"name": "@graph-it/frontend",
+	"private": true,
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite --force",
+		"build:dev": "tsc && vite build --mode development",
+		"build:test": "tsc && vite build",
+		"build:prod": "tsc && vite build",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@types/cytoscape": "^3.19.9",
+		"@types/cytoscape-dagre": "^2.3.0",
+		"@types/cytoscape-fcose": "^2.2.0",
+		"@types/node": "^18.14.1",
+		"@types/point-in-polygon": "^1.1.1",
+		"@types/tough-cookie": "^4.0.2",
+		"typescript": "^4.9.5",
+		"vite": "^4.1.0"
+	},
+	"dependencies": {
+		"axios": "^1.4.0",
+		"axios-cookiejar-support": "^4.0.6",
+		"cytoscape": "^3.23.0",
+		"cytoscape-dagre": "^2.5.0",
+		"cytoscape-expand-collapse": "^4.1.0",
+		"cytoscape-fcose": "^2.2.0",
+		"cytoscape-node-html-label": "^1.2.2",
+		"events": "^3.3.0",
+		"point-in-polygon": "^1.1.0",
+		"tough-cookie": "^4.1.3",
+		"wikibase-sdk": "^9.1.2"
+	},
+	"description": "The frontend of the GraphIT app.",
+	"main": "vite.config.js",
+	"author": "PDA",
+	"license": "MIT"
+}

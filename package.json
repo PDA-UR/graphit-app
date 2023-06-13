@@ -1,0 +1,12 @@
+{
+	"name": "graphit-app",
+	"version": "1.0.0",
+	"description": "GraphIT application.",
+	"scripts": {},
+	"author": "PDA",
+	"license": "MIT",
+	"workspaces": [
+		"api",
+		"frontend"
+	]
+}

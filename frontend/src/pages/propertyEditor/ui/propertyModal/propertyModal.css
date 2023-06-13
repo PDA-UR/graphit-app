@@ -1,0 +1,26 @@
+.modal {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: start;
+	visibility: hidden;
+	gap: 10px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	border-radius: 0 3px 0 3px;
+	transform: translateY(-50%) translateX(-100%);
+	transition: transform 0.1s ease, visibility 0.1s ease, opacity 0.1s ease;
+}
+
+.modal.visible {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(-50%) translateX(0);
+}
+
+.modal > * {
+	width: 100%;
+}

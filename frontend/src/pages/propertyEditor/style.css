@@ -1,0 +1,81 @@
+/* maximize root, body and app */
+html,
+body,
+#app {
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+}
+
+.badges {
+	height: 15px;
+}
+
+.badge {
+	height: 100%;
+}
+
+.badge > img {
+	height: 100%;
+}
+
+.base-container {
+	background-color: #f8f8f8;
+	padding: 10px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+	font-family: "Patrick Hand", cursive; /* Handwritten-style font */
+}
+
+.base-item {
+	padding: 5px;
+	box-sizing: border-box;
+	border: 1px dashed #b0b0b0; /* Dashed border */
+	background-color: #f8f8f8;
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out; /* Smooth transition */
+	text-align: center;
+	align-items: center;
+	user-select: none;
+}
+
+.base-item:hover {
+	background-color: #e0e0e0;
+}
+
+.base-item.active {
+	border: 1px solid #b0b0b0; /* Solid border */
+	background-color: #ffffff;
+}
+
+.disabled {
+	cursor: not-allowed !important;
+	opacity: 0.6 !important;
+}
+.small-info {
+	margin-top: 10px;
+	font-size: 10px;
+	text-align: center;
+}
+
+.keyboard-shortcut {
+	display: inline-block;
+	padding: 2px 6px;
+	margin: 2px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background-color: #e0e0e0;
+	font-family: "Courier New", monospace;
+	font-size: 0.8em;
+	color: #666;
+	text-align: center;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1),
+		inset 0 1px 0 rgba(255, 255, 255, 0.2);
+	opacity: 0.8;
+}
+
+.spacer {
+	flex-grow: 100;
+}
