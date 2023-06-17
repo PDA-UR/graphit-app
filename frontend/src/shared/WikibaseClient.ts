@@ -16,7 +16,11 @@ export default class WikibaseClient {
 	}
 
 	async login(): Promise<any> {
-		return await this.api.auth.login(this.credentials);
+		const r = (await this.api.auth.login(this.credentials)) as any;
+		if (!r.username) {
+			throw new Error("Login failed: " + r.message);
+		}
+		return r;
 	}
 
 	async getUserGraph(): Promise<ElementDefinition[]> {

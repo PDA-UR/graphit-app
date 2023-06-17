@@ -14,10 +14,6 @@ export interface CredentialsModel {
   password: string;
 }
 
-export interface SparqlResultModel {
-  data: Record<string, any>;
-}
-
 export interface CreateClaimModel {
   /**
    * @minLength 1
@@ -40,6 +36,10 @@ export interface UpdateClaimModel {
   oldValue: string;
   /** @minLength 1 */
   newValue: string;
+}
+
+export interface SparqlResultModel {
+  data: Record<string, any>;
 }
 
 export interface ServerInfoModel {
@@ -252,6 +252,39 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       this.request<string, string>({
         path: `/api/auth/logout`,
         method: "POST",
+        ...params,
+      }),
+  };
+  claim = {
+    /**
+     * @description Create a claim
+     *
+     * @tags Claim
+     * @name Create
+     * @request POST:/api/claim/{id}/create
+     */
+    create: (id: string, data: CreateClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/claim/${id}/create`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Update a claim
+     *
+     * @tags Claim
+     * @name Update
+     * @request POST:/api/claim/{id}/update
+     */
+    update: (id: string, data: UpdateClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/claim/${id}/update`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
   };

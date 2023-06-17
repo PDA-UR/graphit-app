@@ -21,7 +21,7 @@ export class Auth {
 
 	@Get("/whoami")
 	@Description("Returns the current session")
-	@Returns(200, UserSession)
+	@Returns(200, UserSession).ContentType("application/json")
 	@Returns(401, String).ContentType("text/plain")
 	whoAmI(@Session("user") credentials: Credentials) {
 		console.log("Session =>", credentials);
@@ -40,7 +40,7 @@ export class Auth {
 	@Description("Login to the API (using Wikibase credentials)")
 	@Returns(200, String).ContentType("text/plain")
 	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, UserSession).ContentType("text/plain")
+	@Returns(401, UserSession).ContentType("application/json")
 	async login(
 		@Required() @BodyParams() credentials: Credentials,
 		@Session("user") existingSession: Credentials
@@ -56,7 +56,8 @@ export class Auth {
 				const userItemId = await this.wikibaseSdkService.getUserItemId(
 					existingSession
 				);
-				if (userItemId == "") return new BadRequest("User item ID is not set");
+				if (userItemId == "")
+					return new BadRequest("User item ID is not set in user profile.");
 				this.logger.info("Successfully logged in as", existingSession);
 				return {
 					...existingSession,

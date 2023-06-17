@@ -14,7 +14,7 @@ import { createApiClient } from "../../shared/util/getApiClient";
 
 async function main() {
 	const credentials = getCredentials();
-	console.log(credentials);
+	// console.log(credentials);
 
 	const isProduction = getEnvVar("PROD");
 
@@ -22,17 +22,24 @@ async function main() {
 
 	const api = createApiClient();
 	const wikibaseClient = new WikibaseClient(credentials, api);
-	const userInfo = await wikibaseClient.login();
 
-	const elements = await wikibaseClient.getUserGraph();
-	const propertyModalController = new PropertyModalController();
-	const toolbarController = new ToolbarViewController();
-	const saveButtonController = new SaveButtonController();
-	const graphController = new GraphController(
-		elements,
-		api,
-		userInfo.userItemId
-	);
+	try {
+		const userInfo = await wikibaseClient.login();
+		console.log(userInfo);
+
+		const elements = await wikibaseClient.getUserGraph();
+		const propertyModalController = new PropertyModalController();
+		const toolbarController = new ToolbarViewController();
+		const saveButtonController = new SaveButtonController();
+		const graphController = new GraphController(
+			elements,
+			api,
+			userInfo.userItemId
+		);
+	} catch (e) {
+		window.alert(e);
+		console.log(e);
+	}
 }
 
 state.init();
