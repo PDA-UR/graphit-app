@@ -1,6 +1,6 @@
 import { join } from "path";
 import { Configuration, Inject } from "@tsed/di";
-import { PlatformApplication } from "@tsed/common";
+import { PlatformApplication, Res } from "@tsed/common";
 import "@tsed/platform-express"; // /!\ keep this import
 import "@tsed/ajv";
 import "@tsed/swagger";
@@ -10,19 +10,23 @@ import { Env } from "@tsed/core";
 import cors from "cors";
 import session from "express-session";
 import { CreateRequestSessionMiddleware } from "./middlewares/CreateRequestSessionMiddleware";
+import { ServerResponse } from "http";
+import send from "send";
 
 export const rootDir = __dirname;
+export const REPO_DIR = __dirname.endsWith("dist")
+	? join(__dirname, "../../..")
+	: join(__dirname, "../..");
 export const isProduction = process.env.NODE_ENV === Env.PROD;
 
+console.log("DIRNAME", rootDir, REPO_DIR);
 const whitelist = [
-	"http://localhost:5173",
+	"http://localhost:5173", // VITE Dev server
 	"http://localhost:4173",
-	"http://localhost:8083",
 ];
 const corsOptions = {
 	credentials: true,
 	origin: function (origin, callback) {
-		console.log(origin);
 		if (whitelist.indexOf(origin) !== -1 || !origin) {
 			callback(null, true);
 		} else {
@@ -30,6 +34,14 @@ const corsOptions = {
 		}
 	},
 };
+
+function setCustomCacheControl(res: ServerResponse, path: string) {
+	if (send.mime.lookup(path) === "text/html") {
+		res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		res.setHeader("Pragma", "no-cache");
+		res.setHeader("expires", "0");
+	}
+}
 
 @Configuration({
 	...config,
@@ -41,11 +53,20 @@ const corsOptions = {
 	mount: {
 		"/api": [...Object.values(rest)],
 	},
+	statics: {
+		"/app": [
+			{
+				root: join(REPO_DIR, "out/frontend/dist"),
+				maxAge: "1d",
+				setHeaders: setCustomCacheControl,
+			},
+		],
+	},
 	swagger: [
 		{
 			path: "/doc",
 			specVersion: "3.0.1",
-			outFile: `../${rootDir}/out/api/swagger.json`,
+			outFile: join(REPO_DIR, "out/api/swagger.json"),
 			// showExplorer: true, // display search bar
 		},
 	],
@@ -64,12 +85,6 @@ const corsOptions = {
 		}),
 		CreateRequestSessionMiddleware,
 	],
-	views: {
-		root: join(`${rootDir}/views`),
-		extensions: {
-			ejs: "ejs",
-		},
-	},
 	exclude: ["**/*.spec.ts"],
 	logger: {
 		disableRoutesSummary: isProduction, // remove table with routes summary
@@ -85,5 +100,12 @@ export class Server {
 
 	public $beforeRoutesInit(): void | Promise<any> {
 		this.app.getApp().set("trust proxy", 1); // trust first proxy
+	}
+
+	$afterRoutesInit() {
+		this.app.get(`/app/*`, (req: any, res: Res) => {
+			console.log("req.url", req.url);
+			res.sendFile(join(REPO_DIR, "out/frontend/dist/index.html"));
+		});
 	}
 }

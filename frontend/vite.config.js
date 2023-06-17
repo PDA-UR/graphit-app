@@ -1,14 +1,14 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export default defineConfig({
 	// config options
 	build: {
 		outDir: "../out/frontend/dist",
 		emptyOutDir: true,
-		minify: false,
 		sourcemap: true,
-		mode: "development",
 		rollupOptions: {
 			input: {
 				home: "./index.html",
@@ -18,6 +18,7 @@ export default defineConfig({
 			},
 		},
 	},
+	base: isProduction ? "/app/" : "/",
 	define: {
 		APP_VERSION: JSON.stringify(process.env.npm_package_version),
 	  },
