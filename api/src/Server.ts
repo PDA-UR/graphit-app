@@ -6,7 +6,6 @@ import "@tsed/ajv";
 import "@tsed/swagger";
 import { config } from "./config/index";
 import * as rest from "./controllers/rest/index";
-import * as pages from "./controllers/pages/index";
 import { Env } from "@tsed/core";
 import cors from "cors";
 import session from "express-session";
@@ -15,7 +14,11 @@ import { CreateRequestSessionMiddleware } from "./middlewares/CreateRequestSessi
 export const rootDir = __dirname;
 export const isProduction = process.env.NODE_ENV === Env.PROD;
 
-const whitelist = ["http://localhost:5173", "http://localhost:4173"];
+const whitelist = [
+	"http://localhost:5173",
+	"http://localhost:4173",
+	"http://localhost:8083",
+];
 const corsOptions = {
 	credentials: true,
 	origin: function (origin, callback) {
@@ -37,7 +40,6 @@ const corsOptions = {
 	disableComponentsScan: true,
 	mount: {
 		"/api": [...Object.values(rest)],
-		"/": [...Object.values(pages)],
 	},
 	swagger: [
 		{
