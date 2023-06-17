@@ -1,7 +1,7 @@
 import type { EntityId, SparqlResults } from "wikibase-sdk";
 import { state } from "../../pages/propertyEditor/global/State";
 import QueryDispatcher from "./QueryDispatcher";
-import { dependentsAndDependenciesQuery } from "./SparqlQueries";
+import { dependentsAndDependenciesQuery, categoriesQuery } from "./SparqlQueries";
 
 export class SparqlClient {
 	private readonly queryDispatcher: QueryDispatcher;
@@ -23,6 +23,11 @@ export class SparqlClient {
 
 	async getDependentsAndDependencies(): Promise<SparqlResults> {
 		const query = dependentsAndDependenciesQuery(state.username);
+		return this.query(query);
+	}
+
+	async getCategories(): Promise<SparqlResults> {
+		const query = categoriesQuery();
 		return this.query(query);
 	}
 }

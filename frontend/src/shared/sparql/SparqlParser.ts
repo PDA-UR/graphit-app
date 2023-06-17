@@ -68,8 +68,8 @@ export class SparqlParser {
 	): ElementDefinition[] {
 		const nodes: ElementDefinition[] = [];
 
-		const bindings = results.results.bindings;
-		const vars = results.head.vars;
+		const bindings = results.results.bindings; // all query result objects
+		const vars = results.head.vars; // e.g. "source", "sourceLabel"
 
 		bindings.forEach((binding) => {
 			nodePrefixes.forEach((prefix) => {
@@ -83,7 +83,6 @@ export class SparqlParser {
 				}
 			});
 		});
-
 		return nodes;
 	}
 
@@ -125,11 +124,19 @@ export class SparqlParser {
 		};
 
 		for (const variable of vars) {
+			// -> sourceLabel has no value
 			if (!variable.startsWith(prefix)) continue;
-			let key = variable.slice(prefix.length);
+			let key = variable.slice(prefix.length); // slices of e.g. "source" from sourceLabel
 			if (key === "") key = "id";
-			// lowercase first letter
 			key = key.charAt(0).toLowerCase() + key.slice(1);
+
+			// To make parents work
+			if (
+				variable == "sourceNodeClassLabel" ||
+				variable == "dependencyNodeClassLabel"
+			) {
+				key = "parent";
+			}
 
 			const value = binding[variable]?.value;
 
@@ -139,5 +146,52 @@ export class SparqlParser {
 		node.data._originalData = node.data;
 
 		return node.data.id ? node : null;
+	}
+
+	/**
+	 * Parse Items of the category class to cytoscape parent nodes
+	 * Result of the SPARQL query: item, itemLabel
+	 * @param results Results of the SPARQL query
+	 * @returns an array of parsed parent nodes
+	 */
+	public parseParents(results: SparqlResults): ElementDefinition[] {
+		const parents: ElementDefinition[] = [];
+
+		const bindings = results.results.bindings; // all query result objects
+		const vars = results.head.vars; // e.g. "source", "sourceLabel"
+
+		bindings.forEach((binding) => {
+			for (const variable of vars) {
+				const parent = this.parseParent(binding, vars);
+				parents.push(parent);
+			}
+		});
+		//console.log("parents: ", parents);
+		return parents;
+	}
+
+	/**
+	 * Parses a single parent node into the format: {group: "nodes", data:{id: "..."}}
+	 * id: currently ?itemLabel, bc. node.parent is ?nodeClassLabel
+	 * @param binding The bindings of the SPARQL query result
+	 * @param vars The variables of the SPARQL query
+	 * @returns
+	 */
+	private parseParent(
+		binding: any,
+		vars: ReadonlyArray<string>
+	): ElementDefinition {
+		const key = "id"; // Parent-nodes need same id, as node.parent-value
+		const parent: ElementDefinition = {
+			group: "nodes",
+			data: {},
+		};
+
+		for (const variable of vars) {
+			const value = binding[variable]?.value;
+			if (value) parent.data[key] = value;
+		}
+
+		return parent;
 	}
 }

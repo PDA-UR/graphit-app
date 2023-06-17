@@ -33,6 +33,7 @@ export default class WikibaseClient {
 			"depends on",
 			results
 		);
+
 		return graph;
 	}
 
@@ -86,5 +87,12 @@ export default class WikibaseClient {
 			...this.credentials,
 			userItemId,
 		};
+	}
+
+	// To handle cytoscape-parents
+	async getCategories(): Promise<ElementDefinition[]> {
+		const results = await this.sparqlClient.getCategories();
+		const parents = this.sparqlParser.parseParents(results);
+		return parents;
 	}
 }

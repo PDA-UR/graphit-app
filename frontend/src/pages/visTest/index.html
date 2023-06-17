@@ -7,18 +7,16 @@
     <title>Vite + TS</title>
   </head>
   <body>
-    <div id="parent-btns" class="parent-btns">
-      <button type="button" id="fcoseL">fCoSE Layout</button>
-      <button type="button" id="concentricL">Concentric Layout</button>
-      <button type="button" id="concentricL2">Concentric Layout 2</button>
-      <button type="button" id="breadthfirstL">Breadthfirst Layout</button>
-      <button type="button" id="collapseEdges">Collapse selected Edges</button>
-    </div>
-    <div id="queries" class="queries">
-      <input type="text" placeholder="Search node..." id="searchNode">
-      <button type="button" id="searchBtn">Search</button>
-    </div>
+
+    <!-- Drop-down Menu for selecting different Layouts -->
+    <select name="layouts" id="layout-options">
+      <option value="fcose" selected="selected">FCoSE</option>
+      <option value="breadth">Breadthfirst</option>
+      <option value="concentric">Concentric</option>
+    </select>
+
     <div id="app"></div>
-    <script type="module" src="./main.ts"></script>
+    <script type="module" src="./main-new.ts"></script>
+
   </body>
 </html>

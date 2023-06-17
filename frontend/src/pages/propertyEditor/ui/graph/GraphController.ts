@@ -166,6 +166,10 @@ export class GraphController {
 		const editActions = actions.getActions().map((action) => {
 			return action.getEditAction(this.api, this.userEntityId);
 		});
+
+		// TODO: Enable later when it was tested
+		return;
+
 		const executions = editActions.map((action) => action());
 
 		Promise.all(executions)

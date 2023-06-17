@@ -54,7 +54,20 @@ WHERE {
   BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
   
   # Retrieve labels for all entities in the preferred language (fallback to English)
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".}
 }
 
 `;
+
+// Separate SPARQL-Query for getting category nodes
+export const categoriesQuery = () => `#defaultView:Graph
+PREFIX wd: <https://graphit.ur.de/entity/>
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+SELECT ?itemLabel
+  WHERE {
+  # Retrieve all items that are an instance of (P3) a category (Q169)
+  ?item wdt:P3 wd:Q169
+
+  # Retrieve labels for all entities in the preferred language (fallback to English)
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".}
+}`;
