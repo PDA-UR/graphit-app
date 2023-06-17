@@ -1,6 +1,6 @@
 import { ElementDefinition } from "cytoscape";
-import type { SparqlResults } from "wikibase-sdk";
 
+type SparqlResults = any;
 export class SparqlParser {
 	/**
 	 * Parses the results of a SPARQL query into a graph.
@@ -71,7 +71,7 @@ export class SparqlParser {
 		const bindings = results.results.bindings; // all query result objects
 		const vars = results.head.vars; // e.g. "source", "sourceLabel"
 
-		bindings.forEach((binding) => {
+		bindings.forEach((binding: any) => {
 			nodePrefixes.forEach((prefix) => {
 				const node = this.parseNode(prefix, binding, vars);
 				if (node) {
@@ -160,7 +160,7 @@ export class SparqlParser {
 		const bindings = results.results.bindings; // all query result objects
 		const vars = results.head.vars; // e.g. "source", "sourceLabel"
 
-		bindings.forEach((binding) => {
+		bindings.forEach((binding: any) => {
 			for (const variable of vars) {
 				const parent = this.parseParent(binding, vars);
 				parents.push(parent);

@@ -223,11 +223,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Returns the current session
      *
-     * @tags AuthController
-     * @name ControllerWhoAmI
+     * @tags Auth
+     * @name WhoAmI
      * @request GET:/api/auth/whoami
      */
-    controllerWhoAmI: (params: RequestParams = {}) =>
+    whoAmI: (params: RequestParams = {}) =>
       this.request<UserSessionModel, string>({
         path: `/api/auth/whoami`,
         method: "GET",
@@ -238,11 +238,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Login to the API (using Wikibase credentials)
      *
-     * @tags AuthController
-     * @name ControllerLogin
+     * @tags Auth
+     * @name Login
      * @request POST:/api/auth/login
      */
-    controllerLogin: (data: CredentialsModel, params: RequestParams = {}) =>
+    login: (data: CredentialsModel, params: RequestParams = {}) =>
       this.request<string, string | UserSessionModel>({
         path: `/api/auth/login`,
         method: "POST",
@@ -254,11 +254,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Logout from the API (using Wikibase credentials)
      *
-     * @tags AuthController
-     * @name ControllerLogout
+     * @tags Auth
+     * @name Logout
      * @request POST:/api/auth/logout
      */
-    controllerLogout: (params: RequestParams = {}) =>
+    logout: (params: RequestParams = {}) =>
       this.request<string, string>({
         path: `/api/auth/logout`,
         method: "POST",
@@ -269,11 +269,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Create a claim
      *
-     * @tags ClaimController
-     * @name ClaimControllerCreate
+     * @tags Claim
+     * @name ClaimCreate
      * @request POST:/api/edit/claim/create
      */
-    claimControllerCreate: (data: CreateClaimModel, params: RequestParams = {}) =>
+    claimCreate: (data: CreateClaimModel, params: RequestParams = {}) =>
       this.request<string, string>({
         path: `/api/edit/claim/create`,
         method: "POST",
@@ -285,11 +285,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Update a claim
      *
-     * @tags ClaimController
-     * @name ClaimControllerUpdate
+     * @tags Claim
+     * @name ClaimUpdate
      * @request POST:/api/edit/claim/update
      */
-    claimControllerUpdate: (data: UpdateClaimModel, params: RequestParams = {}) =>
+    claimUpdate: (data: UpdateClaimModel, params: RequestParams = {}) =>
       this.request<string, string>({
         path: `/api/edit/claim/update`,
         method: "POST",
@@ -302,11 +302,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Retrieve all entities with the given ids. The ids should be separated by a |
      *
-     * @tags EntityController
-     * @name ControllerEntities
+     * @tags Entity
+     * @name Entities
      * @request GET:/api/entity/{ids}
      */
-    controllerEntities: (ids: string, params: RequestParams = {}) =>
+    entities: (ids: string, params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/entity/${ids}`,
         method: "GET",
@@ -318,11 +318,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Greets you with a hello message
      *
-     * @tags ExampleController
-     * @name ControllerHello
+     * @tags Example
+     * @name Hello
      * @request GET:/api/example/hello
      */
-    controllerHello: (
+    hello: (
       query: {
         name: string;
       },
@@ -338,11 +338,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Info about the server and env vars
      *
-     * @tags ExampleController
-     * @name ControllerInfo
+     * @tags Example
+     * @name Info
      * @request GET:/api/example/info
      */
-    controllerInfo: (params: RequestParams = {}) =>
+    info: (params: RequestParams = {}) =>
       this.request<ServerInfoModel, any>({
         path: `/api/example/info`,
         method: "GET",
@@ -354,11 +354,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Execute a sparql query
      *
-     * @tags SparqlController
-     * @name ControllerQuery
+     * @tags Sparql
+     * @name Query
      * @request POST:/api/sparql/query/{sparql}
      */
-    controllerQuery: (sparql: string, params: RequestParams = {}) =>
+    query: (sparql: string, params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/sparql/query/${sparql}`,
         method: "POST",
@@ -369,11 +369,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Retrieve all categories in the wiki
      *
-     * @tags SparqlController
-     * @name ControllerCategories
+     * @tags Sparql
+     * @name Categories
      * @request POST:/api/sparql/categories
      */
-    controllerCategories: (params: RequestParams = {}) =>
+    categories: (params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/sparql/categories`,
         method: "POST",
@@ -384,11 +384,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     /**
      * @description Retrieve the users graph (learning contents, completions, etc.)
      *
-     * @tags SparqlController
-     * @name ControllerUserGraph
+     * @tags Sparql
+     * @name UserGraph
      * @request POST:/api/sparql/userGraph
      */
-    controllerUserGraph: (params: RequestParams = {}) =>
+    userGraph: (params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/sparql/userGraph`,
         method: "POST",

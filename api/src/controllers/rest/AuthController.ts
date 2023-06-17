@@ -9,7 +9,7 @@ import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { UserSession } from "../../models/UserSessionModel";
 
 @Controller("/auth")
-export class AuthController {
+export class Auth {
 	@Inject()
 	wikibaseEditService: WikibaseEditService;
 

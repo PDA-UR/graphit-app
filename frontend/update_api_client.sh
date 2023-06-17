@@ -2,5 +2,5 @@
 
 cd ../
 
-npm run build
+# npm -w api run build
 cp -r out/api/client frontend/src/shared

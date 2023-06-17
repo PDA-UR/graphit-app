@@ -5,7 +5,7 @@ import { ServerInfo } from "../../models/ServerInfoModel";
 import { ServerInfoService } from "../../services/ServerInfoService";
 
 @Controller("/example")
-export class ExampleController {
+export class Example {
 	@Inject()
 	serverInfoService: ServerInfoService;
 

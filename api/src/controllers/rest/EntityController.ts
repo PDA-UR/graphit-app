@@ -9,7 +9,7 @@ import { SparqlResult } from "../../models/SparqlResultModel";
 import { EntityId } from "wikibase-sdk";
 
 @Controller("/entity")
-export class EntityController {
+export class Entity {
 	@Inject()
 	logger: Logger;
 

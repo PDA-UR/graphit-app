@@ -8,7 +8,7 @@ import { Credentials, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
 
 @Controller("/sparql")
-export class SparqlController {
+export class Sparql {
 	@Inject()
 	logger: Logger;
 

@@ -9,7 +9,7 @@ import { CreateClaim } from "../../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../../models/claim/UpdateClaimModel";
 
 @Controller("/claim")
-export class ClaimController {
+export class Claim {
 	@Inject()
 	logger: Logger;
 

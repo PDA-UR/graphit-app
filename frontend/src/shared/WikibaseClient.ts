@@ -16,11 +16,11 @@ export default class WikibaseClient {
 	}
 
 	async login(): Promise<any> {
-		return await this.api.auth.controllerLogin(this.credentials);
+		return await this.api.auth.login(this.credentials);
 	}
 
 	async getUserGraph(): Promise<ElementDefinition[]> {
-		const results = await this.api.sparql.controllerUserGraph();
+		const results = await this.api.sparql.userGraph();
 		const graph = this.sparqlParser.parsePairs(
 			["source", "dependency"],
 			"depends on",
@@ -31,13 +31,13 @@ export default class WikibaseClient {
 	}
 
 	async getUserInfo(): Promise<any> {
-		const info = await this.api.auth.controllerWhoAmI();
+		const info = await this.api.auth.whoAmI();
 		return info;
 	}
 
 	// To handle cytoscape-parents
 	async getCategories(): Promise<ElementDefinition[]> {
-		const results = await this.api.sparql.controllerCategories();
+		const results = await this.api.sparql.categories();
 		const parents = this.sparqlParser.parseParents(results.data);
 		return parents;
 	}
