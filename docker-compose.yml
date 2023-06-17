@@ -8,6 +8,6 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: graphit-app/server:latest
+    image: graphit/app:latest
     ports:
       - "8081:8081"
