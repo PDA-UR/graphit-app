@@ -14,12 +14,11 @@ export interface CredentialsModel {
   password: string;
 }
 
+export interface SparqlResultModel {
+  data: Record<string, any>;
+}
+
 export interface CreateClaimModel {
-  /**
-   * @minLength 1
-   * @pattern [PQ]\d{1,5}
-   */
-  id: string;
   /**
    * @minLength 1
    * @pattern [PQ]\d{1,5}
@@ -36,20 +35,11 @@ export interface UpdateClaimModel {
    * @minLength 1
    * @pattern [PQ]\d{1,5}
    */
-  id: string;
-  /**
-   * @minLength 1
-   * @pattern [PQ]\d{1,5}
-   */
   property: string;
   /** @minLength 1 */
   oldValue: string;
   /** @minLength 1 */
   newValue: string;
-}
-
-export interface SparqlResultModel {
-  data: Record<string, any>;
 }
 
 export interface ServerInfoModel {
@@ -265,39 +255,6 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         ...params,
       }),
   };
-  edit = {
-    /**
-     * @description Create a claim
-     *
-     * @tags Claim
-     * @name ClaimCreate
-     * @request POST:/api/edit/claim/create
-     */
-    claimCreate: (data: CreateClaimModel, params: RequestParams = {}) =>
-      this.request<string, string>({
-        path: `/api/edit/claim/create`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Update a claim
-     *
-     * @tags Claim
-     * @name ClaimUpdate
-     * @request POST:/api/edit/claim/update
-     */
-    claimUpdate: (data: UpdateClaimModel, params: RequestParams = {}) =>
-      this.request<string, string>({
-        path: `/api/edit/claim/update`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-  };
   entity = {
     /**
      * @description Retrieve all entities with the given ids. The ids should be separated by a |
@@ -311,6 +268,38 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         path: `/api/entity/${ids}`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a claim
+     *
+     * @tags Entity
+     * @name CreateClaim
+     * @request POST:/api/entity/{id}/createClaim
+     */
+    createClaim: (id: string, data: CreateClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/entity/${id}/createClaim`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Update a claim
+     *
+     * @tags Entity
+     * @name UpdateClaim
+     * @request POST:/api/entity/{id}/updateClaim
+     */
+    updateClaim: (id: string, data: UpdateClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/entity/${id}/updateClaim`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
   };

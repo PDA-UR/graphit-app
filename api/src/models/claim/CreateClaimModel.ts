@@ -21,10 +21,6 @@ export const entityPattern = /[PQ]\d{1,5}/;
 export class CreateClaim {
 	@Required()
 	@Pattern(entityPattern)
-	id: string;
-
-	@Required()
-	@Pattern(entityPattern)
 	property: string;
 
 	@Required()

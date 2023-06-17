@@ -51,14 +51,14 @@ export class EditPropertyAction extends PropertyAction {
 			userEntityId
 		);
 
+		const entityId = this.parseElementId(this.elementId);
 		const updateClaimAction: UpdateClaimModel = {
-			id: this.parseElementId(this.elementId),
 			property: propertyId,
 			newValue: this.newValue,
 			oldValue: this.originalValue,
 		};
 
-		return client.edit.claimUpdate(updateClaimAction);
+		return client.entity.updateClaim(entityId, updateClaimAction);
 	}
 
 	getEditAction(client: ApiClient<unknown>, userEntityId: string): EditAction {

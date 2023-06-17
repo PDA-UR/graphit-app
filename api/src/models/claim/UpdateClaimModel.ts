@@ -4,10 +4,6 @@ import { entityPattern } from "./CreateClaimModel";
 export class UpdateClaim {
 	@Required()
 	@Pattern(entityPattern)
-	id: string;
-
-	@Required()
-	@Pattern(entityPattern)
 	property: string;
 
 	@Required()
