@@ -1,98 +1,44 @@
 import { ElementDefinition } from "cytoscape";
-import type { EntityId, SparqlResults } from "wikibase-sdk";
-
-import { SparqlClient } from "./sparql/SparqlClient";
 import { SparqlParser } from "./sparql/SparqlParser";
 import { Credentials, wikibaseEditConfig } from "./WikibaseEditConfig";
 import { getEnvVar } from "./util/Env";
+import { ApiClient, CredentialsModel } from "./client/ApiClient";
 
 export default class WikibaseClient {
-	private readonly sparqlClient: SparqlClient;
 	private readonly sparqlParser: SparqlParser;
 	private readonly credentials: Credentials;
+	private readonly api: ApiClient<unknown>;
 
-	constructor(credentials: Credentials) {
+	constructor(credentials: Credentials, api: ApiClient<unknown>) {
 		this.credentials = credentials;
-		this.sparqlClient = new SparqlClient();
 		this.sparqlParser = new SparqlParser();
+		this.api = api;
 	}
 
-	async query(query: string): Promise<SparqlResults> {
-		const results = await this.sparqlClient.query(query);
-		return results;
+	async login(): Promise<any> {
+		return await this.api.auth.controllerLogin(this.credentials);
 	}
 
-	async getEntities(ids: EntityId[]): Promise<SparqlResults> {
-		return await this.sparqlClient.getEntities(ids);
-	}
-
-	async getDependentsAndDependencies(): Promise<ElementDefinition[]> {
-		const results = await this.sparqlClient.getDependentsAndDependencies();
+	async getUserGraph(): Promise<ElementDefinition[]> {
+		const results = await this.api.sparql.controllerUserGraph();
 		const graph = this.sparqlParser.parsePairs(
 			["source", "dependency"],
 			"depends on",
-			results
+			results.data
 		);
 
 		return graph;
 	}
 
-	async getWikibasePageContent(title: string): Promise<string> {
-		const wikibaseInstanceUrl = getEnvVar("VITE_WIKIBASE_INSTANCE");
-
-		const urlParams = new URLSearchParams({
-			action: "parse",
-			page: title,
-			prop: "wikitext",
-			formatversion: "2",
-			origin: window.location.origin,
-			format: "json",
-		});
-
-		const url = `${wikibaseInstanceUrl}/api.php?${urlParams.toString()}`;
-
-		try {
-			const response = await fetch(url);
-			console.log("response", url, response);
-			const json = await response.json();
-			return json.parse.wikitext;
-		} catch (error) {
-			console.log("error", error);
-			return Promise.reject(error);
-		}
-	}
-
-	async parseUserItemId(userPageContent: string): Promise<string> {
-		const regex = /\[\[Item:Q\d+(\|.*)?\]\]/g;
-
-		const matches = userPageContent.match(regex);
-		if (matches) {
-			const userId = matches[0]
-				.replace("[[Item:", "")
-				.replace("]]", "")
-				// remove alias if present
-				.split("|")[0];
-			return userId;
-		}
-
-		return "";
-	}
-
 	async getUserInfo(): Promise<any> {
-		const htmlUserPage = await this.getWikibasePageContent(
-			"User:" + this.credentials.username
-		);
-		const userItemId = await this.parseUserItemId(htmlUserPage);
-		return {
-			...this.credentials,
-			userItemId,
-		};
+		const info = await this.api.auth.controllerWhoAmI();
+		return info;
 	}
 
 	// To handle cytoscape-parents
 	async getCategories(): Promise<ElementDefinition[]> {
-		const results = await this.sparqlClient.getCategories();
-		const parents = this.sparqlParser.parseParents(results);
+		const results = await this.api.sparql.controllerCategories();
+		const parents = this.sparqlParser.parseParents(results.data);
 		return parents;
 	}
 }

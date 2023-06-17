@@ -26,7 +26,7 @@ export const getElements = async () => {
 		console.log("loading from wikibase");
 		const credentials = getCredentials();
 		const wikibase = new WikibaseClient(credentials);
-		const elements = await wikibase.getDependentsAndDependencies();
+		const elements = await wikibase.getUserGraph();
 		console.log(elements);
 		localStorage.setItem(
 			localStorageKey,

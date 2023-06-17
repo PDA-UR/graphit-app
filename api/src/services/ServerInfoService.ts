@@ -12,9 +12,13 @@ export class ServerInfoService {
 	@Constant("instance")
 	instance: string;
 
+	@Constant("sparqlEndpoint")
+	sparqlEndpoint: string;
+
 	getInfo(): ServerInfo {
 		return {
-			wikibaseInstance: this.instance,
+			instance: this.instance,
+			sparqlEndpoint: this.sparqlEndpoint,
 			isProduction: this.isProduction,
 			version: this.version,
 		};

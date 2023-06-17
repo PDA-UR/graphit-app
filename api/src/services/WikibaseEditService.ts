@@ -1,17 +1,10 @@
-import { Inject, Service } from "@tsed/di";
+import { Service } from "@tsed/di";
 import wbEdit from "wikibase-edit";
-import { ServerInfoService } from "./ServerInfoService";
 import { Credentials } from "../models/CredentialsModel";
-
-type WikibaseEditMap = Map<string, any>;
+import { SessionService } from "./SessionService";
 
 @Service()
-export class WikibaseEditService {
-	@Inject()
-	info: ServerInfoService;
-
-	private wikibaseEditMap: WikibaseEditMap = new Map();
-
+export class WikibaseEditService extends SessionService<any> {
 	private wikibaseEditConfig = (credentials: Credentials) => ({
 		instance: this.info.instance,
 		wgScriptPath: "/w",
@@ -33,24 +26,9 @@ export class WikibaseEditService {
 		maxlag: 2,
 	});
 
-	getSession(credentials: Credentials): any {
-		const key = credentials.username;
-		if (this.wikibaseEditMap.has(key)) {
-			return this.wikibaseEditMap.get(key);
-		} else {
-			const session = this.createSession(credentials);
-			this.wikibaseEditMap.set(key, session);
-			return session;
-		}
-	}
-
-	private createSession(credentials: Credentials): any {
+	createSessionData(credentials: Credentials) {
 		const config = this.wikibaseEditConfig(credentials),
 			session = wbEdit(config);
 		return session;
-	}
-
-	removeSession(credentials: Credentials): void {
-		this.wikibaseEditMap.delete(credentials.username);
 	}
 }

@@ -4,5 +4,7 @@
 
 export * from "./AuthController";
 export * from "./EditController";
+export * from "./EntityController";
 export * from "./ExampleController";
+export * from "./SparqlController";
 export * from "./edit/ClaimController";

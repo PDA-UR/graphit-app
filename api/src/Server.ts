@@ -23,6 +23,7 @@ console.log("DIRNAME", rootDir, REPO_DIR);
 const whitelist = [
 	"http://localhost:5173", // VITE Dev server
 	"http://localhost:4173",
+	"http://localhost:8081",
 ];
 const corsOptions = {
 	credentials: true,
@@ -90,6 +91,9 @@ function setCustomCacheControl(res: ServerResponse, path: string) {
 		disableRoutesSummary: isProduction, // remove table with routes summary
 	},
 	instance: isProduction ? process.env.PROD_INSTANCE : process.env.DEV_INSTANCE,
+	sparqlEndpoint: isProduction
+		? process.env.PROD_SPARQL_ENDPOINT
+		: process.env.DEV_SPARQL_ENDPOINT,
 })
 export class Server {
 	@Inject()

@@ -1,50 +1,65 @@
+export interface UserSessionModel {
+  /** @minLength 1 */
+  username: string;
+  /** @minLength 1 */
+  password: string;
+  /** @minLength 1 */
+  userItemId: string;
+}
+
 export interface CredentialsModel {
-	/** @minLength 1 */
-	username: string;
-	/** @minLength 1 */
-	password: string;
+  /** @minLength 1 */
+  username: string;
+  /** @minLength 1 */
+  password: string;
 }
 
 export interface CreateClaimModel {
-	/**
-	 * @minLength 1
-	 * @pattern [PQ]\d{1,5}
-	 */
-	id: string;
-	/**
-	 * @minLength 1
-	 * @pattern [PQ]\d{1,5}
-	 */
-	property: string;
-	/** @minLength 1 */
-	value: string;
-	rank?: "preferred" | "normal" | "deprecated";
-	qualifiers?: Record<string, any>;
+  /**
+   * @minLength 1
+   * @pattern [PQ]\d{1,5}
+   */
+  id: string;
+  /**
+   * @minLength 1
+   * @pattern [PQ]\d{1,5}
+   */
+  property: string;
+  /** @minLength 1 */
+  value: string;
+  rank?: "preferred" | "normal" | "deprecated";
+  qualifiers?: Record<string, any>;
 }
 
 export interface UpdateClaimModel {
-	/**
-	 * @minLength 1
-	 * @pattern [PQ]\d{1,5}
-	 */
-	id: string;
-	/**
-	 * @minLength 1
-	 * @pattern [PQ]\d{1,5}
-	 */
-	property: string;
-	/** @minLength 1 */
-	oldValue: string;
-	/** @minLength 1 */
-	newValue: string;
+  /**
+   * @minLength 1
+   * @pattern [PQ]\d{1,5}
+   */
+  id: string;
+  /**
+   * @minLength 1
+   * @pattern [PQ]\d{1,5}
+   */
+  property: string;
+  /** @minLength 1 */
+  oldValue: string;
+  /** @minLength 1 */
+  newValue: string;
+}
+
+export interface SparqlResultModel {
+  data: Record<string, any>;
 }
 
 export interface ServerInfoModel {
-	/** @minLength 1 */
-	wikibaseInstance: string;
-	isProduction: boolean;
-	/** @minLength 1 */
-	version: string;
+  /** @minLength 1 */
+  instance: string;
+  /** @minLength 1 */
+  sparqlEndpoint: string;
+  isProduction: boolean;
+  /** @minLength 1 */
+  version: string;
 }
 
 import axios, {
@@ -71,293 +86,314 @@ const createAxiosInstance = (config: AxiosRequestConfig) => {
 
 export type QueryParamsType = Record<string | number, any>;
 
-export interface FullRequestParams
-	extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
-	/** set parameter to `true` for call `securityWorker` for this request */
-	secure?: boolean;
-	/** request path */
-	path: string;
-	/** content type of request body */
-	type?: ContentType;
-	/** query params */
-	query?: QueryParamsType;
-	/** format of response (i.e. response.json() -> format: "json") */
-	format?: ResponseType;
-	/** request body */
-	body?: unknown;
+export interface FullRequestParams extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
+  /** set parameter to `true` for call `securityWorker` for this request */
+  secure?: boolean;
+  /** request path */
+  path: string;
+  /** content type of request body */
+  type?: ContentType;
+  /** query params */
+  query?: QueryParamsType;
+  /** format of response (i.e. response.json() -> format: "json") */
+  format?: ResponseType;
+  /** request body */
+  body?: unknown;
 }
 
-export type RequestParams = Omit<
-	FullRequestParams,
-	"body" | "method" | "query" | "path"
->;
+export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
 
-export interface ApiConfig<SecurityDataType = unknown>
-	extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
-	securityWorker?: (
-		securityData: SecurityDataType | null
-	) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
-	secure?: boolean;
-	format?: ResponseType;
+export interface ApiConfig<SecurityDataType = unknown> extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
+  securityWorker?: (
+    securityData: SecurityDataType | null,
+  ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
+  secure?: boolean;
+  format?: ResponseType;
 }
 
 export enum ContentType {
-	Json = "application/json",
-	FormData = "multipart/form-data",
-	UrlEncoded = "application/x-www-form-urlencoded",
-	Text = "text/plain",
+  Json = "application/json",
+  FormData = "multipart/form-data",
+  UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-	public instance: AxiosInstance;
-	private securityData: SecurityDataType | null = null;
-	private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
-	private secure?: boolean;
-	private format?: ResponseType;
+  public instance: AxiosInstance;
+  private securityData: SecurityDataType | null = null;
+  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
+  private secure?: boolean;
+  private format?: ResponseType;
 
-	constructor({
-		securityWorker,
-		secure,
-		format,
-		...axiosConfig
-	}: ApiConfig<SecurityDataType> = {}) {
-		this.instance = createAxiosInstance(axiosConfig);
-		this.secure = secure;
-		this.format = format;
-		this.securityWorker = securityWorker;
-	}
+  constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
+    this.instance = createAxiosInstance(axiosConfig);
+    this.secure = secure;
+    this.format = format;
+    this.securityWorker = securityWorker;
+  }
 
-	public setSecurityData = (data: SecurityDataType | null) => {
-		this.securityData = data;
-	};
+  public setSecurityData = (data: SecurityDataType | null) => {
+    this.securityData = data;
+  };
 
-	protected mergeRequestParams(
-		params1: AxiosRequestConfig,
-		params2?: AxiosRequestConfig
-	): AxiosRequestConfig {
-		const method = params1.method || (params2 && params2.method);
+  protected mergeRequestParams(params1: AxiosRequestConfig, params2?: AxiosRequestConfig): AxiosRequestConfig {
+    const method = params1.method || (params2 && params2.method);
 
-		return {
-			...this.instance.defaults,
-			...params1,
-			...(params2 || {}),
-			headers: {
-				...((method &&
-					this.instance.defaults.headers[
-						method.toLowerCase() as keyof HeadersDefaults
-					]) ||
-					{}),
-				...(params1.headers || {}),
-				...((params2 && params2.headers) || {}),
-			},
-		};
-	}
+    return {
+      ...this.instance.defaults,
+      ...params1,
+      ...(params2 || {}),
+      headers: {
+        ...((method && this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) || {}),
+        ...(params1.headers || {}),
+        ...((params2 && params2.headers) || {}),
+      },
+    };
+  }
 
-	protected stringifyFormItem(formItem: unknown) {
-		if (typeof formItem === "object" && formItem !== null) {
-			return JSON.stringify(formItem);
-		} else {
-			return `${formItem}`;
-		}
-	}
+  protected stringifyFormItem(formItem: unknown) {
+    if (typeof formItem === "object" && formItem !== null) {
+      return JSON.stringify(formItem);
+    } else {
+      return `${formItem}`;
+    }
+  }
 
-	protected createFormData(input: Record<string, unknown>): FormData {
-		return Object.keys(input || {}).reduce((formData, key) => {
-			const property = input[key];
-			const propertyContent: any[] =
-				property instanceof Array ? property : [property];
+  protected createFormData(input: Record<string, unknown>): FormData {
+    return Object.keys(input || {}).reduce((formData, key) => {
+      const property = input[key];
+      const propertyContent: any[] = property instanceof Array ? property : [property];
 
-			for (const formItem of propertyContent) {
-				const isFileType = formItem instanceof Blob || formItem instanceof File;
-				formData.append(
-					key,
-					isFileType ? formItem : this.stringifyFormItem(formItem)
-				);
-			}
+      for (const formItem of propertyContent) {
+        const isFileType = formItem instanceof Blob || formItem instanceof File;
+        formData.append(key, isFileType ? formItem : this.stringifyFormItem(formItem));
+      }
 
-			return formData;
-		}, new FormData());
-	}
+      return formData;
+    }, new FormData());
+  }
 
-	public request = async <T = any, _E = any>({
-		secure,
-		path,
-		type,
-		query,
-		format,
-		body,
-		...params
-	}: FullRequestParams): Promise<T> => {
-		const secureParams =
-			((typeof secure === "boolean" ? secure : this.secure) &&
-				this.securityWorker &&
-				(await this.securityWorker(this.securityData))) ||
-			{};
-		const requestParams = this.mergeRequestParams(params, secureParams);
-		const responseFormat = format || this.format || undefined;
+  public request = async <T = any, _E = any>({
+    secure,
+    path,
+    type,
+    query,
+    format,
+    body,
+    ...params
+  }: FullRequestParams): Promise<T> => {
+    const secureParams =
+      ((typeof secure === "boolean" ? secure : this.secure) &&
+        this.securityWorker &&
+        (await this.securityWorker(this.securityData))) ||
+      {};
+    const requestParams = this.mergeRequestParams(params, secureParams);
+    const responseFormat = format || this.format || undefined;
 
-		if (
-			type === ContentType.FormData &&
-			body &&
-			body !== null &&
-			typeof body === "object"
-		) {
-			body = this.createFormData(body as Record<string, unknown>);
-		}
+    if (type === ContentType.FormData && body && body !== null && typeof body === "object") {
+      body = this.createFormData(body as Record<string, unknown>);
+    }
 
-		if (
-			type === ContentType.Text &&
-			body &&
-			body !== null &&
-			typeof body !== "string"
-		) {
-			body = JSON.stringify(body);
-		}
+    if (type === ContentType.Text && body && body !== null && typeof body !== "string") {
+      body = JSON.stringify(body);
+    }
 
-		return this.instance
-			.request({
-				...requestParams,
-				headers: {
-					...(requestParams.headers || {}),
-					...(type && type !== ContentType.FormData
-						? { "Content-Type": type }
-						: {}),
-				},
-				params: query,
-				responseType: responseFormat,
-				data: body,
-				url: path,
-			})
-			.then((response) => response.data as T);
-	};
+    return this.instance
+      .request({
+        ...requestParams,
+        headers: {
+          ...(requestParams.headers || {}),
+          ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
+        },
+        params: query,
+        responseType: responseFormat,
+        data: body,
+        url: path,
+      })
+      .then((response) => response.data as T);
+  };
 }
 
 /**
  * @title Api documentation
  * @version 1.0.0
  */
-export class ApiClient<
-	SecurityDataType extends unknown
-> extends HttpClient<SecurityDataType> {
-	auth = {
-		/**
-		 * @description Returns the current session
-		 *
-		 * @tags AuthController
-		 * @name ControllerWhoAmI
-		 * @request GET:/api/auth/whoami
-		 */
-		controllerWhoAmI: (params: RequestParams = {}) =>
-			this.request<CredentialsModel, string>({
-				path: `/api/auth/whoami`,
-				method: "GET",
-				format: "json",
-				...params,
-			}),
+export class ApiClient<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  auth = {
+    /**
+     * @description Returns the current session
+     *
+     * @tags AuthController
+     * @name ControllerWhoAmI
+     * @request GET:/api/auth/whoami
+     */
+    controllerWhoAmI: (params: RequestParams = {}) =>
+      this.request<UserSessionModel, string>({
+        path: `/api/auth/whoami`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
 
-		/**
-		 * @description Login to the API (using Wikibase credentials)
-		 *
-		 * @tags AuthController
-		 * @name ControllerLogin
-		 * @request POST:/api/auth/login
-		 */
-		controllerLogin: (data: CredentialsModel, params: RequestParams = {}) =>
-			this.request<string, string>({
-				path: `/api/auth/login`,
-				method: "POST",
-				body: data,
-				type: ContentType.Json,
-				...params,
-			}),
+    /**
+     * @description Login to the API (using Wikibase credentials)
+     *
+     * @tags AuthController
+     * @name ControllerLogin
+     * @request POST:/api/auth/login
+     */
+    controllerLogin: (data: CredentialsModel, params: RequestParams = {}) =>
+      this.request<string, string | UserSessionModel>({
+        path: `/api/auth/login`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-		/**
-		 * @description Logout from the API (using Wikibase credentials)
-		 *
-		 * @tags AuthController
-		 * @name ControllerLogout
-		 * @request POST:/api/auth/logout
-		 */
-		controllerLogout: (params: RequestParams = {}) =>
-			this.request<string, string>({
-				path: `/api/auth/logout`,
-				method: "POST",
-				...params,
-			}),
-	};
-	edit = {
-		/**
-		 * @description Create a claim
-		 *
-		 * @tags ClaimController
-		 * @name ClaimControllerCreate
-		 * @request POST:/api/edit/claim/create
-		 */
-		claimControllerCreate: (
-			data: CreateClaimModel,
-			params: RequestParams = {}
-		) =>
-			this.request<string, string>({
-				path: `/api/edit/claim/create`,
-				method: "POST",
-				body: data,
-				type: ContentType.Json,
-				...params,
-			}),
+    /**
+     * @description Logout from the API (using Wikibase credentials)
+     *
+     * @tags AuthController
+     * @name ControllerLogout
+     * @request POST:/api/auth/logout
+     */
+    controllerLogout: (params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/auth/logout`,
+        method: "POST",
+        ...params,
+      }),
+  };
+  edit = {
+    /**
+     * @description Create a claim
+     *
+     * @tags ClaimController
+     * @name ClaimControllerCreate
+     * @request POST:/api/edit/claim/create
+     */
+    claimControllerCreate: (data: CreateClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/edit/claim/create`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-		/**
-		 * @description Update a claim
-		 *
-		 * @tags ClaimController
-		 * @name ClaimControllerUpdate
-		 * @request POST:/api/edit/claim/update
-		 */
-		claimControllerUpdate: (
-			data: UpdateClaimModel,
-			params: RequestParams = {}
-		) =>
-			this.request<string, string>({
-				path: `/api/edit/claim/update`,
-				method: "POST",
-				body: data,
-				type: ContentType.Json,
-				...params,
-			}),
-	};
-	example = {
-		/**
-		 * @description Greets you with a hello message
-		 *
-		 * @tags ExampleController
-		 * @name ControllerHello
-		 * @request GET:/api/example/hello
-		 */
-		controllerHello: (
-			query: {
-				name: string;
-			},
-			params: RequestParams = {}
-		) =>
-			this.request<string, any>({
-				path: `/api/example/hello`,
-				method: "GET",
-				query: query,
-				...params,
-			}),
+    /**
+     * @description Update a claim
+     *
+     * @tags ClaimController
+     * @name ClaimControllerUpdate
+     * @request POST:/api/edit/claim/update
+     */
+    claimControllerUpdate: (data: UpdateClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/edit/claim/update`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+  };
+  entity = {
+    /**
+     * @description Retrieve all entities with the given ids. The ids should be separated by a |
+     *
+     * @tags EntityController
+     * @name ControllerEntities
+     * @request GET:/api/entity/{ids}
+     */
+    controllerEntities: (ids: string, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/entity/${ids}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  example = {
+    /**
+     * @description Greets you with a hello message
+     *
+     * @tags ExampleController
+     * @name ControllerHello
+     * @request GET:/api/example/hello
+     */
+    controllerHello: (
+      query: {
+        name: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<string, any>({
+        path: `/api/example/hello`,
+        method: "GET",
+        query: query,
+        ...params,
+      }),
 
-		/**
-		 * @description Info about the server and env vars
-		 *
-		 * @tags ExampleController
-		 * @name ControllerInfo
-		 * @request GET:/api/example/info
-		 */
-		controllerInfo: (params: RequestParams = {}) =>
-			this.request<ServerInfoModel, any>({
-				path: `/api/example/info`,
-				method: "GET",
-				format: "json",
-				...params,
-			}),
-	};
+    /**
+     * @description Info about the server and env vars
+     *
+     * @tags ExampleController
+     * @name ControllerInfo
+     * @request GET:/api/example/info
+     */
+    controllerInfo: (params: RequestParams = {}) =>
+      this.request<ServerInfoModel, any>({
+        path: `/api/example/info`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  sparql = {
+    /**
+     * @description Execute a sparql query
+     *
+     * @tags SparqlController
+     * @name ControllerQuery
+     * @request POST:/api/sparql/query/{sparql}
+     */
+    controllerQuery: (sparql: string, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/query/${sparql}`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Retrieve all categories in the wiki
+     *
+     * @tags SparqlController
+     * @name ControllerCategories
+     * @request POST:/api/sparql/categories
+     */
+    controllerCategories: (params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/categories`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Retrieve the users graph (learning contents, completions, etc.)
+     *
+     * @tags SparqlController
+     * @name ControllerUserGraph
+     * @request POST:/api/sparql/userGraph
+     */
+    controllerUserGraph: (params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/userGraph`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+  };
 }

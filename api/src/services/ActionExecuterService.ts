@@ -20,7 +20,7 @@ export class ActionExecuterService {
 		claimActionModel: CreateClaim | UpdateClaim,
 		credentials: Credentials
 	): Promise<string | BadRequest> {
-		const wikibaseEdit = this.wikibaseEditService.getSession(credentials);
+		const wikibaseEdit = this.wikibaseEditService.getSessionData(credentials);
 		try {
 			const actionFn = wikibaseEdit.claim[action];
 			this.logger.info("Executing action:" + actionFn);
