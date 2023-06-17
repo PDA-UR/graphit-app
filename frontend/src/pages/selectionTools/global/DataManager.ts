@@ -1,5 +1,6 @@
 import WikibaseClient from "../../../shared/WikibaseClient";
 import { getCredentials } from "../../../shared/util/GetCredentials";
+import { createApiClient } from "../../../shared/util/getApiClient";
 
 const getCircularReplacer = () => {
 	const seen = new WeakSet();
@@ -25,7 +26,8 @@ export const getElements = async () => {
 	} else {
 		console.log("loading from wikibase");
 		const credentials = getCredentials();
-		const wikibase = new WikibaseClient(credentials);
+		const api = createApiClient();
+		const wikibase = new WikibaseClient(credentials, api);
 		const elements = await wikibase.getUserGraph();
 		console.log(elements);
 		localStorage.setItem(

@@ -3,7 +3,7 @@ import { ApiClient, UpdateClaimModel } from "../../../client/ApiClient";
 import {
 	WB_PROPERTIES_DEV,
 	WB_PROPERTIES_PROD,
-} from "../../../sparql/SparqlQueries";
+} from "../../../sparql/SparqlVars";
 import { getEnvVar } from "../../../util/Env";
 import { EditAction } from "../other/EditAction";
 import { PropertyAction } from "./PropertyAction";
@@ -58,7 +58,7 @@ export class EditPropertyAction extends PropertyAction {
 			oldValue: this.originalValue,
 		};
 
-		return client.edit.claimControllerUpdate(updateClaimAction);
+		return client.edit.claimUpdate(updateClaimAction);
 	}
 
 	getEditAction(client: ApiClient<unknown>, userEntityId: string): EditAction {
