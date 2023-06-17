@@ -22,10 +22,8 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.sparqlQuery(query);
 		const headers = {};
-		this.logger.info("url", url);
 
 		const response = await fetch(url, { headers });
-		this.logger.info("response", response);
 		const data = await response.json();
 		return { data };
 	}
@@ -55,7 +53,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 			format: "json",
 		});
 
-		const url = `${this.info.instance}/api.php?${urlParams.toString()}`;
+		const url = `${this.info.instance}/w/api.php?${urlParams.toString()}`;
 
 		try {
 			const response = await fetch(url);

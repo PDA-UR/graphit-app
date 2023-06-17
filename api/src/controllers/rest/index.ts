@@ -3,6 +3,7 @@
  */
 
 export * from "./AuthController";
+export * from "./ClaimController";
 export * from "./EntityController";
 export * from "./ExampleController";
 export * from "./SparqlController";
