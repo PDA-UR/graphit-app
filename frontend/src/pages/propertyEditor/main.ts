@@ -17,7 +17,7 @@ async function main() {
 	const credentials = getCredentials();
 
 	const isProduction = getEnvVar("PROD");
-
+	console.log("isProduction", isProduction);
 	const parser = new SparqlParser();
 
 	const api = createApiClient();
