@@ -15,7 +15,6 @@ import { getCircularReplacer } from "../selectionTools/global/DataManager";
 
 async function main() {
 	const credentials = getCredentials();
-	// console.log(credentials);
 
 	const isProduction = getEnvVar("PROD");
 
