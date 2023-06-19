@@ -11,6 +11,7 @@ import { getEnvVar } from "../../shared/util/Env";
 import { SparqlParser } from "../../shared/sparql/SparqlParser";
 import WikibaseClient from "../../shared/WikibaseClient";
 import { createApiClient } from "../../shared/util/getApiClient";
+import { getCircularReplacer } from "../selectionTools/global/DataManager";
 
 async function main() {
 	const credentials = getCredentials();
@@ -28,6 +29,7 @@ async function main() {
 		console.log(userInfo);
 
 		const elements = await wikibaseClient.getUserGraph();
+
 		const propertyModalController = new PropertyModalController();
 		const toolbarController = new ToolbarViewController();
 		const saveButtonController = new SaveButtonController();
