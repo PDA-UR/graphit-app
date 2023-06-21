@@ -17,6 +17,7 @@ async function main() {
 	const credentials = getCredentials();
 
 	const isProduction = getEnvVar("PROD");
+	console.log(import.meta.env);
 	console.log("isProduction", isProduction);
 	const parser = new SparqlParser();
 

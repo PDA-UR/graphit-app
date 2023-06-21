@@ -1,7 +1,8 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 
-const isProduction = process.env.NODE_ENV === 'production';
+// const isProduction = process.env.MODE === 'production';
+const noServer = process.env.NO_SERVER === 'true';
 
 export default defineConfig({
 	// config options
@@ -18,7 +19,7 @@ export default defineConfig({
 			},
 		},
 	},
-	base: isProduction ? "/app/" : "/",
+	base: noServer ? "/" : "/app/",
 	define: {
 		APP_VERSION: JSON.stringify(process.env.npm_package_version),
 	  },
