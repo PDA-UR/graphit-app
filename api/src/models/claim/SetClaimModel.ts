@@ -1,16 +1,15 @@
 import { Pattern, Property, Required } from "@tsed/schema";
-import { entityPattern } from "./SetClaimModel";
 
-export class UpdateClaim {
+export type Qualifiers = Record<string, string>;
+
+export const entityPattern = /[PQ]\d{1,5}/;
+
+export class SetClaim {
 	@Required()
 	@Pattern(entityPattern)
 	property: string;
 
 	@Required()
 	@Property()
-	oldValue: string;
-
-	@Required()
-	@Property()
-	newValue: string;
+	value: string;
 }

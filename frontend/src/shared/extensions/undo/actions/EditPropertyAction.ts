@@ -38,32 +38,43 @@ export class EditPropertyAction extends PropertyAction {
 
 	editAction(client: ApiClient<unknown>, userEntityId: string) {
 		const propertyId = WB_PROPERTIES[this.propertyName];
-		console.log(
-			"set",
-			propertyId,
-			"to",
-			this.newValue,
-			"from",
-			this.oldValue,
-			"original",
-			this.originalValue,
-			"user",
-			userEntityId
-		);
-
 		const entityId = this.parseElementId(this.elementId);
-		const updateClaimAction: UpdateClaimModel = {
-			property: propertyId,
-			newValue: this.newValue,
-			oldValue: this.originalValue,
-		};
+		return client.user.complete("Q30", [entityId], true);
+	}
 
-		return client.entity.updateClaim(entityId, updateClaimAction);
+	static mergedEditAction(
+		client: ApiClient<unknown>,
+		userEntityId: string,
+		actions: EditPropertyAction[]
+	) {
+		const actionMap: any = {};
+		actions.forEach((action) => {
+			const key = action.propertyName + action.newValue;
+			if (actionMap[key] === undefined) actionMap[key] = [];
+			actionMap[key].push(action);
+		});
+
+		console.log("action map", actionMap);
+
+		const mergedActions: Array<() => Promise<any>> = [];
+		Object.keys(actionMap).forEach((key) => {
+			const unmergedActions: Array<EditPropertyAction> = actionMap[key],
+				entityIds = unmergedActions.map((action) =>
+					action.parseElementId(action.elementId)
+				);
+
+			const actionFunction = () =>
+				client.user.complete("Q30", entityIds, unmergedActions[0].newValue);
+			if ((key = "complete")) mergedActions.push(actionFunction);
+			else throw new Error("Not implemented yet");
+		});
+		return mergedActions;
 	}
 
 	getEditAction(client: ApiClient<unknown>, userEntityId: string): EditAction {
 		if (this.hasImpact())
 			return () => this.editAction(client, userEntityId) as any;
+		console.log("no impact");
 		return () => Promise.resolve();
 	}
 

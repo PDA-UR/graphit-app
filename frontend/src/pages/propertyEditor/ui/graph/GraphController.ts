@@ -17,6 +17,7 @@ import { EditPropertyAction } from "../../../../shared/extensions/undo/actions/E
 import { CompositeAction } from "../../../../shared/extensions/undo/actions/CompositeAction";
 import { SaveButtonEvents } from "../saveButton/SaveButtonView";
 import { ApiClient } from "../../../../shared/client/ApiClient";
+import { PropertyAction } from "../../../../shared/extensions/undo/actions/PropertyAction";
 
 export class GraphController {
 	private readonly graphView: GraphView;
@@ -163,14 +164,19 @@ export class GraphController {
 	private onSaveButtonClick = () => {
 		const actions = this.graphView.getWikibaseActions();
 		console.log("actions", actions);
-		const editActions = actions.getActions().map((action) => {
-			return action.getEditAction(this.api, this.userEntityId);
-		});
+		const individualActions = actions.getActions();
+		const mergedActions = EditPropertyAction.mergedEditAction(
+			this.api,
+			this.userEntityId,
+			individualActions as EditPropertyAction[] // TODO: check other
+		);
 
 		// TODO: Enable later when it was tested
-		return;
+		console.log("merged actions", mergedActions);
+		// return;
 
-		const executions = editActions.map((action) => action());
+		const executions = mergedActions.map((action) => action());
+		console.log("executions", executions);
 
 		Promise.all(executions)
 			.then((results) => {
@@ -182,6 +188,6 @@ export class GraphController {
 			.finally(() => {
 				console.log("finally");
 			});
-		console.log("editActions", editActions);
+		// console.log("editActions", editActions);
 	};
 }

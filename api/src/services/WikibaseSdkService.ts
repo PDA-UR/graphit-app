@@ -41,6 +41,29 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return { data };
 	}
 
+	async getClaims(credentials: Credentials, id: EntityId): Promise<any> {
+		const wikibaseResponse = await this.getEntities(credentials, [id]),
+			entities = wikibaseResponse.data.entities,
+			entity = entities[id];
+
+		return entity.claims;
+	}
+
+	async getClaim(
+		credentials: Credentials,
+		entityId: EntityId,
+		claimId: string
+	) {
+		try {
+			const claims = await this.getClaims(credentials, entityId),
+				claim = claims[claimId];
+			this.logger.info(claims, claim);
+			return claim;
+		} catch {
+			return undefined;
+		}
+	}
+
 	async getWikibasePageContent(
 		credentials: Credentials,
 		title: string

@@ -1,4 +1,5 @@
-import { Enum, Optional, Pattern, Property, Required } from "@tsed/schema";
+import { Enum, Optional, Property } from "@tsed/schema";
+import { Qualifiers, SetClaim } from "./SetClaimModel";
 
 // wbEdit.claim.create({
 //     id: 'Q4115189',
@@ -14,19 +15,7 @@ import { Enum, Optional, Pattern, Property, Required } from "@tsed/schema";
 //     ]
 //   })
 
-export type Qualifiers = Record<string, string>;
-
-export const entityPattern = /[PQ]\d{1,5}/;
-
-export class CreateClaim {
-	@Required()
-	@Pattern(entityPattern)
-	property: string;
-
-	@Required()
-	@Property()
-	value: string;
-
+export class CreateClaim extends SetClaim {
 	@Optional()
 	@Enum("preferred", "normal", "deprecated")
 	rank: string;

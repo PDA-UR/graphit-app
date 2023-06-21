@@ -7,3 +7,4 @@ export * from "./ClaimController";
 export * from "./EntityController";
 export * from "./ExampleController";
 export * from "./SparqlController";
+export * from "./UserController";

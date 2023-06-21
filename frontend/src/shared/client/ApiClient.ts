@@ -305,7 +305,22 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
-     * @description Create a claim
+     * @description Retrieve all claims for the given entity
+     *
+     * @tags Entity
+     * @name Claims
+     * @request GET:/api/entity/{id}/claims
+     */
+    claims: (id: string, params: RequestParams = {}) =>
+      this.request<Record<string, any>, string>({
+        path: `/api/entity/${id}/claims`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a claim (fails if it already exists)
      *
      * @tags Entity
      * @name CreateClaim
@@ -321,7 +336,7 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
-     * @description Update a claim
+     * @description Update a claim (fails if it doesn't exist)
      *
      * @tags Entity
      * @name UpdateClaim
@@ -413,6 +428,22 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     userGraph: (params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/sparql/userGraph`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+  };
+  user = {
+    /**
+     * @description Set an item as completed or uncompleted
+     *
+     * @tags User
+     * @name Complete
+     * @request POST:/api/user/{userId}/completed/{entityIds}/set/{isCompleted}
+     */
+    complete: (userId: string, entityIds: any[], isCompleted: boolean, params: RequestParams = {}) =>
+      this.request<Record<string, any>, string>({
+        path: `/api/user/${userId}/completed/${entityIds}/set/${isCompleted}`,
         method: "POST",
         format: "json",
         ...params,

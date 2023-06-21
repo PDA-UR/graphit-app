@@ -29,6 +29,7 @@ async function main() {
 		console.log(userInfo);
 
 		const elements = await wikibaseClient.getUserGraph();
+		console.log(elements);
 
 		const propertyModalController = new PropertyModalController();
 		const toolbarController = new ToolbarViewController();

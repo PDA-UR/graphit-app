@@ -7,9 +7,9 @@ export const WB_PROPERTIES_PROD = {
 };
 
 export const WB_PROPERTIES_DEV = {
-	dependsOn: "P3",
-	class: "P4",
-	image: "P6",
-	completed: "P2",
-	interested: "P5",
+	dependsOn: "P1",
+	class: "P2",
+	image: "P9",
+	completed: "P12",
+	interested: "P23",
 };
