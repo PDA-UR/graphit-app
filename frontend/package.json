@@ -4,8 +4,9 @@
 	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "DEV=true PROD=false vite build --mode development --watch",
-		"dev:noServer": "NO_SERVER=true DEV=true PROD=false vite --mode development",
+		"dev": "vite build --mode development --watch",
+		"dev:noServer": "NO_SERVER=true vite --mode development",
+		"dev:production": "vite build --mode production --watch",
 		"build": "tsc && vite build --mode production",
 		"build:dev": "tsc && vite build --mode development",
 		"build:test": "tsc && vite build",

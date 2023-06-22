@@ -5,7 +5,8 @@
 	"scripts": {
 		"build": "npm run build --workspace=api --workspace=frontend",
 		"start": "npm run start --workspace=api & npm run start --workspace=frontend",
-		"dev": "npm run dev --workspace=api & npm run dev --workspace=frontend"
+		"dev": "npm run dev --workspace=api & npm run dev --workspace=frontend",
+		"dev:production": "npm run dev:production --workspace=api & npm run dev:production --workspace=frontend"
 	},
 	"author": "PDA",
 	"license": "MIT",

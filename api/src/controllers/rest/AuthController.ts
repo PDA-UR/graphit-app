@@ -70,7 +70,7 @@ export class Auth {
 				return new BadRequest("User item ID is not set in user profile.");
 			}
 		} catch (e) {
-			this.logger.error("Login error", existingSession, e.message);
+			this.logger.trace("Login error", existingSession, e.message);
 			existingSession.username = "";
 			existingSession.password = "";
 			return new Unauthorized("Invalid credentials");
