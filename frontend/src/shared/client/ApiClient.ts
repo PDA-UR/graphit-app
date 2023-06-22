@@ -439,11 +439,26 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      *
      * @tags User
      * @name Complete
-     * @request POST:/api/user/{userId}/completed/{entityIds}/set/{isCompleted}
+     * @request POST:/api/user/{userId}/completed/{entityId}/set/{isCompleted}
      */
-    complete: (userId: string, entityIds: any[], isCompleted: boolean, params: RequestParams = {}) =>
+    complete: (userId: string, entityId: string, isCompleted: boolean, params: RequestParams = {}) =>
       this.request<Record<string, any>, string>({
-        path: `/api/user/${userId}/completed/${entityIds}/set/${isCompleted}`,
+        path: `/api/user/${userId}/completed/${entityId}/set/${isCompleted}`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Set an item as interestd or uninterested in
+     *
+     * @tags User
+     * @name Interest
+     * @request POST:/api/user/{userId}/interested/{entityId}/set/{isInterested}
+     */
+    interest: (userId: string, entityId: string, isInterested: boolean, params: RequestParams = {}) =>
+      this.request<Record<string, any>, string>({
+        path: `/api/user/${userId}/interested/${entityId}/set/${isInterested}`,
         method: "POST",
         format: "json",
         ...params,

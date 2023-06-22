@@ -37,38 +37,21 @@ export class EditPropertyAction extends PropertyAction {
 	}
 
 	editAction(client: ApiClient<unknown>, userEntityId: string) {
-		const propertyId = WB_PROPERTIES[this.propertyName];
 		const entityId = this.parseElementId(this.elementId);
-		return client.user.complete("Q30", [entityId], true);
-	}
-
-	static mergedEditAction(
-		client: ApiClient<unknown>,
-		userEntityId: string,
-		actions: EditPropertyAction[]
-	) {
-		const actionMap: any = {};
-		actions.forEach((action) => {
-			const key = action.propertyName + action.newValue;
-			if (actionMap[key] === undefined) actionMap[key] = [];
-			actionMap[key].push(action);
-		});
-
-		console.log("action map", actionMap);
-
-		const mergedActions: Array<() => Promise<any>> = [];
-		Object.keys(actionMap).forEach((key) => {
-			const unmergedActions: Array<EditPropertyAction> = actionMap[key],
-				entityIds = unmergedActions.map((action) =>
-					action.parseElementId(action.elementId)
-				);
-
-			const actionFunction = () =>
-				client.user.complete("Q30", entityIds, unmergedActions[0].newValue);
-			if ((key = "complete")) mergedActions.push(actionFunction);
-			else throw new Error("Not implemented yet");
-		});
-		return mergedActions;
+		if (this.propertyName === "completed")
+			return client.user.complete(
+				userEntityId,
+				entityId,
+				this.newValue === "true"
+			);
+		else if (this.propertyName === "interested")
+			return client.user.interest(
+				userEntityId,
+				entityId,
+				this.newValue === "true"
+			);
+		else console.log("not implemented yet:", this.propertyName);
+		return Promise.resolve();
 	}
 
 	getEditAction(client: ApiClient<unknown>, userEntityId: string): EditAction {
@@ -79,6 +62,6 @@ export class EditPropertyAction extends PropertyAction {
 	}
 
 	hasImpact(): boolean {
-		return this.newValue !== this.oldValue;
+		return this.newValue !== this.originalValue;
 	}
 }

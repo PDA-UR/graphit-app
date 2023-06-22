@@ -165,22 +165,25 @@ export class GraphController {
 		const actions = this.graphView.getWikibaseActions();
 		console.log("actions", actions);
 		const individualActions = actions.getActions();
-		const mergedActions = EditPropertyAction.mergedEditAction(
-			this.api,
-			this.userEntityId,
-			individualActions as EditPropertyAction[] // TODO: check other
+
+		const executions = individualActions.map((action) =>
+			action.getEditAction(this.api, this.userEntityId)()
 		);
-
-		// TODO: Enable later when it was tested
-		console.log("merged actions", mergedActions);
-		// return;
-
-		const executions = mergedActions.map((action) => action());
-		console.log("executions", executions);
 
 		Promise.all(executions)
 			.then((results) => {
 				console.log("results", results);
+				this.graphView.clearActions();
+				// TODO: Bake changes into cy elements (update data.originalValue)
+				this.graphModel.forEach((element) => {
+					// set data.original value to data but without the existing originalValue
+					element.data.originalValue = Object.fromEntries(
+						Object.entries(element.data).filter(
+							([key, value]) => key !== "originalValue"
+						)
+					);
+				});
+				this.graphView.updateData(this.graphModel);
 			})
 			.catch((error) => {
 				console.log("error", error);

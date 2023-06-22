@@ -39,60 +39,51 @@ export class ActionExecuterService {
 		property: "completed" | "interested",
 		doToggleOn: boolean,
 		userId: string,
-		targetEntityIds: string[],
+		targetEntityId: string,
 		credentials: Credentials,
 		wikibaseSdk: any
 	) {
 		const propertyId = this.propertyMap[property];
 		const actions: any[] = [];
-
 		const existingClaims: any[] =
 			(await wikibaseSdk.getClaim(credentials, userId, propertyId)) ?? [];
 
-		this.logger.info(userId);
-		this.logger.info("targets " + doToggleOn);
-		this.logger.info(targetEntityIds);
-		targetEntityIds.forEach(async (entityId) => {
-			// if a claim already exists for this property
-			const existingClaim = existingClaims.find((claim) => {
-				return claim.mainsnak.datavalue.value.id === entityId;
-			});
-			if (existingClaim) {
-				this.logger.info("existing claim");
-				if (doToggleOn) return; // no need to create an new relation since it already exists
-				// remove the claim since its marked as incomplete
-				const guid = existingClaim.id;
-				const action = () =>
-					this.execute(
-						"claim",
-						"remove",
-						{
-							guid,
-						},
-						credentials
-					);
-				actions.push(action);
-			} else if (doToggleOn) {
-				this.logger.info(
-					"creating claim " + userId + " " + propertyId + " " + entityId
-				);
-				const action = () =>
-					this.execute(
-						"claim",
-						"create",
-						{ id: userId, property: propertyId, value: entityId },
-						credentials
-					);
-				actions.push(action);
-			} else {
-				this.logger.info(
-					"cant remove completion since it does not exist " +
-						entityId +
-						" " +
-						userId
-				);
-			}
+		// if a claim already exists for this property
+		const existingClaim = existingClaims.find((claim) => {
+			return claim.mainsnak.datavalue.value.id === targetEntityId;
 		});
+		if (existingClaim) {
+			this.logger.info("existing claim");
+			if (doToggleOn) return; // no need to create an new relation since it already exists
+			// remove the claim since its marked as incomplete
+			const guid = existingClaim.id;
+			const action = () =>
+				this.execute(
+					"claim",
+					"remove",
+					{
+						guid,
+					},
+					credentials
+				);
+			actions.push(action);
+		} else if (doToggleOn) {
+			const action = () =>
+				this.execute(
+					"claim",
+					"create",
+					{ id: userId, property: propertyId, value: targetEntityId },
+					credentials
+				);
+			actions.push(action);
+		} else {
+			this.logger.info(
+				"cant remove completion since it does not exist " +
+					targetEntityId +
+					" " +
+					userId
+			);
+		}
 
 		const runningActions = actions.map(async (a) => await a());
 		const r = await Promise.all(runningActions);

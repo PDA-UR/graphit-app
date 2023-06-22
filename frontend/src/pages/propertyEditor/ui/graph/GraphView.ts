@@ -137,6 +137,10 @@ export class GraphView extends View {
 		}
 	}
 
+	updateData(model: GraphModel) {
+		this.cy.json({ elements: model });
+	}
+
 	setGrabMode() {
 		this.toggleGrabMode(true);
 	}
