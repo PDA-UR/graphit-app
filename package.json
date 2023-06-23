@@ -14,6 +14,11 @@
 		"frontend"
 	],
 	"dependencies": {
+		"cytoscape-bubblesets": "^3.2.0",
+		"cytoscape-layers": "^2.3.1",
 		"wikibase-sdk": "^8.1.1"
+	},
+	"devDependencies": {
+		"typescript": "^5.1.3"
 	}
 }

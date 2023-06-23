@@ -15,13 +15,17 @@ export class MainViz {
         this.graphModel = elements;
         this.mainGraph = new MainGraph(
             this.graphModel,
-            document.getElementById("app")!,
+            document.getElementById("app")!, // t is undefined -> hier?
         );
         this.menuController = new MenuEventController();
 
-        // ---- EVENTS -------------------------------------
+        // ---- MENU - EVENTS ----
         eventBus.on(
             "layoutChange", this.mainGraph.switchLayout
+        );
+        
+        eventBus.on(
+            "toggleChange", this.mainGraph.toggleBubbleSet
         );
 
     }
