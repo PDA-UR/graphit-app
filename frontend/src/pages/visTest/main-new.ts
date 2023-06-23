@@ -24,8 +24,11 @@ async function main() {
 	}
 	const elements = await wikibase.getUserGraph();
 	const parents = await wikibase.getCategories();
+	const resources = await wikibase.getResource();
 
-	const graph = parents.concat(elements);
+	//console.log(resources);
+
+	const graph = parents.concat(elements).concat(resources);
 
 	const mainViz = new MainViz(graph);
 }

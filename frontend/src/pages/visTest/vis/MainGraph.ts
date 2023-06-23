@@ -45,12 +45,20 @@ const DEFAULT_OPTIONS: GraphViewOptions = {
             'background-color': '#444444',
             }
         },
+        // For resource-nodes:
+        { selector:'.node-resource',
+        style: {
+            'background-color': 'orange', //Change that
+            'shape': 'round-rectangle'
+            }
+        },
 
         // EDGES:
         { selector: 'edge',
         style: {
             'target-arrow-shape': 'triangle',
-            'curve-style': 'straight'
+            'curve-style': 'straight',
+            'events': 'no',
             }
         },
         // Highlight outgoing edges on node selection
@@ -64,13 +72,24 @@ const DEFAULT_OPTIONS: GraphViewOptions = {
             'line-gradient-stop-colors': ['black', '#444444'],
             }
         },
+        // For resource-edge:
+        { selector:'.edge-resource',
+        style: {
+            'line-style': 'dashed',
+            'line-dash-pattern': [6, 3],
+            'line-color': 'orange',
+            'target-arrow-shape': 'tee',
+            'target-arrow-color': 'orange',
+            }
+        },
 
         // PARENTS:
         { selector: ':parent',
         style: {
             'background-opacity': 0.333,
             'border-color': 'blue',
-            'label': 'data(id)'
+            'label': 'data(id)',
+            'events': 'yes',
             }
         },
         // hide parents in graph
@@ -78,10 +97,11 @@ const DEFAULT_OPTIONS: GraphViewOptions = {
         style: {
             'background-opacity': 0,
             'border-width': 0,
-            'label': ''
+            'label': '',
+            'events': 'no',
             }
         },
-        { selector: '.ubbleSet',
+        { selector: '.bubbleSet',
         style: {
             'background-color': 'blue',
             'background-opacity': 0.2,
@@ -110,7 +130,9 @@ export class MainGraph {
             elements: model,
             ...DEFAULT_OPTIONS,
         });
-        this.cy.$("edge").unselectify(); // Make edges immutable
+        this.cy.$("edge").lock(); // Make edges immutable
+        this.cy.$("node[url]").toggleClass("node-resource", true);
+        this.cy.$("node[url]").connectedEdges().toggleClass("edge-resource", true);
 
         const graphEventConroller = new GraphEventController(this.cy);
         this.initGraphEvents();
@@ -176,6 +198,7 @@ export class MainGraph {
     private toggleParentVisibility(show:Boolean) {
         const parents = this.cy.$(":parent");
         if(show) {
+            //this.cy.$(":parent").unselectify();
             this.cy.$(":parent").toggleClass("hide", false);
         } else if (!show) {
             this.cy.$(":parent").toggleClass("hide", true);
@@ -210,7 +233,7 @@ export class MainGraph {
             const childs = parent.descendants();
             this.bb.addPath(childs, childs.edgesWith(childs), null);
         });
-        /* EXAMPLE 
+        /* EXAMPLE -> STYLE: events: yes
         bb.addPath(atp, null, cy.nodes().diff(atp).left, {
           virtualEdges: true,
           style: {

@@ -124,13 +124,12 @@ export class SparqlParser {
 		};
 
 		for (const variable of vars) {
-			// -> sourceLabel has no value
 			if (!variable.startsWith(prefix)) continue;
 			let key = variable.slice(prefix.length); // slices of e.g. "source" from sourceLabel
 			if (key === "") key = "id";
 			key = key.charAt(0).toLowerCase() + key.slice(1);
 
-			// To make parents work
+			// To make parents work from inside of a node
 			if (
 				variable == "sourceNodeClassLabel" ||
 				variable == "dependencyNodeClassLabel"
@@ -193,5 +192,6 @@ export class SparqlParser {
 		}
 
 		return parent;
-	}
+	}	
+
 }
