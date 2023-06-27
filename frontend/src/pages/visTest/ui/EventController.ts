@@ -7,12 +7,16 @@ export class MenuEventController {
     
     private readonly $container : HTMLDivElement;
     private readonly $dropBtn : HTMLSelectElement;
-    private readonly $toggleBtn : HTMLInputElement;
+    private readonly $searchBtn : HTMLButtonElement;
+    private readonly $toggleBtn1 : HTMLInputElement;
+    private readonly $toggleBtn2 : HTMLInputElement;
 
     constructor() {
         this.$container = document.getElementById("toolbar") as HTMLDivElement;
         this.$dropBtn = document.getElementById("layout-options") as HTMLSelectElement;
-        this.$toggleBtn = document.getElementById("toggle") as HTMLInputElement;
+        this.$searchBtn = document.getElementById("searchBtn") as HTMLButtonElement;
+        this.$toggleBtn1 = document.getElementById("toggle1") as HTMLInputElement;
+        this.$toggleBtn2 = document.getElementById("toggle2") as HTMLInputElement;
         this.$initListeners();
     }
 
@@ -20,7 +24,9 @@ export class MenuEventController {
     private $initListeners() {
         this.$dropBtn.selectedIndex = 0; // Change Dropdown back to default value
         this.$dropBtn.addEventListener("change", this.onLayoutChange);
-        this.$toggleBtn.addEventListener("click", this.onToggleButton);
+        this.$searchBtn.addEventListener("click", this.onSearch);
+        this.$toggleBtn1.addEventListener("click", this.onToggleBubbleSet);
+        this.$toggleBtn2.addEventListener("click", this.onTogglePacking);
     };
 
     // ---- EVENTS ----
@@ -31,9 +37,18 @@ export class MenuEventController {
         eventBus.emit("layoutChange", layoutVar);
     };
 
-    private onToggleButton = (e:any) => {
+    private onToggleBubbleSet = (e:any) => {
         var toggleVar = e.target;
-        eventBus.emit("toggleChange", toggleVar);
+        eventBus.emit("toggleBubble", toggleVar);
+    };
+
+    private onTogglePacking = (e:any) => {
+        var toggleVar = e.target;
+        eventBus.emit("togglePacking", toggleVar);
+    }
+
+    private onSearch = (e:any) => {
+        eventBus.emit("searchNode", e)
     };
 
 }
@@ -84,8 +99,7 @@ export class GraphEventController {
     // Event to open an Item-Page on doubleclick
     private onDoubleClick = (e:any) => {
         const target = e.target;
-        const timestamp = e.timestamp;
-        eventBus.emit("openItemPage", target, timestamp);
+        eventBus.emit("openItemPage", target);
     }
 
 }

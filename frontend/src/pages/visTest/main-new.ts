@@ -4,6 +4,8 @@ import { getCredentials } from "../../shared/util/GetCredentials";
 import { createApiClient } from "../../shared/util/getApiClient";
 import "./style.css";
 import { MainViz } from "./vis/MainViz";
+import * as fs from "fs";
+
 
 async function main() {
 	/*const credentials = {
@@ -26,10 +28,10 @@ async function main() {
 	const parents = await wikibase.getCategories();
 	const resources = await wikibase.getResource();
 
-	//console.log(resources);
+	const graph = parents.concat(elements)//.concat(resources);
 
-	const graph = parents.concat(elements).concat(resources);
-
+	//const graph = elements.concat(resources);
+	//console.table(graph);
 	const mainViz = new MainViz(graph);
 }
 

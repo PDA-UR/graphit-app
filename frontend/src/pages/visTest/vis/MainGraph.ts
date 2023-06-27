@@ -1,16 +1,20 @@
 import cytoscape from "cytoscape";
 import fcose from "cytoscape-fcose";
-// import dblclick from "cytoscape-dblclick"; //brauchts nicht
+import cise from "cytoscape-cise";
+import layoutUtilities from "cytoscape-layout-utilities";
 import { BubbleSetsPlugin }  from "cytoscape-bubblesets"; // https://github.com/upsetjs/cytoscape.js-bubblesets
 import { GraphViewOptions } from "../../propertyEditor/ui/graph/GraphView";
 import { GraphEventController } from "../ui/EventController";
 import { eventBus } from "../../propertyEditor/global/EventBus";
 import { ElementDefinition } from "cytoscape";
 import * as layoutOps from "../design/gLayout";
+// https://stackoverflow.com/questions/59002953/how-to-get-cytoscape-to-place-separate-node-groups-closer-and-avoid-overlapping
 
+// Register extensions:
 cytoscape.use(fcose);
+cytoscape.use(cise);
+cytoscape.use(layoutUtilities); //Make toggleables
 //cytoscape.use(BubbleSets);
-//cytoscape.use(dblclick);
 
 // Bundles all changes to the Graph + Layout
 
@@ -50,6 +54,14 @@ const DEFAULT_OPTIONS: GraphViewOptions = {
         style: {
             'background-color': 'orange', //Change that
             'shape': 'round-rectangle'
+            }
+        },
+        // Highlight a searched node
+        { selector: '.searched',
+        style: {
+            'border-color': "red",
+            'border-width': 3,
+            'border-style': "dashed",
             }
         },
 
@@ -112,7 +124,13 @@ const DEFAULT_OPTIONS: GraphViewOptions = {
     ]
 };
 
-const HIGHLIGHT_CLASSES = ['.highlight-edge-out'];
+const LAYOUT_UTIL_OPS = {
+    desiredAspectRatio: 1,
+    polynominalGridSizFactor: 1,
+    utilityFunction: 1,
+    componentSpacing: 0,
+}
+
 
 export class MainGraph {
     private readonly cy: any;
@@ -124,20 +142,30 @@ export class MainGraph {
         model: ElementDefinition[],
         $container: HTMLElement,
     ) {
+        // INIT cytoscape
         this.$container = $container;
         this.cy = cytoscape({
             container: this.$container,
             elements: model,
             ...DEFAULT_OPTIONS,
         });
+        
+        /* SET FURTHER GRAPH OPTIONS */
         this.cy.$("edge").lock(); // Make edges immutable
+        // Style edges to resources
         this.cy.$("node[url]").toggleClass("node-resource", true);
         this.cy.$("node[url]").connectedEdges().toggleClass("edge-resource", true);
 
+        // Events
         const graphEventConroller = new GraphEventController(this.cy);
         this.initGraphEvents();
-        this.bb = new BubbleSetsPlugin(this.cy);
+
+        // Init extensions and their options
+        this.bb = new BubbleSetsPlugin(this.cy); 
     };
+    
+
+    // ---- Graph Events ----
 
     private initGraphEvents() {
         eventBus.on(
@@ -146,12 +174,13 @@ export class MainGraph {
         eventBus.on(
             "click", this.highlightClicked
         );
+        eventBus.on(
+            "searchNode", this.searchForNode
+        )
     }
 
-    // ---- Graph Events ----
-
     // Open-Item-Page-Event
-    public openItemPage = (target:any, timestamp:Date) => {
+    public openItemPage = (target:any) => {
         if(!this.hasFiredEvent) {
             console.log("dbclick on", target);
             if(target.isNode()) {
@@ -161,7 +190,7 @@ export class MainGraph {
         } else this.hasFiredEvent = false;
     };
 
-    // Highlight Nodes & Edges on selection -> use batch for simple styleing functions 
+    // Highlight Nodes & Edges on selection -> use batch for many simple styling functions 
     // cy.batch(function(){ });
     private highlightClicked = (target:any) => {
         target.select();
@@ -190,6 +219,25 @@ export class MainGraph {
                 this.toggleParentVisibility(false);
                 this.cy.layout(layoutOps.concOptions).run();
                 break;
+            case "cise":
+                // WORKS -> TODO: IMPROVE
+                this.toggleParentVisibility(true);
+                // clusters = [[c1.1, c1.2], [c2.1, c2.2], ...]
+                const parents = this.cy.$(":parents");
+                let clusters = [] as Array<any>;
+                parents.forEach((parent: { descendants: () => any[]; }) => {
+                    let p = [] as Array<string>;
+                    parent.descendants().forEach(child => {
+                            p.push(child.id());
+                    });
+                    clusters.push(p);
+                });
+                console.log(clusters);
+                this.cy.layout({
+                    name: 'cise',
+                    clusters: clusters,
+                    nodeSeparation: 20,
+                }).run();
             default:
                 this.cy.layout(DEFAULT_OPTIONS).run();
         }
@@ -231,16 +279,46 @@ export class MainGraph {
             // PROBLEM: Funktioniert noch nicht mit allen
             console.log("bb-parents", parent);
             const childs = parent.descendants();
-            this.bb.addPath(childs, childs.edgesWith(childs), null);
+            this.bb.addPath(childs, childs.edgesWith(childs), null, {
+                virtualEdges: true,
+                style: {
+                    fill: 'grey',
+                    opacity: '0.333',
+                    stroke: 'blue',
+                    pointerEvents: 'yes',
+                    // NOTE: Labels not supported -> use layers plugin
+                }
+            });
         });
-        /* EXAMPLE -> STYLE: events: yes
-        bb.addPath(atp, null, cy.nodes().diff(atp).left, {
-          virtualEdges: true,
-          style: {
-            fill: 'rgba(255, 0, 0, 0.2)',
-            stroke: 'red',
-        },*/
-        // NOTE: Labels müssten mit dem Layer plugin erstellt werden, wird sonst nicht unterstützt
+    }
+
+    // If a node is search, zoom to it and highight it shortly
+    private searchForNode = (e:any) => {
+        const input = (document.getElementById("searchInput") as HTMLInputElement).value;
+        if(!input){
+            console.log("nothing entered");
+            return;
+        }
+        let filter = this.cy.$("node[label = '" + input + "']");
+        //const filter = this.cy.$("node[label = '" + input + "']");
+        let el = this.cy.getElementById(filter.id());
+        if(el.id() == undefined){
+            console.log("Node doesn't exist");
+            return;
+        }
+        // zoom to position of node
+        this.cy.zoom({
+            level: 1.5,
+            position: el.position(),
+        });
+        el.flashClass("searched", 2000); // hightlight node for 2000ms
+    }
+
+    // Can't really see a difference with this
+    public togglePacking = (toggleVar:any) => {
+        if(toggleVar.checked) {
+            this.cy.layout(layoutOps.fcoseOptions).run();
+        } else return;
     }
 
 }

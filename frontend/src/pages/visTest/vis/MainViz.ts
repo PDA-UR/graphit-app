@@ -25,7 +25,11 @@ export class MainViz {
         );
         
         eventBus.on(
-            "toggleChange", this.mainGraph.toggleBubbleSet
+            "toggleBubble", this.mainGraph.toggleBubbleSet
+        );
+
+        eventBus.on(
+            "togglePacking", this.mainGraph.togglePacking
         );
 
     }
