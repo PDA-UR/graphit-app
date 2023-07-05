@@ -13,5 +13,5 @@ Frontend + API server for the GraphIT project.
       1. navigate to /api and run `npm run dev`
       2. open a second Terminal and navigate to /frontend. Run `npm run dev` there as well
       3. Alternative: replace the dev script in the package.json file (root) with `"start npm run dev --workspace=api & start npm run dev --workspace=frontend"`
-      4. Alternative: run the app on `wsl` 
+      4. Alternative: run the app on `wsl` (not tested)
    2. visit (http://localhost:8081/app for the webapp, http://localhost:8081/doc for the api docs)
