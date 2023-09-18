@@ -432,21 +432,6 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         format: "json",
         ...params,
       }),
-
-      /**
-       * @description Retrieve all resouces and their links
-       * 
-       * @tags Sparql
-       * @name Resources
-       * @request POST:/api/sparql/resources
-       */
-      resources: (params: RequestParams = {}) => 
-        this.request<SparqlResultModel, string>({
-          path: `/api/sparql/resources`,
-          method: "POST",
-          format: "json",
-          ...params,
-      }),
   };
   user = {
     /**

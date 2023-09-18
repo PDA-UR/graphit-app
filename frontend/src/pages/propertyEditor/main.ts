@@ -16,15 +16,14 @@ import { getCircularReplacer } from "../selectionTools/global/DataManager";
 async function main() {
 	const credentials = getCredentials();
 
-	const isProduction = getEnvVar("PROD");
 	console.log(import.meta.env);
-	console.log("isProduction", isProduction);
 	const parser = new SparqlParser();
 
 	const api = createApiClient();
 	const wikibaseClient = new WikibaseClient(credentials, api);
 
 	try {
+		console.log("Logging in...", credentials, api);
 		const userInfo = await wikibaseClient.login();
 		console.log(userInfo);
 
