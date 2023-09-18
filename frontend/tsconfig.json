@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "Node",
@@ -16,6 +15,8 @@
     "skipLibCheck": true,
     "outDir": "../out/frontend/dist", // Specify the output directory for the compiled files
     "sourceMap": true, // Generate source map files (set to false to disable source map generation)
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     // ... other compiler options
   },
   "include": ["src"],

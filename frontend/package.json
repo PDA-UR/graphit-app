@@ -22,10 +22,12 @@
 		"@types/node": "^18.14.1",
 		"@types/point-in-polygon": "^1.1.1",
 		"@types/tough-cookie": "^4.0.2",
+		"@types/uuid": "^9.0.4",
 		"typescript": "^4.9.5",
 		"vite": "^4.1.0"
 	},
 	"dependencies": {
+		"@lit-labs/context": "^0.4.1",
 		"@types/qs": "^6.9.7",
 		"axios": "^1.4.0",
 		"axios-cookiejar-support": "^4.0.6",
@@ -40,8 +42,11 @@
 		"cytoscape-node-html-label": "^1.2.2",
 		"dotenv": "^16.0.3",
 		"events": "^3.3.0",
+		"exome": "^2.0.2",
+		"lit": "^2.8.0",
 		"point-in-polygon": "^1.1.0",
-		"tough-cookie": "^4.1.3"
+		"tough-cookie": "^4.1.3",
+		"uuid": "^9.0.1"
 	},
 	"description": "The frontend of the GraphIT app.",
 	"main": "vite.config.js",

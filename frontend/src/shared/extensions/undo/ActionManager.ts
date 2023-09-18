@@ -31,11 +31,7 @@ export class ActionManager {
 	getWikibaseActions(): CompositeAction<WikibaseAction> {
 		console.log("compressing", this.undoStack);
 		return this.undoStack
-			.filter(
-				(a) =>
-					a instanceof WikibaseAction ||
-					a instanceof CompositeAction<WikibaseAction>
-			)
+			.filter((a) => a instanceof WikibaseAction || a instanceof Object)
 			.reduce(
 				this.compressReducer,
 				new CompositeAction([])
