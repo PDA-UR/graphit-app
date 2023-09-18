@@ -58,6 +58,36 @@ SELECT ?itemLabel
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".}
 }`;
 
+// Query for retrieving ALL Resources and their links
+const resourceQuery = (
+  userId = "Q157"
+) => `# Retrieve all Resources and Items their linked to
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+PREFIX wd: <https://graphit.ur.de/entity/>
+SELECT ?source ?sourceLabel ?dependency ?dependencyLabel 
+       ?dependencyUrl ?dependencyResourceType ?dependencyRypeLabel
+       ?dependencyCompleted ?dependencyInterested
+WHERE {
+  
+  # Retrieve Items and their linked Resources
+  ?source wdt:P21 ?dependency. 
+  
+  # Retrieve the url(P20) of the Resource
+  ?dependency wdt:P20 ?dependencyUrl.
+  
+  # Retrieve the instance of (P3) the Resource (e.g. Article, Code example)
+  ?dependency wdt:P3 ?dependencyResourceType.
+  
+  # Check if the dependent node has completed (Property P12)
+  BIND(EXISTS { wd:${userId} wdt:P12 ?dependency } AS ?dependencyCompleted)
+  
+  # Check if ${userId} is interested in the dependent node (Property P23)
+  BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
+  
+  service wikibase:label { bd:serviceParam wikibase:language "en" }
+}
+`;
+
 @Service()
 export class SparqlQueryTemplateService {
 	public getUserGraph(userId: string) {
@@ -67,4 +97,8 @@ export class SparqlQueryTemplateService {
 	public getCategoriesQuery() {
 		return categoriesQuery();
 	}
+
+  public getResources(userId: string) {
+    return resourceQuery(userId);
+  }
 }

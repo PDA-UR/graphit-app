@@ -13,7 +13,22 @@
       <option value="fcose" selected="selected">FCoSE</option>
       <option value="breadth">Breadthfirst</option>
       <option value="concentric">Concentric</option>
+      <option value="cise">CiSE</option>
     </select>
+
+    <!-- Search field -->
+    <div class="searchbar">
+      <input type="text" id="searchInput" placeholder="Search Node...">
+      <button type="button" id="searchBtn">Search</button>
+    </div>
+
+    <!-- Toggle Switch for BubbleSet -->
+    <label for="bubble" class="toggle"> Toggle BubbleSet </label>
+    <input type="checkbox" id ="toggle1">
+
+     <!-- Toggle Switch for Pack Components -->
+     <label for="pack" class="toggle"> Toggle Pack Components </label>
+     <input type="checkbox" id ="toggle2">
 
     <div id="app"></div>
     <script type="module" src="./main-new.ts"></script>

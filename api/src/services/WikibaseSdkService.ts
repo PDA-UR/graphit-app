@@ -128,4 +128,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		const query = this.templateService.getCategoriesQuery();
 		return this.query(credentials, query);
 	}
+
+	async getResources(
+		credentials: Credentials,
+		userId: string
+	): Promise<SparqlResult> {
+		const query = this.templateService.getResources(userId);
+		return this.query(credentials, query);
+	}
 }

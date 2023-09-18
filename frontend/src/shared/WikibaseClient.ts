@@ -45,4 +45,14 @@ export default class WikibaseClient {
 		const parents = this.sparqlParser.parseParents(results.data);
 		return parents;
 	}
+
+	async getResource(): Promise<ElementDefinition[]> {
+		const results = await this.api.sparql.resources();
+		const resources = this.sparqlParser.parsePairs(
+			["dependency", "source"],
+			"resource",
+			results.data
+		);
+		return resources;
+	}
 }

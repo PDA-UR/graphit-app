@@ -4,14 +4,24 @@
 export const fcoseOptions = {
     //https://github.com/iVis-at-Bilkent/cytoscape.js-fcose
     name: 'fcose',
-    quality: 'proof',
+    quality: 'default',
     radomize: false,
-    animate: false,
+    animate: true,
     fit: true, 
+    padding: 15,
     nodeDimensionsIncludeLabels: true,
-    uniformNodeDimensions: true, // for simple nodes (non-compound)
-    gravity: 5,
-    // packComponents: true, // needs: layout-utilities (test)
+    uniformNodeDimensions: false, // for simple nodes (non-compound)
+    packComponents: (document.getElementById("toggle2") as HTMLInputElement).checked,
+    // packComponents: true, // needs: layout-utilities (test), see no change
+    /*  Incremental Layout options */
+
+    idealEdgeLenght: 1,
+    gravity: 100,
+    gravityCompound: 2.5,
+    tile: true,
+    // Constraints: -> lock position of node with most outgoers (outdegree) to middle of parent
+    // -> parent.boundingbox()/width()/height()/ /2 -> position
+
 };
 
 // Needs el: "level" in json-object
@@ -39,7 +49,7 @@ export const concOptions2 = {
     concentric: function(node: any){
         return node.data("parent");
     },
-}
+};
 
 export const breadthOptions = {
     name: "breadthfirst",
