@@ -77,9 +77,10 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		});
 
 		const url = `${this.info.instance}/w/api.php?${urlParams.toString()}`;
-
+		this.logger.info("api url to fetch page content", url);
 		try {
 			const response = await fetch(url);
+			this.logger.info("response from page content", response);
 			const json = await response.json();
 			return json.parse.wikitext;
 		} catch (error) {

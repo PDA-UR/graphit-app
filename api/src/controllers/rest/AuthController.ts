@@ -48,17 +48,22 @@ export class Auth {
 		existingSession.username = credentials.username;
 		existingSession.password = credentials.password;
 
+		this.logger.info("Logging in as", existingSession);
 		const wbEdit = this.wikibaseEditService.getSessionData(existingSession);
 		const getAuthData = wbEdit.getAuthData();
 		try {
 			await getAuthData();
+			this.logger.info("Successfully logged in as", existingSession);
 			try {
 				const userItemId = await this.wikibaseSdkService.getUserItemId(
 					existingSession
 				);
 				if (userItemId == "")
 					return new BadRequest("User item ID is not set in user profile.");
-				this.logger.info("Successfully logged in as", existingSession);
+				this.logger.info(
+					"Successfully retrieved user info for",
+					existingSession
+				);
 				return {
 					...existingSession,
 					userItemId,
@@ -70,10 +75,10 @@ export class Auth {
 				return new BadRequest("User item ID is not set in user profile.");
 			}
 		} catch (e) {
-			this.logger.trace("Login error", existingSession, e.message);
+			this.logger.error("Login error", existingSession, e.message);
 			existingSession.username = "";
 			existingSession.password = "";
-			return new Unauthorized("Invalid credentials");
+			return new Unauthorized("Invalid credentials " + e.message);
 		}
 	}
 
