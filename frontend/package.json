@@ -29,6 +29,7 @@
 	"dependencies": {
 		"@lit-app/state": "^0.8.4",
 		"@lit-labs/context": "^0.4.1",
+		"@lit-labs/task": "^3.0.2",
 		"@types/qs": "^6.9.7",
 		"axios": "^1.4.0",
 		"axios-cookiejar-support": "^4.0.6",

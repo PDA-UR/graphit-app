@@ -15,12 +15,21 @@ export default class WikibaseClient {
 		this.api = api;
 	}
 
+	setCredentials(credentials: Credentials) {
+		this.credentials.username = credentials.username;
+		this.credentials.password = credentials.password;
+	}
+
 	async login(): Promise<any> {
 		const r = (await this.api.auth.login(this.credentials)) as any;
 		if (!r.username) {
 			throw new Error("Login failed: " + r.message);
 		}
 		return r;
+	}
+
+	async logout(): Promise<any> {
+		await this.api.auth.logout();
 	}
 
 	async getUserGraph(): Promise<ElementDefinition[]> {
@@ -47,6 +56,7 @@ export default class WikibaseClient {
 	}
 
 	async getResource(): Promise<ElementDefinition[]> {
+		// @ts-ignore
 		const results = await this.api.sparql.resources();
 		const resources = this.sparqlParser.parsePairs(
 			["dependency", "source"],

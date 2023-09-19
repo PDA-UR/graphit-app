@@ -12,8 +12,6 @@ const getCredentialsFromLocalStorage = (): Credentials | null => {
 	};
 };
 export const getCredentials = (): Credentials => {
-	const existignCredentials = getCredentialsFromLocalStorage();
-	if (existignCredentials) return existignCredentials;
 	const username = prompt("Enter your username");
 	if (!username) {
 		return getCredentials();
@@ -22,10 +20,6 @@ export const getCredentials = (): Credentials => {
 	if (!password) {
 		return getCredentials();
 	}
-
-	// store credentials in localStorage
-	localStorage.setItem("username", username);
-	localStorage.setItem("password", password);
 
 	return {
 		username,

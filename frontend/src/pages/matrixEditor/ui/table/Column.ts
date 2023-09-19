@@ -1,17 +1,15 @@
-import { LitElement, html, css, PropertyValueMap } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
-import { when } from "lit/directives/when.js";
 import {
 	MATRIX_PROPERTIES,
 	getWikibasePropertyById,
 } from "../../data/models/WikibasePropertyModel";
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
-import { ColumnItemModel } from "../../data/models/ColumnItemModel";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {

@@ -29,18 +29,9 @@ export class Table extends Component {
 	public tableActions?: StoreActions;
 
 	addColumn() {
-		this.tableActions?.addColumn(
-			newColumnModel(
-				{
-					itemId: "TODO",
-					text: "TODO",
-				},
-				{
-					name: "TODO",
-					propertyId: "TODO",
-				}
-			)
-		);
+		// text input
+		const input = prompt("Item ID (e.g. Q1234)");
+		if (!input) return;
 	}
 
 	removeColumn(viewId: string) {
