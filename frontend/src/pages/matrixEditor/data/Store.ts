@@ -35,16 +35,28 @@ export class Store extends Exome implements TableStoreActions {
 		this.table = table;
 	}
 
+	private updateTable(table: TableModel) {
+		this.table = { ...table };
+	}
+
+	private updateColumn(column: ColumnModel) {
+		this.table.columns = this.table.columns.map((col) =>
+			col.viewId === column.viewId ? column : col
+		);
+		this.updateTable(this.table);
+	}
+
 	public addColumn(column: ColumnModel) {
 		this.table.columns.push(column);
-		this.table = { ...this.table };
+		this.updateTable(this.table);
 	}
 
 	public removeColumn(columnViewId: string) {
 		this.table.columns = this.table.columns.filter(
 			(column) => column.viewId !== columnViewId
 		);
-		this.table = { ...this.table };
+
+		this.updateTable(this.table);
 	}
 
 	public addItem(columnViewId: string, item: ColumnItemModel) {
@@ -53,7 +65,7 @@ export class Store extends Exome implements TableStoreActions {
 		);
 		if (column) {
 			column.items.push(item);
-			this.table = { ...this.table };
+			this.updateColumn(column);
 		}
 	}
 
@@ -63,7 +75,7 @@ export class Store extends Exome implements TableStoreActions {
 		);
 		if (column) {
 			column.items = column.items.filter((i) => i.viewId !== item.viewId);
-			this.table = { ...this.table };
+			this.updateColumn(column);
 		}
 	}
 
@@ -87,7 +99,9 @@ export class Store extends Exome implements TableStoreActions {
 						(i) => i.viewId !== itemViewId
 					);
 				toColumn.items.push(item);
-				this.table = { ...this.table };
+
+				this.updateColumn(fromColumn);
+				this.updateColumn(toColumn);
 			}
 		}
 	}
@@ -108,9 +122,11 @@ export class Store extends Exome implements TableStoreActions {
 			(column) => column.viewId === columnViewId
 		);
 		if (column) {
-			column.property = property;
-			this.table = { ...this.table };
-			console.log("setColumnProperty");
+			const newColumn = {
+				...column,
+				property,
+			};
+			this.updateColumn(newColumn);
 		}
 	}
 }

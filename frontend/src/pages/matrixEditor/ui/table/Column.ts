@@ -45,11 +45,11 @@ export class ColumnComponent extends Component {
 	// ... styles and other properties
 
 	render() {
-		console.log("rendering column");
+		console.log("rendering column with property", this.columnModel.property);
 		return html`
 			<div>${this.columnModel.property.name}</div>
 			<select
-				.value="${this.columnModel.property.name}"
+				.value="${this.columnModel.property.propertyId}"
 				@change="${this.handlePropertyChange}"
 			>
 				${map(
