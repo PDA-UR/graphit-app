@@ -65,4 +65,9 @@ export default class WikibaseClient {
 		);
 		return resources;
 	}
+
+	async getEntities(entityIds: string[]): Promise<any> {
+		const r = await this.api.entity.entities(entityIds.join("|"));
+		return r;
+	}
 }
