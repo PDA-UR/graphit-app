@@ -24,6 +24,7 @@ export class CardComponent extends LitElement {
 			border: 1px solid #000;
 			background: #fff;
 			box-shadow: 3px 3px 0px 0px #000;
+			z-index: 1;
 		}
 
 		::slotted(*) {

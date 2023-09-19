@@ -13,5 +13,6 @@ export const fromStore = (store: Store): StoreActions => {
 		moveItem: store.moveItem,
 		copyItem: store.copyItem,
 		setColumnProperty: store.setColumnProperty,
+		getItemByViewId: store.getItemByViewId,
 	};
 };

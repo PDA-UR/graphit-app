@@ -1,5 +1,5 @@
 import AppRoot from "./App";
-import { CardComponent } from "./atomic/CardComponent";
+import { CardComponent } from "./atomic/Card";
 import { ColumnComponent } from "./table/Column";
 import { ColumnItem } from "./table/CloumnItem";
 import { Table } from "./table/Table";

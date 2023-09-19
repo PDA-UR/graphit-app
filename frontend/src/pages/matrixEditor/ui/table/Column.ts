@@ -1,15 +1,17 @@
 import { LitElement, html, css, PropertyValueMap } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
+import { when } from "lit/directives/when.js";
 import {
 	MATRIX_PROPERTIES,
 	getWikibasePropertyById,
 } from "../../data/models/WikibasePropertyModel";
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
+import { ColumnItemModel } from "../../data/models/ColumnItemModel";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -20,6 +22,14 @@ export class ColumnComponent extends Component {
 			background-color: #f5f5f5;
 			border-radius: 5px;
 			padding: 0.5rem;
+			gap: 0.5rem;
+		}
+		:host(.highlight) {
+			background-color: #e5e5e5;
+		}
+		.items {
+			display: flex;
+			flex-direction: column;
 			gap: 0.5rem;
 		}
 	`;
@@ -42,33 +52,28 @@ export class ColumnComponent extends Component {
 			);
 	}
 
-	firstUpdated() {
-		this.addEventListener("drop", this.handleDrop);
-		this.addEventListener("dragover", this.handleDragOver);
-	}
-
-	private handleDrop(event: DragEvent) {
+	ondrop = (event: DragEvent) => {
 		event.preventDefault();
 		const viewId = event.dataTransfer?.getData("text/plain");
-
-		console.log("dropped", viewId);
-		// Call the moveItem method
 		if (viewId) {
+			const isAlreadyInColumn = this.columnModel.items.find(
+				(item) => item.viewId === viewId
+			);
+			if (isAlreadyInColumn) return;
 			this.tableActions.moveItem(this.columnModel.viewId, viewId);
 		}
-	}
+		this.classList.remove("highlight");
+	};
 
-	protected shouldUpdate(
-		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
-	): boolean {
-		console.log("shouldUpdate", _changedProperties);
-		return super.shouldUpdate(_changedProperties);
-	}
-
-	handleDragOver(event: DragEvent) {
-		// Prevent default to allow drop
+	ondragover = (event: DragEvent) => {
 		event.preventDefault();
-	}
+		this.classList.add("highlight");
+	};
+
+	ondragleave = (event: DragEvent) => {
+		event.preventDefault();
+		this.classList.remove("highlight");
+	};
 
 	// ... styles and other properties
 

@@ -22,6 +22,8 @@ export interface StoreActions {
 		columnViewId: string,
 		property: WikibasePropertyModel
 	) => void;
+
+	getItemByViewId: (viewId: string) => ColumnItemModel | undefined;
 }
 
 export interface Store extends StoreActions {
@@ -31,7 +33,7 @@ export interface Store extends StoreActions {
 export const zustandStore = createStore<Store>(
 	// @ts-ignore
 	persist(
-		immer((set) => ({
+		immer((set, get) => ({
 			table: newTableModel(),
 			setTable: (table: TableModel) => set({ table }),
 			addColumn: (column: ColumnModel) =>
@@ -98,6 +100,17 @@ export const zustandStore = createStore<Store>(
 						column.property = property;
 					}
 				}),
+			getItemByViewId: (viewId: string) => {
+				console.log("getting item by view id", viewId);
+				const column = get().table.columns.find((column) =>
+					column.items.find((item) => item.viewId === viewId)
+				);
+				console.log("column", column);
+				if (column) {
+					return column.items.find((item) => item.viewId === viewId);
+				}
+				return undefined;
+			},
 		})),
 		{
 			name: "table-storage", // unique name
