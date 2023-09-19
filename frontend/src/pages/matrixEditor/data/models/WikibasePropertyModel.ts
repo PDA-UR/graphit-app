@@ -5,8 +5,8 @@ export interface WikibasePropertyModel {
 
 export const MATRIX_PROPERTIES = [
 	{
-		propertyId: "P0",
-		name: "Test: Property 0",
+		propertyId: "P3",
+		name: "Test: Property 3",
 	},
 	{
 		propertyId: "P1",

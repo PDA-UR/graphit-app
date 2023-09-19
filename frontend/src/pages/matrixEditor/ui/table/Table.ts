@@ -10,6 +10,11 @@ import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
+import { parseItemsFromWikibaseResponse } from "./Column";
+import {
+	MATRIX_PROPERTIES,
+	WikibasePropertyModel,
+} from "../../data/models/WikibasePropertyModel";
 
 @customElement("table-view")
 export class Table extends Component {
@@ -39,8 +44,12 @@ export class Table extends Component {
 		if (!input) return;
 		this.wikibaseClient
 			.getEntities([input])
-			.then((entities) => {
-				console.log("got entities", entities);
+			.then((r) => {
+				const items = parseItemsFromWikibaseResponse(
+					MATRIX_PROPERTIES[0],
+					r.data.entities[input]
+				);
+				console.log("items", items);
 			})
 			.catch((err) => {
 				console.error(err);

@@ -6,10 +6,13 @@ import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
 import {
 	MATRIX_PROPERTIES,
+	WikibasePropertyModel,
 	getWikibasePropertyById,
 } from "../../data/models/WikibasePropertyModel";
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
+import { ColumnItem } from "./CloumnItem";
+import { ColumnItemModel } from "../../data/models/ColumnItemModel";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -106,3 +109,79 @@ export class ColumnComponent extends Component {
 		`;
 	}
 }
+// Example response from WikibaseClient.getEntities(["Q4"]):
+// {
+//     "data": {
+//         "entities": {
+//             "Q4": {
+//                 "pageid": 30,
+//                 "ns": 120,
+//                 "title": "Item:Q4",
+//                 "lastrevid": 80,
+//                 "modified": "2023-06-09T08:28:17Z",
+//                 "type": "item",
+//                 "id": "Q4",
+//                 "labels": {
+//                     "en": {
+//                         "language": "en",
+//                         "value": "Computer Vision"
+//                     }
+//                 },
+//                 "descriptions": {
+//                     "en": {
+//                         "language": "en",
+//                         "value": "Category Computer Vision"
+//                     }
+//                 },
+//                 "aliases": {},
+//                 "claims": {
+//                     "P3": [
+//                         {
+//                             "mainsnak": {
+//                                 "snaktype": "value",
+//                                 "property": "P3",
+//                                 "hash": "32cb86402318d0be7e1e9627b639c9d180706218",
+//                                 "datavalue": {
+//                                     "value": {
+//                                         "entity-type": "item",
+//                                         "numeric-id": 169,
+//                                         "id": "Q169"
+//                                     },
+//                                     "type": "wikibase-entityid"
+//                                 },
+//                                 "datatype": "wikibase-item"
+//                             },
+//                             "type": "statement",
+//                             "id": "Q4$2d1469af-4118-b0ef-fc75-89211f8ecc48",
+//                             "rank": "normal"
+//                         }
+//                     ]
+//                 },
+//                 "sitelinks": {}
+//             }
+//         },
+//         "success": 1
+//     }
+// }
+
+// valid items are cleims that are of the same type as the column property
+export const parseItemsFromWikibaseResponse = (
+	property: WikibasePropertyModel,
+	entity: any
+): ColumnItemModel[] => {
+	const items: ColumnItemModel[] = [];
+	const claims = entity.claims[property.propertyId];
+	if (!claims) return items;
+	claims.forEach((claim: any) => {
+		const targetElementId = claim.mainsnak.datavalue.value.id,
+			tagetText = "X",
+			id = claim.id;
+		items.push({
+			itemId: targetElementId,
+			text: tagetText,
+			viewId: id,
+		});
+	});
+
+	return items;
+};

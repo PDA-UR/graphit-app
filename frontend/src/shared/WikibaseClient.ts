@@ -67,7 +67,16 @@ export default class WikibaseClient {
 	}
 
 	async getEntities(entityIds: string[]): Promise<any> {
-		const r = await this.api.entity.entities(entityIds.join("|"));
-		return r;
+		return await this.api.entity.entities(entityIds.join("|"));
+	}
+
+	async entityDoesExist(entityId: string): Promise<boolean> {
+		try {
+			const e = await this.getEntities([entityId]);
+			console.log("exists?", e);
+			return e?.data !== undefined;
+		} catch (err) {
+			return false;
+		}
 	}
 }
