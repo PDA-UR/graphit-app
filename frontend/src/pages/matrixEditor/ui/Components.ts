@@ -1,14 +1,14 @@
 import AppRoot from "./App";
 import { CardComponent } from "./atomic/CardComponent";
 import { ColumnComponent } from "./table/Column";
-import { ColumnItem } from "./table/TableItem";
+import { ColumnItem } from "./table/CloumnItem";
 import { Table } from "./table/Table";
 
 export {
 	AppRoot,
 	CardComponent,
 	ColumnComponent,
-	ColumnItem as TableItem,
+	ColumnItem as ColumnItem,
 	Table as TableView,
 };
 

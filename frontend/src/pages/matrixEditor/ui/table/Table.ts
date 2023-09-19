@@ -5,9 +5,9 @@ import { map } from "lit/directives/map.js";
 import { TableModel } from "../../data/models/TableModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
-import { TableStoreActions } from "../../data/Store";
 import { newColumnModel } from "../../data/models/ColumnModel";
 import { Component } from "../atomic/Component";
+import { StoreActions } from "../../data/ZustandStore";
 
 @customElement("table-view")
 export class Table extends Component {
@@ -26,7 +26,7 @@ export class Table extends Component {
 
 	@consume({ context: tableContext })
 	@property({ attribute: false })
-	public tableActions?: TableStoreActions;
+	public tableActions?: StoreActions;
 
 	addColumn() {
 		this.tableActions?.addColumn(
@@ -50,16 +50,16 @@ export class Table extends Component {
 	render() {
 		console.log("rendering table");
 		return html`
-			${map(
-				this.tableModel?.columns ?? [],
-				(columnModel) => html`
+			${this.tableModel.columns.map((columnModel) => {
+				console.log("rendering column", columnModel.viewId);
+				return html`
 					<column-component
 						.columnModel="${columnModel}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
 					>
 					</column-component>
-				`
-			)}
+				`;
+			})}
 			<button @click="${this.addColumn}">Add Column</button>
 		`;
 	}

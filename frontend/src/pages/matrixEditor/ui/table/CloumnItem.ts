@@ -32,7 +32,13 @@ export class ColumnItem extends Component {
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
-		this.setAttribute("data-item-id", this.columnItemModel.viewId);
+		this.setAttribute("draggable", "true");
+		this.addEventListener("dragstart", this.handleDragStart);
+	}
+
+	private handleDragStart(event: DragEvent) {
+		console.log("dragstart", this.columnItemModel.viewId);
+		event.dataTransfer?.setData("text/plain", this.columnItemModel.viewId);
 	}
 
 	render() {

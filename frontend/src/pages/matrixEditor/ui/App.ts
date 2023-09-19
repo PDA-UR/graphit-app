@@ -1,34 +1,27 @@
 import { customElement } from "lit/decorators.js";
 import { Component } from "./atomic/Component";
-import { LitElement, PropertyValueMap, ReactiveElement, css, html } from "lit";
-import { store } from "../data/Store";
-import { StoreController } from "exome/lit";
+import { PropertyValueMap, css, html } from "lit";
 import { fromStore, tableContext } from "../data/contexts/TableContext";
 import { provide } from "@lit-labs/context";
-import { subscribe } from "exome";
 
-import { saveState, loadState } from "exome/state";
+import { zustandStore } from "../data/ZustandStore";
 
 @customElement("app-root")
 export default class AppRoot extends Component {
-	private store = new StoreController(this, store);
+	private zustand = zustandStore.getState();
 
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
-		// loat store from local storage (if available)
-		const existingStoreValue = localStorage.getItem("store");
-		if (existingStoreValue) loadState(store, existingStoreValue);
-
-		const unsubscribe = subscribe(store, () => {
-			const savedStoreValue = saveState(store);
-			localStorage.setItem("store", savedStoreValue);
-			console.log("store saved to local storage");
+		zustandStore.subscribe((state) => {
+			console.log("zustand store changed", state);
+			this.zustand = state;
+			this.requestUpdate();
 		});
 	}
 
 	@provide({ context: tableContext })
-	tableContext = fromStore(this.store);
+	tableContext = fromStore(this.zustand);
 
 	static styles = css`
 		:host {
@@ -42,7 +35,7 @@ export default class AppRoot extends Component {
 		console.log("rendering app");
 
 		return html`
-			<table-view .tableModel="${this.store.store.table}"></table-view>
+			<table-view .tableModel="${this.zustand.table}"></table-view>
 		`;
 	}
 }

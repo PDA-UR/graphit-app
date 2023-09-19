@@ -1,8 +1,7 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, PropertyValueMap } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
-import { TableStoreActions } from "../../data/Store";
 import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
 import {
@@ -10,6 +9,7 @@ import {
 	getWikibasePropertyById,
 } from "../../data/models/WikibasePropertyModel";
 import { Component } from "../atomic/Component";
+import { StoreActions } from "../../data/ZustandStore";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -29,7 +29,7 @@ export class ColumnComponent extends Component {
 
 	@consume({ context: tableContext })
 	@property({ attribute: false })
-	public tableActions!: TableStoreActions;
+	public tableActions!: StoreActions;
 
 	handlePropertyChange(event: Event) {
 		const newValue = (event.target as HTMLSelectElement).value,
@@ -42,27 +42,64 @@ export class ColumnComponent extends Component {
 			);
 	}
 
+	firstUpdated() {
+		this.addEventListener("drop", this.handleDrop);
+		this.addEventListener("dragover", this.handleDragOver);
+	}
+
+	private handleDrop(event: DragEvent) {
+		event.preventDefault();
+		const viewId = event.dataTransfer?.getData("text/plain");
+
+		console.log("dropped", viewId);
+		// Call the moveItem method
+		if (viewId) {
+			this.tableActions.moveItem(this.columnModel.viewId, viewId);
+		}
+	}
+
+	protected shouldUpdate(
+		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
+	): boolean {
+		console.log("shouldUpdate", _changedProperties);
+		return super.shouldUpdate(_changedProperties);
+	}
+
+	handleDragOver(event: DragEvent) {
+		// Prevent default to allow drop
+		event.preventDefault();
+	}
+
 	// ... styles and other properties
 
 	render() {
-		console.log("rendering column with property", this.columnModel.property);
+		console.log(
+			"rendering column with property",
+			this.columnModel.property.propertyId
+		);
 		return html`
 			<div>${this.columnModel.property.name}</div>
-			<select
-				.value="${this.columnModel.property.propertyId}"
-				@change="${this.handlePropertyChange}"
-			>
+			<select @change="${this.handlePropertyChange}">
 				${map(
 					MATRIX_PROPERTIES,
 					(property) => html`
-						<option value="${property.propertyId}">${property.name}</option>
+						<option
+							value="${property.propertyId}"
+							?selected="${property.propertyId ===
+							this.columnModel.property.propertyId}"
+						>
+							${property.name}
+						</option>
 					`
 				)}
 			</select>
-			${map(
-				this.columnModel.items,
-				(item) => html` <column-item .columnItemModel="${item}"></column-item> `
-			)}
+			<div class="items" data-column-id="${this.columnModel.viewId}">
+				${map(
+					this.columnModel.items,
+					(item) =>
+						html` <column-item .columnItemModel="${item}"></column-item> `
+				)}
+			</div>
 		`;
 	}
 }
