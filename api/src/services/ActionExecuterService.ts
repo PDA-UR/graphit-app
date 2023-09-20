@@ -15,7 +15,7 @@ export class ActionExecuterService {
 
 	private propertyMap = new WikibasePropertyMap();
 
-	async execute(
+	async executeClaimAction(
 		object: "claim",
 		action: "create" | "update" | "remove",
 		data: any,
@@ -58,7 +58,7 @@ export class ActionExecuterService {
 			// remove the claim since its marked as incomplete
 			const guid = existingClaim.id;
 			const action = () =>
-				this.execute(
+				this.executeClaimAction(
 					"claim",
 					"remove",
 					{
@@ -69,7 +69,7 @@ export class ActionExecuterService {
 			actions.push(action);
 		} else if (doToggleOn) {
 			const action = () =>
-				this.execute(
+				this.executeClaimAction(
 					"claim",
 					"create",
 					{ id: userId, property: propertyId, value: targetEntityId },

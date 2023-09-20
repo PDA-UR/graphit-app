@@ -2,10 +2,11 @@ import { Controller, Inject } from "@tsed/di";
 import { BadRequest, Unauthorized } from "@tsed/exceptions";
 import { Logger } from "@tsed/logger";
 import { PathParams, Session } from "@tsed/platform-params";
-import { Description, Post, Returns } from "@tsed/schema";
+import { Description, Get, Post, Returns } from "@tsed/schema";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { Credentials, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
+import { PropertyModel } from "../../models/PropertyModel";
 
 @Controller("/sparql")
 export class Sparql {
@@ -44,7 +45,7 @@ export class Sparql {
 		return r;
 	}
 
-	@Post("/userGraph")
+	@Get("/userGraph")
 	@Description(
 		"Retrieve the users graph (learning contents, completions, etc.)"
 	)
@@ -61,10 +62,8 @@ export class Sparql {
 		return r;
 	}
 
-	@Post("/resources")
-	@Description(
-		"Retrieve all resources in the wiki"
-	)
+	@Get("/resources")
+	@Description("Retrieve all resources in the wiki")
 	@Returns(200, SparqlResult).ContentType("application/json")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
@@ -76,5 +75,16 @@ export class Sparql {
 			return new BadRequest("No user item id found for this user");
 		const r = await this.wikibaseSdk.getResources(credentials, userId);
 		return r;
+	}
+
+	@Get("/properties")
+	@Description("Retrieve all resources in the wiki")
+	@Returns(200, Array<PropertyModel>)
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async properties(@Session("user") credentials: Credentials) {
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		return [];
 	}
 }

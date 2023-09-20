@@ -8,7 +8,7 @@ export const newTableModel = (): TableModel => ({
 	columns: [
 		newColumnModel(
 			{ itemId: "Q1", text: "Item 1" },
-			{ propertyId: "P0", name: "Property 0" }
+			{ propertyId: "P0", label: "Property 0" }
 		),
 	],
 });

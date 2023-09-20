@@ -193,7 +193,7 @@ export class ColumnComponent extends Component {
 							?selected="${property.propertyId ===
 							this.columnModel.property.propertyId}"
 						>
-							${property.name} (${property.propertyId})
+							${property.label} (${property.propertyId})
 						</option>
 					`
 				)}

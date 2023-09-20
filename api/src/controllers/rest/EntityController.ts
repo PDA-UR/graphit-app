@@ -10,6 +10,7 @@ import { EntityId } from "wikibase-sdk";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
+import { PropertyModel } from "../../models/PropertyModel";
 
 @Controller("/entity")
 export class Entity {
@@ -77,7 +78,7 @@ export class Entity {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
-		const r = await this.actionExecutor.execute(
+		const r = await this.actionExecutor.executeClaimAction(
 			"claim",
 			"create",
 			{
@@ -102,7 +103,7 @@ export class Entity {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
-		return await this.actionExecutor.execute(
+		return await this.actionExecutor.executeClaimAction(
 			"claim",
 			"update",
 			{
@@ -111,5 +112,17 @@ export class Entity {
 			},
 			credentials
 		);
+	}
+
+	@Get("/property/all")
+	@Description("Retrieve all properties in the wiki")
+	@Returns(200, Array<PropertyModel>).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async properties(@Session("user") credentials: Credentials) {
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		const r = await this.wikibaseSdk.getProperties();
+		return r;
 	}
 }

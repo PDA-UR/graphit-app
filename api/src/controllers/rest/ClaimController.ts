@@ -29,7 +29,7 @@ export class Claim {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
-		const r = await this.actionExecutor.execute(
+		const r = await this.actionExecutor.executeClaimAction(
 			"claim",
 			"create",
 			{
@@ -54,7 +54,7 @@ export class Claim {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
-		return await this.actionExecutor.execute(
+		return await this.actionExecutor.executeClaimAction(
 			"claim",
 			"remove",
 			{
@@ -77,7 +77,7 @@ export class Claim {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
-		return await this.actionExecutor.execute(
+		return await this.actionExecutor.executeClaimAction(
 			"claim",
 			"update",
 			{

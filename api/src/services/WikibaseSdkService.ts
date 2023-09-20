@@ -4,6 +4,7 @@ import { SessionService } from "./SessionService";
 import { Credentials } from "../models/CredentialsModel";
 import { SparqlQueryTemplateService } from "./sparql/SparqlQueriesService";
 import { SparqlResult } from "../models/SparqlResultModel";
+import { PropertyModel } from "../models/PropertyModel";
 
 @Service()
 export class WikibaseSdkService extends SessionService<Wbk> {
@@ -112,6 +113,64 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		);
 		const userItemId = await this.parseUserItemId(htmlUserPage);
 		return userItemId;
+	}
+
+	async getProperties(): Promise<Array<PropertyModel>> {
+		const wikibaseUrl = this.info.instance;
+
+		const buildUrlParams = () =>
+			new URLSearchParams({
+				action: "query",
+				generator: "allpages",
+				gapnamespace: "122",
+				prop: "entityterms",
+				wbetterms: "label",
+				formatversion: "2",
+				format: "json",
+			});
+
+		const buildFullUrl = (gapcontinue?: string, _continue?: string) => {
+			const urlParams = buildUrlParams();
+			if (gapcontinue && _continue) {
+				urlParams.append("gapcontinue", gapcontinue);
+				urlParams.append("continue", _continue);
+			}
+			return `${wikibaseUrl}/w/api.php?${urlParams.toString()}`;
+		};
+
+		const properties: Array<PropertyModel> = [];
+
+		let gapcontinue: string | undefined = undefined;
+		let _continue: string | undefined = undefined;
+
+		do {
+			const url = buildFullUrl(gapcontinue, _continue);
+			this.logger.info("api url to fetch properties", url);
+			const response = await fetch(url);
+			this.logger.info("response from properties", response);
+			const json = await response.json();
+			const pages = json.query?.pages;
+			if (pages) {
+				const newProperties = Object.keys(pages).map((key) => {
+					const page = pages[key];
+					const property: PropertyModel = {
+						propertyId: page.title.split(":")[1],
+						label: page.entityterms.label[0],
+						url: `${wikibaseUrl}/wiki/${page.title}`,
+					};
+					return property;
+				});
+				properties.push(...newProperties);
+			}
+			gapcontinue = json.continue?.gapcontinue;
+			_continue = json.continue?.continue;
+		} while (gapcontinue && _continue);
+
+		return properties.sort((a, b) => {
+			const aId = parseInt(a.propertyId.replace("P", ""));
+			const bId = parseInt(b.propertyId.replace("P", ""));
+			return aId - bId;
+		});
 	}
 
 	// ~~~~~~~~~~ Pre built queries: ~~~~~~~~~ //

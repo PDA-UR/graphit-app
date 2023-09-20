@@ -60,7 +60,7 @@ SELECT ?itemLabel
 
 // Query for retrieving ALL Resources and their links
 const resourceQuery = (
-  userId = "Q157"
+	userId = "Q157"
 ) => `# Retrieve all Resources and Items their linked to
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
@@ -98,7 +98,7 @@ export class SparqlQueryTemplateService {
 		return categoriesQuery();
 	}
 
-  public getResources(userId: string) {
-    return resourceQuery(userId);
-  }
+	public getResources(userId: string) {
+		return resourceQuery(userId);
+	}
 }

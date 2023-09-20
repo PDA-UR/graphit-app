@@ -1,16 +1,16 @@
 export interface WikibasePropertyModel {
 	propertyId: string;
-	name: string;
+	label: string;
 }
 
 export const MATRIX_PROPERTIES = [
 	{
 		propertyId: "P3",
-		name: "Test: Property 3",
+		label: "Test: Property 3",
 	},
 	{
 		propertyId: "P12",
-		name: "Has completed",
+		label: "Has completed",
 	},
 ];
 
