@@ -29,7 +29,8 @@ export class Table extends Component {
 			gap: 0.5rem;
 			padding: 0.5rem;
 			flex-grow: 1;
-			overflow: hidden;
+			overflow-y: hidden;
+			overflow-x: auto;
 		}
 		#add-column-container {
 			display: flex;

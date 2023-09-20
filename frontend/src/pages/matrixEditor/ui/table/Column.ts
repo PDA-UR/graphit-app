@@ -53,6 +53,9 @@ export class ColumnComponent extends Component {
 			justify-content: space-between;
 			align-items: center;
 		}
+		#top-bar > * {
+			white-space: nowrap;
+		}
 		.spacer {
 			min-width: 1rem;
 		}

@@ -12,6 +12,7 @@ export const globalCss = css`
 		border-radius: 5px;
 		padding: 0.5rem;
 		font-size: 0.8rem;
+		white-space: nowrap;
 	}
 	button::before {
 		content: "[";
