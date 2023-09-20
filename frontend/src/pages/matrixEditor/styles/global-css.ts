@@ -11,7 +11,7 @@ export const globalCss = css`
 		border: none;
 		border-radius: 5px;
 		padding: 0.5rem;
-		font-size: 0.8rem;
+		font-size: 0.9rem;
 		white-space: nowrap;
 	}
 	button::before {

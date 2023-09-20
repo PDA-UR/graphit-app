@@ -7,6 +7,7 @@ import { ActionExecuterService } from "../../services/ActionExecuterService";
 import { Credentials, isValid } from "../../models/CredentialsModel";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
+import { RemoveClaim } from "../../models/claim/RemoveClaimModel";
 
 @Controller("/claim")
 export class Claim {
@@ -39,6 +40,29 @@ export class Claim {
 		);
 		this.logger.info("Claim created", r);
 		return r;
+	}
+
+	@Post("/:id/remove")
+	@Description("Remove a claim")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async remove(
+		@PathParams("id") id: string,
+		@Required() @BodyParams() removeClaim: RemoveClaim,
+		@Session("user") credentials: Credentials
+	) {
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		return await this.actionExecutor.execute(
+			"claim",
+			"remove",
+			{
+				...removeClaim,
+				id,
+			},
+			credentials
+		);
 	}
 
 	@Post("/:id/update")

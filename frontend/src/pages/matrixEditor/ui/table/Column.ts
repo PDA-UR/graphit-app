@@ -31,7 +31,7 @@ export class ColumnComponent extends Component {
 			border-radius: 5px;
 			padding: 0.5rem;
 			gap: 0.5rem;
-			width: 20rem;
+			width: 23rem;
 		}
 		:host(.highlight) {
 			background-color: #e5e5e5;
