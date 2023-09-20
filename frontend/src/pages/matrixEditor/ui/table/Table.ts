@@ -90,24 +90,14 @@ export class Table extends Component {
 					</column-component>
 				`;
 			})}
-			${choose(this.addCloumnTask.status, [
-				[
-					TaskStatus.INITIAL,
-					() => html`
-						<div id="add-column-container">
-							<button
-								id="add-column-button"
-								@click="${() => this.addCloumnTask.run()}"
-							>
-								Add Column
-							</button>
-						</div>
-					`,
-				],
-				[TaskStatus.PENDING, () => html`Adding column...`],
-				[TaskStatus.COMPLETE, () => html`Added column.`],
-				[TaskStatus.ERROR, () => html`Error adding column.`],
-			])}
+			<div id="add-column-container">
+				<button
+					id="add-column-button"
+					@click="${() => this.addCloumnTask.run()}"
+				>
+					Add Column
+				</button>
+			</div>
 		`;
 	}
 }

@@ -72,6 +72,9 @@ export class ColumnComponent extends Component {
 	@state()
 	items: ColumnItemModel[] = [];
 
+	@state()
+	filter = "";
+
 	@property({ type: Object, attribute: false })
 	columnModel!: ColumnModel;
 
@@ -156,6 +159,10 @@ export class ColumnComponent extends Component {
 		this.classList.remove("highlight");
 	};
 
+	onDeleteColumn() {
+		this.tableActions.removeColumn(this.columnModel.viewId);
+	}
+
 	// ... styles and other properties
 
 	render() {
@@ -170,7 +177,9 @@ export class ColumnComponent extends Component {
 				</span>
 
 				<div class="spacer"></div>
-				<button id="delete-button">x</button>
+				<button id="delete-button" @click="${() => this.onDeleteColumn()}">
+					x
+				</button>
 			</div>
 			<select @change="${this.handlePropertyChange}">
 				${map(
@@ -181,11 +190,17 @@ export class ColumnComponent extends Component {
 							?selected="${property.propertyId ===
 							this.columnModel.property.propertyId}"
 						>
-							${property.name}
+							${property.name} (${property.propertyId})
 						</option>
 					`
 				)}
 			</select>
+			<input
+				type="text"
+				placeholder="Filter items"
+				@input="${(e: InputEvent) =>
+					(this.filter = (e.target as HTMLInputElement).value)}"
+			/>
 			<div class="items" data-column-id="${this.columnModel.viewId}">
 				${choose(this.loadItemsTask.status, [
 					[TaskStatus.PENDING, () => html`Loading items...`],
@@ -193,7 +208,11 @@ export class ColumnComponent extends Component {
 						TaskStatus.COMPLETE,
 						() =>
 							html`${map(
-								this.items,
+								this.items.filter(
+									(item) =>
+										item.text.includes(this.filter) ||
+										item.itemId.includes(this.filter)
+								),
 								(item) =>
 									html` <column-item .columnItemModel="${item}"></column-item> `
 							)}`,
