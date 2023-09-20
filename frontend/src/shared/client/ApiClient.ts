@@ -26,6 +26,16 @@ export interface CreateClaimModel {
   qualifiers?: Record<string, any>;
 }
 
+export interface RemoveClaimModel {
+  /**
+   * @minLength 1
+   * @pattern [PQ]\d{1,5}
+   */
+  property: string;
+  /** @minLength 1 */
+  value: string;
+}
+
 export interface UpdateClaimModel {
   /**
    * @minLength 1
@@ -38,8 +48,33 @@ export interface UpdateClaimModel {
   newValue: string;
 }
 
+export interface ConvertClaimModel {
+  /**
+   * @minLength 1
+   * @pattern [PQ]\d{1,5}
+   */
+  property: string;
+  /** @minLength 1 */
+  value: string;
+  /**
+   * @minLength 1
+   * @pattern [PQ]\d{1,5}
+   */
+  to: string;
+  newClaim: CreateClaimModel;
+}
+
 export interface SparqlResultModel {
   data: Record<string, any>;
+}
+
+export interface WikibasePropertyModel {
+  /** @minLength 1 */
+  propertyId: string;
+  /** @minLength 1 */
+  label: string;
+  /** @minLength 1 */
+  url: string;
 }
 
 export interface ServerInfoModel {
@@ -273,6 +308,22 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
+     * @description Remove a claim
+     *
+     * @tags Claim
+     * @name Remove
+     * @request POST:/api/claim/{id}/remove
+     */
+    remove: (id: string, data: RemoveClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/claim/${id}/remove`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Update a claim
      *
      * @tags Claim
@@ -282,6 +333,22 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     update: (id: string, data: UpdateClaimModel, params: RequestParams = {}) =>
       this.request<string, string>({
         path: `/api/claim/${id}/update`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Convert a claim
+     *
+     * @tags Claim
+     * @name Move
+     * @request POST:/api/claim/{id}/convertClaim
+     */
+    move: (id: string, data: ConvertClaimModel, params: RequestParams = {}) =>
+      this.request<string, string>({
+        path: `/api/claim/${id}/convertClaim`,
         method: "POST",
         body: data,
         type: ContentType.Json,
@@ -348,6 +415,21 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         method: "POST",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Retrieve all properties in the wiki
+     *
+     * @tags Entity
+     * @name Properties
+     * @request GET:/api/entity/property/all
+     */
+    properties: (params: RequestParams = {}) =>
+      this.request<WikibasePropertyModel[], string>({
+        path: `/api/entity/property/all`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
   };
@@ -423,12 +505,27 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      *
      * @tags Sparql
      * @name UserGraph
-     * @request POST:/api/sparql/userGraph
+     * @request GET:/api/sparql/userGraph
      */
     userGraph: (params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/sparql/userGraph`,
-        method: "POST",
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Retrieve all resources in the wiki
+     *
+     * @tags Sparql
+     * @name Resources
+     * @request GET:/api/sparql/resources
+     */
+    resources: (params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/resources`,
+        method: "GET",
         format: "json",
         ...params,
       }),

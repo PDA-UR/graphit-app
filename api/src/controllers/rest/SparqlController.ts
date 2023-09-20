@@ -6,7 +6,6 @@ import { Description, Get, Post, Returns } from "@tsed/schema";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { Credentials, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
-import { PropertyModel } from "../../models/PropertyModel";
 
 @Controller("/sparql")
 export class Sparql {
@@ -75,16 +74,5 @@ export class Sparql {
 			return new BadRequest("No user item id found for this user");
 		const r = await this.wikibaseSdk.getResources(credentials, userId);
 		return r;
-	}
-
-	@Get("/properties")
-	@Description("Retrieve all resources in the wiki")
-	@Returns(200, Array<PropertyModel>)
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
-	async properties(@Session("user") credentials: Credentials) {
-		if (!isValid(credentials)) return new Unauthorized("Not logged in");
-
-		return [];
 	}
 }

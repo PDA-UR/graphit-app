@@ -10,8 +10,7 @@ import { EntityId } from "wikibase-sdk";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
-import { PropertyModel } from "../../models/PropertyModel";
-
+import { WikibaseProperty } from "../../models/PropertyModel";
 @Controller("/entity")
 export class Entity {
 	@Inject()
@@ -116,7 +115,7 @@ export class Entity {
 
 	@Get("/property/all")
 	@Description("Retrieve all properties in the wiki")
-	@Returns(200, Array<PropertyModel>).ContentType("application/json")
+	@Returns(200, Array).Of(WikibaseProperty).ContentType("application/json")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
 	async properties(@Session("user") credentials: Credentials) {

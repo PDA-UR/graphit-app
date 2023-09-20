@@ -11,13 +11,12 @@ import { StoreActions } from "../../data/ZustandStore";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import { parseEntitiesConnectedByProperty } from "./Column";
-import {
-	MATRIX_PROPERTIES,
-	WikibasePropertyModel,
-} from "../../data/models/WikibasePropertyModel";
+
 import { newColumnItemModel } from "../../data/models/ColumnItemModel";
 import { Task, TaskStatus } from "@lit-labs/task";
 import { choose } from "lit/directives/choose.js";
+import { DragController } from "../controllers/DragController";
+import { dragControllerContext } from "../../data/contexts/DragControllerContext";
 
 @customElement("table-view")
 export class Table extends Component {
@@ -39,12 +38,13 @@ export class Table extends Component {
 			align-items: center;
 		}
 	`;
+	@consume({ context: dragControllerContext })
+	private dragController!: DragController;
 
 	@property({ type: Object, attribute: true })
 	tableModel!: TableModel;
 
 	@consume({ context: tableContext })
-	@property({ attribute: false })
 	public tableActions!: StoreActions;
 
 	@consume({ context: wikibaseContext })
@@ -62,7 +62,10 @@ export class Table extends Component {
 					entity.data.entities[input].labels?.de?.value ??
 					"",
 			};
-			const columnModel = newColumnModel(wikibaseItem, MATRIX_PROPERTIES[0]);
+			const columnModel = newColumnModel(
+				wikibaseItem,
+				wikibaseClient.getCachedProperties()[0]
+			);
 			addColumn(columnModel);
 		},
 		args: () => [
@@ -87,6 +90,11 @@ export class Table extends Component {
 					<column-component
 						.columnModel="${columnModel}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
+						@itemDropped="${() => this.dragController.onDrop(columnModel)}"
+						@itemDraggedStart="${(e: CustomEvent) =>
+							this.dragController.onItemDragStart(e.detail)}"
+						@itemDraggedEnd="${(e: CustomEvent) =>
+							this.dragController.onItemDragEnd(e.detail)}"
 					>
 					</column-component>
 				`;

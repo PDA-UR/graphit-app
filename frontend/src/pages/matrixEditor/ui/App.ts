@@ -13,6 +13,8 @@ import { wikibaseContext } from "../data/contexts/WikibaseContext";
 import { when } from "lit/directives/when.js";
 import { choose } from "lit/directives/choose.js";
 import { sessionContext } from "../data/contexts/SessionContext";
+import { dragControllerContext } from "../data/contexts/DragControllerContext";
+import { DragController } from "./controllers/DragController";
 
 @customElement("app-root")
 export default class AppRoot extends Component {
@@ -85,6 +87,9 @@ export default class AppRoot extends Component {
 
 	@provide({ context: wikibaseContext })
 	wikibaseContext = this.wikibaseClient;
+
+	@provide({ context: dragControllerContext })
+	dragControllerContext = new DragController(this, this.wikibaseClient);
 
 	@provide({ context: sessionContext })
 	sessionContext = {

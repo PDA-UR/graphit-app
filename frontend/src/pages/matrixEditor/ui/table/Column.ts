@@ -4,11 +4,7 @@ import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
-import {
-	MATRIX_PROPERTIES,
-	WikibasePropertyModel,
-	getWikibasePropertyById,
-} from "../../data/models/WikibasePropertyModel";
+
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import { ColumnItem } from "./CloumnItem";
@@ -20,6 +16,12 @@ import { Task, TaskStatus } from "@lit-labs/task";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import { choose } from "lit/directives/choose.js";
+import { WikibasePropertyModel } from "../../../../shared/client/ApiClient";
+import {
+	ITEM_MOVE_EVENT,
+	ItemMoveEventDetail,
+	ItemMoveStatus,
+} from "../controllers/ItemMoverController";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -76,6 +78,9 @@ export class ColumnComponent extends Component {
 	items: ColumnItemModel[] = [];
 
 	@state()
+	itemMoveStatus: ItemMoveStatus | undefined;
+
+	@state()
 	filter = "";
 
 	@property({ type: Object, attribute: false })
@@ -117,6 +122,34 @@ export class ColumnComponent extends Component {
 		autoRun: false,
 	});
 
+	protected firstUpdated(): void {
+		// @ts-ignore
+		document.addEventListener(
+			ITEM_MOVE_EVENT,
+			(e: CustomEvent<ItemMoveEventDetail>) => {
+				const thisColumnIsInvolved =
+					e.detail.moveItemsInfo.some(
+						(moveItemInfo) =>
+							moveItemInfo.from === this.columnModel.item.itemId &&
+							moveItemInfo.property === this.columnModel.property.propertyId
+					) ||
+					e.detail.moveItemsInfo.some(
+						(moveItemInfo) =>
+							moveItemInfo.to === this.columnModel.item.itemId &&
+							moveItemInfo.newClaim.property ===
+								this.columnModel.property.propertyId
+					);
+				if (!thisColumnIsInvolved) return;
+
+				this.itemMoveStatus = e.detail.status;
+				if (e.detail.status === ItemMoveStatus.DONE) {
+					this.loadItemsTask.run();
+					this.itemMoveStatus = undefined;
+				}
+			}
+		);
+	}
+
 	updated(changedProperties: Map<string | number | symbol, unknown>) {
 		super.updated(changedProperties);
 		if (changedProperties.has("columnModel")) {
@@ -129,7 +162,7 @@ export class ColumnComponent extends Component {
 
 	handlePropertyChange(event: Event) {
 		const newValue = (event.target as HTMLSelectElement).value,
-			newProperty = getWikibasePropertyById(newValue);
+			newProperty = this.wikibaseClient.findCachedPropertyById(newValue);
 
 		if (newProperty)
 			this.tableActions?.setColumnProperty(
@@ -140,15 +173,8 @@ export class ColumnComponent extends Component {
 
 	ondrop = (event: DragEvent) => {
 		event.preventDefault();
-		const viewId = event.dataTransfer?.getData("text/plain");
-		if (viewId) {
-			const isAlreadyInColumn = this.items.find(
-				(item) => item.viewId === viewId
-			);
-			if (isAlreadyInColumn) return;
-			console.log("TODO: MOVE", viewId);
-			// this.tableActions.moveItem(this.columnModel.viewId, viewId);
-		}
+		console.log("dropped");
+		this.dispatchEvent(new CustomEvent("itemDropped"));
 		this.classList.remove("highlight");
 	};
 
@@ -186,7 +212,7 @@ export class ColumnComponent extends Component {
 			</div>
 			<select @change="${this.handlePropertyChange}">
 				${map(
-					MATRIX_PROPERTIES,
+					this.wikibaseClient.getCachedProperties(),
 					(property) => html`
 						<option
 							value="${property.propertyId}"
@@ -205,84 +231,62 @@ export class ColumnComponent extends Component {
 					(this.filter = (e.target as HTMLInputElement).value)}"
 			/>
 			<div class="items" data-column-id="${this.columnModel.viewId}">
-				${choose(this.loadItemsTask.status, [
-					[TaskStatus.PENDING, () => html`Loading items...`],
+				${choose(this.itemMoveStatus, [
 					[
-						TaskStatus.COMPLETE,
+						undefined,
 						() =>
-							html`${map(
-								this.items.filter(
-									(item) =>
-										item.text.includes(this.filter) ||
-										item.itemId.includes(this.filter)
-								),
-								(item) =>
-									html` <column-item .columnItemModel="${item}"></column-item> `
-							)}`,
+							html` ${choose(this.loadItemsTask.status, [
+								[TaskStatus.PENDING, () => html`Loading items...`],
+								[
+									TaskStatus.COMPLETE,
+									() =>
+										html`${map(
+											this.items.filter(
+												(item) =>
+													item.text.includes(this.filter) ||
+													item.itemId.includes(this.filter)
+											),
+											(item) =>
+												html`
+													<column-item
+														.columnItemModel="${item}"
+														@dragstart="${(e: DragEvent) => {
+															this.dispatchEvent(
+																new CustomEvent("itemDraggedStart", {
+																	detail: {
+																		item,
+																		column: this.columnModel,
+																	},
+																})
+															);
+														}}"
+														@dragend="${(e: DragEvent) => {
+															this.dispatchEvent(
+																new CustomEvent("itemDraggedEnd", {
+																	detail: {
+																		item,
+																		column: this.columnModel,
+																	},
+																})
+															);
+														}}"
+													></column-item>
+												`
+										)}`,
+								],
+								[
+									TaskStatus.ERROR,
+									() => html`Error loading items, ${this.loadItemsTask.error}`,
+								],
+							])}`,
 					],
-					[
-						TaskStatus.ERROR,
-						() => html`Error loading items, ${this.loadItemsTask.error}`,
-					],
+					[ItemMoveStatus.IN_PROGRESS, () => html`Moving items...`],
+					[ItemMoveStatus.ERROR, () => html`ERROR MOVING ITEMS`],
 				])}
 			</div>
 		`;
 	}
 }
-// Example response from WikibaseClient.getEntities(["Q4"]):
-// {
-//     "data": {
-//         "entities": {
-//             "Q4": {
-//                 "pageid": 30,
-//                 "ns": 120,
-//                 "title": "Item:Q4",
-//                 "lastrevid": 80,
-//                 "modified": "2023-06-09T08:28:17Z",
-//                 "type": "item",
-//                 "id": "Q4",
-//                 "labels": {
-//                     "en": {
-//                         "language": "en",
-//                         "value": "Computer Vision"
-//                     }
-//                 },
-//                 "descriptions": {
-//                     "en": {
-//                         "language": "en",
-//                         "value": "Category Computer Vision"
-//                     }
-//                 },
-//                 "aliases": {},
-//                 "claims": {
-//                     "P3": [
-//                         {
-//                             "mainsnak": {
-//                                 "snaktype": "value",
-//                                 "property": "P3",
-//                                 "hash": "32cb86402318d0be7e1e9627b639c9d180706218",
-//                                 "datavalue": {
-//                                     "value": {
-//                                         "entity-type": "item",
-//                                         "numeric-id": 169,
-//                                         "id": "Q169"
-//                                     },
-//                                     "type": "wikibase-entityid"
-//                                 },
-//                                 "datatype": "wikibase-item"
-//                             },
-//                             "type": "statement",
-//                             "id": "Q4$2d1469af-4118-b0ef-fc75-89211f8ecc48",
-//                             "rank": "normal"
-//                         }
-//                     ]
-//                 },
-//                 "sitelinks": {}
-//             }
-//         },
-//         "success": 1
-//     }
-// }
 
 // valid items are cleims that are of the same type as the column property
 export const parseEntitiesConnectedByProperty = (

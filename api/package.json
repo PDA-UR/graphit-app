@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"@tsed/ajv": "^7.14.2",
-		"@tsed/cli-core": "^4.2.9",
+		"@tsed/cli-core": "^4.6.4",
 		"@tsed/cli-generate-swagger": "^4.4.1",
 		"@tsed/common": "^7.14.2",
 		"@tsed/core": "^7.14.2",

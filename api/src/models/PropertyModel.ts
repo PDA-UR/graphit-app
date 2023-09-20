@@ -1,6 +1,6 @@
 import { Property, Required } from "@tsed/schema";
 
-export class PropertyModel {
+export class WikibaseProperty {
 	@Required()
 	@Property()
 	propertyId: string;

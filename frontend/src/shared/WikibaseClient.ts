@@ -2,12 +2,19 @@ import { ElementDefinition } from "cytoscape";
 import { SparqlParser } from "./sparql/SparqlParser";
 import { Credentials, wikibaseEditConfig } from "./WikibaseEditConfig";
 import { getEnvVar } from "./util/Env";
-import { ApiClient, CredentialsModel } from "./client/ApiClient";
+import {
+	ApiClient,
+	ConvertClaimModel,
+	CredentialsModel,
+	RemoveClaimModel,
+	WikibasePropertyModel,
+} from "./client/ApiClient";
 
 export default class WikibaseClient {
 	private readonly sparqlParser: SparqlParser;
 	private readonly credentials: Credentials;
 	private readonly api: ApiClient<unknown>;
+	private properties: WikibasePropertyModel[] = [];
 
 	constructor(credentials: Credentials, api: ApiClient<unknown>) {
 		this.credentials = credentials;
@@ -25,6 +32,7 @@ export default class WikibaseClient {
 		if (!r.username) {
 			throw new Error("Login failed: " + r.message);
 		}
+		await this.loadProperties();
 		return r;
 	}
 
@@ -133,5 +141,25 @@ export default class WikibaseClient {
 			}
 		);
 		return entityInfos;
+	}
+
+	async loadProperties() {
+		this.properties = await this.api.entity.properties();
+	}
+
+	getCachedProperties() {
+		return this.properties;
+	}
+
+	findCachedPropertyById(id: string) {
+		return this.properties.find((p) => p.propertyId === id);
+	}
+
+	async convertClaim(fromEntityId: string, convert: ConvertClaimModel) {
+		return await this.api.claim.move(fromEntityId, convert);
+	}
+
+	async removeClaim(entityId: string, claim: RemoveClaimModel) {
+		return await this.api.claim.remove(entityId, claim);
 	}
 }

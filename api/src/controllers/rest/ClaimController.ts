@@ -8,7 +8,7 @@ import { Credentials, isValid } from "../../models/CredentialsModel";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { RemoveClaim } from "../../models/claim/RemoveClaimModel";
-import { MoveClaim } from "../../models/claim/MoveClaimModel";
+import { ConvertClaim } from "../../models/claim/MoveClaimModel";
 
 @Controller("/claim")
 export class Claim {
@@ -89,14 +89,14 @@ export class Claim {
 		);
 	}
 
-	@Post("/:id/move")
-	@Description("Move a claim")
+	@Post("/:id/convertClaim")
+	@Description("Convert a claim")
 	@Returns(200, String).ContentType("text/plain")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
 	async move(
 		@PathParams("id") id: string,
-		@Required() @BodyParams() moveData: MoveClaim,
+		@Required() @BodyParams() convertData: ConvertClaim,
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
@@ -105,8 +105,8 @@ export class Claim {
 			"claim",
 			"remove",
 			{
-				property: moveData.property,
-				value: moveData.value,
+				property: convertData.property,
+				value: convertData.value,
 				id,
 			},
 			credentials
@@ -120,9 +120,8 @@ export class Claim {
 			"claim",
 			"create",
 			{
-				property: moveData.to,
-				value: moveData.value,
-				id,
+				id: convertData.to,
+				...convertData.newClaim,
 			},
 			credentials
 		);
@@ -133,9 +132,9 @@ export class Claim {
 
 		return (
 			"Successfully moved claim from " +
-			moveData.property +
+			convertData.property +
 			" to " +
-			moveData.to
+			convertData.to
 		);
 	}
 }

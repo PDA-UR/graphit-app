@@ -4,7 +4,7 @@ import { SessionService } from "./SessionService";
 import { Credentials } from "../models/CredentialsModel";
 import { SparqlQueryTemplateService } from "./sparql/SparqlQueriesService";
 import { SparqlResult } from "../models/SparqlResultModel";
-import { PropertyModel } from "../models/PropertyModel";
+import { WikibaseProperty } from "../models/PropertyModel";
 
 @Service()
 export class WikibaseSdkService extends SessionService<Wbk> {
@@ -115,7 +115,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return userItemId;
 	}
 
-	async getProperties(): Promise<Array<PropertyModel>> {
+	async getProperties(): Promise<Array<WikibaseProperty>> {
 		const wikibaseUrl = this.info.instance;
 
 		const buildUrlParams = () =>
@@ -138,7 +138,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 			return `${wikibaseUrl}/w/api.php?${urlParams.toString()}`;
 		};
 
-		const properties: Array<PropertyModel> = [];
+		const properties: Array<WikibaseProperty> = [];
 
 		let gapcontinue: string | undefined = undefined;
 		let _continue: string | undefined = undefined;
@@ -153,7 +153,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 			if (pages) {
 				const newProperties = Object.keys(pages).map((key) => {
 					const page = pages[key];
-					const property: PropertyModel = {
+					const property: WikibaseProperty = {
 						propertyId: page.title.split(":")[1],
 						label: page.entityterms.label[0],
 						url: `${wikibaseUrl}/wiki/${page.title}`,

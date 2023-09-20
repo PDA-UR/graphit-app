@@ -2,11 +2,11 @@ import create, { StoreApi, createStore } from "zustand";
 import { TableModel, newTableModel } from "./models/TableModel";
 import { ColumnModel } from "./models/ColumnModel";
 import { ColumnItemModel } from "./models/ColumnItemModel";
-import { WikibasePropertyModel } from "./models/WikibasePropertyModel";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { Credentials } from "../../../shared/WikibaseEditConfig";
 import { getCredentials } from "../../../shared/util/GetCredentials";
+import { WikibasePropertyModel } from "../../../shared/client/ApiClient";
 
 export interface StoreActions {
 	setTable: (table: TableModel) => void;
