@@ -1,5 +1,5 @@
 import { Controller, Inject } from "@tsed/di";
-import { Unauthorized } from "@tsed/exceptions";
+import { BadRequest, Unauthorized } from "@tsed/exceptions";
 import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Post, Required, Returns } from "@tsed/schema";
@@ -8,6 +8,7 @@ import { Credentials, isValid } from "../../models/CredentialsModel";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { RemoveClaim } from "../../models/claim/RemoveClaimModel";
+import { MoveClaim } from "../../models/claim/MoveClaimModel";
 
 @Controller("/claim")
 export class Claim {
@@ -20,7 +21,7 @@ export class Claim {
 	@Post("/:id/create")
 	@Description("Create a claim")
 	@Returns(200, String).ContentType("text/plain")
-	@Returns(400, String).ContentType("text/plain")
+	@Returns(500, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
 	async create(
 		@PathParams("id") id: string,
@@ -85,6 +86,56 @@ export class Claim {
 				id,
 			},
 			credentials
+		);
+	}
+
+	@Post("/:id/move")
+	@Description("Move a claim")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async move(
+		@PathParams("id") id: string,
+		@Required() @BodyParams() moveData: MoveClaim,
+		@Session("user") credentials: Credentials
+	) {
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		const removeResult: any = await this.actionExecutor.executeClaimAction(
+			"claim",
+			"remove",
+			{
+				property: moveData.property,
+				value: moveData.value,
+				id,
+			},
+			credentials
+		);
+
+		if (removeResult instanceof BadRequest) {
+			throw new BadRequest("Failed to remove claim from " + id);
+		}
+
+		await this.actionExecutor.executeClaimAction(
+			"claim",
+			"create",
+			{
+				property: moveData.to,
+				value: moveData.value,
+				id,
+			},
+			credentials
+		);
+
+		if (removeResult instanceof BadRequest) {
+			throw new BadRequest("Failed to create claim on " + id);
+		}
+
+		return (
+			"Successfully moved claim from " +
+			moveData.property +
+			" to " +
+			moveData.to
 		);
 	}
 }

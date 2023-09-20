@@ -18,11 +18,11 @@ import { Qualifiers, SetClaim } from "./SetClaimModel";
 export class CreateClaim extends SetClaim {
 	@Optional()
 	@Enum("preferred", "normal", "deprecated")
-	rank: string;
+	rank?: string;
 
 	@Optional()
 	@Property()
-	qualifiers: Qualifiers;
+	qualifiers?: Qualifiers;
 
 	// References are not supported yet
 }
