@@ -67,7 +67,31 @@ export default class WikibaseClient {
 	}
 
 	async getEntities(entityIds: string[]): Promise<any> {
-		return await this.api.entity.entities(entityIds.join("|"));
+		// if more than 50 entityIds, split into multiple requests
+		if (entityIds.length > 50) {
+			const idChunks = [];
+			for (let i = 0; i < entityIds.length; i += 50) {
+				const numberOfIdsToTake = Math.min(50, entityIds.length - i);
+				idChunks.push(entityIds.slice(i, i + numberOfIdsToTake));
+			}
+			const entities = await Promise.all(
+				idChunks.map((ids) => this.getEntities(ids))
+			);
+			// merge on the data.entities level
+			const mergedEntities = entities.reduce((acc, val) => {
+				return {
+					data: {
+						entities: {
+							...acc.data.entities,
+							...val.data.entities,
+						},
+					},
+				};
+			});
+			return mergedEntities;
+		} else {
+			return await this.api.entity.entities(entityIds.join("|"));
+		}
 	}
 
 	async entityDoesExist(entityId: string): Promise<boolean> {
@@ -78,5 +102,36 @@ export default class WikibaseClient {
 		} catch (err) {
 			return false;
 		}
+	}
+
+	/**
+	 * Returns label and description of an entity
+	 */
+	async getEntityInfos(eintityIds: string[]): Promise<
+		{
+			id: string;
+			label: string;
+			description: string;
+		}[]
+	> {
+		if (eintityIds.length === 0) return [];
+		const entities = await this.getEntities(eintityIds);
+		console.log("got entities", entities, eintityIds);
+		const entityInfos = Object.values(entities.data.entities).map(
+			(entity: any) => {
+				console.log("parsing entity", entity);
+				const enLabel = entity.labels.en?.value,
+					enDescription = entity.descriptions.en?.value;
+
+				const deLabel = entity.labels.de?.value,
+					deDescription = entity.descriptions.de?.value;
+
+				const label = enLabel ?? deLabel ?? entity.id,
+					description = enDescription ?? deDescription ?? "";
+
+				return { label, description, id: entity.id };
+			}
+		);
+		return entityInfos;
 	}
 }

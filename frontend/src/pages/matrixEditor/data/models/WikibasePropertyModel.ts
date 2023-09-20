@@ -9,8 +9,8 @@ export const MATRIX_PROPERTIES = [
 		name: "Test: Property 3",
 	},
 	{
-		propertyId: "P1",
-		name: "Test: Property 1",
+		propertyId: "P12",
+		name: "Has completed",
 	},
 ];
 

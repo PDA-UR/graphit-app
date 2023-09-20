@@ -6,7 +6,6 @@ export interface ColumnModel {
 	viewId: string;
 	item: WikibaseItem;
 	property: WikibasePropertyModel;
-	items: ColumnItemModel[];
 }
 
 export const newColumnModel = (
@@ -16,11 +15,4 @@ export const newColumnModel = (
 	viewId: uuidv4(),
 	item,
 	property,
-	items: [
-		{
-			viewId: uuidv4(),
-			itemId: "Q1",
-			text: "Item 1",
-		},
-	],
 });

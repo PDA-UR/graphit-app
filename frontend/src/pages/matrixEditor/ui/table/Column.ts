@@ -1,5 +1,5 @@
-import { html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html, css, PropertyValueMap } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
@@ -12,7 +12,14 @@ import {
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import { ColumnItem } from "./CloumnItem";
-import { ColumnItemModel } from "../../data/models/ColumnItemModel";
+import {
+	ColumnItemModel,
+	newColumnItemModel,
+} from "../../data/models/ColumnItemModel";
+import { Task, TaskStatus } from "@lit-labs/task";
+import { wikibaseContext } from "../../data/contexts/WikibaseContext";
+import WikibaseClient from "../../../../shared/WikibaseClient";
+import { choose } from "lit/directives/choose.js";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -24,16 +31,46 @@ export class ColumnComponent extends Component {
 			border-radius: 5px;
 			padding: 0.5rem;
 			gap: 0.5rem;
+			width: 20rem;
 		}
 		:host(.highlight) {
 			background-color: #e5e5e5;
+		}
+		:host(:hover) #delete-button {
+			opacity: 1;
 		}
 		.items {
 			display: flex;
 			flex-direction: column;
 			gap: 0.5rem;
+			overflow-y: auto;
+			padding: 0.5rem;
+		}
+
+		#top-bar {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.spacer {
+			min-width: 1rem;
+		}
+		#delete-button {
+			opacity: 0;
+			transition: opacity 0.1s ease-in-out;
+		}
+		#column-title {
+			text-align: center;
+			line-height: 1.5rem;
+			height: 1.5rem;
 		}
 	`;
+
+	// delete button is only visible when hovering the host container,
+	// its positioned absolute top right OF THE HOST CONTAINER
+	@state()
+	items: ColumnItemModel[] = [];
 
 	@property({ type: Object, attribute: false })
 	columnModel!: ColumnModel;
@@ -41,6 +78,48 @@ export class ColumnComponent extends Component {
 	@consume({ context: tableContext })
 	@property({ attribute: false })
 	public tableActions!: StoreActions;
+
+	@consume({ context: wikibaseContext })
+	private wikibaseClient!: WikibaseClient;
+
+	private loadItemsTask = new Task(this, {
+		task: async ([{ wikibaseClient, columnModel, items }]) => {
+			const entities = await wikibaseClient.getEntities([
+				columnModel.item.itemId,
+			]);
+			console.log("entities", entities);
+			const entityIds = parseEntitiesConnectedByProperty(
+				columnModel.property,
+				entities.data.entities[columnModel.item.itemId]
+			);
+			console.log("entityIds", entityIds);
+			const entityInfos = await wikibaseClient.getEntityInfos(entityIds);
+			console.log("entityInfos", entityInfos);
+			const newItems = entityInfos.map((entityInfo) =>
+				newColumnItemModel(entityInfo.id, entityInfo.label)
+			);
+			console.log("newItems", newItems);
+			items.splice(0, items.length, ...newItems);
+		},
+		args: () => [
+			{
+				wikibaseClient: this.wikibaseClient,
+				columnModel: this.columnModel,
+				items: this.items,
+			},
+		],
+		autoRun: false,
+	});
+
+	updated(changedProperties: Map<string | number | symbol, unknown>) {
+		super.updated(changedProperties);
+		if (changedProperties.has("columnModel")) {
+			const oldVal = changedProperties.get("columnModel") as ColumnModel;
+			if (oldVal?.property !== this.columnModel.property) {
+				this.loadItemsTask.run();
+			}
+		}
+	}
 
 	handlePropertyChange(event: Event) {
 		const newValue = (event.target as HTMLSelectElement).value,
@@ -57,11 +136,12 @@ export class ColumnComponent extends Component {
 		event.preventDefault();
 		const viewId = event.dataTransfer?.getData("text/plain");
 		if (viewId) {
-			const isAlreadyInColumn = this.columnModel.items.find(
+			const isAlreadyInColumn = this.items.find(
 				(item) => item.viewId === viewId
 			);
 			if (isAlreadyInColumn) return;
-			this.tableActions.moveItem(this.columnModel.viewId, viewId);
+			console.log("TODO: MOVE", viewId);
+			// this.tableActions.moveItem(this.columnModel.viewId, viewId);
 		}
 		this.classList.remove("highlight");
 	};
@@ -84,7 +164,14 @@ export class ColumnComponent extends Component {
 			this.columnModel.property.propertyId
 		);
 		return html`
-			<div>${this.columnModel.property.name}</div>
+			<div id="top-bar">
+				<span id="column-title">
+					${this.columnModel.item.text} (${this.columnModel.item.itemId})
+				</span>
+
+				<div class="spacer"></div>
+				<button id="delete-button">x</button>
+			</div>
 			<select @change="${this.handlePropertyChange}">
 				${map(
 					MATRIX_PROPERTIES,
@@ -100,11 +187,22 @@ export class ColumnComponent extends Component {
 				)}
 			</select>
 			<div class="items" data-column-id="${this.columnModel.viewId}">
-				${map(
-					this.columnModel.items,
-					(item) =>
-						html` <column-item .columnItemModel="${item}"></column-item> `
-				)}
+				${choose(this.loadItemsTask.status, [
+					[TaskStatus.PENDING, () => html`Loading items...`],
+					[
+						TaskStatus.COMPLETE,
+						() =>
+							html`${map(
+								this.items,
+								(item) =>
+									html` <column-item .columnItemModel="${item}"></column-item> `
+							)}`,
+					],
+					[
+						TaskStatus.ERROR,
+						() => html`Error loading items, ${this.loadItemsTask.error}`,
+					],
+				])}
 			</div>
 		`;
 	}
@@ -165,23 +263,17 @@ export class ColumnComponent extends Component {
 // }
 
 // valid items are cleims that are of the same type as the column property
-export const parseItemsFromWikibaseResponse = (
+export const parseEntitiesConnectedByProperty = (
 	property: WikibasePropertyModel,
 	entity: any
-): ColumnItemModel[] => {
-	const items: ColumnItemModel[] = [];
+): string[] => {
+	const entityIds: string[] = [];
 	const claims = entity.claims[property.propertyId];
-	if (!claims) return items;
+	if (!claims) return entityIds;
 	claims.forEach((claim: any) => {
-		const targetElementId = claim.mainsnak.datavalue.value.id,
-			tagetText = "X",
-			id = claim.id;
-		items.push({
-			itemId: targetElementId,
-			text: tagetText,
-			viewId: id,
-		});
+		const targetElementId = claim.mainsnak.datavalue.value.id;
+		entityIds.push(targetElementId);
 	});
 
-	return items;
+	return entityIds;
 };

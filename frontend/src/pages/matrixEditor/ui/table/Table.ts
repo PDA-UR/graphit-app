@@ -10,11 +10,14 @@ import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
-import { parseItemsFromWikibaseResponse } from "./Column";
+import { parseEntitiesConnectedByProperty } from "./Column";
 import {
 	MATRIX_PROPERTIES,
 	WikibasePropertyModel,
 } from "../../data/models/WikibasePropertyModel";
+import { newColumnItemModel } from "../../data/models/ColumnItemModel";
+import { Task, TaskStatus } from "@lit-labs/task";
+import { choose } from "lit/directives/choose.js";
 
 @customElement("table-view")
 export class Table extends Component {
@@ -23,8 +26,16 @@ export class Table extends Component {
 			display: flex;
 			flex-direction: row;
 			width: 100%;
-			height: 100%;
 			gap: 0.5rem;
+			padding: 0.5rem;
+			flex-grow: 1;
+			overflow: hidden;
+		}
+		#add-column-container {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
 		}
 	`;
 
@@ -33,31 +44,37 @@ export class Table extends Component {
 
 	@consume({ context: tableContext })
 	@property({ attribute: false })
-	public tableActions?: StoreActions;
+	public tableActions!: StoreActions;
 
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
 
-	addColumn() {
-		// text input
-		const input = prompt("Item ID (e.g. Q1234)");
-		if (!input) return;
-		this.wikibaseClient
-			.getEntities([input])
-			.then((r) => {
-				const items = parseItemsFromWikibaseResponse(
-					MATRIX_PROPERTIES[0],
-					r.data.entities[input]
-				);
-				console.log("items", items);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	}
+	private addCloumnTask = new Task(this, {
+		task: async ([{ wikibaseClient, addColumn }]) => {
+			const input = prompt("Item ID (e.g. Q1234)");
+			if (!input) return;
+			const entity = await wikibaseClient.getEntities([input]);
+			const wikibaseItem = {
+				itemId: entity.data.entities[input].id,
+				text:
+					entity.data.entities[input].labels?.en?.value ??
+					entity.data.entities[input].labels?.de?.value ??
+					"",
+			};
+			const columnModel = newColumnModel(wikibaseItem, MATRIX_PROPERTIES[0]);
+			addColumn(columnModel);
+		},
+		args: () => [
+			{
+				wikibaseClient: this.wikibaseClient,
+				addColumn: this.tableActions.addColumn,
+			},
+		],
+		autoRun: false,
+	});
 
 	removeColumn(viewId: string) {
-		this.tableActions?.removeColumn(viewId);
+		this.tableActions.removeColumn(viewId);
 	}
 
 	render() {
@@ -73,7 +90,24 @@ export class Table extends Component {
 					</column-component>
 				`;
 			})}
-			<button @click="${this.addColumn}">Add Column</button>
+			${choose(this.addCloumnTask.status, [
+				[
+					TaskStatus.INITIAL,
+					() => html`
+						<div id="add-column-container">
+							<button
+								id="add-column-button"
+								@click="${() => this.addCloumnTask.run()}"
+							>
+								Add Column
+							</button>
+						</div>
+					`,
+				],
+				[TaskStatus.PENDING, () => html`Adding column...`],
+				[TaskStatus.COMPLETE, () => html`Added column.`],
+				[TaskStatus.ERROR, () => html`Error adding column.`],
+			])}
 		`;
 	}
 }

@@ -96,6 +96,18 @@ export default class AppRoot extends Component {
 			display: block;
 			width: 100%;
 			height: 100%;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+		}
+		#top-bar {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1px solid black;
+			margin-bottom: 0.5rem;
+			padding: 0.3rem;
 		}
 	`;
 
@@ -109,8 +121,10 @@ export default class AppRoot extends Component {
 			complete: () =>
 				when(
 					this.logoutTask.status === TaskStatus.INITIAL,
-					() => html`<div>
-							<span>Logged in as ${this.zustand.credentials?.username}</span>
+					() => html`<div id="top-bar">
+							<span>Matrix Editor</span>
+							<div class="spacer"></div>
+							<span>${this.zustand.credentials?.username}</span>
 							<button @click="${() => this.onLogout()}">Logout</button>
 						</div>
 						<table-view .tableModel="${this.zustand.table}"></table-view>`,
