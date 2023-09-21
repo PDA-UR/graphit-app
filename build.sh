@@ -15,4 +15,4 @@ then
 fi
 
 docker-compose build server
-docker tag graphit-app "ghcr.io/pda-ur/graphit-app:$VERSION"
+docker tag "graphit-app:$VERSION" "ghcr.io/pda-ur/graphit-app:$VERSION"
