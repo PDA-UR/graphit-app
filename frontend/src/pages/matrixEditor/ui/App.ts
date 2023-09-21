@@ -37,6 +37,10 @@ export default class AppRoot extends Component {
 			this.zustand = state;
 			this.requestUpdate();
 		});
+
+		if (this.zustand.credentials) {
+			this.loginTask.run();
+		}
 	}
 
 	private loginTask = new Task(this, {

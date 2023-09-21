@@ -235,6 +235,9 @@ export class ColumnComponent extends Component {
 			user-select: none;
 			cursor: pointer;
 		}
+		#column-title:hover {
+			text-decoration: underline;
+		}
 	`;
 }
 
