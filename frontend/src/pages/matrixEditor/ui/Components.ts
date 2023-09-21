@@ -3,6 +3,7 @@ import { CardComponent } from "./atomic/Card";
 import { ColumnComponent } from "./table/Column";
 import { ColumnItem } from "./table/CloumnItem";
 import { Table } from "./table/Table";
+import { ColumnItemList } from "./table/ColumnItemList";
 
 export {
 	AppRoot,
@@ -10,6 +11,7 @@ export {
 	ColumnComponent,
 	ColumnItem as ColumnItem,
 	Table as TableView,
+	ColumnItemList,
 };
 
 declare global {
@@ -19,5 +21,6 @@ declare global {
 		"column-component": ColumnComponent;
 		"column-item": ColumnItem;
 		"table-view": Table;
+		"column-item-list": ColumnItemList;
 	}
 }

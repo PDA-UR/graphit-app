@@ -1,13 +1,12 @@
-import { html, css, PropertyValueMap } from "lit";
+import { html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
-
+import { classMap } from "lit/directives/class-map.js";
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
-import { ColumnItem } from "./CloumnItem";
 import {
 	ColumnItemModel,
 	newColumnItemModel,
@@ -25,55 +24,6 @@ import {
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
-	static styles = css`
-		:host {
-			display: flex;
-			flex-direction: column;
-			background-color: #f5f5f5;
-			border-radius: 5px;
-			padding: 0.5rem;
-			gap: 0.5rem;
-			width: 23rem;
-		}
-		:host(.highlight) {
-			background-color: #e5e5e5;
-		}
-		:host(:hover) #delete-button {
-			opacity: 1;
-		}
-		.items {
-			display: flex;
-			flex-direction: column;
-			gap: 0.5rem;
-			overflow-y: auto;
-			padding: 0.5rem;
-		}
-
-		#top-bar {
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
-		}
-		#top-bar > * {
-			white-space: nowrap;
-		}
-		.spacer {
-			min-width: 1rem;
-		}
-		#delete-button {
-			opacity: 0;
-			transition: opacity 0.1s ease-in-out;
-		}
-		#column-title {
-			text-align: center;
-			line-height: 1.5rem;
-			height: 1.5rem;
-		}
-	`;
-
-	// delete button is only visible when hovering the host container,
-	// its positioned absolute top right OF THE HOST CONTAINER
 	@state()
 	items: ColumnItemModel[] = [];
 
@@ -98,19 +48,15 @@ export class ColumnComponent extends Component {
 			const entities = await wikibaseClient.getEntities([
 				columnModel.item.itemId,
 			]);
-			console.log("entities", entities);
 			const entityIds = parseEntitiesConnectedByProperty(
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId]
 			);
-			console.log("entityIds", entityIds);
 			const entityInfos = await wikibaseClient.getEntityInfos(entityIds);
-			console.log("entityInfos", entityInfos);
 			const newItems = entityInfos.map((entityInfo) =>
-				newColumnItemModel(entityInfo.id, entityInfo.label)
+				newColumnItemModel(entityInfo.id, entityInfo.label, entityInfo.url)
 			);
-			console.log("newItems", newItems);
-			items.splice(0, items.length, ...newItems);
+			this.items = newItems;
 		},
 		args: () => [
 			{
@@ -188,22 +134,26 @@ export class ColumnComponent extends Component {
 		this.classList.remove("highlight");
 	};
 
-	onDeleteColumn() {
+	onDeleteColumn = () => {
 		this.tableActions.removeColumn(this.columnModel.viewId);
-	}
+	};
+
+	onDoubleClickColumnTitle = () => {
+		console.log("double click");
+		window.open(this.columnModel.item.url, "_blank");
+	};
 
 	// ... styles and other properties
 
 	render() {
-		console.log(
-			"rendering column with property",
-			this.columnModel.property.propertyId
-		);
 		return html`
 			<div id="top-bar">
-				<span id="column-title">
+				<div
+					id="column-title"
+					@click="${() => this.onDoubleClickColumnTitle()}"
+				>
 					${this.columnModel.item.text} (${this.columnModel.item.itemId})
-				</span>
+				</div>
 
 				<div class="spacer"></div>
 				<button id="delete-button" @click="${() => this.onDeleteColumn()}">
@@ -230,62 +180,62 @@ export class ColumnComponent extends Component {
 				@input="${(e: InputEvent) =>
 					(this.filter = (e.target as HTMLInputElement).value)}"
 			/>
-			<div class="items" data-column-id="${this.columnModel.viewId}">
-				${choose(this.itemMoveStatus, [
-					[
-						undefined,
-						() =>
-							html` ${choose(this.loadItemsTask.status, [
-								[TaskStatus.PENDING, () => html`Loading items...`],
-								[
-									TaskStatus.COMPLETE,
-									() =>
-										html`${map(
-											this.items.filter(
-												(item) =>
-													item.text.includes(this.filter) ||
-													item.itemId.includes(this.filter)
-											),
-											(item) =>
-												html`
-													<column-item
-														.columnItemModel="${item}"
-														@dragstart="${(e: DragEvent) => {
-															this.dispatchEvent(
-																new CustomEvent("itemDraggedStart", {
-																	detail: {
-																		item,
-																		column: this.columnModel,
-																	},
-																})
-															);
-														}}"
-														@dragend="${(e: DragEvent) => {
-															this.dispatchEvent(
-																new CustomEvent("itemDraggedEnd", {
-																	detail: {
-																		item,
-																		column: this.columnModel,
-																	},
-																})
-															);
-														}}"
-													></column-item>
-												`
-										)}`,
-								],
-								[
-									TaskStatus.ERROR,
-									() => html`Error loading items, ${this.loadItemsTask.error}`,
-								],
-							])}`,
-					],
-					[ItemMoveStatus.IN_PROGRESS, () => html`Moving items...`],
-					[ItemMoveStatus.ERROR, () => html`ERROR MOVING ITEMS`],
-				])}
-			</div>
+
+			<column-item-list
+				class="${classMap({
+					loading:
+						this.itemMoveStatus === ItemMoveStatus.IN_PROGRESS ||
+						this.loadItemsTask.status === TaskStatus.PENDING,
+					error:
+						this.itemMoveStatus === ItemMoveStatus.ERROR ||
+						this.loadItemsTask.status === TaskStatus.ERROR,
+				})}"
+				.columnModel="${this.columnModel}"
+				.items="${this.items}"
+				.filter="${this.filter}"
+			></column-item-list>
 		`;
 	}
+	static styles = css`
+		:host {
+			display: flex;
+			flex-direction: column;
+			background-color: #f5f5f5;
+			border-radius: 5px;
+			padding: 0.5rem;
+			gap: 0.5rem;
+			width: 23rem;
+		}
+		:host(.highlight) {
+			background-color: #e5e5e5;
+		}
+		:host(:hover) #delete-button {
+			opacity: 1;
+		}
+		#top-bar {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+		#top-bar > * {
+			white-space: nowrap;
+		}
+		.spacer {
+			min-width: 1rem;
+		}
+		#delete-button {
+			opacity: 0;
+			transition: opacity 0.1s ease-in-out;
+		}
+		#column-title {
+			text-align: center;
+			line-height: 1.5rem;
+			height: 1.5rem;
+			user-select: none;
+			cursor: pointer;
+		}
+	`;
 }
 
 // valid items are cleims that are of the same type as the column property

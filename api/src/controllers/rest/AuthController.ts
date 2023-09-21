@@ -38,9 +38,9 @@ export class Auth {
 
 	@Post("/login")
 	@Description("Login to the API (using Wikibase credentials)")
-	@Returns(200, String).ContentType("text/plain")
+	@Returns(200, UserSession).ContentType("text/plain")
 	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, UserSession).ContentType("application/json")
+	@Returns(401, String).ContentType("application/json")
 	async login(
 		@Required() @BodyParams() credentials: Credentials,
 		@Session("user") existingSession: Credentials

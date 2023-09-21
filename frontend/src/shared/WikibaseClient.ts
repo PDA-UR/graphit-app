@@ -7,6 +7,8 @@ import {
 	ConvertClaimModel,
 	CredentialsModel,
 	RemoveClaimModel,
+	ServerInfoModel,
+	UserSessionModel,
 	WikibasePropertyModel,
 } from "./client/ApiClient";
 
@@ -15,6 +17,7 @@ export default class WikibaseClient {
 	private readonly credentials: Credentials;
 	private readonly api: ApiClient<unknown>;
 	private properties: WikibasePropertyModel[] = [];
+	private info: ServerInfoModel | undefined;
 
 	constructor(credentials: Credentials, api: ApiClient<unknown>) {
 		this.credentials = credentials;
@@ -27,16 +30,17 @@ export default class WikibaseClient {
 		this.credentials.password = credentials.password;
 	}
 
-	async login(): Promise<any> {
-		const r = (await this.api.auth.login(this.credentials)) as any;
-		if (!r.username) {
-			throw new Error("Login failed: " + r.message);
+	async login() {
+		const userSession = await this.api.auth.login(this.credentials);
+		if (!userSession.username) {
+			throw new Error("Login failed: " + userSession);
 		}
-		await this.loadProperties();
-		return r;
+
+		const initJobs = [this.loadProperties(), this.loadServerInfo()];
+		await Promise.all(initJobs);
 	}
 
-	async logout(): Promise<any> {
+	async logout() {
 		await this.api.auth.logout();
 	}
 
@@ -120,6 +124,7 @@ export default class WikibaseClient {
 			id: string;
 			label: string;
 			description: string;
+			url: string;
 		}[]
 	> {
 		if (eintityIds.length === 0) return [];
@@ -127,7 +132,6 @@ export default class WikibaseClient {
 		console.log("got entities", entities, eintityIds);
 		const entityInfos = Object.values(entities.data.entities).map(
 			(entity: any) => {
-				console.log("parsing entity", entity);
 				const enLabel = entity.labels.en?.value,
 					enDescription = entity.descriptions.en?.value;
 
@@ -137,14 +141,23 @@ export default class WikibaseClient {
 				const label = enLabel ?? deLabel ?? entity.id,
 					description = enDescription ?? deDescription ?? "";
 
-				return { label, description, id: entity.id };
+				const url = this.getEntityUrl(entity.id);
+				return { label, description, id: entity.id, url };
 			}
 		);
 		return entityInfos;
 	}
 
+	getEntityUrl(entityId: string): string {
+		return `${this.info?.instance}/wiki/Item:${entityId}`;
+	}
+
 	async loadProperties() {
 		this.properties = await this.api.entity.properties();
+	}
+
+	async loadServerInfo() {
+		this.info = await this.api.info.info();
 	}
 
 	getCachedProperties() {

@@ -268,7 +268,7 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      * @request POST:/api/auth/login
      */
     login: (data: CredentialsModel, params: RequestParams = {}) =>
-      this.request<string, string | UserSessionModel>({
+      this.request<UserSessionModel, string>({
         path: `/api/auth/login`,
         method: "POST",
         body: data,
@@ -433,37 +433,17 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         ...params,
       }),
   };
-  example = {
-    /**
-     * @description Greets you with a hello message
-     *
-     * @tags Example
-     * @name Hello
-     * @request GET:/api/example/hello
-     */
-    hello: (
-      query: {
-        name: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<string, any>({
-        path: `/api/example/hello`,
-        method: "GET",
-        query: query,
-        ...params,
-      }),
-
+  info = {
     /**
      * @description Info about the server and env vars
      *
-     * @tags Example
+     * @tags Info
      * @name Info
-     * @request GET:/api/example/info
+     * @request GET:/api/info/info
      */
     info: (params: RequestParams = {}) =>
       this.request<ServerInfoModel, any>({
-        path: `/api/example/info`,
+        path: `/api/info/info`,
         method: "GET",
         format: "json",
         ...params,

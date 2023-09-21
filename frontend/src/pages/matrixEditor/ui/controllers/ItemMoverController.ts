@@ -30,7 +30,15 @@ export class ItemMoverController implements ReactiveController {
 	}
 	hostConnected() {}
 
-	moveItems = (moveItemsInfo: MoveItemInfo[]) => {
+	moveItems = (_moveItemsInfo: MoveItemInfo[]) => {
+		// Remove items that are already in the right place
+		const moveItemsInfo = _moveItemsInfo.filter(
+			(moveItemInfo) =>
+				!(
+					moveItemInfo.from === moveItemInfo.to &&
+					moveItemInfo.property === moveItemInfo.newClaim.property
+				)
+		);
 		document.dispatchEvent(
 			new CustomEvent(ITEM_MOVE_EVENT, {
 				detail: {
@@ -39,6 +47,7 @@ export class ItemMoverController implements ReactiveController {
 				},
 			})
 		);
+
 		const jobs = moveItemsInfo.map(async (moveItemInfo) => {
 			await this.wikibaseClient.convertClaim(moveItemInfo.from, moveItemInfo);
 		});

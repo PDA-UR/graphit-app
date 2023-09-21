@@ -61,6 +61,7 @@ export class Table extends Component {
 					entity.data.entities[input].labels?.en?.value ??
 					entity.data.entities[input].labels?.de?.value ??
 					"",
+				url: wikibaseClient.getEntityUrl(entity.data.entities[input].id),
 			};
 			const columnModel = newColumnModel(
 				wikibaseItem,

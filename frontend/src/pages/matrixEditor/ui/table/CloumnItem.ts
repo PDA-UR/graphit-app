@@ -1,5 +1,5 @@
 import { LitElement, html, css, PropertyValueMap } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ColumnItemModel } from "../../data/models/ColumnItemModel";
 import { Component } from "../atomic/Component";
 
@@ -10,6 +10,7 @@ export class ColumnItem extends Component {
 			width: 100%;
 			height: 5rem;
 			display: flex;
+			cursor: grab;
 		}
 		.content {
 			padding: 0.5rem;
@@ -34,6 +35,10 @@ export class ColumnItem extends Component {
 	): void {
 		this.setAttribute("draggable", "true");
 	}
+
+	ondblclick = (e: MouseEvent) => {
+		window.open(this.columnItemModel.url, "_blank");
+	};
 
 	render() {
 		return html`

@@ -127,7 +127,28 @@ export class Claim {
 		);
 
 		if (removeResult instanceof BadRequest) {
-			throw new BadRequest("Failed to create claim on " + id);
+			// re add old claim
+
+			const r = await this.actionExecutor.executeClaimAction(
+				"claim",
+				"create",
+				{
+					id,
+					value: convertData.value,
+					property: convertData.property,
+				},
+				credentials
+			);
+			if (r instanceof BadRequest) {
+				throw new BadRequest(
+					"Failed to re-add claim to " + id,
+					"and failed to revert changes"
+				);
+			}
+			throw new BadRequest(
+				"Failed to create claim on " + id,
+				"reverted changes"
+			);
 		}
 
 		return (
