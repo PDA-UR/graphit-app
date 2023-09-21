@@ -16,7 +16,7 @@ export default defineConfig({
 				visTest: "./src/pages/visTest/index.html",
 				propertyEditor: "src/pages/propertyEditor/index.html",
 				selectionTools: "src/pages/selectionTools/index.html",
-				matrixEditor: "src/pages/matrixEditor/index.html",
+				tableEditor: "src/pages/tableEditor/index.html",
 			},
 		},
 	},

@@ -131,7 +131,7 @@ export default class AppRoot extends Component {
 				when(
 					this.logoutTask.status === TaskStatus.INITIAL,
 					() => html`<div id="top-bar">
-							<span>Matrix Editor</span>
+							<span>GraphIT Table</span>
 							<div class="spacer"></div>
 							<span>${this.zustand.credentials?.username}</span>
 							<button @click="${() => this.onLogout()}">Logout</button>
