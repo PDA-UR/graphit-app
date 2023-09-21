@@ -8,6 +8,8 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: graphit/app:latest
+    image: ${NAME}:${VERSION}
     ports:
       - "8081:8081"
+    env_file:
+      - ${ENV_FILE}

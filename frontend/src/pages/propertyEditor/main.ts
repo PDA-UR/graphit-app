@@ -24,8 +24,8 @@ async function main() {
 
 	try {
 		console.log("Logging in...", credentials, api);
+
 		const userInfo = await wikibaseClient.login();
-		console.log(userInfo);
 
 		const elements = await wikibaseClient.getUserGraph();
 		console.log(elements);

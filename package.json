@@ -4,7 +4,7 @@
 	"description": "GraphIT application.",
 	"scripts": {
 		"build": "npm run build --workspace=api --workspace=frontend",
-		"start": "npm run start --workspace=api & npm run start --workspace=frontend",
+		"start": "npm run start --workspace=api",
 		"dev": "npm run dev --workspace=api & npm run dev --workspace=frontend",
 		"dev:production": "npm run dev:production --workspace=api & npm run dev:production --workspace=frontend"
 	},

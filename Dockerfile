@@ -1,4 +1,4 @@
-ARG NODE_VERSION=16.13.1
+ARG NODE_VERSION=18.7.0
 
 FROM node:${NODE_VERSION}-alpine as build
 WORKDIR /opt

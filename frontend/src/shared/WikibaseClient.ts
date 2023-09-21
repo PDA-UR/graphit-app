@@ -38,6 +38,7 @@ export default class WikibaseClient {
 
 		const initJobs = [this.loadProperties(), this.loadServerInfo()];
 		await Promise.all(initJobs);
+		return userSession;
 	}
 
 	async logout() {

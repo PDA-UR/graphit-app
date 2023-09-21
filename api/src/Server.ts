@@ -53,7 +53,7 @@ function setCustomCacheControl(res: ServerResponse, path: string) {
 	...config,
 	isProduction,
 	acceptMimes: ["application/json", "text/html", "text/plain"],
-	httpPort: process.env.PORT || 8083,
+	httpPort: process.env.PORT || 8081,
 	httpsPort: isProduction, // CHANGE in PROD
 	disableComponentsScan: true,
 	mount: {
