@@ -1,0 +1,32 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_DEBUG: false
+          envkey_SOME_API_KEY: ${{ secrets.SESSION_SECRET }}
+          envkey_PROD_INSTANCE: "https://graphit.ur.de"
+          envkey_PROD_SPARQL_ENDPOINT: "https://query.graphit.ur.de/proxy/wdqs/bigdata/namespace/wdq/sparql"
+          file_name: .env
+
+      - name: Build Docker image
+        run: ./build.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }} .env ${{ github.ref_name }}
+
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push Docker image to GitHub Container Registry
+        run: docker push "ghcr.io/${{ github.repository }}/graphit-app:${{ github.ref_name }}"
