@@ -28,7 +28,7 @@ const whitelist = [
 	"https://graph.graphit.ur.de/",
 	"http://graph.graphit.ur.de/",
 	"https://test.graphit.ur.de/",
-	"http://graph.graphit.ur.de/",
+	"http://test.graphit.ur.de/",
 ];
 const corsOptions = {
 	credentials: true,

@@ -2,14 +2,20 @@ name: Build and Push Docker Image
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - dev
+      - master
 
 jobs:
-  build:
+  create-container:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -23,25 +29,36 @@ jobs:
           file_name: .env
 
       - name: Build Docker image
-        run: ./build.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }} .env ${{ github.ref_name }}
+        run: ./build.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }} .env "${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}"
 
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Login to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push Docker image to GitHub Container Registry
-        run: docker push "ghcr.io/pda-ur/graphit-app:${{ github.ref_name }}"
+        run: docker push "ghcr.io/pda-ur/graphit-app:${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}"
 
-  notify:
+  notify-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: Trigger Webhook
+        run: |
+          PAYLOAD=$(echo -n '{"event_name": "release", "branch": "${{ steps.extract_branch.outputs.branch }}", image: "ghcr.io/pda-ur/graphit-app:${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}" }')
+          curl -X POST \
+              -H "Content-Type: application/json" \
+              -H "X-Hub-Signature: sha1=$(echo -n $PAYLOAD | openssl dgst -sha1 -hmac ${{ secrets.WEBHOOK_SECRET }} | awk '{print $2}')" \
+              -d "$PAYLOAD" \
+              ${{ secrets.WEBHOOK_URL }}
+
+  send-status:
     name: Discord Notification
     runs-on: ubuntu-latest
     needs:
-      - build
-      - push
+      - create-container
+      - notify-server
     if: ${{ always() }}
 
     steps:
@@ -51,4 +68,4 @@ jobs:
           github-token: ${{ secrets.github_token }}
           discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
           username: "GitPusher9000"
-          title: "[1/2] ${{ github.workflow }}: {{STATUS}}"
+          description: "[1/2] Build docker container: {{STATUS}}!"
