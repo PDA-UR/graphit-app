@@ -69,3 +69,4 @@ jobs:
           discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
           username: "GitPusher9000"
           description: "[1/2] Build docker container: {{STATUS}}!"
+          avatar-url: "https://gravatar.com/avatar/cff4411e202d6c9262312147a0f0e2cd?s=400&d=robohash&r=x"
