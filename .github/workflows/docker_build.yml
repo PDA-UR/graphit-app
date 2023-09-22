@@ -48,15 +48,14 @@ jobs:
         id: extract_branch
       - name: Trigger Webhook
         run: |
-          PAYLOAD=$(echo -n '{"ref": "refs/heads/${{ steps.extract_branch.outputs.branch }}", "event_name": "release", "branch": "${{ steps.extract_branch.outputs.branch }}", image: "ghcr.io/pda-ur/graphit-app:${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}" }')
+          PAYLOAD=$(echo -n '{"ref": "refs/heads/${{ steps.extract_branch.outputs.branch }}", "event_name": "push", "branch": "${{ steps.extract_branch.outputs.branch }}", "image": "ghcr.io/pda-ur/graphit-app:${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}" }')
           curl -X POST \
               -H "Content-Type: application/json" \
               -H "X-Hub-Signature: sha1=$(echo -n $PAYLOAD | openssl dgst -sha1 -hmac ${{ secrets.WEBHOOK_SECRET }} | awk '{print $2}')" \
               -d "$PAYLOAD" \
               ${{ secrets.WEBHOOK_URL }}
-
         env:
-          PAYLOAD: '{"ref": "refs/heads/${{ steps.extract_branch.outputs.branch }}", "event_name": "release", "branch": "${{ steps.extract_branch.outputs.branch }}", image: "ghcr.io/pda-ur/graphit-app:${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}" }'
+          PAYLOAD: '{"ref": "refs/heads/${{ steps.extract_branch.outputs.branch }}", "event_name": "push", "branch": "${{ steps.extract_branch.outputs.branch }}", image: "ghcr.io/pda-ur/graphit-app:${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}" }'
 
   send-status:
     name: Discord Notification
