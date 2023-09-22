@@ -39,6 +39,8 @@ jobs:
 
   notify-server:
     runs-on: ubuntu-latest
+    needs: create-container
+    if: needs.create-container.result == 'success'
     steps:
       - name: Extract branch name
         shell: bash
