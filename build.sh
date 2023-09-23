@@ -1,16 +1,13 @@
 #! /bin/bash
 
-USERNAME=$1
-TOKEN=$2
-export ENV_FILE="$3"
-
-export VERSION=$4
+export VERSION=$1
+export ENV_FILE="$2"
 export NAME=graphit-app
 
 
-if [ -z "$USERNAME" ] || [ -z "$TOKEN" ] || [ -z "$ENV_FILE" ] || [ -z "$VERSION" ]
+if [ -z "$VERSION" ] || [ -z "$ENV_FILE" ]
 then
-    echo "Please provide username, token, env file and version as args"
+    echo "Please provide version and env file as args"
     exit 1
 fi
 

@@ -24,13 +24,12 @@ const whitelist = [
 	"http://localhost:5173", // VITE Dev server
 	"http://localhost:4173",
 	"http://localhost:8081",
-	"http://localhost:8085/",
-	"http://localhost:8086/",
-	"http://0.0.0.0:8081/",
-	"https://graph.graphit.ur.de/",
-	"http://graph.graphit.ur.de/",
-	"https://test.graphit.ur.de/",
-	"http://test.graphit.ur.de/",
+	"http://localhost:8085",
+	"http://localhost:8086",
+	"https://graph.graphit.ur.de",
+	"http://graph.graphit.ur.de",
+	"https://test.graphit.ur.de",
+	"http://test.graphit.ur.de",
 ];
 const corsOptions = {
 	credentials: true,

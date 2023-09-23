@@ -2,3 +2,5 @@ out/
 node_modules
 logs/
 publish.sh
+.env
+deploy.sh
