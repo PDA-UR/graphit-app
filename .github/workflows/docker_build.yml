@@ -5,7 +5,9 @@ on:
     branches:
       - dev
       - master
-
+    paths:
+      - "api/**"
+      - "frontend/**"
 jobs:
   create-container:
     runs-on: ubuntu-latest
@@ -72,4 +74,4 @@ jobs:
           github-token: ${{ secrets.github_token }}
           discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
           username: "GitHub Actions"
-          avatar-url: "hhttps://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+          avatar-url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
