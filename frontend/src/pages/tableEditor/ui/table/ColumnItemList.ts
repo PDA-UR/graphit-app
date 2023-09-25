@@ -8,7 +8,7 @@ import { ColumnItemModel } from "../../data/models/ColumnItemModel";
 @customElement("column-item-list")
 export class ColumnItemList extends Component {
 	@property({ type: Object, attribute: true })
-	dragFromInfo: ColumnModel | "search" = "search";
+	dragFromInfo!: ColumnModel | "search";
 
 	@property({ type: Array, attribute: true })
 	items: ColumnItemModel[] = [];

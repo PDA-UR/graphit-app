@@ -1,4 +1,4 @@
-import { html, unsafeCSS } from "lit";
+import { css, html, unsafeCSS } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { TableModel } from "../../data/models/TableModel";
@@ -14,10 +14,69 @@ import { Task } from "@lit-labs/task";
 import { DragController } from "../controllers/DragController";
 import { dragControllerContext } from "../../data/contexts/DragControllerContext";
 import { when } from "lit/directives/when.js";
+import { isDraggingContext } from "../../data/contexts/IsDraggingContext";
 
 @customElement("table-view")
 export class Table extends Component {
-	static styles = unsafeCSS`
+	@consume({ context: dragControllerContext })
+	private dragController!: DragController;
+
+	@property()
+	private isDragging!: boolean;
+
+	@property({ type: Object, attribute: true })
+	tableModel!: TableModel;
+
+	@consume({ context: tableContext })
+	public tableActions!: StoreActions;
+
+	@consume({ context: wikibaseContext })
+	private wikibaseClient!: WikibaseClient;
+
+	removeColumn(viewId: string) {
+		this.tableActions.removeColumn(viewId);
+	}
+
+	onItemDragStart = (e: CustomEvent) => {
+		this.dragController.onItemDragStart(e.detail);
+	};
+
+	onItemDragEnd = (e: CustomEvent) => {
+		this.dragController.onItemDragEnd(e.detail);
+	};
+
+	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
+		this.dragController.onDrop(colummnModel, doCopy);
+	};
+
+	render() {
+		console.log("rendering table");
+		return html`
+			${this.tableModel.columns.map((columnModel) => {
+				return html`
+					<column-component
+						.columnModel="${columnModel}"
+						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
+						@itemDropped="${(e: any) =>
+							this.onItemDropped(e.detail.data, e.detail.doCopy)}"
+						@itemDraggedStart="${(e: any) => this.onItemDragStart(e)}"
+						@itemDraggedEnd="${(e: any) => this.onItemDragEnd(e)}"
+					>
+					</column-component>
+				`;
+			})}
+			<new-column-dropzone
+				class="${when(
+					this.isDragging,
+					() => "isDragging",
+					() => ""
+				)}"
+				@itemDropped="${(e: any) => this.onItemDropped(e.detail.data, false)}"
+			></new-column-dropzone>
+		`;
+	}
+
+	static styles = css`
 		:host {
 			display: flex;
 			flex-direction: row;
@@ -35,88 +94,5 @@ export class Table extends Component {
 			justify-content: center;
 			align-items: center;
 		}
-
 	`;
-	@consume({ context: dragControllerContext })
-	private dragController!: DragController;
-
-	@property({ type: Object, attribute: true })
-	tableModel!: TableModel;
-
-	@consume({ context: tableContext })
-	public tableActions!: StoreActions;
-
-	@consume({ context: wikibaseContext })
-	private wikibaseClient!: WikibaseClient;
-
-	@state()
-	isDragging = false;
-
-	private addCloumnTask = new Task(this, {
-		task: async ([{ wikibaseClient, addColumn }]) => {
-			const _input = prompt("Item ID (e.g. Q1234)");
-			if (!_input) return;
-			const input = _input.trim().toUpperCase();
-			const entity = await wikibaseClient.getEntities([input]);
-			const wikibaseItem = {
-				itemId: entity.data.entities[input].id,
-				text:
-					entity.data.entities[input].labels?.en?.value ??
-					entity.data.entities[input].labels?.de?.value ??
-					"",
-				url: wikibaseClient.getEntityUrl(entity.data.entities[input].id),
-			};
-			const columnModel = newColumnModel(
-				wikibaseItem,
-				wikibaseClient.getCachedProperties()[0]
-			);
-			addColumn(columnModel);
-		},
-		args: () => [
-			{
-				wikibaseClient: this.wikibaseClient,
-				addColumn: this.tableActions.addColumn,
-			},
-		],
-		autoRun: false,
-	});
-
-	removeColumn(viewId: string) {
-		this.tableActions.removeColumn(viewId);
-	}
-
-	onItemDragStart = (e: CustomEvent) => {
-		this.isDragging = true;
-		this.dragController.onItemDragStart(e.detail);
-	};
-
-	onItemDragEnd = (e: CustomEvent) => {
-		this.isDragging = false;
-		this.dragController.onItemDragEnd(e.detail);
-	};
-
-	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
-		this.isDragging = false;
-		this.dragController.onDrop(colummnModel, doCopy);
-	};
-
-	render() {
-		console.log("rendering table");
-		return html`
-			${this.tableModel.columns.map((columnModel) => {
-				console.log("rendering column", columnModel.viewId);
-				return html`
-					<column-component
-						.columnModel="${columnModel}"
-						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
-						@itemDropped="${(e: any) =>
-							this.onItemDropped(e.detail.data, e.detail.doCopy)}"
-						@itemDraggedStart="${(e: any) => this.onItemDragStart(e)}"
-						@itemDraggedEnd="${(e: any) => this.onItemDragEnd(e)}"
-					>
-					</column-component>
-				`;
-			})}
-		`;
-	}
 }

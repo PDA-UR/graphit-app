@@ -82,7 +82,7 @@ export class ItemOperationController implements ReactiveController {
 		);
 	};
 
-	moveItems = (_moveItemsInfo: MoveItemInfo[]) => {
+	moveItems = (_moveItemsInfo: MoveItemInfo[], doCopy: boolean) => {
 		// Remove items that are already in the right place
 		const moveItemsInfo = _moveItemsInfo.filter(
 			(moveItemInfo) =>
@@ -95,7 +95,7 @@ export class ItemOperationController implements ReactiveController {
 		this.updateMoveStatus(moveItemsInfo, ItemOperationStatus.IN_PROGRESS);
 
 		const jobs = moveItemsInfo.map(async (moveItemInfo) => {
-			if (moveItemInfo.from === undefined)
+			if (moveItemInfo.from === undefined || doCopy)
 				await this.wikibaseClient.createClaim(
 					moveItemInfo.to,
 					moveItemInfo.newClaim

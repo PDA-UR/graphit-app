@@ -6,6 +6,7 @@ import { Table } from "./table/Table";
 import { ColumnItemList } from "./table/ColumnItemList";
 import { Trash } from "./atomic/Trash";
 import SearchSidebar from "./SearchSidebar";
+import NewColumnDropzone from "./table/NewColumnDropzone";
 
 export {
 	AppRoot,
@@ -16,6 +17,7 @@ export {
 	ColumnItemList,
 	Trash,
 	SearchSidebar,
+	NewColumnDropzone,
 };
 
 declare global {
@@ -28,5 +30,6 @@ declare global {
 		"column-item-list": ColumnItemList;
 		"trash-component": Trash;
 		"search-sidebar": SearchSidebar;
+		"new-column-dropzone": NewColumnDropzone;
 	}
 }

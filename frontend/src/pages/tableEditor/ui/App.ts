@@ -12,9 +12,10 @@ import { Task, TaskStatus } from "@lit-labs/task";
 import { wikibaseContext } from "../data/contexts/WikibaseContext";
 import { when } from "lit/directives/when.js";
 import { choose } from "lit/directives/choose.js";
-import { sessionContext } from "../data/contexts/SessionContext";
 import { dragControllerContext } from "../data/contexts/DragControllerContext";
 import { DragController } from "./controllers/DragController";
+import { sessionContext } from "../data/contexts/SessionContext";
+import { isDraggingContext } from "../data/contexts/IsDraggingContext";
 
 @customElement("app-root")
 export default class AppRoot extends Component {
@@ -41,6 +42,13 @@ export default class AppRoot extends Component {
 		if (this.zustand.credentials) {
 			this.loginTask.run();
 		}
+
+		window.addEventListener("keydown", (e) => {
+			if (e.ctrlKey && e.key === "f") {
+				e.preventDefault();
+				this.zustand.toggleSidebar();
+			}
+		});
 	}
 
 	private loginTask = new Task(this, {
@@ -86,6 +94,13 @@ export default class AppRoot extends Component {
 		this.loginTask.run();
 	}
 
+	@state()
+	isDragging = false;
+
+	private setIsDragging = (isDragging: boolean) => {
+		this.isDragging = isDragging;
+	};
+
 	@provide({ context: tableContext })
 	tableContext = fromStore(this.zustand);
 
@@ -93,7 +108,11 @@ export default class AppRoot extends Component {
 	wikibaseContext = this.wikibaseClient;
 
 	@provide({ context: dragControllerContext })
-	dragControllerContext = new DragController(this, this.wikibaseClient);
+	dragControllerContext = new DragController(
+		this,
+		this.wikibaseClient,
+		this.setIsDragging
+	);
 
 	@provide({ context: sessionContext })
 	sessionContext = {
@@ -130,7 +149,10 @@ export default class AppRoot extends Component {
 									() => "closed"
 								)}"
 							></search-sidebar>
-							<table-view .tableModel="${this.zustand.table}"></table-view>
+							<table-view
+								.tableModel="${this.zustand.table}"
+								.isDragging="${this.isDragging}"
+							></table-view>
 						</div>`,
 					() =>
 						choose(this.logoutTask.status, [
@@ -167,8 +189,8 @@ export default class AppRoot extends Component {
 		#main {
 			display: flex;
 			flex-direction: row;
-			height: 100%;
 			width: 100%;
+			overflow: hidden;
 		}
 	`;
 }

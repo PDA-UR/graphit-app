@@ -10,11 +10,16 @@ import { consume } from "@lit-labs/context";
 import WikibaseClient from "../../../shared/WikibaseClient";
 import { wikibaseContext } from "../data/contexts/WikibaseContext";
 import { choose } from "lit/directives/choose.js";
+import { dragControllerContext } from "../data/contexts/DragControllerContext";
+import { DragController } from "./controllers/DragController";
 
 @customElement("search-sidebar")
 export default class SearchSidebar extends Component {
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
+
+	@consume({ context: dragControllerContext })
+	private dragController!: DragController;
 
 	@state()
 	private searchQuery = "";
@@ -67,7 +72,11 @@ export default class SearchSidebar extends Component {
 							() => ""
 						)}"
             .items="${this.searchResults}"
-            .filter="${this.searchQuery}"
+            .dragFromInfo="search"
+            @itemDraggedStart="${(e: any) =>
+							this.dragController.onItemDragStart(e.detail)}"
+            @itemDraggedEnd="${(e: any) =>
+							this.dragController.onItemDragEnd(e.detail)}"
         ></column-item-list>
 		`;
 	}
@@ -77,7 +86,6 @@ export default class SearchSidebar extends Component {
 			display: flex;
 			flex-direction: column;
 			width: 25rem;
-			height: 100%;
 			overflow-x: auto;
 			padding: 0.5rem;
 			border-right: 1px solid black;

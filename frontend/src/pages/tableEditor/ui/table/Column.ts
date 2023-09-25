@@ -221,7 +221,7 @@ export class ColumnComponent extends Component {
 						this.loadItemsTask.status === TaskStatus.PENDING,
 					error: this.loadItemsTask.status === TaskStatus.ERROR,
 				})}"
-				.columnModel="${this.columnModel}"
+				.dragFromInfo="${this.columnModel}"
 				.items="${this.items}"
 				.filter="${this.filter}"
 			></column-item-list>
