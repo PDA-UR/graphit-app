@@ -94,7 +94,7 @@ export class Table extends Component {
 		this.dragController.onItemDragEnd(e.detail);
 	};
 
-	onItemDropped = (colummnModel: ColumnModel, doCopy: boolean) => {
+	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
 		this.isDragging = false;
 		this.dragController.onDrop(colummnModel, doCopy);
 	};
@@ -109,7 +109,7 @@ export class Table extends Component {
 						.columnModel="${columnModel}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
 						@itemDropped="${(e: any) =>
-							this.onItemDropped(columnModel, e.detail.doCopy)}"
+							this.onItemDropped(e.detail.data, e.detail.doCopy)}"
 						@itemDraggedStart="${(e: any) => this.onItemDragStart(e)}"
 						@itemDraggedEnd="${(e: any) => this.onItemDragEnd(e)}"
 					>
@@ -124,14 +124,6 @@ export class Table extends Component {
 					Add Column
 				</button>
 			</div>
-			<trash-component
-				class="${when(
-					this.isDragging,
-					() => "",
-					() => "hidden"
-				)}"
-				@dropped-items="${() => this.dragController.onDrop("trash", false)}"
-			></trash-component>
 		`;
 	}
 }

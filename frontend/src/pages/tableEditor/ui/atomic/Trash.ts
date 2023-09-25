@@ -6,9 +6,6 @@ import { Component } from "./Component";
 export class Trash extends Component {
 	static styles = css`
 		:host {
-			right: 0;
-			bottom: 0;
-			position: absolute;
 			height: 4rem;
 			background-color: white;
 			margin: 0.5rem;

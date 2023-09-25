@@ -24,6 +24,7 @@ import {
 	ItemRemoveEventDetail,
 } from "../controllers/ItemOperationController";
 import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
+import { when } from "lit/directives/when.js";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -35,6 +36,9 @@ export class ColumnComponent extends Component {
 
 	@state()
 	filter = "";
+
+	@state()
+	isDragover = false;
 
 	@property({ type: Object, attribute: false })
 	columnModel!: ColumnModel;
@@ -143,19 +147,26 @@ export class ColumnComponent extends Component {
 		event.preventDefault();
 		const doCopy =
 			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
-		this.dispatchEvent(new CustomEvent("itemDropped", { detail: { doCopy } }));
+		this.dispatchEvent(
+			new CustomEvent("itemDropped", {
+				detail: { doCopy, data: this.columnModel },
+			})
+		);
 
 		this.classList.remove("highlight");
+		this.isDragover = false;
 	};
 
 	ondragover = (event: DragEvent) => {
 		event.preventDefault();
 		this.classList.add("highlight");
+		this.isDragover = true;
 	};
 
 	ondragleave = (event: DragEvent) => {
 		event.preventDefault();
 		this.classList.remove("highlight");
+		this.isDragover = false;
 	};
 
 	onDeleteColumn = () => {
@@ -163,7 +174,6 @@ export class ColumnComponent extends Component {
 	};
 
 	onDoubleClickColumnTitle = () => {
-		console.log("double click");
 		window.open(this.columnModel.item.url, "_blank");
 	};
 
@@ -216,6 +226,20 @@ export class ColumnComponent extends Component {
 				.items="${this.items}"
 				.filter="${this.filter}"
 			></column-item-list>
+
+			<trash-component
+				class="${when(
+					this.isDragover,
+					() => "",
+					() => "hidden"
+				)}"
+				@dropped-items="${() =>
+					this.dispatchEvent(
+						new CustomEvent("itemDropped", {
+							detail: { doCopy: false, data: "trash" },
+						})
+					)}"
+			></trash-component>
 		`;
 	}
 	static styles = css`
