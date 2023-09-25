@@ -21,6 +21,7 @@ import {
 	ItemMoveEventDetail,
 	ItemMoveStatus,
 } from "../controllers/ItemMoverController";
+import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -88,9 +89,12 @@ export class ColumnComponent extends Component {
 				if (!thisColumnIsInvolved) return;
 
 				this.itemMoveStatus = e.detail.status;
+				console.log("item move status", this.itemMoveStatus);
 				if (e.detail.status === ItemMoveStatus.DONE) {
 					this.loadItemsTask.run();
 					this.itemMoveStatus = undefined;
+				} else if (e.detail.status === ItemMoveStatus.ERROR) {
+					Toast.fromError(e.detail.error!, ToastLength.LONG).show();
 				}
 			}
 		);
@@ -119,8 +123,10 @@ export class ColumnComponent extends Component {
 
 	ondrop = (event: DragEvent) => {
 		event.preventDefault();
-		console.log("dropped");
-		this.dispatchEvent(new CustomEvent("itemDropped"));
+		const doCopy =
+			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
+		this.dispatchEvent(new CustomEvent("itemDropped", { detail: { doCopy } }));
+
 		this.classList.remove("highlight");
 	};
 
@@ -186,9 +192,7 @@ export class ColumnComponent extends Component {
 					loading:
 						this.itemMoveStatus === ItemMoveStatus.IN_PROGRESS ||
 						this.loadItemsTask.status === TaskStatus.PENDING,
-					error:
-						this.itemMoveStatus === ItemMoveStatus.ERROR ||
-						this.loadItemsTask.status === TaskStatus.ERROR,
+					error: this.loadItemsTask.status === TaskStatus.ERROR,
 				})}"
 				.columnModel="${this.columnModel}"
 				.items="${this.items}"

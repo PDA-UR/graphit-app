@@ -5,6 +5,7 @@ import { getEnvVar } from "./util/Env";
 import {
 	ApiClient,
 	ConvertClaimModel,
+	CreateClaimModel,
 	CredentialsModel,
 	RemoveClaimModel,
 	ServerInfoModel,
@@ -171,6 +172,10 @@ export default class WikibaseClient {
 
 	async convertClaim(fromEntityId: string, convert: ConvertClaimModel) {
 		return await this.api.claim.move(fromEntityId, convert);
+	}
+
+	async createClaim(entityId: string, create: CreateClaimModel) {
+		return await this.api.claim.create(entityId, create);
 	}
 
 	async removeClaim(entityId: string, claim: RemoveClaimModel) {

@@ -92,7 +92,8 @@ export class Table extends Component {
 					<column-component
 						.columnModel="${columnModel}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
-						@itemDropped="${() => this.dragController.onDrop(columnModel)}"
+						@itemDropped="${(e: any) =>
+							this.dragController.onDrop(columnModel, e.detail.doCopy)}"
 						@itemDraggedStart="${(e: CustomEvent) =>
 							this.dragController.onItemDragStart(e.detail)}"
 						@itemDraggedEnd="${(e: CustomEvent) =>

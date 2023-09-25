@@ -39,7 +39,9 @@ export class Claim {
 			},
 			credentials
 		);
-		this.logger.info("Claim created", r);
+		if (r instanceof BadRequest) {
+			throw new BadRequest("Failed to create claim on " + id);
+		}
 		return r;
 	}
 
@@ -101,6 +103,22 @@ export class Claim {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
+		const addResult = await this.actionExecutor.executeClaimAction(
+			"claim",
+			"create",
+			{
+				id: convertData.to,
+				...convertData.newClaim,
+			},
+			credentials
+		);
+
+		if (addResult instanceof BadRequest) {
+			throw new BadRequest(
+				"Failed to add claim to " + convertData.to + ", reverted changes"
+			);
+		}
+
 		const removeResult: any = await this.actionExecutor.executeClaimAction(
 			"claim",
 			"remove",
@@ -113,37 +131,19 @@ export class Claim {
 		);
 
 		if (removeResult instanceof BadRequest) {
-			throw new BadRequest("Failed to remove claim from " + id);
-		}
-
-		await this.actionExecutor.executeClaimAction(
-			"claim",
-			"create",
-			{
-				id: convertData.to,
-				...convertData.newClaim,
-			},
-			credentials
-		);
-
-		if (removeResult instanceof BadRequest) {
-			// re add old claim
-
+			// remove newly created claim
 			const r = await this.actionExecutor.executeClaimAction(
 				"claim",
-				"create",
+				"remove",
 				{
 					id,
-					value: convertData.value,
-					property: convertData.property,
+					value: convertData.to,
+					property: convertData.newClaim,
 				},
 				credentials
 			);
 			if (r instanceof BadRequest) {
-				throw new BadRequest(
-					"Failed to re-add claim to " + id,
-					"and failed to revert changes"
-				);
+				throw new BadRequest("Failed to undo: Create claim on entity " + id);
 			}
 			throw new BadRequest(
 				"Failed to create claim on " + id,

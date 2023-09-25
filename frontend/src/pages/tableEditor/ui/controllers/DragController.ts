@@ -33,7 +33,7 @@ export class DragController implements ReactiveController {
 		);
 	}
 
-	onDrop(column: ColumnModel) {
+	onDrop(column: ColumnModel, doCopy: boolean) {
 		const convertClaimModels: MoveItemInfo[] = this.draggedItems.map(
 			(draggedItem) => ({
 				from: draggedItem.column.item.itemId,
@@ -48,6 +48,6 @@ export class DragController implements ReactiveController {
 				},
 			})
 		);
-		this.itemMover.moveItems(convertClaimModels);
+		this.itemMover.moveItems(convertClaimModels, doCopy);
 	}
 }

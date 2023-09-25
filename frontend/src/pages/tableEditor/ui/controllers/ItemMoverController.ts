@@ -30,7 +30,7 @@ export class ItemMoverController implements ReactiveController {
 	}
 	hostConnected() {}
 
-	moveItems = (_moveItemsInfo: MoveItemInfo[]) => {
+	moveItems = (_moveItemsInfo: MoveItemInfo[], doCopy = false) => {
 		// Remove items that are already in the right place
 		const moveItemsInfo = _moveItemsInfo.filter(
 			(moveItemInfo) =>
@@ -49,7 +49,13 @@ export class ItemMoverController implements ReactiveController {
 		);
 
 		const jobs = moveItemsInfo.map(async (moveItemInfo) => {
-			await this.wikibaseClient.convertClaim(moveItemInfo.from, moveItemInfo);
+			if (doCopy)
+				await this.wikibaseClient.createClaim(
+					moveItemInfo.to,
+					moveItemInfo.newClaim
+				);
+			else
+				await this.wikibaseClient.convertClaim(moveItemInfo.from, moveItemInfo);
 		});
 
 		Promise.all(jobs)
@@ -69,7 +75,9 @@ export class ItemMoverController implements ReactiveController {
 						detail: {
 							moveItemsInfo,
 							status: ItemMoveStatus.ERROR,
-							error: e,
+							error: doCopy
+								? new Error("Failed to copy.")
+								: new Error("Failed to move."),
 						},
 					})
 				)

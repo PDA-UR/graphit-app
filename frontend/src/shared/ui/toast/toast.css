@@ -1,0 +1,87 @@
+.toast {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    position: absolute;
+    left: 50%;
+    bottom: 3em;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 1em !important;
+    border-radius: 5px;
+}
+
+
+.toast-icon {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.5em;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.toast.success {
+    background-color: #9df7b0;
+}
+.toast.success > .toast-icon {
+    background-image: url("../../icons/check-circle.svg");
+}
+
+.toast.error {
+    background-color: #ff9e9e;
+}
+
+.toast.error > .toast-icon {
+    background-image: url("../../icons/x-circle.svg");
+}
+
+.toast.info {
+    background-color: #9ce3f7;
+}
+
+.toast.info > .toast-icon {
+    background-image: url("../../icons/info.svg");
+}
+
+.toast.warning {
+    background-color: #f8daa6;
+}
+
+.toast.warning > .toast-icon {
+    background-image: url("../../icons/warning-circle.svg");
+}
+
+
+/* animations */
+
+.toast-show {
+    animation: toast-show 0.4s ease-in-out;
+}
+
+.toast-hide {
+    animation: toast-hide 0.3s ease-in-out;
+}
+
+/* toast-show slides up from bottom */
+
+@keyframes toast-show {
+    0% {
+        bottom: -100px;
+    }
+    100% {
+        bottom: 3em;
+    }
+}
+
+/* toast-hide slides down to bottom */
+
+@keyframes toast-hide {
+    0% {
+        bottom: 3em;
+    }
+    100% {
+        bottom: -100px;
+    }
+}
