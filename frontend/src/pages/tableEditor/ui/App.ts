@@ -191,6 +191,7 @@ export default class AppRoot extends Component {
 			flex-direction: row;
 			width: 100%;
 			overflow: hidden;
+			flex-grow: 1;
 		}
 	`;
 }
