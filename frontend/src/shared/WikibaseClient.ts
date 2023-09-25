@@ -46,6 +46,11 @@ export default class WikibaseClient {
 		await this.api.auth.logout();
 	}
 
+	async search(search: string): Promise<any> {
+		const results = await this.api.entity.search(search);
+		return results;
+	}
+
 	async getUserGraph(): Promise<ElementDefinition[]> {
 		const results = await this.api.sparql.userGraph();
 		const graph = this.sparqlParser.parsePairs(

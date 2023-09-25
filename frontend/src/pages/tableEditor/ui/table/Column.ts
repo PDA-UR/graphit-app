@@ -14,7 +14,6 @@ import {
 import { Task, TaskStatus } from "@lit-labs/task";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
-import { choose } from "lit/directives/choose.js";
 import { WikibasePropertyModel } from "../../../../shared/client/ApiClient";
 import {
 	ITEM_MOVE_EVENT,

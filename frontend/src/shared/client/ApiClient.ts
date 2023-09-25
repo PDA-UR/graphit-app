@@ -419,6 +419,21 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
+     * @description Search for entities
+     *
+     * @tags Entity
+     * @name Search
+     * @request GET:/api/entity/search/{query}
+     */
+    search: (query: string, params: RequestParams = {}) =>
+      this.request<Record<string, any>[], string>({
+        path: `/api/entity/search/${query}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Retrieve all properties in the wiki
      *
      * @tags Entity

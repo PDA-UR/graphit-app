@@ -5,6 +5,7 @@ import { ColumnItem } from "./table/CloumnItem";
 import { Table } from "./table/Table";
 import { ColumnItemList } from "./table/ColumnItemList";
 import { Trash } from "./atomic/Trash";
+import SearchSidebar from "./SearchSidebar";
 
 export {
 	AppRoot,
@@ -14,6 +15,7 @@ export {
 	Table as TableView,
 	ColumnItemList,
 	Trash,
+	SearchSidebar,
 };
 
 declare global {
@@ -25,5 +27,6 @@ declare global {
 		"table-view": Table;
 		"column-item-list": ColumnItemList;
 		"trash-component": Trash;
+		"search-sidebar": SearchSidebar;
 	}
 }

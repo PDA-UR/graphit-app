@@ -113,6 +113,21 @@ export class Entity {
 		);
 	}
 
+	@Get("/search/:query")
+	@Description("Search for entities")
+	@Returns(200, Array).Of(Object).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async search(
+		@Session("user") credentials: Credentials,
+		@PathParams("query") query: string
+	) {
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		const r = await this.wikibaseSdk.search(credentials, query);
+		return r.data.search;
+	}
+
 	@Get("/property/all")
 	@Description("Retrieve all properties in the wiki")
 	@Returns(200, Array).Of(WikibaseProperty).ContentType("application/json")

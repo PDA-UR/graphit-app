@@ -8,7 +8,7 @@ import { ColumnItemModel } from "../../data/models/ColumnItemModel";
 @customElement("column-item-list")
 export class ColumnItemList extends Component {
 	@property({ type: Object, attribute: true })
-	columnModel!: ColumnModel;
+	dragFromInfo: ColumnModel | "search" = "search";
 
 	@property({ type: Array, attribute: true })
 	items: ColumnItemModel[] = [];
@@ -32,7 +32,7 @@ export class ColumnItemList extends Component {
 									new CustomEvent("itemDraggedStart", {
 										detail: {
 											item,
-											column: this.columnModel,
+											dragFromInfo: this.dragFromInfo,
 										},
 										bubbles: true,
 										composed: true,
@@ -44,7 +44,7 @@ export class ColumnItemList extends Component {
 									new CustomEvent("itemDraggedEnd", {
 										detail: {
 											item,
-											column: this.columnModel,
+											dragFromInfo: this.dragFromInfo,
 										},
 										bubbles: true,
 										composed: true,

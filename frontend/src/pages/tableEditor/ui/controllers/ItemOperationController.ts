@@ -1,12 +1,18 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import {
 	ConvertClaimModel,
+	CreateClaimModel,
 	RemoveClaimModel,
 } from "../../../../shared/client/ApiClient";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 
-export interface MoveItemInfo extends ConvertClaimModel {
-	from: string;
+export interface MoveItemInfo {
+	from?: string;
+	to: string;
+	property?: string;
+	value?: string;
+
+	newClaim: CreateClaimModel;
 }
 
 export interface RemoveItemInfo extends RemoveClaimModel {
@@ -76,7 +82,7 @@ export class ItemOperationController implements ReactiveController {
 		);
 	};
 
-	moveItems = (_moveItemsInfo: MoveItemInfo[], doCopy = false) => {
+	moveItems = (_moveItemsInfo: MoveItemInfo[]) => {
 		// Remove items that are already in the right place
 		const moveItemsInfo = _moveItemsInfo.filter(
 			(moveItemInfo) =>
@@ -89,26 +95,30 @@ export class ItemOperationController implements ReactiveController {
 		this.updateMoveStatus(moveItemsInfo, ItemOperationStatus.IN_PROGRESS);
 
 		const jobs = moveItemsInfo.map(async (moveItemInfo) => {
-			if (doCopy)
+			if (moveItemInfo.from === undefined)
 				await this.wikibaseClient.createClaim(
 					moveItemInfo.to,
 					moveItemInfo.newClaim
 				);
 			else
-				await this.wikibaseClient.convertClaim(moveItemInfo.from, moveItemInfo);
+				await this.wikibaseClient.convertClaim(
+					moveItemInfo.from,
+					moveItemInfo as ConvertClaimModel
+				);
 		});
 
 		Promise.all(jobs)
 			.then(() =>
 				this.updateMoveStatus(moveItemsInfo, ItemOperationStatus.DONE)
 			)
-			.catch((e) =>
+			.catch((e) => {
+				console.error(e);
 				this.updateMoveStatus(
 					moveItemsInfo,
 					ItemOperationStatus.ERROR,
-					doCopy ? new Error("Failed to copy.") : new Error("Failed to move.")
-				)
-			);
+					new Error("Operation failed.")
+				);
+			});
 	};
 
 	removeItems = (removeItems: RemoveItemInfo[]) => {

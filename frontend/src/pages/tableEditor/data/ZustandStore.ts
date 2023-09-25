@@ -18,11 +18,13 @@ export interface StoreActions {
 	) => void;
 	logout: () => void;
 	setCredentials: (credentials: Credentials) => void;
+	toggleSidebar: (isOpen?: boolean) => void;
 }
 
 export interface Store extends StoreActions {
 	table: TableModel;
 	credentials?: Credentials;
+	sidebarIsOpen: boolean;
 }
 
 export const zustandStore = createStore<Store>(
@@ -30,6 +32,7 @@ export const zustandStore = createStore<Store>(
 	persist(
 		immer((set, get) => ({
 			credentials: undefined,
+			sidebarIsOpen: true,
 			table: newTableModel(),
 			setTable: (table: TableModel) => set({ table }),
 			setCredentials: (credentials: Credentials) => {
@@ -56,6 +59,10 @@ export const zustandStore = createStore<Store>(
 					if (column) {
 						column.property = property;
 					}
+				}),
+			toggleSidebar: (isOpen?: boolean) =>
+				set((state: Store) => {
+					state.sidebarIsOpen = isOpen ?? !state.sidebarIsOpen;
 				}),
 		})),
 		{

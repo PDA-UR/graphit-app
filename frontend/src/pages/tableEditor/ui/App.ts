@@ -1,4 +1,4 @@
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { Component } from "./atomic/Component";
 import { PropertyValueMap, css, html } from "lit";
 import { fromStore, tableContext } from "../data/contexts/TableContext";
@@ -100,6 +100,53 @@ export default class AppRoot extends Component {
 		logout: () => this.onLogout(),
 	};
 
+	render() {
+		console.log("rendering app", this.zustand.credentials);
+
+		return this.loginTask.render({
+			initial: () =>
+				html`<button @click="${() => this.onLogin()}">Login</button>`,
+			pending: () => html`Logging in...`,
+			complete: () =>
+				when(
+					this.logoutTask.status === TaskStatus.INITIAL,
+					() => html`<div id="top-bar">
+							<button @click="${() => this.zustand.toggleSidebar()}">
+								${when(
+									this.zustand.sidebarIsOpen,
+									() => ">",
+									() => "<"
+								)}
+							</button>
+							<div class="spacer"></div>
+							<span>${this.zustand.credentials?.username}</span>
+							<button @click="${() => this.onLogout()}">Logout</button>
+						</div>
+						<div id="main">
+							<search-sidebar
+								class="${when(
+									this.zustand.sidebarIsOpen,
+									() => "open",
+									() => "closed"
+								)}"
+							></search-sidebar>
+							<table-view .tableModel="${this.zustand.table}"></table-view>
+						</div>`,
+					() =>
+						choose(this.logoutTask.status, [
+							[TaskStatus.PENDING, () => html`Logging out...`],
+							[TaskStatus.COMPLETE, () => html`Logged out`],
+							[TaskStatus.ERROR, () => html`Error logging out`],
+						])
+				),
+			error: (e) => html`
+				<div style="color: red">Error: ${e}</div>
+				<button @click="${() => this.onLogin()}">Retry Login</button>
+				<button @click="${() => this.onLogout()}">Logout</button>
+			`,
+		});
+	}
+
 	static styles = css`
 		:host {
 			display: block;
@@ -115,40 +162,13 @@ export default class AppRoot extends Component {
 			justify-content: space-between;
 			align-items: center;
 			border-bottom: 1px solid black;
-			margin-bottom: 0.5rem;
 			padding: 0.3rem;
 		}
+		#main {
+			display: flex;
+			flex-direction: row;
+			height: 100%;
+			width: 100%;
+		}
 	`;
-
-	render() {
-		console.log("rendering app", this.zustand.credentials);
-
-		return this.loginTask.render({
-			initial: () =>
-				html`<button @click="${() => this.onLogin()}">Login</button>`,
-			pending: () => html`Logging in...`,
-			complete: () =>
-				when(
-					this.logoutTask.status === TaskStatus.INITIAL,
-					() => html`<div id="top-bar">
-							<span>GraphIT Table</span>
-							<div class="spacer"></div>
-							<span>${this.zustand.credentials?.username}</span>
-							<button @click="${() => this.onLogout()}">Logout</button>
-						</div>
-						<table-view .tableModel="${this.zustand.table}"></table-view>`,
-					() =>
-						choose(this.logoutTask.status, [
-							[TaskStatus.PENDING, () => html`Logging out...`],
-							[TaskStatus.COMPLETE, () => html`Logged out`],
-							[TaskStatus.ERROR, () => html`Error logging out`],
-						])
-				),
-			error: (e) => html`
-				<div style="color: red">Error: ${e}</div>
-				<button @click="${() => this.onLogin()}">Retry Login</button>
-				<button @click="${() => this.onLogout()}">Logout</button>
-			`,
-		});
-	}
 }

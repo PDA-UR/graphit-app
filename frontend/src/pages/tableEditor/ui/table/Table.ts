@@ -27,6 +27,7 @@ export class Table extends Component {
 			flex-grow: 1;
 			overflow-y: hidden;
 			overflow-x: auto;
+			padding: 1rem;
 		}
 		#add-column-container {
 			display: flex;
@@ -116,14 +117,6 @@ export class Table extends Component {
 					</column-component>
 				`;
 			})}
-			<div id="add-column-container">
-				<button
-					id="add-column-button"
-					@click="${() => this.addCloumnTask.run()}"
-				>
-					Add Column
-				</button>
-			</div>
 		`;
 	}
 }

@@ -4,13 +4,14 @@ import { ColumnModel } from "../../data/models/ColumnModel";
 import {
 	ItemOperationController,
 	MoveItemInfo,
+	RemoveItemInfo,
 } from "./ItemOperationController";
 import { ConvertClaimModel } from "../../../../shared/client/ApiClient";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 
 export interface DragitemInfo {
 	item: ColumnItemModel;
-	column: ColumnModel;
+	dragFromInfo?: ColumnModel;
 }
 
 export class DragController implements ReactiveController {
@@ -25,37 +26,40 @@ export class DragController implements ReactiveController {
 	}
 	hostConnected() {}
 
-	onItemDragStart({ item, column }: DragitemInfo) {
-		this.draggedItems.push({ item, column });
+	onItemDragStart({ item, dragFromInfo }: DragitemInfo) {
+		this.draggedItems.push({ item, dragFromInfo });
 	}
 
-	onItemDragEnd({ item, column }: DragitemInfo) {
+	onItemDragEnd({ item, dragFromInfo }: DragitemInfo) {
 		this.draggedItems = this.draggedItems.filter(
 			(draggedItem) =>
-				draggedItem.item !== item && draggedItem.column !== column
+				draggedItem.item !== item && draggedItem.dragFromInfo !== dragFromInfo
 		);
 	}
 
 	onDrop(column: ColumnModel | "trash", doCopy = false) {
 		if (column === "trash") {
 			this.itemOperator.removeItems(
-				this.draggedItems.map((draggedItem) => {
-					return {
-						id: draggedItem.column.item.itemId,
-						property: draggedItem.column.property.propertyId,
-						value: draggedItem.item.itemId,
-					};
-				})
+				this.draggedItems
+					.map((draggedItem) => {
+						if (draggedItem.dragFromInfo === undefined) return undefined;
+						return {
+							id: draggedItem.dragFromInfo.item.itemId,
+							property: draggedItem.dragFromInfo.property.propertyId,
+							value: draggedItem.item.itemId,
+						};
+					})
+					.filter((item) => item !== undefined) as RemoveItemInfo[]
 			);
 			return;
 		}
 
 		const convertClaimModels: MoveItemInfo[] = this.draggedItems.map(
 			(draggedItem) => ({
-				from: draggedItem.column.item.itemId,
+				from: draggedItem.dragFromInfo?.item.itemId,
 				to: column.item.itemId,
 
-				property: draggedItem.column.property.propertyId,
+				property: draggedItem.dragFromInfo?.property.propertyId,
 				value: draggedItem.item.itemId,
 
 				newClaim: {
@@ -64,6 +68,6 @@ export class DragController implements ReactiveController {
 				},
 			})
 		);
-		this.itemOperator.moveItems(convertClaimModels, doCopy);
+		this.itemOperator.moveItems(convertClaimModels);
 	}
 }

@@ -19,6 +19,23 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return wbk;
 	}
 
+	async search(
+		credentials: Credentials,
+		search: string
+	): Promise<SparqlResult> {
+		const wbk = this.getSessionData(credentials);
+		const url = wbk.searchEntities({
+			search,
+			language: "de",
+			limit: 25,
+		});
+		const headers = {};
+
+		const response = await fetch(url, { headers });
+		const data = await response.json();
+		return { data };
+	}
+
 	async query(credentials: Credentials, query: string): Promise<SparqlResult> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.sparqlQuery(query);
