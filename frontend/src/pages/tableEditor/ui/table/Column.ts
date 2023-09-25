@@ -18,9 +18,11 @@ import { choose } from "lit/directives/choose.js";
 import { WikibasePropertyModel } from "../../../../shared/client/ApiClient";
 import {
 	ITEM_MOVE_EVENT,
+	ITEM_REMOVE_EVENT,
 	ItemMoveEventDetail,
-	ItemMoveStatus,
-} from "../controllers/ItemMoverController";
+	ItemOperationStatus,
+	ItemRemoveEventDetail,
+} from "../controllers/ItemOperationController";
 import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
 
 @customElement("column-component")
@@ -29,7 +31,7 @@ export class ColumnComponent extends Component {
 	items: ColumnItemModel[] = [];
 
 	@state()
-	itemMoveStatus: ItemMoveStatus | undefined;
+	itemOperationStatus: ItemOperationStatus | undefined;
 
 	@state()
 	filter = "";
@@ -69,8 +71,18 @@ export class ColumnComponent extends Component {
 		autoRun: false,
 	});
 
+	private onItemOperation = (e: CustomEvent) => {
+		this.itemOperationStatus = e.detail.status;
+		if (e.detail.status === ItemOperationStatus.DONE) {
+			this.loadItemsTask.run();
+			this.itemOperationStatus = undefined;
+		} else if (e.detail.status === ItemOperationStatus.ERROR) {
+			Toast.fromError(e.detail.error!, ToastLength.LONG).show();
+		}
+	};
+
 	protected firstUpdated(): void {
-		// @ts-ignore
+		// @ts-expect-error
 		document.addEventListener(
 			ITEM_MOVE_EVENT,
 			(e: CustomEvent<ItemMoveEventDetail>) => {
@@ -87,15 +99,21 @@ export class ColumnComponent extends Component {
 								this.columnModel.property.propertyId
 					);
 				if (!thisColumnIsInvolved) return;
+				this.onItemOperation(e);
+			}
+		);
 
-				this.itemMoveStatus = e.detail.status;
-				console.log("item move status", this.itemMoveStatus);
-				if (e.detail.status === ItemMoveStatus.DONE) {
-					this.loadItemsTask.run();
-					this.itemMoveStatus = undefined;
-				} else if (e.detail.status === ItemMoveStatus.ERROR) {
-					Toast.fromError(e.detail.error!, ToastLength.LONG).show();
-				}
+		// @ts-expect-error
+		document.addEventListener(
+			ITEM_REMOVE_EVENT,
+			(e: CustomEvent<ItemRemoveEventDetail>) => {
+				const thisColumnIsInvolved = e.detail.removeItemsInfo.some(
+					(removeItemInfo) =>
+						removeItemInfo.id === this.columnModel.item.itemId &&
+						removeItemInfo.property === this.columnModel.property.propertyId
+				);
+				if (!thisColumnIsInvolved) return;
+				this.onItemOperation(e);
 			}
 		);
 	}
@@ -190,7 +208,7 @@ export class ColumnComponent extends Component {
 			<column-item-list
 				class="${classMap({
 					loading:
-						this.itemMoveStatus === ItemMoveStatus.IN_PROGRESS ||
+						this.itemOperationStatus === ItemOperationStatus.IN_PROGRESS ||
 						this.loadItemsTask.status === TaskStatus.PENDING,
 					error: this.loadItemsTask.status === TaskStatus.ERROR,
 				})}"

@@ -1,7 +1,10 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import { ColumnItemModel } from "../../data/models/ColumnItemModel";
 import { ColumnModel } from "../../data/models/ColumnModel";
-import { ItemMoverController, MoveItemInfo } from "./ItemMoverController";
+import {
+	ItemOperationController,
+	MoveItemInfo,
+} from "./ItemOperationController";
 import { ConvertClaimModel } from "../../../../shared/client/ApiClient";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 
@@ -14,11 +17,11 @@ export class DragController implements ReactiveController {
 	host: ReactiveControllerHost;
 
 	private draggedItems: DragitemInfo[] = [];
-	private itemMover: ItemMoverController;
+	private itemOperator: ItemOperationController;
 
 	constructor(host: ReactiveControllerHost, wikibaseClient: WikibaseClient) {
 		(this.host = host).addController(this);
-		this.itemMover = new ItemMoverController(host, wikibaseClient);
+		this.itemOperator = new ItemOperationController(host, wikibaseClient);
 	}
 	hostConnected() {}
 
@@ -33,7 +36,20 @@ export class DragController implements ReactiveController {
 		);
 	}
 
-	onDrop(column: ColumnModel, doCopy: boolean) {
+	onDrop(column: ColumnModel | "trash", doCopy = false) {
+		if (column === "trash") {
+			this.itemOperator.removeItems(
+				this.draggedItems.map((draggedItem) => {
+					return {
+						id: draggedItem.column.item.itemId,
+						property: draggedItem.column.property.propertyId,
+						value: draggedItem.item.itemId,
+					};
+				})
+			);
+			return;
+		}
+
 		const convertClaimModels: MoveItemInfo[] = this.draggedItems.map(
 			(draggedItem) => ({
 				from: draggedItem.column.item.itemId,
@@ -48,6 +64,6 @@ export class DragController implements ReactiveController {
 				},
 			})
 		);
-		this.itemMover.moveItems(convertClaimModels, doCopy);
+		this.itemOperator.moveItems(convertClaimModels, doCopy);
 	}
 }

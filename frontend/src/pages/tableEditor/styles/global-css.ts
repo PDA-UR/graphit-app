@@ -27,6 +27,9 @@ export const globalCss = css`
 	.spacer {
 		flex-grow: 1;
 	}
+	.hidden {
+		display: none;
+	}
 `;
 
 // remove all styling from buttons so only text is visible

@@ -4,6 +4,7 @@ import { ColumnComponent } from "./table/Column";
 import { ColumnItem } from "./table/CloumnItem";
 import { Table } from "./table/Table";
 import { ColumnItemList } from "./table/ColumnItemList";
+import { Trash } from "./atomic/Trash";
 
 export {
 	AppRoot,
@@ -12,6 +13,7 @@ export {
 	ColumnItem as ColumnItem,
 	Table as TableView,
 	ColumnItemList,
+	Trash,
 };
 
 declare global {
@@ -22,5 +24,6 @@ declare global {
 		"column-item": ColumnItem;
 		"table-view": Table;
 		"column-item-list": ColumnItemList;
+		"trash-component": Trash;
 	}
 }

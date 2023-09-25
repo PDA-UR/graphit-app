@@ -1,26 +1,23 @@
-import { LitElement, html, css, PropertyValueMap } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
+import { html, unsafeCSS } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { TableModel } from "../../data/models/TableModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
-import { newColumnModel } from "../../data/models/ColumnModel";
+import { ColumnModel, newColumnModel } from "../../data/models/ColumnModel";
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
-import { parseEntitiesConnectedByProperty } from "./Column";
 
-import { newColumnItemModel } from "../../data/models/ColumnItemModel";
-import { Task, TaskStatus } from "@lit-labs/task";
-import { choose } from "lit/directives/choose.js";
+import { Task } from "@lit-labs/task";
 import { DragController } from "../controllers/DragController";
 import { dragControllerContext } from "../../data/contexts/DragControllerContext";
+import { when } from "lit/directives/when.js";
 
 @customElement("table-view")
 export class Table extends Component {
-	static styles = css`
+	static styles = unsafeCSS`
 		:host {
 			display: flex;
 			flex-direction: row;
@@ -37,6 +34,7 @@ export class Table extends Component {
 			justify-content: center;
 			align-items: center;
 		}
+
 	`;
 	@consume({ context: dragControllerContext })
 	private dragController!: DragController;
@@ -49,6 +47,9 @@ export class Table extends Component {
 
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
+
+	@state()
+	isDragging = false;
 
 	private addCloumnTask = new Task(this, {
 		task: async ([{ wikibaseClient, addColumn }]) => {
@@ -83,6 +84,21 @@ export class Table extends Component {
 		this.tableActions.removeColumn(viewId);
 	}
 
+	onItemDragStart = (e: CustomEvent) => {
+		this.isDragging = true;
+		this.dragController.onItemDragStart(e.detail);
+	};
+
+	onItemDragEnd = (e: CustomEvent) => {
+		this.isDragging = false;
+		this.dragController.onItemDragEnd(e.detail);
+	};
+
+	onItemDropped = (colummnModel: ColumnModel, doCopy: boolean) => {
+		this.isDragging = false;
+		this.dragController.onDrop(colummnModel, doCopy);
+	};
+
 	render() {
 		console.log("rendering table");
 		return html`
@@ -93,11 +109,9 @@ export class Table extends Component {
 						.columnModel="${columnModel}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
 						@itemDropped="${(e: any) =>
-							this.dragController.onDrop(columnModel, e.detail.doCopy)}"
-						@itemDraggedStart="${(e: CustomEvent) =>
-							this.dragController.onItemDragStart(e.detail)}"
-						@itemDraggedEnd="${(e: CustomEvent) =>
-							this.dragController.onItemDragEnd(e.detail)}"
+							this.onItemDropped(columnModel, e.detail.doCopy)}"
+						@itemDraggedStart="${(e: any) => this.onItemDragStart(e)}"
+						@itemDraggedEnd="${(e: any) => this.onItemDragEnd(e)}"
 					>
 					</column-component>
 				`;
@@ -110,6 +124,14 @@ export class Table extends Component {
 					Add Column
 				</button>
 			</div>
+			<trash-component
+				class="${when(
+					this.isDragging,
+					() => "",
+					() => "hidden"
+				)}"
+				@dropped-items="${() => this.dragController.onDrop("trash", false)}"
+			></trash-component>
 		`;
 	}
 }
