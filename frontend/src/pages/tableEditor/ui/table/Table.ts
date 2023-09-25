@@ -52,8 +52,9 @@ export class Table extends Component {
 
 	private addCloumnTask = new Task(this, {
 		task: async ([{ wikibaseClient, addColumn }]) => {
-			const input = prompt("Item ID (e.g. Q1234)");
-			if (!input) return;
+			const _input = prompt("Item ID (e.g. Q1234)");
+			if (!_input) return;
+			const input = _input.trim().toUpperCase();
 			const entity = await wikibaseClient.getEntities([input]);
 			const wikibaseItem = {
 				itemId: entity.data.entities[input].id,
