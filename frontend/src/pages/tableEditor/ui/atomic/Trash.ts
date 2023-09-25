@@ -43,6 +43,6 @@ export class Trash extends Component {
 	};
 
 	render() {
-		return html`Trash`;
+		return html`Remove`;
 	}
 }
