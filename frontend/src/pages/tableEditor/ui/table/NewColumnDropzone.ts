@@ -60,6 +60,18 @@ export default class NewColumnDropzone extends Component {
 		autoRun: false,
 	});
 
+	private runAddColumnTask = () => {
+		this.addCloumnTask
+			.run()
+			.then(() => {
+				this.classList.remove("working");
+			})
+			.catch(() => {
+				this.classList.remove("working");
+				Toast.error("Error while adding columns", ToastLength.LONG).show();
+			});
+	};
+
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
@@ -76,17 +88,17 @@ export default class NewColumnDropzone extends Component {
 				if (!confirmResult) return;
 			}
 			this.columnIdsToBeAdded = ids;
-			this.addCloumnTask
-				.run()
-				.then(() => {
-					this.classList.remove("working");
-				})
-				.catch(() => {
-					this.classList.remove("working");
-					Toast.error("Error while adding columns", ToastLength.LONG).show();
-				});
+			this.runAddColumnTask();
 		});
 	}
+
+	onclick = () => {
+		const id = prompt("Enter the id of the column you want to add");
+		if (!id) return;
+
+		this.columnIdsToBeAdded = [id.trim().toUpperCase()];
+		this.runAddColumnTask();
+	};
 
 	ondragover = (event: DragEvent) => {
 		event.preventDefault();
@@ -111,12 +123,14 @@ export default class NewColumnDropzone extends Component {
 	static styles = css`
 		:host {
 			min-width: 10rem;
-			opacity: 0;
+			opacity: 0.3;
 			background-color: #f0f0f0;
 
 			display: flex;
 			justify-content: center;
 			align-items: center;
+
+			border-radius: 0 5px 5px 0;
 		}
 		:host(.isDragging) {
 			opacity: 0.5;
@@ -124,9 +138,11 @@ export default class NewColumnDropzone extends Component {
 		:host(.working) {
 			opacity: 1;
 		}
-
 		:host(.highlight) {
 			opacity: 1;
+		}
+		:host(:hover) {
+			opacity: 0.5;
 		}
 
 		#add-symbol {
