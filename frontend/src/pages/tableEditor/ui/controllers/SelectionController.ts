@@ -16,18 +16,25 @@ export class SelectionController implements ReactiveController {
 
 	selectItem(item: ColumnItemInfo) {
 		this.selectedItems.push(item);
+		this.notifyListeners();
 	}
 
 	deselectItem(item: ColumnItemInfo) {
 		this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
+		this.notifyListeners();
 	}
 
 	deselectAll() {
 		this.selectedItems.splice(0, this.selectedItems.length);
+		this.notifyListeners();
 	}
 
 	isSelected(item: ColumnItemInfo) {
-		return this.selectedItems.includes(item);
+		return (
+			this.selectedItems.find(
+				(i) => item.item.itemId === i.item.itemId && item.origin === i.origin
+			) !== undefined
+		);
 	}
 
 	getSelectedItems() {
@@ -52,10 +59,11 @@ export class SelectionController implements ReactiveController {
 			this.deselectAll();
 			this.selectItem(item);
 		}
-		this.notifyListeners();
 	}
 
 	private notifyListeners() {
+		console.log("notify", this.selectedItems);
+
 		this.callbacks.forEach((callback) => callback(this.selectedItems));
 	}
 

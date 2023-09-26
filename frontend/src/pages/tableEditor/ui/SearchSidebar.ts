@@ -75,8 +75,7 @@ export default class SearchSidebar extends Component {
             .origin="search"
             @itemDraggedStart="${(e: any) =>
 							this.dragController.onItemDragStart(e.detail)}"
-            @itemDraggedEnd="${(e: any) =>
-							this.dragController.onItemDragEnd(e.detail)}"
+            @itemDraggedEnd="${(e: any) => this.dragController.onItemDragEnd()}"
         ></column-item-list>
 		`;
 	}

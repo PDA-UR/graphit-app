@@ -74,10 +74,12 @@ export class ColumnItem extends Component {
 
 	ondblclick = (e: MouseEvent) => {
 		window.open(this.columnItemModel.url, "_blank");
+		e.stopPropagation();
 	};
 
 	onclick = (e: MouseEvent) => {
 		this.selectionController.handleClick(this.columnItemInfo!, e);
+		e.stopPropagation();
 	};
 
 	render() {

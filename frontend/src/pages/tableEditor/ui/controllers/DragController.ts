@@ -45,11 +45,12 @@ export class DragController implements ReactiveController {
 	onItemDragStart = ({ item, origin }: ColumnItemInfo) => {
 		this.draggedItem = { item, origin };
 		this.setIsDragging(true);
-		if (!this.selectionController.isSelected(this.draggedItem))
+		if (!this.selectionController.isSelected(this.draggedItem)) {
 			this.selectionController.addItem(this.draggedItem);
+		}
 	};
 
-	onItemDragEnd({ item, origin }: ColumnItemInfo) {
+	onItemDragEnd() {
 		this.draggedItem = undefined;
 		this.setIsDragging(false);
 	}
@@ -70,6 +71,8 @@ export class DragController implements ReactiveController {
 					},
 				})
 			);
+			this.selectionController.deselectAll();
+
 			return;
 		}
 
@@ -87,6 +90,7 @@ export class DragController implements ReactiveController {
 					})
 					.filter((item) => item !== undefined) as RemoveItemInfo[]
 			);
+			this.selectionController.deselectAll();
 			return;
 		}
 
@@ -116,6 +120,7 @@ export class DragController implements ReactiveController {
 					};
 			}
 		);
+		this.selectionController.deselectAll();
 		this.itemOperator.moveItems(convertClaimModels, doCopy);
 	}
 }

@@ -64,6 +64,12 @@ export default class AppRoot extends Component {
 				this.zustand.toggleSidebar();
 			}
 		});
+
+		document.addEventListener("click", (e) => {
+			// if event has not been handled
+			console.log("click", e);
+			this.selectionController.deselectAll();
+		});
 	}
 
 	private loginTask = new Task(this, {

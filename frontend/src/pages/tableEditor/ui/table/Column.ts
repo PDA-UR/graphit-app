@@ -24,6 +24,8 @@ import {
 } from "../controllers/ItemOperationController";
 import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
 import { when } from "lit/directives/when.js";
+import { dragControllerContext } from "../../data/contexts/DragControllerContext";
+import { DragController } from "../controllers/DragController";
 
 @customElement("column-component")
 export class ColumnComponent extends Component {
@@ -42,12 +44,18 @@ export class ColumnComponent extends Component {
 	@property({ type: Object })
 	columnModel!: ColumnModel;
 
+	@property()
+	private isDragging = false;
+
 	@consume({ context: tableContext })
 	@property({ attribute: false })
 	public tableActions!: StoreActions;
 
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
+
+	@consume({ context: dragControllerContext })
+	private dragController!: DragController;
 
 	private loadItemsTask = new Task(this, {
 		task: async ([{ wikibaseClient, columnModel, items }]) => {
@@ -121,12 +129,29 @@ export class ColumnComponent extends Component {
 		);
 	}
 
+	onItemDragStart = (e: CustomEvent) => {
+		this.dragController.onItemDragStart(e.detail);
+	};
+
+	onItemDragEnd = (e: CustomEvent) => {
+		this.dragController.onItemDragEnd();
+	};
+
+	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
+		this.dragController.onDrop(colummnModel, doCopy);
+	};
+
 	updated(changedProperties: Map<string | number | symbol, unknown>) {
 		super.updated(changedProperties);
 		if (changedProperties.has("columnModel")) {
 			const oldVal = changedProperties.get("columnModel") as ColumnModel;
 			if (oldVal?.property !== this.columnModel.property) {
 				this.loadItemsTask.run();
+			}
+		} else if (changedProperties.has("isDragging")) {
+			const oldVal = changedProperties.get("isDragging") as boolean;
+			if (oldVal !== this.isDragging) {
+				if (!this.isDragging) this.classList.remove("highlight");
 			}
 		}
 	}
@@ -146,13 +171,8 @@ export class ColumnComponent extends Component {
 		event.preventDefault();
 		const doCopy =
 			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
-		this.dispatchEvent(
-			new CustomEvent("itemDropped", {
-				detail: { doCopy, data: this.columnModel },
-			})
-		);
 
-		this.classList.remove("highlight");
+		this.dragController.onDrop(this.columnModel, doCopy);
 		this.isDragover = false;
 	};
 
@@ -224,6 +244,8 @@ export class ColumnComponent extends Component {
 				.origin="${this.columnModel}"
 				.items="${this.items}"
 				.filter="${this.filter}"
+				@itemDraggedStart="${(e: any) => this.onItemDragStart(e)}"
+				@itemDraggedEnd="${(e: any) => this.onItemDragEnd(e)}"
 			></column-item-list>
 
 			<trash-component
@@ -233,13 +255,8 @@ export class ColumnComponent extends Component {
 					() => "hidden"
 				)}"
 				@dropped-items="${() => {
-					this.dispatchEvent(
-						new CustomEvent("itemDropped", {
-							detail: { doCopy: false, data: "trash" },
-						})
-					);
-					this.classList.remove("highlight");
-				}}"
+					this.onItemDropped("trash", false);
+				}}}"
 			></trash-component>
 		`;
 	}

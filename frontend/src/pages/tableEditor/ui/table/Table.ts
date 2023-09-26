@@ -17,9 +17,6 @@ import { when } from "lit/directives/when.js";
 
 @customElement("table-view")
 export class Table extends Component {
-	@consume({ context: dragControllerContext })
-	private dragController!: DragController;
-
 	@property()
 	private isDragging!: boolean;
 
@@ -32,17 +29,12 @@ export class Table extends Component {
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
 
+	@consume({ context: dragControllerContext })
+	private dragController!: DragController;
+
 	removeColumn(viewId: string) {
 		this.tableActions.removeColumn(viewId);
 	}
-
-	onItemDragStart = (e: CustomEvent) => {
-		this.dragController.onItemDragStart(e.detail);
-	};
-
-	onItemDragEnd = (e: CustomEvent) => {
-		this.dragController.onItemDragEnd(e.detail);
-	};
 
 	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
 		this.dragController.onDrop(colummnModel, doCopy);
@@ -54,12 +46,9 @@ export class Table extends Component {
 			${this.tableModel.columns.map((columnModel) => {
 				return html`
 					<column-component
+						.isDragging="${this.isDragging}"
 						.columnModel="${columnModel}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
-						@itemDropped="${(e: any) =>
-							this.onItemDropped(e.detail.data, e.detail.doCopy)}"
-						@itemDraggedStart="${(e: any) => this.onItemDragStart(e)}"
-						@itemDraggedEnd="${(e: any) => this.onItemDragEnd(e)}"
 					>
 					</column-component>
 				`;
