@@ -28,23 +28,32 @@ export class ColumnItemList extends Component {
 			item: item,
 			origin: this.origin,
 		};
-		const lastSelectedIndex = this.items.indexOf(lastSelectedItem.item);
+		const lastSelectedIndex =
+			lastSelectedItem === undefined
+				? -1
+				: this.items.findIndex(
+						(i) => i.viewId === lastSelectedItem.item.viewId
+				  );
 
 		if (lastSelectedItem === undefined || lastSelectedIndex === -1) {
 			this.selectionController.addItem(colItemInfo);
 			return;
 		}
 
-		const currentIndex = this.items.indexOf(item);
+		const currentIndex = this.items.findIndex((i) => i.viewId === item.viewId);
 		const minIndex = Math.min(lastSelectedIndex, currentIndex);
 		const maxIndex = Math.max(lastSelectedIndex, currentIndex);
 		const selectedItems = this.items.slice(minIndex, maxIndex + 1);
 
-		this.selectionController.addItems(
-			selectedItems
-				.map((item) => ({ item, origin: this.origin }))
-				.filter((item) => !this.selectionController.isSelected(item))
-		);
+		console.log("ss", currentIndex, lastSelectedIndex);
+
+		const itemsToAdd = selectedItems
+			.map((item) => ({ item, origin: this.origin }))
+			.filter((item) => !this.selectionController.isSelected(item));
+
+		console.log("items to add", itemsToAdd);
+
+		this.selectionController.addItems(itemsToAdd);
 	};
 
 	render() {
@@ -59,6 +68,10 @@ export class ColumnItemList extends Component {
 						<column-item
 							.columnItemModel="${item}"
 							.origin="${this.origin}"
+							.columnItemInfo="${{
+								item,
+								origin: this.origin,
+							}}"
 							@shift-click="${(e: MouseEvent) => {
 								this.onItemShiftClicked(item);
 							}}"

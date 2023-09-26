@@ -20,7 +20,10 @@ export class SelectionController implements ReactiveController {
 	}
 
 	deselectItem(item: ColumnItemInfo) {
-		this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
+		this.selectedItems.splice(
+			this.selectedItems.findIndex((i) => i.item.viewId === item.item.viewId),
+			1
+		);
 		this.notifyListeners();
 	}
 
@@ -31,9 +34,8 @@ export class SelectionController implements ReactiveController {
 
 	isSelected(item: ColumnItemInfo) {
 		return (
-			this.selectedItems.find(
-				(i) => item.item.itemId === i.item.itemId && item.origin === i.origin
-			) !== undefined
+			this.selectedItems.find((i) => item.item.viewId === i.item.viewId) !==
+			undefined
 		);
 	}
 
