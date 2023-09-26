@@ -15,11 +15,19 @@ import { choose } from "lit/directives/choose.js";
 import { dragControllerContext } from "../data/contexts/DragControllerContext";
 import { DragController } from "./controllers/DragController";
 import { sessionContext } from "../data/contexts/SessionContext";
-import { isDraggingContext } from "../data/contexts/IsDraggingContext";
+import { selectionControllerContext } from "../data/contexts/SelectionControllerContext";
+import { SelectionController } from "./controllers/SelectionController";
 
 @customElement("app-root")
 export default class AppRoot extends Component {
 	private zustand = zustandStore.getState();
+
+	@state()
+	isDragging = false;
+
+	private setIsDragging = (isDragging: boolean) => {
+		this.isDragging = isDragging;
+	};
 
 	private api = createApiClient();
 	private wikibaseClient: WikibaseClient = new WikibaseClient(
@@ -28,6 +36,13 @@ export default class AppRoot extends Component {
 			password: "",
 		},
 		this.api
+	);
+	private selectionController = new SelectionController(this);
+	private dragController = new DragController(
+		this,
+		this.wikibaseClient,
+		this.setIsDragging,
+		this.selectionController
 	);
 
 	protected firstUpdated(
@@ -94,25 +109,17 @@ export default class AppRoot extends Component {
 		this.loginTask.run();
 	}
 
-	@state()
-	isDragging = false;
-
-	private setIsDragging = (isDragging: boolean) => {
-		this.isDragging = isDragging;
-	};
-
 	@provide({ context: tableContext })
 	tableContext = fromStore(this.zustand);
 
 	@provide({ context: wikibaseContext })
 	wikibaseContext = this.wikibaseClient;
 
+	@provide({ context: selectionControllerContext })
+	selectionContext = this.selectionController;
+
 	@provide({ context: dragControllerContext })
-	dragControllerContext = new DragController(
-		this,
-		this.wikibaseClient,
-		this.setIsDragging
-	);
+	dragControllerContext = this.dragController;
 
 	@provide({ context: sessionContext })
 	sessionContext = {

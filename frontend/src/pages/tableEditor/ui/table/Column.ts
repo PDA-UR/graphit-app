@@ -2,7 +2,7 @@ import { html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
-import { consume } from "@lit-labs/context";
+import { consume, provide } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
 import { classMap } from "lit/directives/class-map.js";
 import { Component } from "../atomic/Component";
@@ -39,7 +39,7 @@ export class ColumnComponent extends Component {
 	@state()
 	isDragover = false;
 
-	@property({ type: Object, attribute: false })
+	@property({ type: Object })
 	columnModel!: ColumnModel;
 
 	@consume({ context: tableContext })
@@ -221,7 +221,7 @@ export class ColumnComponent extends Component {
 						this.loadItemsTask.status === TaskStatus.PENDING,
 					error: this.loadItemsTask.status === TaskStatus.ERROR,
 				})}"
-				.dragFromInfo="${this.columnModel}"
+				.origin="${this.columnModel}"
 				.items="${this.items}"
 				.filter="${this.filter}"
 			></column-item-list>
@@ -232,12 +232,14 @@ export class ColumnComponent extends Component {
 					() => "",
 					() => "hidden"
 				)}"
-				@dropped-items="${() =>
+				@dropped-items="${() => {
 					this.dispatchEvent(
 						new CustomEvent("itemDropped", {
 							detail: { doCopy: false, data: "trash" },
 						})
-					)}"
+					);
+					this.classList.remove("highlight");
+				}}"
 			></trash-component>
 		`;
 	}

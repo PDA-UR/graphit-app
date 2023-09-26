@@ -83,6 +83,7 @@ export class ItemOperationController implements ReactiveController {
 	};
 
 	moveItems = (_moveItemsInfo: MoveItemInfo[], doCopy: boolean) => {
+		console.log("move items", _moveItemsInfo);
 		// Remove items that are already in the right place
 		const moveItemsInfo = _moveItemsInfo.filter(
 			(moveItemInfo) =>
@@ -122,16 +123,20 @@ export class ItemOperationController implements ReactiveController {
 	};
 
 	removeItems = (removeItems: RemoveItemInfo[]) => {
+		console.log("remove items", removeItems);
 		this.updateRemoveStatus(removeItems, ItemOperationStatus.IN_PROGRESS);
 
 		const jobs = removeItems.map(async (removeItem) => {
-			await this.wikibaseClient.removeClaim(removeItem.id, removeItem);
+			await this.wikibaseClient.removeClaim(removeItem.id, {
+				property: removeItem.property,
+				value: removeItem.value,
+			});
 		});
 
 		Promise.all(jobs)
-			.then(() =>
-				this.updateRemoveStatus(removeItems, ItemOperationStatus.DONE)
-			)
+			.then((r) => {
+				this.updateRemoveStatus(removeItems, ItemOperationStatus.DONE);
+			})
 			.catch((e) =>
 				this.updateRemoveStatus(
 					removeItems,

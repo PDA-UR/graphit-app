@@ -24,7 +24,7 @@ export class ActionExecuterService {
 		const wikibaseEdit = this.wikibaseEditService.getSessionData(credentials);
 		try {
 			const actionFn = wikibaseEdit.claim[action];
-			this.logger.info("Executing action:" + actionFn);
+			this.logger.info("Executing action: " + "action" + actionFn);
 			const r = await actionFn(data);
 			const message = "Successfully executed action:" + action;
 			this.logger.info(message);

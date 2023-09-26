@@ -6,7 +6,7 @@ import {
 import { css, html } from "lit";
 import { Component } from "./atomic/Component";
 import { Task, TaskStatus } from "@lit-labs/task";
-import { consume } from "@lit-labs/context";
+import { consume, provide } from "@lit-labs/context";
 import WikibaseClient from "../../../shared/WikibaseClient";
 import { wikibaseContext } from "../data/contexts/WikibaseContext";
 import { choose } from "lit/directives/choose.js";
@@ -72,7 +72,7 @@ export default class SearchSidebar extends Component {
 							() => ""
 						)}"
             .items="${this.searchResults}"
-            .dragFromInfo="search"
+            .origin="search"
             @itemDraggedStart="${(e: any) =>
 							this.dragController.onItemDragStart(e.detail)}"
             @itemDraggedEnd="${(e: any) =>

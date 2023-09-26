@@ -14,7 +14,6 @@ import { Task } from "@lit-labs/task";
 import { DragController } from "../controllers/DragController";
 import { dragControllerContext } from "../../data/contexts/DragControllerContext";
 import { when } from "lit/directives/when.js";
-import { isDraggingContext } from "../../data/contexts/IsDraggingContext";
 
 @customElement("table-view")
 export class Table extends Component {

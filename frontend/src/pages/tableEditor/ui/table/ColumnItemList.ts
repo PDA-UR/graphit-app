@@ -2,13 +2,13 @@ import { css, html } from "lit";
 import { Component } from "../atomic/Component";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
-import { ColumnModel } from "../../data/models/ColumnModel";
 import { ColumnItemModel } from "../../data/models/ColumnItemModel";
+import { ItemOrigin } from "../controllers/DragController";
 
 @customElement("column-item-list")
 export class ColumnItemList extends Component {
 	@property({ type: Object, attribute: true })
-	dragFromInfo!: ColumnModel | "search";
+	origin!: ItemOrigin;
 
 	@property({ type: Array, attribute: true })
 	items: ColumnItemModel[] = [];
@@ -27,12 +27,13 @@ export class ColumnItemList extends Component {
 					html`
 						<column-item
 							.columnItemModel="${item}"
+							.origin="${this.origin}"
 							@dragstart="${(e: DragEvent) => {
 								this.dispatchEvent(
 									new CustomEvent("itemDraggedStart", {
 										detail: {
 											item,
-											dragFromInfo: this.dragFromInfo,
+											origin: this.origin,
 										},
 										bubbles: true,
 										composed: true,
@@ -44,7 +45,7 @@ export class ColumnItemList extends Component {
 									new CustomEvent("itemDraggedEnd", {
 										detail: {
 											item,
-											dragFromInfo: this.dragFromInfo,
+											origin: this.origin,
 										},
 										bubbles: true,
 										composed: true,

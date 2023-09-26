@@ -24,6 +24,8 @@ export class Trash extends Component {
 
 	ondrop = (e: DragEvent) => {
 		e.preventDefault();
+		e.stopPropagation();
+		this.classList.remove("isHovering");
 		this.dispatchEvent(new CustomEvent("dropped-items"));
 	};
 

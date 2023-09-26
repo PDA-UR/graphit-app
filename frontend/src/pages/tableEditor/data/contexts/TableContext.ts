@@ -11,5 +11,6 @@ export const fromStore = (store: Store): StoreActions => {
 		setColumnProperty: store.setColumnProperty,
 		logout: store.logout,
 		setCredentials: store.setCredentials,
+		toggleSidebar: store.toggleSidebar,
 	};
 };
