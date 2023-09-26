@@ -27,7 +27,9 @@ const main = async () => {
 	experimentApp.style.display = "flex";
 	const { resetControllers, toggleControllers } = onStartExperimentCondition(
 		elements,
-		experimentApp
+		experimentApp,
+		api,
+		userInfo.userItemId
 	);
 	resetControllers();
 	toggleControllers(true);

@@ -28,6 +28,7 @@ export const getExperimentCy = (elements: any[]) => {
 export const getControlCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("control-cy")!;
 	const extensions = [fcose, dagre, nodeHtmlLabel, undo];
+
 	loadExtensions(extensions);
 	const mergedStyle = [...(DEFAULT_OPTIONS.style as any[]), ...CONTROL_STYLE];
 	const cy = cytoscape({

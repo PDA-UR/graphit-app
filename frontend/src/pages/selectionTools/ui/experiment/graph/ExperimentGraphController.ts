@@ -9,10 +9,15 @@ import { SearchViewControllerEvents } from "../search/SearchController";
 import { ModifierKey } from "../../../global/KeyboardManager";
 import { GraphController } from "../../graph/GraphController";
 import { SearchViewEvents } from "../search/SearchView";
+import { ApiClient } from "../../../../../shared/client/ApiClient";
 
 export class ExperimentGraphController extends GraphController<ExperimentGraphView> {
-	constructor(cy: cytoscape.Core) {
-		super(new ExperimentGraphView(cy));
+	constructor(
+		cy: cytoscape.Core,
+		api: ApiClient<unknown>,
+		userEntityId: string
+	) {
+		super(new ExperimentGraphView(cy), api, userEntityId);
 		this.initEventBusListeners();
 	}
 

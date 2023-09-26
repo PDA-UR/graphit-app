@@ -1,4 +1,3 @@
-import cytoscape from "cytoscape-select";
 import { ActionManager } from "../../../../shared/extensions/undo/ActionManager";
 import { Action } from "../../../../shared/extensions/undo/actions/Action";
 import { AddSelectionAction } from "../../../../shared/extensions/undo/actions/AddSelectionAction";
@@ -21,7 +20,6 @@ import {
 import { getAllSelectionElements } from "./CytoscapeElements";
 import { initNodeHtmlLabel, initUndoRedo } from "./CytoscapeExtensions";
 import { zoom } from "./CytoscapeView";
-import { controlEventBus } from "../../global/ControlEventBus";
 import { SelectionType } from "../../global/SelectionType";
 
 export enum GraphViewEvents {
@@ -291,10 +289,6 @@ export abstract class GraphView extends View {
 						GraphViewEvents.SELECTION_CHANGED,
 						selectedNodes
 					);
-					controlEventBus.emit(
-						GraphViewEvents.SELECTION_CHANGED,
-						selectedNodes
-					);
 					this.selectEventTimeout = null;
 				}, 10);
 		}
@@ -360,10 +354,6 @@ export abstract class GraphView extends View {
 			GraphViewEvents.LAST_CLICKED_CHANGED,
 			clickedNode.id()
 		);
-		controlEventBus.emit(
-			GraphViewEvents.LAST_CLICKED_CHANGED,
-			clickedNode.id()
-		);
 	}
 
 	// ~~~~~~~~~~ Private Logic ~~~~~~~~~~ //
@@ -410,6 +400,10 @@ export abstract class GraphView extends View {
 
 	getNodeById(id: string) {
 		return this.cy.getElementById(id);
+	}
+
+	getWikibaseActions() {
+		return this.actionManager.getWikibaseActions();
 	}
 
 	// -------- Setters ------- //

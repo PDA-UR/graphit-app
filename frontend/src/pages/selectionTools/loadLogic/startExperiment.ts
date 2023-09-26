@@ -1,3 +1,4 @@
+import { ApiClient } from "../../../shared/client/ApiClient";
 import { getElements } from "../global/DataManager";
 import { onStartExperimentCondition } from "./startExperimentCondition";
 
@@ -18,11 +19,16 @@ export interface ExperimentStarter {
 	resetControllers: () => void;
 }
 
-export const onStartExperiment = async () => {
+export const onStartExperiment = async (
+	api: ApiClient<unknown>,
+	userEntityId: string
+) => {
 	const elements = await getElements();
 	const { toggleControllers } = onStartExperimentCondition(
 		elements,
-		experimentApp
+		experimentApp,
+		api,
+		userEntityId
 	);
 	toggleControllers(true);
 };

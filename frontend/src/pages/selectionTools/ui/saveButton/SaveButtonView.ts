@@ -26,6 +26,7 @@ export class SaveButtonView extends View {
 
 	private onSaveButtonClick = (event: MouseEvent) => {
 		event.stopPropagation();
+		console.log("SaveButtonView.onSaveButtonClick");
 		this.emit(SaveButtonEvents.SAVE_BUTTON_CLICK);
 	};
 }

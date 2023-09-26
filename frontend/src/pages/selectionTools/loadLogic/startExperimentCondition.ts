@@ -1,3 +1,4 @@
+import { ApiClient } from "../../../shared/client/ApiClient";
 import { toggleShortcutCheatsheet } from "../../../shared/shortcuts/Shortcut";
 import { ShortcutsExperiment } from "../../../shared/shortcuts/ShortcutsExperiment";
 import { FilterManager } from "../ui/experiment/filter/Filter";
@@ -5,12 +6,16 @@ import { FilterBarController } from "../ui/experiment/filter/FilterBarController
 import { ExperimentGraphController } from "../ui/experiment/graph/ExperimentGraphController";
 import { SearchViewController } from "../ui/experiment/search/SearchController";
 import { getExperimentCy } from "../ui/graph/CytoscapeFabric";
+import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
+import SaveButtonController from "../ui/saveButton/SaveButtonController";
 import { SelectionTypeIndicatorController } from "../ui/shared/selectionTypeIndicator/SelectionTypeIndicatorController";
 import { ExperimentStarter } from "./startExperiment";
 
 export const onStartExperimentCondition = (
 	elements: any,
-	app: HTMLDivElement
+	app: HTMLDivElement,
+	api: ApiClient<unknown>,
+	userEntityId: string
 ): ExperimentStarter => {
 	document.addEventListener("keydown", (event) => {
 		if (event.key === "?") {
@@ -21,12 +26,14 @@ export const onStartExperimentCondition = (
 	const cy = getExperimentCy(elements),
 		filterManager = new FilterManager(cy);
 
-	const graphController = new ExperimentGraphController(cy);
+	const graphController = new ExperimentGraphController(cy, api, userEntityId);
 	//@ts-ignore
 	const searchController = new SearchViewController(cy);
 	const filterController = new FilterBarController(cy, filterManager);
 	const selectionTypeIndicatorController =
 		new SelectionTypeIndicatorController();
+	new PropertyModalController();
+	new SaveButtonController();
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
