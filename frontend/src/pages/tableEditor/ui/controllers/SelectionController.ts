@@ -41,8 +41,17 @@ export class SelectionController implements ReactiveController {
 		return this.selectedItems;
 	}
 
+	getLastSelectedItem() {
+		return this.selectedItems[this.selectedItems.length - 1];
+	}
+
 	addItem(item: ColumnItemInfo) {
 		this.selectedItems.push(item);
+		this.notifyListeners();
+	}
+
+	addItems(items: ColumnItemInfo[]) {
+		this.selectedItems.push(...items);
 		this.notifyListeners();
 	}
 

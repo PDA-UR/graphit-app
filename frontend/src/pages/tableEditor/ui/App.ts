@@ -63,6 +63,14 @@ export default class AppRoot extends Component {
 				e.preventDefault();
 				this.zustand.toggleSidebar();
 			}
+			// delete or backspace
+			if (
+				(e.key === "Delete" || e.key === "Backspace") &&
+				this.selectionController.getSelectedItems().length > 0
+			) {
+				e.preventDefault();
+				this.dragController.onDrop("trash", false);
+			}
 		});
 
 		document.addEventListener("click", (e) => {

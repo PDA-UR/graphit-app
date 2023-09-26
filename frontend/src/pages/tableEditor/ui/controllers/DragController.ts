@@ -77,6 +77,7 @@ export class DragController implements ReactiveController {
 		}
 
 		if (dropzone === "trash") {
+			console.log("trash event");
 			this.itemOperator.removeItems(
 				draggedItems
 					.map((draggedItem) => {
@@ -90,6 +91,7 @@ export class DragController implements ReactiveController {
 					})
 					.filter((item) => item !== undefined) as RemoveItemInfo[]
 			);
+			console.log("trash event done", draggedItems);
 			this.selectionController.deselectAll();
 			return;
 		}

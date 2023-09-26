@@ -78,8 +78,20 @@ export class ColumnItem extends Component {
 	};
 
 	onclick = (e: MouseEvent) => {
-		this.selectionController.handleClick(this.columnItemInfo!, e);
 		e.stopPropagation();
+
+		if (e.shiftKey) {
+			// emit custom event
+			this.dispatchEvent(
+				new CustomEvent("shift-click", {
+					detail: {
+						item: this.columnItemInfo,
+					},
+				})
+			);
+			return;
+		}
+		this.selectionController.handleClick(this.columnItemInfo!, e);
 	};
 
 	render() {

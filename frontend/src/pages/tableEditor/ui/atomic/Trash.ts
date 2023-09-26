@@ -1,9 +1,15 @@
 import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { Component } from "./Component";
+import { DragController } from "../controllers/DragController";
+import { dragControllerContext } from "../../data/contexts/DragControllerContext";
+import { consume } from "@lit-labs/context";
 
 @customElement("trash-component")
 export class Trash extends Component {
+	@consume({ context: dragControllerContext })
+	private dragController!: DragController;
+
 	static styles = css`
 		:host {
 			height: 4rem;
@@ -26,7 +32,7 @@ export class Trash extends Component {
 		e.preventDefault();
 		e.stopPropagation();
 		this.classList.remove("isHovering");
-		this.dispatchEvent(new CustomEvent("dropped-items"));
+		this.dragController.onDrop("trash", false);
 	};
 
 	ondragover = (e: DragEvent) => {

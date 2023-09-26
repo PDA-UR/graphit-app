@@ -151,7 +151,10 @@ export class ColumnComponent extends Component {
 		} else if (changedProperties.has("isDragging")) {
 			const oldVal = changedProperties.get("isDragging") as boolean;
 			if (oldVal !== this.isDragging) {
-				if (!this.isDragging) this.classList.remove("highlight");
+				if (!this.isDragging) {
+					this.classList.remove("highlight");
+					this.isDragover = false;
+				}
 			}
 		}
 	}
@@ -254,9 +257,6 @@ export class ColumnComponent extends Component {
 					() => "",
 					() => "hidden"
 				)}"
-				@dropped-items="${() => {
-					this.onItemDropped("trash", false);
-				}}}"
 			></trash-component>
 		`;
 	}
