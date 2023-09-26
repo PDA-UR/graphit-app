@@ -1,18 +1,28 @@
 import pointInPolygon from "point-in-polygon";
+import {
+	getPointInCy,
+	Point,
+	Rect,
+} from "../../../pages/selectionTools/ui/graph/CytoscapeView";
+import { fromMouseEvent } from "../../../pages/selectionTools/global/KeyboardManager";
+import { AddSelectionAction } from "../undo/actions/AddSelectionAction";
+import { RemoveSelectionAction } from "../undo/actions/RemoveSelectionAction";
+
+import { SelectionActionData } from "../undo/actions/SelectionAction";
+import {
+	SelectionTool,
+	LassoRectSelectionActionData,
+} from "../../../pages/selectionTools/global/SelectionTool";
+import {
+	getSelectionType,
+	SelectionType,
+} from "../../../pages/selectionTools/global/SelectionType";
 
 /**
  * Code from: https://github.com/zakjan/cytoscape-lasso
  * Modified to be typescript compatible
  * Also: planning to add new features
  */
-
-function isMultSelKeyDown(event: MouseEvent): boolean {
-	return event.shiftKey || event.metaKey || event.ctrlKey;
-}
-
-type Point = [number, number];
-
-type Rect = [Point, Point];
 
 export class LassoHandler {
 	private cy: any;
@@ -27,9 +37,10 @@ export class LassoHandler {
 		[0, 0],
 	];
 	private activated = false;
+	private isDisabled = false;
 
-	private readonly RECT_THRESHOLD = 50;
-	private readonly OFFSET = 50;
+	private readonly RECT_THRESHOLD = 100;
+	private readonly OFFSET = 100;
 
 	constructor(cy: any) {
 		this.cy = cy;
@@ -48,6 +59,10 @@ export class LassoHandler {
 			"mousedown",
 			this.onGraphContainerMouseDown.bind(this)
 		);
+	}
+
+	toggle(on: boolean): void {
+		this.isDisabled = !on;
 	}
 
 	destroy(): void {
@@ -69,16 +84,22 @@ export class LassoHandler {
 	}
 
 	private onGraphContainerMouseDown(event: MouseEvent): void {
+		if (this.isDisabled) return;
 		this.polygon = [[event.clientX, event.clientY]];
 		this.rect = [
 			[event.clientX, event.clientY],
 			[event.clientX, event.clientY],
 		];
-		document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this));
-		document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this));
+		this.cy
+			.container()
+			.addEventListener("mousemove", this.onDocumentMouseMove.bind(this));
+		this.cy
+			.container()
+			.addEventListener("mouseup", this.onDocumentMouseUp.bind(this));
 	}
 
 	private onDocumentMouseMove(event: MouseEvent): void {
+		if (this.isDisabled) return;
 		this.polygon.push([event.clientX, event.clientY]);
 		this.rect[1] = [event.clientX, event.clientY];
 		if (this.shouldActivate(event)) {
@@ -88,22 +109,25 @@ export class LassoHandler {
 	}
 
 	private shouldActivate(event: MouseEvent): boolean {
+		if (this.isDisabled) false;
 		const renderer = this.cy.renderer();
 		const hoverData = renderer.hoverData;
 		const isEhSource = this.cy.$(".eh-source").length === 0;
+		const selectionType = getSelectionType(fromMouseEvent(event));
 		return (
 			event.buttons === 1 &&
 			isEhSource &&
 			(((hoverData.down == null || hoverData.down.pannable()) &&
 				!hoverData.dragging &&
-				(isMultSelKeyDown(event) ||
+				(selectionType === SelectionType.ADD ||
 					!this.cy.panningEnabled() ||
 					!this.cy.userPanningEnabled())) ||
-				(hoverData.down && isMultSelKeyDown(event)))
+				(hoverData.down && selectionType === SelectionType.ADD))
 		);
 	}
 
 	private activate(event: MouseEvent): void {
+		if (this.isDisabled) return;
 		if (this.activated) return;
 		const firstPosition = this.polygon[0];
 		const lastPosition = this.polygon[this.polygon.length - 1];
@@ -136,11 +160,14 @@ export class LassoHandler {
 	}
 
 	private onDocumentMouseUp(event: MouseEvent): void {
-		document.removeEventListener(
-			"mousemove",
-			this.onDocumentMouseMove.bind(this)
-		);
-		document.removeEventListener("mouseup", this.onDocumentMouseUp.bind(this));
+		if (this.isDisabled) return;
+
+		this.cy
+			.container()
+			.removeEventListener("mousemove", this.onDocumentMouseMove.bind(this));
+		this.cy
+			.container()
+			.removeEventListener("mouseup", this.onDocumentMouseUp.bind(this));
 
 		if (!this.activated) {
 			return;
@@ -166,7 +193,7 @@ export class LassoHandler {
 	}
 
 	private selectNodesInRect(): any {
-		console.log("selectNodesInRect");
+		// console.log("selectNodesInRect");
 		const graphRect = this.getGraphRect(this.rect);
 		const matchedNodes = this.cy.nodes().filter((node: any) => {
 			const position = node.position();
@@ -177,7 +204,7 @@ export class LassoHandler {
 	}
 
 	private selectNodesInPolygon(): any {
-		console.log("selectNodesInPolygon");
+		// console.log("selectNodesInPolygon");
 		const graphPolygon = this.getGraphPolygon(this.polygon);
 		const matchedNodes = this.cy.nodes().filter((node: any) => {
 			const position = node.position();
@@ -188,22 +215,58 @@ export class LassoHandler {
 	}
 
 	private finish(event: MouseEvent): void {
+		if (this.isDisabled) return;
+
 		const distance = this.distance(this.rect[0], this.rect[1]),
 			doUseRect = distance >= this.RECT_THRESHOLD;
 
 		const matchedNodes = doUseRect
-			? this.selectNodesInRect()
-			: this.selectNodesInPolygon();
+			? this.selectNodesInRect().not(".filtered")
+			: this.selectNodesInPolygon().not(".filtered");
 
-		if (!isMultSelKeyDown(event) && this.cy.selectionType() !== "additive") {
-			this.cy.$(":selected").unmerge(matchedNodes).unselect();
+		const elementsToUnselect = [],
+			elementsToSelect = [];
+
+		const selectionType = getSelectionType(fromMouseEvent(event));
+		if (selectionType === SelectionType.NEW) {
+			elementsToUnselect.push(...this.cy.$(":selected").unmerge(matchedNodes));
+			// not of class .filtered
+			elementsToSelect.push(...matchedNodes.filter(":selectable:unselected"));
+		} else if (selectionType === SelectionType.SUBTRACT) {
+			elementsToUnselect.push(...matchedNodes);
+		} else if (selectionType === SelectionType.ADD) {
+			elementsToSelect.push(...matchedNodes.filter(":selectable:unselected"));
 		}
 
-		matchedNodes
-			.emit("box")
-			.filter(":selectable:unselected")
-			.select()
-			.emit("boxselect");
+		if (elementsToSelect.length > 0 || elementsToUnselect.length > 0) {
+			const tool = SelectionTool.LASSO_RECT,
+				type = getSelectionType(fromMouseEvent(event)),
+				isLasso = !doUseRect;
+
+			const addSelectionData: LassoRectSelectionActionData = {
+					elementIds: elementsToSelect.map((ele) => ele.id()),
+					isLasso,
+				},
+				removeSelectionData: LassoRectSelectionActionData = {
+					elementIds: elementsToUnselect.map((ele) => ele.id()),
+					isLasso,
+				};
+
+			const addSelectionAction = new AddSelectionAction(
+					this.cy,
+					tool,
+					type,
+					addSelectionData
+				),
+				removeSelectionAction = new RemoveSelectionAction(
+					this.cy,
+					tool,
+					type,
+					removeSelectionData
+				);
+
+			this.cy.emit("multiSelect", [addSelectionAction, removeSelectionAction]);
+		}
 
 		this.activated = false;
 	}
@@ -232,6 +295,8 @@ export class LassoHandler {
 	};
 
 	private render(): void {
+		if (this.isDisabled) return;
+
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		if (!this.activated) return;
 		const style = this.cy.style();
@@ -246,7 +311,7 @@ export class LassoHandler {
 
 		const lassoOpacity = this.getLassoOpacity(startEndDistance),
 			rectOpacity = this.getRectOpacity(startEndDistance);
-		console.log(lassoOpacity, rectOpacity);
+		// console.log(lassoOpacity, rectOpacity);
 
 		if (canvasPolygon.length > 0)
 			this.renderLasso(canvasPolygon, style, lassoOpacity, doUseLasso);
@@ -260,12 +325,10 @@ export class LassoHandler {
 		opacity: number,
 		isActive: boolean
 	): void {
-		const color = isActive
-			? [200, 230, 240]
-			: style.core("selection-box-color").value;
-		const borderColor = isActive
-			? [100, 150, 180]
-			: style.core("selection-box-border-color").value;
+		if (this.isDisabled) return;
+
+		const color = isActive ? [200, 230, 240] : [155, 155, 155];
+		const borderColor = isActive ? [100, 150, 180] : [100, 100, 100];
 		const borderWidth = style.core("selection-box-border-width").value;
 
 		this.ctx.beginPath();
@@ -273,7 +336,7 @@ export class LassoHandler {
 		for (let position of canvasPolygon) {
 			this.ctx.lineTo(position[0], position[1]);
 		}
-		if (borderWidth > 0 && isActive) {
+		if (borderWidth > 0) {
 			this.ctx.lineWidth = borderWidth;
 			this.ctx.strokeStyle = `rgba(${borderColor[0]}, ${borderColor[1]}, ${borderColor[2]}, ${opacity})`;
 			this.ctx.stroke();
@@ -291,12 +354,10 @@ export class LassoHandler {
 		opacity: number,
 		isActive: boolean
 	): void {
-		const color = isActive
-			? [200, 230, 240]
-			: style.core("selection-box-color").value;
-		const borderColor = isActive
-			? [100, 150, 180]
-			: style.core("selection-box-border-color").value;
+		if (this.isDisabled) return;
+
+		const color = isActive ? [200, 230, 240] : [155, 155, 155];
+		const borderColor = isActive ? [100, 150, 180] : [100, 100, 100];
 		const borderWidth = style.core("selection-box-border-width").value;
 
 		const start = this.getCanvasRectPosition(canvasRect[0]);
@@ -313,7 +374,7 @@ export class LassoHandler {
 		this.ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${opacity})`;
 		this.ctx.fill();
 
-		if (borderWidth > 0 && isActive) {
+		if (borderWidth > 0) {
 			this.ctx.lineWidth = borderWidth;
 			this.ctx.strokeStyle = `rgba(${borderColor[0]}, ${borderColor[1]}, ${borderColor[2]}, ${opacity})`;
 			this.ctx.stroke();
@@ -329,15 +390,6 @@ export class LassoHandler {
 		return canvasPosition;
 	}
 
-	private getCanvasPoint(clientPosition: Point): Point {
-		const offset = this.cy.renderer().findContainerClientCoords();
-		const canvasPosition: Point = [
-			clientPosition[0] - offset[0],
-			clientPosition[1] - offset[1],
-		];
-		return canvasPosition;
-	}
-
 	private getGraphPosition(clientPosition: Point): Point {
 		const graphPosition = this.cy
 			.renderer()
@@ -347,7 +399,7 @@ export class LassoHandler {
 
 	private getCanvasPoints(clientPolygon: Point[]): Point[] {
 		const canvasPolygon = clientPolygon.map((clientPosition) =>
-			this.getCanvasPoint(clientPosition)
+			getPointInCy(clientPosition, this.cy)
 		);
 		return canvasPolygon;
 	}

@@ -2,18 +2,60 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Vite + TS</title>
+		<title>BA-Graph Studie</title>
 	</head>
-	<body>
-		<div id="app"></div>
+	<body id="body">
+		<div id="experiment-app" class="app">
+			<div id="search" class="base-container sidebar slided-out-left invisible">
+				<div id="search-head" class="search-head">
+					<select id="search-key" />
+					<input id="search-input" type="text" placeholder="Search" />
+					<div id="search-close-button" class="close-button"></div>
+				</div>
+				<div id="search-results" class="search-results"></div>
+			</div>
+			<div id="main-pane">
+				<div id="filter-bar" class="base-container">
+					<div id="filter-bar-items"></div>
+					<div id="filter-bar-add-button">+</div>
+					<div class="spacer"></div>
+				</div>
+				<div id="search-toggle-button" class="button"></div>
+				<div class="spacer"></div>
+				<div id="selection-type-indicator" class="base-container card"></div>
+			</div>
 
-		<div id="toolbar" class="base-container">
-			<div id="grab" class="tool"></div>
-			<div id="mouse" class="tool"></div>
+			<div id="experiment-cy" class="cy"></div>
 		</div>
+		<div id="control-app" class="app">
+			<div id="main-pane">
+				<div id="action-bar" class="base-container">
+					<div id="action-bar-dropdowns"></div>
+					<div class="spacer"></div>
+					<div id="action-bar-search">
+						<div id="action-bar-search-input-container" class="hidden">
+							<!-- select for labels -->
+							<select id="action-bar-search-property-select"></select>
+							<input
+								id="action-bar-search-input"
+								type="text"
+								placeholder="Search"
+							></input>
+						</div>
 
+						<div id="action-bar-search-button"></div>
+
+						<div id="action-bar-search-results" class="card base-container hidden"></div>
+					</div>
+				</div>
+
+				<div class="spacer"></div>
+
+				<div id="selection-type-indicator" class="base-container card"></div>
+			</div>
+			<div id="control-cy" class="cy"></div>
+		</div>
 		<script type="module" src="./main.ts"></script>
 	</body>
 </html>

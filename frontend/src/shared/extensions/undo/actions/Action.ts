@@ -1,5 +1,9 @@
 export abstract class Action {
-	abstract do(): void;
+	abstract do(isComposite: boolean): void;
 
-	abstract undo(): void;
+	abstract undo(isComposite: boolean): void;
+
+	abstract getData(): any;
+
+	abstract getName(): string;
 }

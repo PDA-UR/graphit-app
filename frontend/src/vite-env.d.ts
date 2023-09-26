@@ -13,3 +13,9 @@ declare module 'cytoscape-layout-utilities' {
     const ext: cytoscape.Ext;
     export = ext;
 } */
+
+declare module "cytoscape-node-html-label";
+declare module "cytoscape-select" {
+	const cytoscape = cytoscape;
+	export = cytoscape;
+}

@@ -9,6 +9,9 @@ export enum ToolbarViewEvents {
 }
 
 export class ToolbarView extends View {
+	toggleHtmlListeners(on: boolean): void {
+		console.warn("Method not implemented.");
+	}
 	private readonly $container: HTMLDivElement;
 
 	private readonly $grabTool: HTMLDivElement;

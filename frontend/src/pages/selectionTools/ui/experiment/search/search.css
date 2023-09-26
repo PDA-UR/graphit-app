@@ -1,0 +1,139 @@
+/* search view like in vs code (floating on left side, 25% width) */
+
+#search {
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 17em;
+    background-color: #f8f8f8;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding:0;
+    margin:0;
+    display: flex;
+    flex-direction: column;
+
+}
+
+#search-head {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em;
+    border-bottom: 1px solid #c5c5c5;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+#search-results {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.search-result-container {
+    padding: 0.1em;
+}
+
+.search-result.last-clicked {
+    background-color: #c5c5c5
+}
+
+.search-result.last-clicked.selected {
+    background-color: #4377c6
+}
+
+.search-result.selected {
+    background-color: #4377c6;
+}
+
+.search-result.selected > * {
+    color: white;
+}
+
+#search-toggle-button {
+    width: 3em;
+    height: 3em;
+    margin: 0.5em;
+    z-index: 1000;
+
+    background-image: url("../../../icons/magnifying-glass.svg");
+    background-size: 1.5em;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    border-radius: 5px;
+    background-color: #f8f8f8;
+
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+#search-toggle-button.active {
+    background-image: url("../../../icons/magnifying-glass-fill.svg");
+    border-color: #b6b6b6;
+
+    border-width: 1px;
+    border-style: solid;
+}
+
+.search-result {
+    border-radius: 3px;
+    padding: 0.3em;
+
+}
+
+.search-result.selected {
+    background-color: #599bff;
+}
+
+.search-result.indicated {
+    cursor: pointer;
+}
+
+.search-result.indicated.selected {
+    background-color: #4377c6;
+}
+
+/* without selected class */
+.search-result.indicated {
+    background-color: #e8e8e8;
+}
+
+.search-result-label {
+    /* bold; */
+    font-weight: bold;
+
+}
+
+.search-result-value {
+    font-size: 0.8em;
+    color: #666666;
+}
+
+.slided-out-left {
+    animation: slide-out-left 0.1s ease-in-out forwards;
+}
+
+.slided-in-left {
+    animation: slide-in-left 0.1s ease-in-out forwards;
+}
+
+@keyframes slide-out-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slide-in-left {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}

@@ -8,6 +8,9 @@ export enum PropertyModalViewEvents {
 }
 
 export class PropertyModalView extends View {
+	toggleHtmlListeners(on: boolean): void {
+		console.warn("Method not implemented.");
+	}
 	private readonly $container: HTMLDivElement;
 	private readonly $completeButton: HTMLButtonElement;
 	private readonly $interestButton: HTMLButtonElement;

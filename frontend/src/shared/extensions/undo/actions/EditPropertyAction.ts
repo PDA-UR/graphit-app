@@ -12,6 +12,17 @@ const WB_PROPERTIES: any =
 	getEnvVar("PROD") === "true" ? WB_PROPERTIES_PROD : WB_PROPERTIES_DEV;
 
 export class EditPropertyAction extends PropertyAction {
+	getData() {
+		return {
+			elementId: this.elementId,
+			propertyName: this.propertyName,
+			newValue: this.newValue,
+			oldValue: this.oldValue,
+		};
+	}
+	getName(): string {
+		return "EditPropertyAction";
+	}
 	private readonly newValue: any;
 	private readonly oldValue: any;
 	private readonly originalValue: any;

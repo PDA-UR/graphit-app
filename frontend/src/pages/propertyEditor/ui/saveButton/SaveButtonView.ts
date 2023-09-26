@@ -6,6 +6,9 @@ export enum SaveButtonEvents {
 }
 
 export class SaveButtonView extends View {
+	toggleHtmlListeners(on: boolean): void {
+		console.warn("Method not implemented.");
+	}
 	private readonly $saveButton: HTMLButtonElement;
 
 	constructor() {

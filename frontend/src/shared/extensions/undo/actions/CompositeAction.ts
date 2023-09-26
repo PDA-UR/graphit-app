@@ -10,14 +10,16 @@ export class CompositeAction<T extends Action> extends Action {
 	}
 
 	do(): void {
-		this.actions.forEach((a) => a.do());
+		this.actions.forEach((a) => a.do(true));
 	}
 
 	undo(): void {
-		this.actions.forEach((a) => a.undo());
+		this.actions.forEach((a) => a.undo(true));
 	}
 
-	merge<A extends Action>(action: A): CompositeAction<WikibaseAction> {
+	merge<A extends Action>(
+		action: A
+	): CompositeAction<WikibaseAction> | undefined {
 		if (this.actions.some((a) => !(a instanceof WikibaseAction)))
 			throw new Error(
 				"Cant merge non-wikibase actions (composite action is not pure)"
@@ -29,26 +31,24 @@ export class CompositeAction<T extends Action> extends Action {
 			);
 			return new CompositeAction([...actions, action]);
 		}
-		if (action instanceof CompositeAction<WikibaseAction>) {
+		if (action instanceof CompositeAction) {
 			if (action.actions.some((a) => !(a instanceof WikibaseAction)))
 				throw new Error(
 					"Cant merge non-wikibase actions (composite action is not pure)"
 				);
-
-			const actions = (this.actions as unknown as WikibaseAction[]).filter(
-				(a) => !action.actions.some((a2) => a.isOverriddenBy(a2))
-			);
-			return new CompositeAction([...actions, ...action.actions]);
-		} else {
-			throw new Error("Can't merge non-wikibase actions");
 		}
-	}
-
-	length() {
-		return this.actions.length;
+		return undefined;
 	}
 
 	getActions() {
 		return this.actions;
+	}
+
+	getData() {
+		return this.actions.map((a) => a.getData());
+	}
+
+	getName(): string {
+		return "CompositeAction";
 	}
 }

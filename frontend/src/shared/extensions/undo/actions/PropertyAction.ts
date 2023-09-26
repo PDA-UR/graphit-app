@@ -1,6 +1,5 @@
 import { Core } from "cytoscape";
 import { WikibaseAction } from "./WikibaseAction";
-import { CompositeAction } from "./CompositeAction";
 
 export abstract class PropertyAction extends WikibaseAction {
 	protected readonly cy: Core;

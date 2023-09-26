@@ -34,7 +34,7 @@ export default class WikibaseClient {
 	async login() {
 		const userSession = await this.api.auth.login(this.credentials);
 		if (!userSession.username) {
-			throw new Error("Login failed: " + userSession);
+			throw new Error("Login failed: " + JSON.stringify(userSession));
 		}
 
 		const initJobs = [this.loadProperties(), this.loadServerInfo()];

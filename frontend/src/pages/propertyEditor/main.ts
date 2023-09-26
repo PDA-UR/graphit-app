@@ -5,13 +5,10 @@ import { ToolbarViewController } from "./ui/toolbar/ToolbarController";
 import { PropertyModalController } from "./ui/propertyModal/PropertyModalController";
 import { state } from "./global/State";
 import { getCredentials } from "../../shared/util/GetCredentials";
-import { ApiClient, UserSessionModel } from "../../shared/client/ApiClient";
 import SaveButtonController from "./ui/saveButton/SaveButtonController";
-import { getEnvVar } from "../../shared/util/Env";
 import { SparqlParser } from "../../shared/sparql/SparqlParser";
 import WikibaseClient from "../../shared/WikibaseClient";
 import { createApiClient } from "../../shared/util/getApiClient";
-import { getCircularReplacer } from "../selectionTools/global/DataManager";
 
 async function main() {
 	const credentials = getCredentials();

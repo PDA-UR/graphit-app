@@ -1,0 +1,15 @@
+#selection-type-indicator {
+    /* wrap content widht */
+    width: fit-content;
+
+    /* box shadow top right but NOT LEFT */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    /* border radius only on top right */
+    border-radius: 0 0.5em 0 0;
+    z-index: 999;
+
+    /* left side no border color */
+    border-left: none;
+
+  }

@@ -12,5 +12,6 @@ export const fromStore = (store: Store): StoreActions => {
 		logout: store.logout,
 		setCredentials: store.setCredentials,
 		toggleSidebar: store.toggleSidebar,
+		setIsDarkMode: store.setIsDarkMode,
 	};
 };

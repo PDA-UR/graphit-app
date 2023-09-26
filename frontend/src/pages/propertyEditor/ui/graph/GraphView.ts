@@ -60,6 +60,9 @@ export enum GraphViewEvents {
 }
 
 export class GraphView extends View {
+	toggleHtmlListeners(on: boolean): void {
+		console.warn("Method not implemented.");
+	}
 	private readonly cy: Core;
 	private readonly $container: HTMLElement;
 	private readonly actionManager: ActionManager;

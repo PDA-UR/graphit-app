@@ -1,68 +1,33 @@
-import { ElementDefinition } from "cytoscape";
-import { GraphModel } from "./GraphModel";
-import { GraphView, GraphViewEvents } from "./GraphView";
-import { eventBus } from "../../global/EventBus";
-import { ToolbarViewControllerEvents } from "../toolbar/ToolbarController";
-import { DEFAULT_TOOL, Tool } from "../toolbar/ToolbarModel";
+import { ViewController } from "../../../../shared/ui/ViewController";
+import { GraphView } from "./GraphView";
 
-import dagre from "cytoscape-dagre";
-import nodeHtmlLabel from "cytoscape-node-html-label";
-import lasso from "../../../../shared/extensions/lasso-rectangle/lasso";
-import undo from "../../../../shared/extensions/undo/undo";
-import { ApiClient } from "../../../../shared/client/ApiClient";
-
-export class GraphController {
-	private readonly graphView: GraphView;
-	private readonly graphModel: GraphModel;
-
-	constructor(elements: ElementDefinition[]) {
-		console.log("GraphController");
-		this.graphModel = elements;
-		this.graphView = new GraphView(
-			this.graphModel,
-			document.getElementById("app")!,
-			{
-				extensions: [dagre, nodeHtmlLabel, lasso, undo],
-			}
-		);
-
-		this.switchTool(DEFAULT_TOOL);
-
-		this.graphView.addListener(
-			GraphViewEvents.SELECTION_CHANGED,
-			this.onSelectionChanged
-		);
-
-		eventBus.addListener(
-			ToolbarViewControllerEvents.SWITCH_TOOL,
-			this.switchTool
-		);
-
-		// listen to z key
-		document.addEventListener("keydown", (event) => {
-			if (event.key === "z") {
-				console.log("undo");
-				this.graphView.undo();
-			}
-			if (event.key === "y") {
-				console.log("redo");
-				this.graphView.redo();
-			}
-		});
+export abstract class GraphController<
+	T extends GraphView
+> extends ViewController<T> {
+	constructor(view: T) {
+		super(view);
 	}
 
-	private switchTool = (tool: string) => {
-		switch (tool) {
-			case Tool.GRAB:
-				this.graphView.setGrabMode();
-				break;
-			case Tool.MOUSE:
-				this.graphView.setMouseMode();
-				break;
-		}
+	private initMouseListeners = (on = true) => {
+		const fn = on ? window.addEventListener : window.removeEventListener;
+		fn("wheel", this.view.onWheel);
+		fn("mousedown", this.view.onMousedown);
+		fn("mouseup", this.view.onMouseUp);
+		fn("mousemove", this.view.onMouseMove);
 	};
 
-	private onSelectionChanged = (selectionCount: number) => {
-		console.log("onSelectionChanged", selectionCount);
+	private initKeyboardListeners = (on = true) => {
+		const fn = on ? window.addEventListener : window.removeEventListener;
+		fn("keydown", this.view.onKeydown);
+		fn("keyup", this.view.onKeyUp);
+	};
+
+	public reset = () => {
+		this.view.reset();
+	};
+
+	toggleListeners = (on = true) => {
+		this.initMouseListeners(on);
+		this.initKeyboardListeners(on);
 	};
 }

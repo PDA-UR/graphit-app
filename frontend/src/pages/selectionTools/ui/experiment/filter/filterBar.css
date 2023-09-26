@@ -1,0 +1,80 @@
+/* Filter bar is a horizontal bar, which shows active filters in breadcrumb style on the top of the page */
+
+#filter-bar {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    height: 3em;
+    gap: 0.5em;
+    align-items: center;
+    padding: 0
+}
+
+#filter-bar-items {
+    padding: 0;
+    display: inherit;
+    height: 100%;
+}
+
+.filter-bar-item {
+    margin: 0.2em;
+    padding: 0.5em;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+
+    border-radius: 3px;
+}
+
+.filter-bar-item.active {
+    background-color: #77aeff   ;
+
+}
+.filter-bar-item.hover.active {
+    background-color: #4377c6;
+}
+
+#filter-bar-add-button:hover, .filter-bar-item.hover {
+    background-color: #e8e8e8;
+}
+
+.filter-bar-item.hover > .filter-bar-item-remove-button {
+    opacity: 1;
+}
+
+.filter-bar-item.root-filter > .filter-bar-item-remove-button {
+    display: none;
+}
+
+.filter-bar-item > .filter-bar-item-remove-button:hover {
+    background-color: #c4c4c4;
+}
+
+.filter-bar-item.active > .filter-bar-item-remove-button:hover {
+    background-color: #3560a1;
+}
+
+.filter-bar-item-remove-button {
+    opacity: 0;
+    margin-left: 0.5em;
+    background-image: url("../../../icons/x.svg");
+    /* change height of the icon*/
+    background-size: 1em;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}
+
+#filter-bar-add-button, .filter-bar-item-remove-button {
+    padding: 0.5em;
+    text-align: center;
+    align-items: center;
+    width: 1em;
+    height: 1em;
+    border-radius: 3px;
+}
+
+.filter-bar-separator {
+    width: 0.1em;
+}

@@ -1,157 +1,386 @@
-import { GraphModel } from "./GraphModel";
-import cytoscape, { Core } from "cytoscape";
-import { View } from "../../../../shared/ui/View";
-
-import interestedNormal from "../../icons/interested_normal.svg";
+import cytoscape from "cytoscape-select";
 import { ActionManager } from "../../../../shared/extensions/undo/ActionManager";
 import { Action } from "../../../../shared/extensions/undo/actions/Action";
-
-export interface GraphViewOptions extends cytoscape.CytoscapeOptions {
-	extensions?: any[];
-}
-
-const nodeSize = (ele: any) => {
-	const degree = ele.degree();
-	return 7 + degree * 7;
-};
-
-const DEFAULT_OPTIONS: GraphViewOptions = {
-	layout: {
-		name: "dagre",
-	},
-	style: [
-		{
-			selector: "node",
-			style: {
-				"background-color": "#666",
-				label: "data(label)",
-				width: nodeSize,
-				height: nodeSize,
-			},
-		},
-		{
-			selector: "node:selected",
-			style: {
-				"border-width": "3px",
-				"border-color": "#000000",
-			},
-		},
-		{
-			selector: "node[completed = 'true']",
-			style: {
-				"background-color": "#6DBB6D",
-			},
-		},
-		{
-			selector: "edge",
-			style: {
-				width: 3,
-				"line-color": "#ccc",
-				"target-arrow-color": "#ccc",
-				"target-arrow-shape": "triangle",
-				"curve-style": "bezier",
-			},
-		},
-	],
-};
+import { AddSelectionAction } from "../../../../shared/extensions/undo/actions/AddSelectionAction";
+import { CompositeAction } from "../../../../shared/extensions/undo/actions/CompositeAction";
+import { RemoveSelectionAction } from "../../../../shared/extensions/undo/actions/RemoveSelectionAction";
+import { View } from "../../../../shared/ui/View";
+import { experimentEventBus } from "../../global/ExperimentEventBus";
+import {
+	fromEvent,
+	isModifierActive,
+	ModifierKey,
+} from "../../global/KeyboardManager";
+import {
+	SelectionTool,
+	AllSelectionActionData,
+	InvertSelectionActionData,
+	ClickSelectionActionData,
+	SelectionActionDataMap,
+} from "../../global/SelectionTool";
+import { getAllSelectionElements } from "./CytoscapeElements";
+import { initNodeHtmlLabel, initUndoRedo } from "./CytoscapeExtensions";
+import { zoom } from "./CytoscapeView";
+import { controlEventBus } from "../../global/ControlEventBus";
+import { SelectionType } from "../../global/SelectionType";
 
 export enum GraphViewEvents {
 	SELECTION_CHANGED = "selectionChanged",
+	LAST_CLICKED_CHANGED = "lastClickedChanged",
 }
 
-export class GraphView extends View {
-	private readonly cy: Core;
-	private readonly $container: HTMLElement;
-	private readonly actionManager: ActionManager;
+export abstract class GraphView extends View {
+	protected readonly cy: any;
+	protected readonly actionManager: ActionManager;
 
-	constructor(
-		model: GraphModel,
-		$container: HTMLElement,
-		options: GraphViewOptions
-	) {
+	private selectEventTimeout: any;
+	private isPanning: boolean = false;
+
+	private dataAtFirstClick: any = {};
+	private isWaitingForDoubleClick: boolean = false;
+
+	constructor(cy: cytoscape.Core) {
 		super();
+		this.cy = cy;
 
-		if (options.extensions) this.loadExtensions(options.extensions);
-		this.$container = $container;
-		this.cy = cytoscape({
-			container: this.$container,
-			elements: model,
-			...DEFAULT_OPTIONS,
-			...options,
-		});
+		initNodeHtmlLabel(this.cy);
+		this.actionManager = initUndoRedo(this.cy);
 
-		this.cy.nodeHtmlLabel([
-			{
-				query: "node",
-				halign: "center",
-				valign: "center",
-				halignBox: "center",
-				valignBox: "center",
-				tpl: this.getBadge,
-			},
-		]);
-
-		(this.cy as any).lassoSelectionEnabled(true);
-		this.actionManager = (this.cy as any).undoRedo();
-		console.log(this.actionManager);
-
-		this.cy.on("select", "node", (event: any) => {
-			const numSelectedNodes = this.cy.$(":selected").length;
-			this.emit(GraphViewEvents.SELECTION_CHANGED, numSelectedNodes);
-		});
-
-		this.cy.on("unselect", "node", (event: any) => {
-			const numSelectedNodes = this.cy.$(":selected").length;
-			this.emit(GraphViewEvents.SELECTION_CHANGED, numSelectedNodes);
-		});
+		this.cy.userPanningEnabled(false);
+		this.cy.boxSelectionEnabled(false);
+		this.cy.nodes().grabify();
+		this.cy.nodes().selectify();
+		// set max zoom
+		this.cy.minZoom(0.3);
+		// make all edges unselectable
+		this.cy.edges().unselectify();
 	}
 
-	private getBadge = (data: any) => {
-		const badges = [];
-
-		if (data.interested === "true")
-			badges.push(
-				"<div class='badge'><img src='" + interestedNormal + "'/></div>"
-			);
-
-		return `<div class="badges">${badges.join("")}</div>`;
-	};
-
-	private loadExtensions(extensions: any[]) {
-		extensions.forEach((extension) => {
-			cytoscape.use(extension);
-		});
-	}
-
-	private toggleGrabMode(on: boolean) {
-		this.cy.panningEnabled(on);
-		this.cy.userPanningEnabled(on);
-		this.cy.boxSelectionEnabled(!on);
-
+	toggleHtmlListeners(on: boolean): void {
 		if (on) {
-			this.cy.nodes().ungrabify();
-			this.cy.nodes().unselectify();
+			this.cy.on("click", this.onAtomicClick);
+			this.cy.on("select unselect", this.onSelectionChanged);
+			this.cy.on("multiSelect", this.onMultiSelect);
+			this.cy.on("mouseover", "node", this._onHoverNode);
+			this.cy.on("mouseout", "node", this.onHoverNodeEnd);
+			this.cy.on("boxselect", this._onBoxSelect);
 		} else {
-			this.cy.nodes().grabify();
-			this.cy.nodes().selectify();
+			this.cy.removeListener("click", this.onAtomicClick);
+			this.cy.removeListener("select unselect", this.onSelectionChanged);
+			this.cy.removeListener("multiSelect", this.onMultiSelect);
+			this.cy.removeListener("mouseover", "node", this._onHoverNode);
+			this.cy.removeListener("mouseout", "node", this.onHoverNodeEnd);
+			this.cy.removeListener("boxselect", this._onBoxSelect);
 		}
 	}
 
-	setGrabMode() {
-		this.toggleGrabMode(true);
+	private readonly boxSelectElementBuffer: any[] = [];
+	boxSelectElementTimeout: any = null;
+
+	private _onBoxSelect = (e: any) => {
+		const element = e.target;
+		if (element.isNode()) {
+			this.boxSelectElementBuffer.push(element);
+
+			if (!this.boxSelectElementTimeout) {
+				const modifierKeys = fromEvent(e);
+				this.boxSelectElementTimeout = setTimeout(() => {
+					this.boxSelectElementTimeout = null;
+					this.onBoxSelect(
+						[...this.boxSelectElementBuffer],
+						this.getDataAtFirstClick(modifierKeys)
+					);
+					this.boxSelectElementBuffer.length = 0;
+				}, 25);
+			}
+		}
+	};
+
+	protected onBoxSelect(elements: any[], dataAtFirstClick: any) {}
+
+	// ~~~~~~~~~~~ Mouse listeners ~~~~~~~~~~~ //
+
+	public onWheel = (e: any) => {
+		if (isModifierActive(fromEvent(e), ModifierKey.SHIFT)) {
+			zoom(this.cy, -e.deltaY, 0.0004, e);
+		} else {
+			zoom(this.cy, -e.deltaY, 0.002, e);
+		}
+	};
+
+	public onMousedown = (e: any) => {
+		if (this.doActivatePanning(e)) {
+			this.isPanning = true;
+			this.onTogglePanning(true);
+			// this.lassoSelection.toggle(false);
+		}
+	};
+
+	public onMouseUp = (e: any) => {
+		if (this.isPanning) {
+			this.isPanning = false;
+			// this.lassoSelection.toggle(true);
+			this.onTogglePanning(false);
+		}
+	};
+
+	protected abstract onTogglePanning(on: boolean): void;
+
+	public onMouseMove = (e: any) => {
+		if (this.isPanning) {
+			this.cy.panBy({
+				x: e.movementX,
+				y: e.movementY,
+			});
+		}
+	};
+
+	// ~~~~~~~~~~ Keyboard Listeners ~~~~~~~~~ //
+
+	public onKeydown = (e: any) => {
+		console.log(e);
+		const isInputElement = e.target instanceof HTMLInputElement;
+
+		// return if ctrl a
+		if (e.key === "a" && e.ctrlKey && isInputElement) return;
+		if (e.key === "z" && e.ctrlKey) this.undo();
+		else if (e.key === "y" && e.ctrlKey) {
+			e.preventDefault();
+			this.redo();
+		}
+		this.onCyKeyDown(e);
+	};
+
+	public onKeyUp = (e: any) => {
+		this.onCyKeyUp(e);
+	};
+
+	// ---- Keyboard Events --- //
+
+	public selectAll = (selectionType: SelectionType) => {
+		const tool = SelectionTool.ALL;
+
+		const [elementIdsToSelect, elementIdsToUnselect] = getAllSelectionElements(
+				this.cy,
+				selectionType
+			).map((elements) => elements.map((element: any) => element.id())),
+			addSelectionActionData: AllSelectionActionData = {
+				elementIds: elementIdsToSelect,
+			},
+			removeSelectionActionData: AllSelectionActionData = {
+				elementIds: elementIdsToUnselect,
+			};
+
+		this.setSelection(
+			addSelectionActionData,
+			removeSelectionActionData,
+			tool,
+			selectionType
+		);
+	};
+
+	public invertSelection = () => {
+		const tool = SelectionTool.INVERT;
+
+		const selectedElements = this.cy.elements(":selected"),
+			selectedElementsIds = selectedElements.map((element: any) =>
+				element.id()
+			),
+			unselectedElements = this.cy.elements().difference(selectedElements),
+			unselectedElementsIds = unselectedElements.map((element: any) =>
+				element.id()
+			),
+			addInvertSelectionActionData: InvertSelectionActionData = {
+				elementIds: unselectedElementsIds,
+			},
+			removeInvertSelectionActionData: InvertSelectionActionData = {
+				elementIds: selectedElementsIds,
+			};
+
+		this.setSelection(
+			addInvertSelectionActionData,
+			removeInvertSelectionActionData,
+			tool,
+			SelectionType.NEW
+		);
+	};
+
+	// ~~~~~~~~~ Cytoscape listeners ~~~~~~~~~ //
+
+	protected abstract onCyKeyDown(e: any): void;
+	protected abstract onCyKeyUp(e: any): void;
+
+	// ----- Click Events ----- //
+
+	private lastClickTs: number = 0;
+	private onAtomicClick = (event: any) => {
+		if (this.lastClickTs + 10 > event.timeStamp) return;
+
+		this.lastClickTs = event.timeStamp;
+		const modifierKeys = fromEvent(event.originalEvent as MouseEvent);
+
+		if (this.isWaitingForDoubleClick) {
+			this.isWaitingForDoubleClick = false;
+			this.onDoubleClick(event, this.dataAtFirstClick);
+		} else {
+			this.isWaitingForDoubleClick = true;
+			this.dataAtFirstClick = this.getDataAtFirstClick(modifierKeys);
+			setTimeout(() => {
+				if (this.isWaitingForDoubleClick) {
+					this.isWaitingForDoubleClick = false;
+					this.onNormalClick(event, this.dataAtFirstClick);
+					this.resetDataAtFirstClick();
+				}
+			}, 200);
+		}
+	};
+
+	protected abstract getDataAtFirstClick(modifierKeys: ModifierKey[]): any;
+
+	private resetDataAtFirstClick = () => {
+		this.dataAtFirstClick = {};
+		this.isWaitingForDoubleClick = false;
+	};
+
+	private onNormalClick = (event: any, dataAtClick: any) => {
+		const isCanvas = event.target === this.cy;
+		if (isCanvas) this.onNormalClickCanvas();
+		else {
+			const isNode = event.target.isNode();
+			if (isNode) this._onNormalClickNode(event, dataAtClick);
+		}
+		this.resetDataAtFirstClick();
+	};
+
+	private onNormalClickCanvas = () => {
+		const elementIds = this.cy.$(":selected").map((ele: any) => ele.id());
+		const removeSelectionData: ClickSelectionActionData = {
+			didClickCanvas: true,
+			elementIds,
+		};
+		this.setSelection(
+			null,
+			removeSelectionData,
+			SelectionTool.CLICK,
+			SelectionType.NEW
+		);
+		this.clearLastClicked();
+	};
+
+	protected abstract _onNormalClickNode: (event: any, dataAtClick: any) => void;
+
+	private onDoubleClick = (event: any, dataAtClick: any) => {
+		const isNode = event.target.isNode();
+		if (isNode) this.onDoubleClickNode(event.target, dataAtClick);
+		this.resetDataAtFirstClick();
+	};
+
+	protected abstract onDoubleClickNode: (
+		clickedNode: any,
+		dataAtClick: any
+	) => void;
+
+	// --- Selection Events --- //
+
+	private onSelectionChanged = (event: any) => {
+		if (event.target.isNode()) {
+			if (!this.selectEventTimeout)
+				this.selectEventTimeout = setTimeout(() => {
+					const selectedNodes = this.cy.$(":selected").map((n: any) => n.id());
+					experimentEventBus.emit(
+						GraphViewEvents.SELECTION_CHANGED,
+						selectedNodes
+					);
+					controlEventBus.emit(
+						GraphViewEvents.SELECTION_CHANGED,
+						selectedNodes
+					);
+					this.selectEventTimeout = null;
+				}, 10);
+		}
+	};
+
+	protected onMultiSelect = <T extends SelectionTool>(
+		_e: any,
+		...data: [AddSelectionAction<T> | null, RemoveSelectionAction<T> | null]
+	) => {
+		const [addSelectionAction, removeSelectionAction] = data;
+
+		let actionToDo: Action;
+
+		if (
+			addSelectionAction &&
+			addSelectionAction.numElements() > 0 &&
+			removeSelectionAction &&
+			removeSelectionAction.numElements() > 0
+		) {
+			actionToDo = new CompositeAction([
+				addSelectionAction,
+				removeSelectionAction,
+			]);
+		} else if (addSelectionAction && addSelectionAction.numElements() > 0) {
+			actionToDo = addSelectionAction;
+		} else if (
+			removeSelectionAction &&
+			removeSelectionAction.numElements() > 0
+		) {
+			actionToDo = removeSelectionAction;
+		} else return;
+
+		this.actionManager.do(actionToDo);
+	};
+
+	// --- Hover Events --- //
+
+	protected abstract _onHoverNode: (event: any) => void;
+	protected abstract onHoverNodeEnd: (event: any) => void;
+
+	// ~~~~~~~~~~ Protected Logic ~~~~~~~~~~ //
+
+	public setSelection = <T extends SelectionTool>(
+		addSelectionData: SelectionActionDataMap[T] | null,
+		removeSelectionData: SelectionActionDataMap[T] | null,
+		tool: T,
+		type: SelectionType
+	) => {
+		const addSelectionAction = addSelectionData
+				? new AddSelectionAction(this.cy, tool, type, addSelectionData)
+				: null,
+			removeSelectionAction = removeSelectionData
+				? new RemoveSelectionAction(this.cy, tool, type, removeSelectionData)
+				: null;
+
+		this.cy.emit("multiSelect", [addSelectionAction, removeSelectionAction]);
+	};
+
+	public setLastClicked(clickedNode: any) {
+		this.cy.nodes().removeClass("last-clicked");
+		clickedNode.addClass("last-clicked");
+		experimentEventBus.emit(
+			GraphViewEvents.LAST_CLICKED_CHANGED,
+			clickedNode.id()
+		);
+		controlEventBus.emit(
+			GraphViewEvents.LAST_CLICKED_CHANGED,
+			clickedNode.id()
+		);
 	}
 
-	setMouseMode() {
-		this.toggleGrabMode(false);
+	// ~~~~~~~~~~ Private Logic ~~~~~~~~~~ //
+
+	private clearLastClicked() {
+		this.cy.$("node.last-clicked").removeClass("last-clicked");
 	}
 
-	getSelectedNodes() {
-		return this.cy.$(":selected");
+	private doActivatePanning(event: MouseEvent) {
+		return (
+			event.button === 1 ||
+			event.button === 2 ||
+			isModifierActive(fromEvent(event), ModifierKey.SPACE)
+		);
 	}
 
-	getCy() {
-		return this.cy;
-	}
+	// -------- Actions ------- //
 
 	do(action: Action) {
 		this.actionManager.do(action);
@@ -165,11 +394,43 @@ export class GraphView extends View {
 		return this.actionManager.redo();
 	}
 
-	getWikibaseActions() {
-		return this.actionManager.getWikibaseActions();
-	}
-
 	clearActions() {
 		this.actionManager.clear();
 	}
+
+	// ------ Getters ------ //
+
+	getSelectedNodes() {
+		return this.cy.$(":selected");
+	}
+
+	getCy() {
+		return this.cy;
+	}
+
+	getNodeById(id: string) {
+		return this.cy.getElementById(id);
+	}
+
+	// -------- Setters ------- //
+
+	reset = () => {
+		this.clearActions();
+
+		this.cy.elements().removeClass("last-clicked incoming outgoing dimmed");
+
+		this.cy.elements().unselect();
+
+		this.cy
+			.layout({
+				name: "fcose",
+			})
+			.run();
+		this.isPanning = false;
+		this.dataAtFirstClick = {};
+		this.isWaitingForDoubleClick = false;
+		this.onReset();
+	};
+
+	protected abstract onReset: () => void;
 }

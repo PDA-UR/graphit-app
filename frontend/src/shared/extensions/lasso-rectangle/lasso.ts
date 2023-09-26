@@ -22,7 +22,7 @@ export default function lasso(cytoscape?: any): void {
 				this._private.lassoHandler = undefined;
 			}
 
-			return this; // chaining
+			return this._private.lassoHandler; // chaining
 		}
 	);
 }

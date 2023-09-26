@@ -1,0 +1,114 @@
+.shortcuts-container {
+    position: absolute;
+    z-index: 1000;
+
+    /* center */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.shortcuts-list {
+    margin: 0;
+    padding: 0;
+    /* grid */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+
+}
+
+.shortcut-category-container {
+    margin-bottom: 20px;
+}
+
+.shortcut-category-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.shortcut-category-list {
+    margin: 0;
+    padding: 0;
+}
+
+.shortcut-list-item {
+    margin-bottom: 10px;
+}
+
+.shortcut-element {
+    /* double grid */
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.shortcut-key-container {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.shortcut-key, .shortcut-mouse-button, .shortcut-modifier-key {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    margin-right: 5px;
+    font-size: 12px;
+    background-color: #e9e9e9;
+}
+
+.shortcut-key {
+    text-transform: uppercase;
+}
+
+.shortcut-description {
+    flex-grow: 1;
+    font-size: 14px;
+    text-align: left;
+
+    display: flex;
+    align-items: center;
+    
+}
+
+
+.mouse-icon {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 5px;
+    opacity: .8;
+}
+
+.mouse-icon.right {
+    background-image: url(../pages/selectionTools/icons/mouse-right-button-svgrepo-com.svg);
+}
+
+.mouse-icon.left, .mouse-icon.hleft, .mouse-icon.dleft {
+    background-image: url(../pages/selectionTools/icons/mouse-left-button-svgrepo-com.svg);
+}
+
+.mouse-icon.hleft::after {
+    content: "(halten)";
+    margin-left: 25px;
+
+    text-align: center;
+    line-height: 30px;
+    font-size: 12px;
+}
+
+
+.mouse-icon.dleft::after {
+    content: "(x2)";
+    margin-left: 25px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 12px;
+
+}
