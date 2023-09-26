@@ -45,6 +45,13 @@ export default class AppRoot extends Component {
 		this.selectionController
 	);
 
+	onDarkmodeChange() {
+		document.body.classList.toggle("dark", this.zustand.isDarkMode);
+	}
+	updated() {
+		this.onDarkmodeChange();
+	}
+
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
@@ -78,6 +85,8 @@ export default class AppRoot extends Component {
 			console.log("click", e);
 			this.selectionController.deselectAll();
 		});
+
+		if (this.zustand.isDarkMode !== undefined) this.onDarkmodeChange();
 	}
 
 	private loginTask = new Task(this, {
@@ -159,7 +168,20 @@ export default class AppRoot extends Component {
 								)}
 							</button>
 							<div class="spacer"></div>
-							<span>${this.zustand.credentials?.username}</span>
+							<span id="username">${this.zustand.credentials?.username}</span>
+							<button
+								id="darkmode-toggle"
+								@click="${(e: MouseEvent) => {
+									this.zustand.setIsDarkMode(!this.zustand.isDarkMode);
+									e.stopPropagation();
+								}}"
+							>
+								${when(
+									this.zustand.isDarkMode,
+									() => "☾", // moon unicode
+									() => "☼"
+								)}
+							</button>
 							<button @click="${() => this.onLogout()}">Logout</button>
 						</div>
 						<div id="main">
@@ -204,7 +226,7 @@ export default class AppRoot extends Component {
 			flex-direction: row;
 			justify-content: space-between;
 			align-items: center;
-			border-bottom: 1px solid black;
+			border-bottom: 1px solid var(--border-color);
 			padding: 0.3rem;
 		}
 		#main {
@@ -213,6 +235,9 @@ export default class AppRoot extends Component {
 			width: 100%;
 			overflow: hidden;
 			flex-grow: 1;
+		}
+		#username {
+			margin-right: 0.5rem;
 		}
 	`;
 }

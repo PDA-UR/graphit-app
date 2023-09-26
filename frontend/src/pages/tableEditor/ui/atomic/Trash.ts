@@ -13,7 +13,7 @@ export class Trash extends Component {
 	static styles = css`
 		:host {
 			height: 4rem;
-			background-color: white;
+			background-color: var(--bg-color);
 			margin: 0.5rem;
 			border-radius: 5px;
 			border: 1px solid black;
@@ -23,8 +23,8 @@ export class Trash extends Component {
 			padding: 0 0.5rem;
 		}
 		:host(.isHovering) {
-			background-color: red;
-			color: white;
+			background-color: var(--bg-danger);
+			color: var(--fg-danger);
 		}
 	`;
 

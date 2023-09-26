@@ -17,7 +17,7 @@ export class ColumnItem extends Component {
 			cursor: grab;
 		}
 		:host(.selected) > card-component {
-			background-color: #e0e0e0;
+			background-color: var(--bg-selected);
 		}
 		.content {
 			padding: 0.5rem;

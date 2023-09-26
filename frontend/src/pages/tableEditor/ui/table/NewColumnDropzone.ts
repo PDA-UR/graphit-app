@@ -124,7 +124,7 @@ export default class NewColumnDropzone extends Component {
 		:host {
 			min-width: 10rem;
 			opacity: 0.3;
-			background-color: #f0f0f0;
+			background-color: var(--bg-dropzone-new);
 
 			display: flex;
 			justify-content: center;

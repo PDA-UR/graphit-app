@@ -13,17 +13,14 @@ export class CardComponent extends LitElement {
 			height: 100%;
 
 			border-radius: 5px;
-			border: 1px solid #000;
-			background: #fff;
-			box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.25);
+			border: 1px solid var(--border-color);
+			background: var(--bg-color);
+			box-shadow: 2px 2px 0px 0px var(--shadow-color-soft);
 		}
 
 		:host(:hover) {
 			transform: translate(-1px, -1px);
-			border-radius: 5px;
-			border: 1px solid #000;
-			background: #fff;
-			box-shadow: 3px 3px 0px 0px #000;
+			box-shadow: 3px 3px 0px 0px var(--shadow-color-hard);
 			z-index: 1;
 		}
 

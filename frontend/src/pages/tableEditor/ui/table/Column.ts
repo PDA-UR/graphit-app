@@ -264,14 +264,14 @@ export class ColumnComponent extends Component {
 		:host {
 			display: flex;
 			flex-direction: column;
-			background-color: #f5f5f5;
+			background-color: var(--bg-dropzone);
 			border-radius: 5px;
 			padding: 0.5rem;
 			gap: 0.5rem;
 			width: 23rem;
 		}
 		:host(.highlight) {
-			background-color: #e5e5e5;
+			background-color: var(--bg-dropzone-highlight);
 		}
 		:host(:hover) #delete-button {
 			opacity: 1;

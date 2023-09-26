@@ -53,30 +53,26 @@ export default class SearchSidebar extends Component {
 	render() {
 		return html`
 			<input
-                id="search-input"
+				id="search-input"
 				type="text"
 				@input="${(e: InputEvent) => {
 					this.searchQuery = (e.target as HTMLInputElement).value;
 					this.loadItemsTask.run();
 				}}"
-                placeholder="Search..."
-			></input>
+				placeholder="Search..."
+			/>
 
-        <column-item-list
-            class="${choose(
-							this.loadItemsTask.status,
-							[
-								[TaskStatus.PENDING, () => "loading"],
-								[TaskStatus.ERROR, () => "error"],
-							],
-							() => ""
-						)}"
-            .items="${this.searchResults}"
-            .origin="search"
-            @itemDraggedStart="${(e: any) =>
-							this.dragController.onItemDragStart(e.detail)}"
-            @itemDraggedEnd="${(e: any) => this.dragController.onItemDragEnd()}"
-        ></column-item-list>
+			<column-item-list
+				class="${choose(this.loadItemsTask.status, [
+					[TaskStatus.PENDING, () => "loading"],
+					[TaskStatus.ERROR, () => "error"],
+				]) ?? ""}"
+				.items="${this.searchResults}"
+				origin="search"
+				@itemDraggedStart="${(e: any) =>
+					this.dragController.onItemDragStart(e.detail)}"
+				@itemDraggedEnd="${(e: any) => this.dragController.onItemDragEnd()}"
+			></column-item-list>
 		`;
 	}
 
@@ -87,7 +83,7 @@ export default class SearchSidebar extends Component {
 			width: 25rem;
 			overflow-x: auto;
 			padding: 0.5rem;
-			border-right: 1px solid black;
+			border-right: 1px solid var(--border-color);
 		}
 
 		:host(.closed) {

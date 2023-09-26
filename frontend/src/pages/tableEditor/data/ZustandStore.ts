@@ -19,11 +19,13 @@ export interface StoreActions {
 	logout: () => void;
 	setCredentials: (credentials: Credentials) => void;
 	toggleSidebar: (isOpen?: boolean) => void;
+	setIsDarkMode: (isDarkMode: boolean) => void;
 }
 
 export interface Store extends StoreActions {
 	table: TableModel;
 	credentials?: Credentials;
+	isDarkMode?: boolean;
 	sidebarIsOpen: boolean;
 }
 
@@ -64,6 +66,8 @@ export const zustandStore = createStore<Store>(
 				set((state: Store) => {
 					state.sidebarIsOpen = isOpen ?? !state.sidebarIsOpen;
 				}),
+
+			setIsDarkMode: (isDarkMode: boolean) => set({ isDarkMode }),
 		})),
 		{
 			name: "table-storage", // unique name

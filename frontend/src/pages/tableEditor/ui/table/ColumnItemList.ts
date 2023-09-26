@@ -116,13 +116,13 @@ export class ColumnItemList extends Component {
 			padding: 0.5rem;
 		}
 		:host(.loading) {
-			background-color: #e5e5e5;
+			background-color: var(--bg-loading-progress);
 			pointer-events: none;
 			cursor: not-allowed;
 			opacity: 0.3;
 		}
 		:host(.error) {
-			background-color: #ffa1a1;
+			background-color: var(--bg-loading-error);
 			pointer-events: none;
 			cursor: not-allowed;
 			opacity: 0.7;
