@@ -1,5 +1,5 @@
 import { Service } from "@tsed/di";
-import wbEdit from "wikibase-edit";
+import wbEdit from "wikibase-edit-retry";
 import { Credentials } from "../models/CredentialsModel";
 import { SessionService } from "./SessionService";
 
