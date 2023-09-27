@@ -356,6 +356,16 @@ export abstract class GraphView extends View {
 		);
 	}
 
+	public applyChanges() {
+		// set data.original to data for each node
+		this.cy.nodes().forEach((node: any) => {
+			node.data.originalValue = {
+				...node.data,
+				originalValue: undefined,
+			};
+		});
+	}
+
 	// ~~~~~~~~~~ Private Logic ~~~~~~~~~~ //
 
 	private clearLastClicked() {

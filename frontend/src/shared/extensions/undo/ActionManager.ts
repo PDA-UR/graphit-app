@@ -31,13 +31,22 @@ export class ActionManager {
 	}
 
 	getWikibaseActions(): CompositeAction<WikibaseAction> {
-		console.log("compressing", this.undoStack);
-		return this.undoStack
-			.filter((a) => a instanceof WikibaseAction || a instanceof Object)
+		console.log(
+			"compressing",
+			this.undoStack.map((a) => a.getName())
+		);
+		const compressed = this.undoStack
+			.filter((a: Action) =>
+				a instanceof CompositeAction
+					? a.getActions().some((a) => a instanceof WikibaseAction)
+					: a instanceof WikibaseAction
+			)
 			.reduce(
 				this.compressReducer,
 				new CompositeAction([])
 			) as CompositeAction<WikibaseAction>;
+		console.log("compressed", compressed);
+		return compressed;
 	}
 
 	private compressReducer(

@@ -1,3 +1,4 @@
+import WikibaseClient from "../../../../shared/WikibaseClient";
 import { ApiClient } from "../../../../shared/client/ApiClient";
 import { CompositeAction } from "../../../../shared/extensions/undo/actions/CompositeAction";
 import { EditPropertyAction } from "../../../../shared/extensions/undo/actions/EditPropertyAction";
@@ -10,12 +11,19 @@ import {
 import { SaveButtonEvents } from "../saveButton/SaveButtonView";
 import { GraphView } from "./GraphView";
 
+export const GRAPH_SAVE_EVENT = "GRAPH_SAVE_EVENT";
+export enum GraphSaveProgress {
+	START,
+	COMPLETE,
+	ERROR,
+}
+
 export abstract class GraphController<
 	T extends GraphView
 > extends ViewController<T> {
 	constructor(
 		view: T,
-		private api: ApiClient<unknown>,
+		private client: WikibaseClient,
 		private userEntityId: string
 	) {
 		super(view);
@@ -32,32 +40,30 @@ export abstract class GraphController<
 	}
 
 	private onSaveButtonClick = () => {
+		experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+			progress: GraphSaveProgress.START,
+		});
+
 		const actions = this.view.getWikibaseActions();
 		console.log("actions", actions);
 		const individualActions = actions.getActions();
 
 		const executions = individualActions.map((action) =>
-			action.getEditAction(this.api, this.userEntityId)()
+			action.getEditAction(this.client, this.userEntityId)()
 		);
-
 		Promise.all(executions)
 			.then((results) => {
-				console.log("results", results);
 				this.view.clearActions();
-				console.warn("TODO: Save");
-				// TODO: Bake changes into cy elements (update data.originalValue)
-				// this.graphModel.forEach((element) => {
-				// 	// set data.original value to data but without the existing originalValue
-				// 	element.data.originalValue = Object.fromEntries(
-				// 		Object.entries(element.data).filter(
-				// 			([key, value]) => key !== "originalValue"
-				// 		)
-				// 	);
-				// });
-				// this.view.updateData(this.graphModel);
+				this.view.applyChanges();
+				experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+					progress: GraphSaveProgress.COMPLETE,
+				});
 			})
 			.catch((error) => {
-				console.log("error", error);
+				experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+					progress: GraphSaveProgress.ERROR,
+					error,
+				});
 			})
 			.finally(() => {
 				console.log("finally");
@@ -87,7 +93,13 @@ export abstract class GraphController<
 			newValue = numCompleted > numUncompleted ? "false" : "true",
 			cy = this.view.getCy(),
 			actions = selectedNodeIds.map((nodeId: string) => {
-				return new EditPropertyAction(cy, nodeId, propertyName, newValue);
+				return new EditPropertyAction(
+					cy,
+					nodeId,
+					propertyName,
+					newValue,
+					"has completed"
+				);
 			}),
 			compositeAction = new CompositeAction(actions);
 
@@ -116,7 +128,13 @@ export abstract class GraphController<
 			newValue = numInterested > numUninterested ? "false" : "true",
 			cy = this.view.getCy(),
 			actions = selectedNodeIds.map((nodeId: string) => {
-				return new EditPropertyAction(cy, nodeId, propertyName, newValue);
+				return new EditPropertyAction(
+					cy,
+					nodeId,
+					propertyName,
+					newValue,
+					"interested in"
+				);
 			}),
 			compositeAction = new CompositeAction(actions);
 

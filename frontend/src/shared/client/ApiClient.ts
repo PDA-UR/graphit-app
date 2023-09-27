@@ -527,30 +527,21 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
   };
   user = {
     /**
-     * @description Set an item as completed or uncompleted
+     * @description Toggle a property on or off for a user
      *
      * @tags User
-     * @name Complete
-     * @request POST:/api/user/{userId}/completed/{entityId}/set/{isCompleted}
+     * @name ToggleProperty
+     * @request POST:/api/user/{userId}/{propertyId}/{entityId}/toggle/{isInterested}
      */
-    complete: (userId: string, entityId: string, isCompleted: boolean, params: RequestParams = {}) =>
+    toggleProperty: (
+      userId: string,
+      propertyId: string,
+      entityId: string,
+      isInterested: boolean,
+      params: RequestParams = {},
+    ) =>
       this.request<Record<string, any>, string>({
-        path: `/api/user/${userId}/completed/${entityId}/set/${isCompleted}`,
-        method: "POST",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Set an item as interestd or uninterested in
-     *
-     * @tags User
-     * @name Interest
-     * @request POST:/api/user/{userId}/interested/{entityId}/set/{isInterested}
-     */
-    interest: (userId: string, entityId: string, isInterested: boolean, params: RequestParams = {}) =>
-      this.request<Record<string, any>, string>({
-        path: `/api/user/${userId}/interested/${entityId}/set/${isInterested}`,
+        path: `/api/user/${userId}/${propertyId}/${entityId}/toggle/${isInterested}`,
         method: "POST",
         format: "json",
         ...params,

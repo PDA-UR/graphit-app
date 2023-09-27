@@ -3,7 +3,6 @@ import { BadRequest } from "@tsed/exceptions";
 import { Logger } from "@tsed/logger";
 import { Credentials } from "../models/CredentialsModel";
 import { WikibaseEditService } from "./WikibaseEditService";
-import { WikibasePropertyMap } from "../models/WikibasePropertyMap";
 
 @Service()
 export class ActionExecuterService {
@@ -12,8 +11,6 @@ export class ActionExecuterService {
 
 	@Inject()
 	wikibaseEditService: WikibaseEditService;
-
-	private propertyMap = new WikibasePropertyMap();
 
 	async executeClaimAction(
 		object: "claim",
@@ -36,14 +33,13 @@ export class ActionExecuterService {
 	}
 
 	async toggleUserProperty(
-		property: "completed" | "interested",
+		propertyId: string,
 		doToggleOn: boolean,
 		userId: string,
 		targetEntityId: string,
 		credentials: Credentials,
 		wikibaseSdk: any
 	) {
-		const propertyId = this.propertyMap[property];
 		const actions: any[] = [];
 		const existingClaims: any[] =
 			(await wikibaseSdk.getClaim(credentials, userId, propertyId)) ?? [];
@@ -88,6 +84,6 @@ export class ActionExecuterService {
 		const runningActions = actions.map(async (a) => await a());
 		const r = await Promise.all(runningActions);
 		this.logger.info(r);
-		return runningActions.length;
+		return r;
 	}
 }

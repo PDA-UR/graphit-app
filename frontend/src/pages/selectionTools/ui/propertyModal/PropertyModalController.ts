@@ -1,3 +1,4 @@
+import { ViewController } from "../../../../shared/ui/ViewController";
 import { experimentEventBus } from "../../global/ExperimentEventBus";
 import { GraphViewEvents } from "../graph/GraphView";
 import {
@@ -16,39 +17,65 @@ export enum PropertyEditAction {
 	RATE = "rate",
 }
 
-export class PropertyModalController {
-	private readonly propertyModalView;
-
+export class PropertyModalController extends ViewController<PropertyModalView> {
 	constructor() {
-		this.propertyModalView = new PropertyModalView();
-
-		this.propertyModalView.addListener(
-			PropertyModalViewEvents.COMPLETE_BUTTON_CLICK,
-			this.onCompletionActionClicked
-		);
-		this.propertyModalView.addListener(
-			PropertyModalViewEvents.INTEREST_BUTTON_CLICK,
-			this.onInterestActionClicked
-		);
-		this.propertyModalView.addListener(
-			PropertyModalViewEvents.RATE_BUTTON_CLICK,
-			this.onRateActionClicked
-		);
-
-		// listen to keys 1 - 3
-		document.addEventListener("keydown", (event) => {
-			if (event.key === "1") this.onCompletionActionClicked();
-			else if (event.key === "2") this.onInterestActionClicked();
-			else if (event.key === "3") this.onRateActionClicked();
-		});
-
-		experimentEventBus.addListener(
-			GraphViewEvents.SELECTION_CHANGED,
-			(selectedNodes) => {
-				this.onSetPropertyModalVisibility(selectedNodes.length > 0);
-			}
-		);
+		super(new PropertyModalView());
 	}
+
+	protected toggleListeners(on: boolean): void {
+		if (on) {
+			this.view.addListener(
+				PropertyModalViewEvents.COMPLETE_BUTTON_CLICK,
+				this.onCompletionActionClicked
+			);
+			this.view.addListener(
+				PropertyModalViewEvents.INTEREST_BUTTON_CLICK,
+				this.onInterestActionClicked
+			);
+			this.view.addListener(
+				PropertyModalViewEvents.RATE_BUTTON_CLICK,
+				this.onRateActionClicked
+			);
+
+			document.addEventListener("keydown", this.onKeydown);
+
+			experimentEventBus.addListener(
+				GraphViewEvents.SELECTION_CHANGED,
+				this.onSelectionChanged
+			);
+		} else {
+			this.view.removeListener(
+				PropertyModalViewEvents.COMPLETE_BUTTON_CLICK,
+				this.onCompletionActionClicked
+			);
+			this.view.removeListener(
+				PropertyModalViewEvents.INTEREST_BUTTON_CLICK,
+				this.onInterestActionClicked
+			);
+			this.view.removeListener(
+				PropertyModalViewEvents.RATE_BUTTON_CLICK,
+				this.onRateActionClicked
+			);
+
+			document.removeEventListener("keydown", this.onKeydown);
+
+			experimentEventBus.removeListener(
+				GraphViewEvents.SELECTION_CHANGED,
+				this.onSelectionChanged
+			);
+		}
+	}
+	public reset(): void {}
+
+	private onSelectionChanged = (selectedNodes: any) => {
+		this.onSetPropertyModalVisibility(selectedNodes.length > 0);
+	};
+
+	private onKeydown = (event: KeyboardEvent) => {
+		if (event.key === "1") this.onCompletionActionClicked();
+		else if (event.key === "2") this.onInterestActionClicked();
+		else if (event.key === "3") this.onRateActionClicked();
+	};
 
 	private onCompletionActionClicked = () => {
 		experimentEventBus.emit(
@@ -72,7 +99,7 @@ export class PropertyModalController {
 	};
 
 	private onSetPropertyModalVisibility = (isVisible: boolean) => {
-		if (isVisible) this.propertyModalView.show();
-		else this.propertyModalView.hide();
+		if (isVisible) this.view.show();
+		else this.view.hide();
 	};
 }

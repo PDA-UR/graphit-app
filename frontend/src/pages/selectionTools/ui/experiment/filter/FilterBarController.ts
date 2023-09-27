@@ -27,6 +27,7 @@ export class FilterBarController extends ViewController<FilterBarView> {
 		else if (e.key === "Escape") this.view.onEscapeFilter();
 		// 1-9
 		else if (e.key.match(/[1-9]/)) {
+			if (!e.altKey) return;
 			const filterIndex = parseInt(e.key) - 1;
 			if (this.filterManager.getNumberOfFilters() > filterIndex)
 				this.filterManager.jumpToFilter(filterIndex);

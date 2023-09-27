@@ -29,6 +29,7 @@ export class CompositeAction<T extends Action> extends Action {
 			const actions = (this.actions as unknown as WikibaseAction[]).filter(
 				(a) => !a.isOverriddenBy(action)
 			);
+			console.log("actions is instance of WikibaseAction");
 			return new CompositeAction([...actions, action]);
 		}
 		if (action instanceof CompositeAction) {
@@ -36,7 +37,16 @@ export class CompositeAction<T extends Action> extends Action {
 				throw new Error(
 					"Cant merge non-wikibase actions (composite action is not pure)"
 				);
+
+			const actions = (this.actions as unknown as WikibaseAction[]).filter(
+				(a) =>
+					!(action.actions as unknown as WikibaseAction[]).some((b) =>
+						a.isOverriddenBy(b)
+					)
+			);
+			return new CompositeAction([...actions, ...action.actions]);
 		}
+		console.warn("action type case not covered");
 		return undefined;
 	}
 

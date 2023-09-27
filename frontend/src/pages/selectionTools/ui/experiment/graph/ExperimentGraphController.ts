@@ -10,14 +10,15 @@ import { ModifierKey } from "../../../global/KeyboardManager";
 import { GraphController } from "../../graph/GraphController";
 import { SearchViewEvents } from "../search/SearchView";
 import { ApiClient } from "../../../../../shared/client/ApiClient";
+import WikibaseClient from "../../../../../shared/WikibaseClient";
 
 export class ExperimentGraphController extends GraphController<ExperimentGraphView> {
 	constructor(
 		cy: cytoscape.Core,
-		api: ApiClient<unknown>,
+		client: WikibaseClient,
 		userEntityId: string
 	) {
-		super(new ExperimentGraphView(cy), api, userEntityId);
+		super(new ExperimentGraphView(cy), client, userEntityId);
 		this.initEventBusListeners();
 	}
 

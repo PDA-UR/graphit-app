@@ -27,7 +27,13 @@ export class EditPropertyAction extends PropertyAction {
 	private readonly oldValue: any;
 	private readonly originalValue: any;
 
-	constructor(cy: any, elementId: string, propertyName: string, newValue: any) {
+	constructor(
+		cy: any,
+		elementId: string,
+		propertyName: string,
+		newValue: any,
+		private wbPropertyName: string
+	) {
 		super(cy, elementId, propertyName);
 		this.newValue = newValue;
 		this.oldValue = cy.$id(elementId).data(propertyName);
@@ -47,25 +53,18 @@ export class EditPropertyAction extends PropertyAction {
 		return split[split.length - 1];
 	}
 
-	editAction(client: ApiClient<unknown>, userEntityId: string) {
+	editAction(client: WikibaseClient, userEntityId: string) {
+		console.log("edit action", client, userEntityId);
 		const entityId = this.parseElementId(this.elementId);
-		if (this.propertyName === "completed")
-			return client.user.complete(
-				userEntityId,
-				entityId,
-				this.newValue === "true"
-			);
-		else if (this.propertyName === "interested")
-			return client.user.interest(
-				userEntityId,
-				entityId,
-				this.newValue === "true"
-			);
+		if (this.wbPropertyName === "has completed")
+			return client.toggleIsCompleted(entityId, this.newValue === "true");
+		else if (this.wbPropertyName === "interested in")
+			return client.toggleIsInterested(entityId, this.newValue === "true");
 		else console.log("not implemented yet:", this.propertyName);
 		return Promise.resolve();
 	}
 
-	getEditAction(client: ApiClient<unknown>, userEntityId: string): EditAction {
+	getEditAction(client: WikibaseClient, userEntityId: string): EditAction {
 		if (this.hasImpact())
 			return () => this.editAction(client, userEntityId) as any;
 		console.log("no impact");

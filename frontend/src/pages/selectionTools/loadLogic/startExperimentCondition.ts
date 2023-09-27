@@ -1,3 +1,4 @@
+import WikibaseClient from "../../../shared/WikibaseClient";
 import { ApiClient } from "../../../shared/client/ApiClient";
 import { toggleShortcutCheatsheet } from "../../../shared/shortcuts/Shortcut";
 import { ShortcutsExperiment } from "../../../shared/shortcuts/ShortcutsExperiment";
@@ -14,7 +15,7 @@ import { ExperimentStarter } from "./startExperiment";
 export const onStartExperimentCondition = (
 	elements: any,
 	app: HTMLDivElement,
-	api: ApiClient<unknown>,
+	client: WikibaseClient,
 	userEntityId: string
 ): ExperimentStarter => {
 	document.addEventListener("keydown", (event) => {
@@ -26,19 +27,25 @@ export const onStartExperimentCondition = (
 	const cy = getExperimentCy(elements),
 		filterManager = new FilterManager(cy);
 
-	const graphController = new ExperimentGraphController(cy, api, userEntityId);
+	const graphController = new ExperimentGraphController(
+		cy,
+		client,
+		userEntityId
+	);
 	//@ts-ignore
 	const searchController = new SearchViewController(cy);
 	const filterController = new FilterBarController(cy, filterManager);
 	const selectionTypeIndicatorController =
 		new SelectionTypeIndicatorController();
-	new PropertyModalController();
-	new SaveButtonController();
+	const propertyModalController = new PropertyModalController();
+	const saveButtonController = new SaveButtonController();
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
 		searchController.toggle(on);
 		filterController.toggle(on);
+		propertyModalController.toggle(on);
+		saveButtonController.toggle(on);
 
 		app.classList.toggle("disabled", !on);
 	};

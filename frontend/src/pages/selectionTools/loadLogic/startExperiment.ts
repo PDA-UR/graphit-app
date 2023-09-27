@@ -1,3 +1,4 @@
+import WikibaseClient from "../../../shared/WikibaseClient";
 import { ApiClient } from "../../../shared/client/ApiClient";
 import { getElements } from "../global/DataManager";
 import { onStartExperimentCondition } from "./startExperimentCondition";
@@ -20,7 +21,7 @@ export interface ExperimentStarter {
 }
 
 export const onStartExperiment = async (
-	api: ApiClient<unknown>,
+	api: WikibaseClient,
 	userEntityId: string
 ) => {
 	const elements = await getElements();

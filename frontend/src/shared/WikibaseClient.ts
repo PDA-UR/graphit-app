@@ -20,6 +20,8 @@ export default class WikibaseClient {
 	private properties: WikibasePropertyModel[] = [];
 	private info: ServerInfoModel | undefined;
 
+	private userSession: UserSessionModel | undefined;
+
 	constructor(credentials: Credentials, api: ApiClient<unknown>) {
 		this.credentials = credentials;
 		this.sparqlParser = new SparqlParser();
@@ -32,14 +34,14 @@ export default class WikibaseClient {
 	}
 
 	async login() {
-		const userSession = await this.api.auth.login(this.credentials);
-		if (!userSession.username) {
-			throw new Error("Login failed: " + JSON.stringify(userSession));
+		this.userSession = await this.api.auth.login(this.credentials);
+		if (!this.userSession.username) {
+			throw new Error("Login failed: " + JSON.stringify(this.userSession));
 		}
 
 		const initJobs = [this.loadProperties(), this.loadServerInfo()];
 		await Promise.all(initJobs);
-		return userSession;
+		return this.userSession;
 	}
 
 	async logout() {
@@ -185,5 +187,51 @@ export default class WikibaseClient {
 
 	async removeClaim(entityId: string, claim: RemoveClaimModel) {
 		return await this.api.claim.remove(entityId, claim);
+	}
+
+	private async toggleUserProperty(
+		propertyLabel: string,
+		entityId: string,
+		isOn: boolean
+	) {
+		const userItemId = this.userSession?.userItemId;
+		if (userItemId === undefined) {
+			throw new Error("User item id not found");
+		}
+
+		const propertyId = this.getCachedProperties().find(
+			(p) => p.label === propertyLabel
+		)?.propertyId;
+
+		if (propertyId === undefined) {
+			throw new Error(
+				"Property not found: " +
+					propertyLabel +
+					JSON.stringify(this.getCachedProperties())
+			);
+		}
+
+		return await this.api.user.toggleProperty(
+			userItemId,
+			propertyId,
+			entityId,
+			isOn
+		);
+	}
+
+	async toggleIsInterested(entityId: string, isInterested: boolean) {
+		return await this.toggleUserProperty(
+			"interested in",
+			entityId,
+			isInterested
+		);
+	}
+
+	async toggleIsCompleted(entityId: string, isCompleted: boolean) {
+		return await this.toggleUserProperty(
+			"has completed",
+			entityId,
+			isCompleted
+		);
 	}
 }

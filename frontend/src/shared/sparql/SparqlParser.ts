@@ -123,6 +123,8 @@ export class SparqlParser {
 			data: {},
 		};
 
+		console.log(prefix, binding, vars);
+
 		for (const variable of vars) {
 			if (!variable.startsWith(prefix)) continue;
 			let key = variable.slice(prefix.length); // slices of e.g. "source" from sourceLabel
@@ -192,6 +194,5 @@ export class SparqlParser {
 		}
 
 		return parent;
-	}	
-
+	}
 }

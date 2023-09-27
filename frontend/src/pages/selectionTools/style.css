@@ -138,3 +138,18 @@ div {
 	justify-content: center;
 	align-items: center;
 }
+
+#experiment-app.loading {
+	overflow: hidden;
+	opacity: 0.5;
+	cursor: wait;
+	pointer-events: none;
+}
+
+#experiment-app.error {
+	overflow: hidden;
+	opacity: 0.5;
+	cursor: not-allowed;
+	pointer-events: none;
+	background-color: #ffa1a1;
+}
