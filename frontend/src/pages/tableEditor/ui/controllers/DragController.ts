@@ -6,26 +6,35 @@ import {
 	MoveItemInfo,
 	RemoveItemInfo,
 } from "./ItemOperationController";
-import { ConvertClaimModel } from "../../../../shared/client/ApiClient";
 import WikibaseClient from "../../../../shared/WikibaseClient";
-import { state } from "lit/decorators.js";
 import { SelectionController } from "./SelectionController";
 
+/**
+ * The origin, from which an item has been dragged from.
+ */
 export type ItemOrigin = "search" | ColumnModel;
 
+/**
+ * Information about an item that is being dragged.
+ */
 export interface ColumnItemInfo {
 	item: ColumnItemModel;
 	origin?: ItemOrigin;
 }
 
+/**
+ * The drag controller handles the drag and drop of items.
+ * It also communicates with the item operation controller to
+ * move or copy items in wikibase.
+ */
 export class DragController implements ReactiveController {
 	host: ReactiveControllerHost;
 
 	private draggedItem: ColumnItemInfo | undefined;
-	private itemOperator: ItemOperationController;
-
 	private readonly setIsDragging: (isDragging: boolean) => void = () => {};
+
 	private readonly selectionController: SelectionController;
+	private readonly itemOperator: ItemOperationController;
 
 	constructor(
 		host: ReactiveControllerHost,
@@ -38,10 +47,13 @@ export class DragController implements ReactiveController {
 
 		this.setIsDragging = setIsDragging;
 		this.selectionController = selectionController;
-		console.log("drag controller", this.selectionController);
 	}
+
 	hostConnected() {}
 
+	// ------ Drag and Drop ------ //
+
+	// an item is dragged
 	onItemDragStart = ({ item, origin }: ColumnItemInfo) => {
 		this.draggedItem = { item, origin };
 		this.setIsDragging(true);
@@ -50,18 +62,20 @@ export class DragController implements ReactiveController {
 		}
 	};
 
+	// an item has been dropped somewhere
+	// called after onDrop
 	onItemDragEnd() {
 		this.draggedItem = undefined;
 		this.setIsDragging(false);
 	}
 
+	// an item has been dropped INTO A DROPZONE
 	onDrop(dropzone: ColumnModel | "trash" | "new-column", doCopy = false) {
 		this.setIsDragging(false);
 
 		const draggedItems = this.selectionController.getSelectedItems();
 
-		console.log("drop", dropzone, this.draggedItem, draggedItems);
-
+		// Dropped in <new-column-dropzone>
 		if (dropzone === "new-column") {
 			console.log("new column event");
 			document.dispatchEvent(
@@ -76,8 +90,8 @@ export class DragController implements ReactiveController {
 			return;
 		}
 
+		// Dropped in <trash-component>
 		if (dropzone === "trash") {
-			console.log("trash event");
 			this.itemOperator.removeItems(
 				draggedItems
 					.map((draggedItem) => {
@@ -96,6 +110,7 @@ export class DragController implements ReactiveController {
 			return;
 		}
 
+		// Dropped in <column-component>
 		const convertClaimModels: MoveItemInfo[] = draggedItems.map(
 			(draggedItem) => {
 				if (draggedItem.origin === "search")

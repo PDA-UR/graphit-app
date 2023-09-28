@@ -18,6 +18,9 @@ import { sessionContext } from "../data/contexts/SessionContext";
 import { selectionControllerContext } from "../data/contexts/SelectionControllerContext";
 import { SelectionController } from "./controllers/SelectionController";
 
+/**
+ * <app-root> is the root component of the application.
+ */
 @customElement("app-root")
 export default class AppRoot extends Component {
 	private zustand = zustandStore.getState();
@@ -45,9 +48,27 @@ export default class AppRoot extends Component {
 		this.selectionController
 	);
 
-	onDarkmodeChange() {
-		document.body.classList.toggle("dark", this.zustand.isDarkMode === true);
-	}
+	// ------- Contexts ------- //
+
+	@provide({ context: tableContext })
+	tableContext = fromStore(this.zustand);
+
+	@provide({ context: wikibaseContext })
+	wikibaseContext = this.wikibaseClient;
+
+	@provide({ context: selectionControllerContext })
+	selectionContext = this.selectionController;
+
+	@provide({ context: dragControllerContext })
+	dragControllerContext = this.dragController;
+
+	@provide({ context: sessionContext })
+	sessionContext = {
+		logout: () => this.onLogout(),
+	};
+
+	// ------- Lifecycle ------ //
+
 	updated() {
 		this.onDarkmodeChange();
 	}
@@ -56,7 +77,6 @@ export default class AppRoot extends Component {
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
 		zustandStore.subscribe((state) => {
-			console.log("zustand store changed", state);
 			this.zustand = state;
 			this.requestUpdate();
 		});
@@ -65,6 +85,7 @@ export default class AppRoot extends Component {
 			this.loginTask.run();
 		}
 
+		// handle keyboard shortcuts
 		window.addEventListener("keydown", (e) => {
 			if (e.ctrlKey && e.key === "f") {
 				e.preventDefault();
@@ -81,12 +102,14 @@ export default class AppRoot extends Component {
 		});
 
 		document.addEventListener("click", (e) => {
-			// if event has not been handled
+			// called when the click event has not been used by any other component
 			this.selectionController.deselectAll();
 		});
 
 		if (this.zustand.isDarkMode !== undefined) this.onDarkmodeChange();
 	}
+
+	// --------- Tasks -------- //
 
 	private loginTask = new Task(this, {
 		task: async ([{ wikibaseClient, zustand }]) => {
@@ -122,8 +145,9 @@ export default class AppRoot extends Component {
 		autoRun: false,
 	});
 
+	// ------- Listeners ------ //
+
 	onLogout() {
-		console.log("logging out");
 		this.logoutTask.run();
 	}
 
@@ -131,26 +155,13 @@ export default class AppRoot extends Component {
 		this.loginTask.run();
 	}
 
-	@provide({ context: tableContext })
-	tableContext = fromStore(this.zustand);
+	onDarkmodeChange() {
+		document.body.classList.toggle("dark", this.zustand.isDarkMode === true);
+	}
 
-	@provide({ context: wikibaseContext })
-	wikibaseContext = this.wikibaseClient;
-
-	@provide({ context: selectionControllerContext })
-	selectionContext = this.selectionController;
-
-	@provide({ context: dragControllerContext })
-	dragControllerContext = this.dragController;
-
-	@provide({ context: sessionContext })
-	sessionContext = {
-		logout: () => this.onLogout(),
-	};
+	// -------- Render -------- //
 
 	render() {
-		console.log("rendering app", this.zustand.credentials);
-
 		return this.loginTask.render({
 			initial: () =>
 				html`<button @click="${() => this.onLogin()}">Login</button>`,

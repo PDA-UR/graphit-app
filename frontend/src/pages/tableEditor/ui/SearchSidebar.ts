@@ -13,8 +13,14 @@ import { choose } from "lit/directives/choose.js";
 import { dragControllerContext } from "../data/contexts/DragControllerContext";
 import { DragController } from "./controllers/DragController";
 
+/**
+ * <search-sidebar> is the bar on the left side of the screen that allows
+ * users to search for items in Wikibase and drag them into the table.
+ */
 @customElement("search-sidebar")
 export default class SearchSidebar extends Component {
+	// --- State & Contexts --- //
+
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
 
@@ -26,6 +32,8 @@ export default class SearchSidebar extends Component {
 
 	@state()
 	private searchResults: ColumnItemModel[] = [];
+
+	// --------- Tasks -------- //
 
 	private loadItemsTask = new Task(this, {
 		task: async ([{ wikibaseClient }]) => {
@@ -46,9 +54,13 @@ export default class SearchSidebar extends Component {
 		autoRun: false,
 	});
 
+	// ------- Lifecycle ------ //
+
 	protected firstUpdated(): void {
 		this.loadItemsTask.run();
 	}
+
+	// ------- Rendering ------ //
 
 	render() {
 		return html`

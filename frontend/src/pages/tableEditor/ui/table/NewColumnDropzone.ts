@@ -11,16 +11,27 @@ import { newColumnModel } from "../../data/models/ColumnModel";
 import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
 import { when } from "lit/directives/when.js";
 
+/**
+ * <new-column-dropzone> is the dropzone on the right side of the table
+ * that allows users to add new columns to the table either by
+ * dragging and dropping or by clicking on it.
+ */
 @customElement("new-column-dropzone")
 export default class NewColumnDropzone extends Component {
-	@state()
-	columnIdsToBeAdded: string[] = [];
+	// --------- Contexts -------- //
 
 	@consume({ context: tableContext })
 	private tableContext!: StoreActions;
 
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
+
+	// --------- State -------- //
+
+	@state()
+	columnIdsToBeAdded: string[] = [];
+
+	// --------- Tasks -------- //
 
 	private addCloumnTask = new Task(this, {
 		task: async ([{ wikibaseClient, addColumn }]) => {
@@ -72,12 +83,13 @@ export default class NewColumnDropzone extends Component {
 			});
 	};
 
+	// ------- Lifecycle ------ //
+
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
 		// @ts-expect-error
 		document.addEventListener("ADD_COLUMN", (e: CustomEvent) => {
-			console.log("ADD_COLUMN", e.detail);
 			const ids = e.detail.ids;
 			if (!ids) return;
 
@@ -91,6 +103,8 @@ export default class NewColumnDropzone extends Component {
 			this.runAddColumnTask();
 		});
 	}
+
+	// ------- Listeners ------ //
 
 	onclick = () => {
 		const id = prompt("Enter the id of the column you want to add");
@@ -119,6 +133,20 @@ export default class NewColumnDropzone extends Component {
 			})
 		);
 	};
+
+	// ------- Rendering ------ //
+
+	render() {
+		return html`
+			<div id="add-symbol">
+				${when(
+					this.addCloumnTask.status === TaskStatus.PENDING,
+					() => "...",
+					() => "+"
+				)}
+			</div>
+		`;
+	}
 
 	static styles = css`
 		:host {
@@ -151,16 +179,4 @@ export default class NewColumnDropzone extends Component {
 			opacity: 0.5;
 		}
 	`;
-
-	render() {
-		return html`
-			<div id="add-symbol">
-				${when(
-					this.addCloumnTask.status === TaskStatus.PENDING,
-					() => "...",
-					() => "+"
-				)}
-			</div>
-		`;
-	}
 }

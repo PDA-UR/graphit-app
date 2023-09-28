@@ -8,10 +8,17 @@ import { consume } from "@lit-labs/context";
 import { selectionControllerContext } from "../../data/contexts/SelectionControllerContext";
 import { SelectionController } from "../controllers/SelectionController";
 
+/**
+ * <column-item-list> is a list of <column-item>s.
+ */
 @customElement("column-item-list")
 export class ColumnItemList extends Component {
+	// --------- Contexts -------- //
+
 	@consume({ context: selectionControllerContext })
 	selectionController!: SelectionController;
+
+	// --------- Properties -------- //
 
 	@property({ type: Object, attribute: true })
 	origin!: ItemOrigin;
@@ -22,7 +29,10 @@ export class ColumnItemList extends Component {
 	@property({ type: String })
 	filter: string = "";
 
+	// ------- Listeners ------ //
+
 	onItemShiftClicked = (item: ColumnItemModel) => {
+		// shift click = select all items between last selected item and this item
 		const lastSelectedItem = this.selectionController.getLastSelectedItem();
 		const colItemInfo = {
 			item: item,
@@ -45,16 +55,14 @@ export class ColumnItemList extends Component {
 		const maxIndex = Math.max(lastSelectedIndex, currentIndex);
 		const selectedItems = this.items.slice(minIndex, maxIndex + 1);
 
-		console.log("ss", currentIndex, lastSelectedIndex);
-
 		const itemsToAdd = selectedItems
 			.map((item) => ({ item, origin: this.origin }))
 			.filter((item) => !this.selectionController.isSelected(item));
 
-		console.log("items to add", itemsToAdd);
-
 		this.selectionController.addItems(itemsToAdd);
 	};
+
+	// ------- Rendering ------ //
 
 	render() {
 		return html`
@@ -126,8 +134,6 @@ export class ColumnItemList extends Component {
 			pointer-events: none;
 			cursor: not-allowed;
 			opacity: 0.7;
-		}
-		#item-container {
 		}
 	`;
 }

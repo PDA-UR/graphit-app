@@ -8,6 +8,12 @@ import { Trash } from "./atomic/Trash";
 import SearchSidebar from "./SearchSidebar";
 import NewColumnDropzone from "./table/NewColumnDropzone";
 
+/**
+ * Components are the building blocks of the UI.
+ * If you define a new component, you must add it to this list.
+ * OTHERWISE, it will not be available in the UI.
+ */
+
 export {
 	AppRoot,
 	CardComponent,
@@ -20,6 +26,7 @@ export {
 	NewColumnDropzone,
 };
 
+// Optional type declarations for TypeScript consumers
 declare global {
 	interface HTMLElementTagNameMap {
 		"app-root": AppRoot;

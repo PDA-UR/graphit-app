@@ -1,23 +1,35 @@
-import { css, html, unsafeCSS } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import { TableModel } from "../../data/models/TableModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
-import { ColumnModel, newColumnModel } from "../../data/models/ColumnModel";
+import { ColumnModel } from "../../data/models/ColumnModel";
 import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 
-import { Task } from "@lit-labs/task";
 import { DragController } from "../controllers/DragController";
 import { dragControllerContext } from "../../data/contexts/DragControllerContext";
 import { when } from "lit/directives/when.js";
 
+/**
+ * <table-view> is the table that displays the columns and items.
+ */
 @customElement("table-view")
 export class Table extends Component {
-	@property()
+	// ------ Contexts ------ //
+
+	@consume({ context: wikibaseContext })
+	private wikibaseClient!: WikibaseClient;
+
+	@consume({ context: dragControllerContext })
+	private dragController!: DragController;
+
+	// ------ Properties ------ //
+
+	@property({ type: Boolean })
 	private isDragging!: boolean;
 
 	@property({ type: Object, attribute: true })
@@ -26,22 +38,21 @@ export class Table extends Component {
 	@consume({ context: tableContext })
 	public tableActions!: StoreActions;
 
-	@consume({ context: wikibaseContext })
-	private wikibaseClient!: WikibaseClient;
-
-	@consume({ context: dragControllerContext })
-	private dragController!: DragController;
+	// ------ Methods ------ //
 
 	removeColumn(viewId: string) {
 		this.tableActions.removeColumn(viewId);
 	}
 
+	// ------ Listeners ------ //
+
 	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
 		this.dragController.onDrop(colummnModel, doCopy);
 	};
 
+	// ------ Rendering ------ //
+
 	render() {
-		console.log("rendering table");
 		return html`
 			${this.tableModel.columns.map((columnModel) => {
 				return html`

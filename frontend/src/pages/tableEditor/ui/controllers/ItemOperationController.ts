@@ -6,19 +6,32 @@ import {
 } from "../../../../shared/client/ApiClient";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 
+/**
+ * Information about an item that is being moved.
+ */
 export interface MoveItemInfo {
-	from?: string;
-	to: string;
-	property?: string;
-	value?: string;
+	to: string; // the item id that's being moved
 
+	// information on where the property is moved from
+	// may be undefined if the property is created (e.g. from search)
+	from?: string; // entity id of the property
+	property?: string; // property id
+	value?: string; // value of the property
+
+	// information on the new property to create
 	newClaim: CreateClaimModel;
 }
 
+/**
+ * Information about an item that is being removed.
+ */
 export interface RemoveItemInfo extends RemoveClaimModel {
 	id: string;
 }
 
+/**
+ * The status of an item operation.
+ */
 export enum ItemOperationStatus {
 	IN_PROGRESS,
 	DONE,
@@ -40,6 +53,11 @@ export interface ItemRemoveEventDetail {
 	error?: Error;
 }
 
+/**
+ * The item operation controller handles the moving and removing of items.
+ * It directly communicates with the wikibase client to perform the operations.
+ * It also dispatches events to inform other components about the status of the operations.
+ */
 export class ItemOperationController implements ReactiveController {
 	host: ReactiveControllerHost;
 	private wikibaseClient: WikibaseClient;
@@ -82,8 +100,12 @@ export class ItemOperationController implements ReactiveController {
 		);
 	};
 
+	/**
+	 * Moves items (properties) between entities
+	 * @param _moveItemsInfo Info on the items to move
+	 * @param doCopy If true, the items are copied instead of moved
+	 */
 	moveItems = (_moveItemsInfo: MoveItemInfo[], doCopy: boolean) => {
-		console.log("move items", _moveItemsInfo);
 		// Remove items that are already in the right place
 		const moveItemsInfo = _moveItemsInfo.filter(
 			(moveItemInfo) =>
@@ -122,6 +144,10 @@ export class ItemOperationController implements ReactiveController {
 			});
 	};
 
+	/**
+	 * Removes items (properties) from entities
+	 * @param removeItems Info on the items to remove
+	 */
 	removeItems = (removeItems: RemoveItemInfo[]) => {
 		console.log("remove items", removeItems);
 		this.updateRemoveStatus(removeItems, ItemOperationStatus.IN_PROGRESS);

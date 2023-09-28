@@ -2,7 +2,7 @@ import { html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
-import { consume, provide } from "@lit-labs/context";
+import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
 import { classMap } from "lit/directives/class-map.js";
 import { Component } from "../atomic/Component";
@@ -27,8 +27,13 @@ import { when } from "lit/directives/when.js";
 import { dragControllerContext } from "../../data/contexts/DragControllerContext";
 import { DragController } from "../controllers/DragController";
 
+/**
+ * <column-component> is a single column in the table.
+ */
 @customElement("column-component")
 export class ColumnComponent extends Component {
+	// --------- State -------- //
+
 	@state()
 	items: ColumnItemModel[] = [];
 
@@ -41,14 +46,17 @@ export class ColumnComponent extends Component {
 	@state()
 	isDragover = false;
 
+	// --------- Properties -------- //
+
 	@property({ type: Object })
 	columnModel!: ColumnModel;
 
-	@property()
+	@property({ type: Boolean })
 	private isDragging = false;
 
+	// --------- Contexts -------- //
+
 	@consume({ context: tableContext })
-	@property({ attribute: false })
 	public tableActions!: StoreActions;
 
 	@consume({ context: wikibaseContext })
@@ -56,6 +64,8 @@ export class ColumnComponent extends Component {
 
 	@consume({ context: dragControllerContext })
 	private dragController!: DragController;
+
+	// --------- Tasks -------- //
 
 	private loadItemsTask = new Task(this, {
 		task: async ([{ wikibaseClient, columnModel, items }]) => {
@@ -82,15 +92,7 @@ export class ColumnComponent extends Component {
 		autoRun: false,
 	});
 
-	private onItemOperation = (e: CustomEvent) => {
-		this.itemOperationStatus = e.detail.status;
-		if (e.detail.status === ItemOperationStatus.DONE) {
-			this.loadItemsTask.run();
-			this.itemOperationStatus = undefined;
-		} else if (e.detail.status === ItemOperationStatus.ERROR) {
-			Toast.fromError(e.detail.error!, ToastLength.LONG).show();
-		}
-	};
+	// --------- Lifecycle -------- //
 
 	protected firstUpdated(): void {
 		// @ts-expect-error
@@ -129,18 +131,6 @@ export class ColumnComponent extends Component {
 		);
 	}
 
-	onItemDragStart = (e: CustomEvent) => {
-		this.dragController.onItemDragStart(e.detail);
-	};
-
-	onItemDragEnd = (e: CustomEvent) => {
-		this.dragController.onItemDragEnd();
-	};
-
-	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
-		this.dragController.onDrop(colummnModel, doCopy);
-	};
-
 	updated(changedProperties: Map<string | number | symbol, unknown>) {
 		super.updated(changedProperties);
 		if (changedProperties.has("columnModel")) {
@@ -169,6 +159,30 @@ export class ColumnComponent extends Component {
 				newProperty
 			);
 	}
+
+	// --------- Listeners -------- //
+
+	private onItemOperation = (e: CustomEvent) => {
+		this.itemOperationStatus = e.detail.status;
+		if (e.detail.status === ItemOperationStatus.DONE) {
+			this.loadItemsTask.run();
+			this.itemOperationStatus = undefined;
+		} else if (e.detail.status === ItemOperationStatus.ERROR) {
+			Toast.fromError(e.detail.error!, ToastLength.LONG).show();
+		}
+	};
+
+	onItemDragStart = (e: CustomEvent) => {
+		this.dragController.onItemDragStart(e.detail);
+	};
+
+	onItemDragEnd = (e: CustomEvent) => {
+		this.dragController.onItemDragEnd();
+	};
+
+	onItemDropped = (colummnModel: ColumnModel | "trash", doCopy: boolean) => {
+		this.dragController.onDrop(colummnModel, doCopy);
+	};
 
 	ondrop = (event: DragEvent) => {
 		event.preventDefault();
@@ -199,7 +213,7 @@ export class ColumnComponent extends Component {
 		window.open(this.columnModel.item.url, "_blank");
 	};
 
-	// ... styles and other properties
+	// --------- Rendering -------- //
 
 	render() {
 		return html`

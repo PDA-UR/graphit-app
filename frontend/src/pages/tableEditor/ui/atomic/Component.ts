@@ -7,7 +7,6 @@ import { PropertyValues } from "lit";
  */
 export abstract class Component extends LitElement {
 	// Small hack to include global styles
-
 	private static _styles: CSSResultGroup;
 
 	static get styles(): CSSResultGroup {

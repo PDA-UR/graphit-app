@@ -7,42 +7,25 @@ import { SelectionController } from "../controllers/SelectionController";
 
 import { ColumnItemInfo, ItemOrigin } from "../controllers/DragController";
 
+/**
+ * <column-item> is a single, draggable item in a column.
+ */
 @customElement("column-item")
 export class ColumnItem extends Component {
-	static styles = css`
-		:host {
-			width: 100%;
-			height: 5rem;
-			display: flex;
-			cursor: grab;
-		}
-		:host(.selected) > card-component {
-			background-color: var(--bg-selected);
-		}
-		.content {
-			padding: 0.5rem;
-			display: flex;
-			flex-direction: column;
-			flex-grow: 1;
-			justify-content: center;
-		}
-		.text {
-			text-align: center;
-			user-select: none;
-		}
-	`;
-
-	@property({ type: Object, attribute: false })
-	private columnItemInfo!: ColumnItemInfo;
-
 	@consume({ context: selectionControllerContext })
 	selectionController!: SelectionController;
 
 	@property({ type: Object, attribute: false })
+	private columnItemInfo!: ColumnItemInfo;
+
+	@property({ type: Object, attribute: false })
 	origin!: ItemOrigin;
 
+	// unregisters the selection callback
+	// when the component is disconnected
 	private unregisterSelectionCallback: () => void = () => {};
 
+	// ------- Lifecycle ------ //
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
@@ -65,6 +48,8 @@ export class ColumnItem extends Component {
 		this.unregisterSelectionCallback();
 	}
 
+	// ------- Listeners ------ //
+
 	ondblclick = (e: MouseEvent) => {
 		window.open(this.columnItemInfo.item.url, "_blank");
 		e.stopPropagation();
@@ -74,7 +59,6 @@ export class ColumnItem extends Component {
 		e.stopPropagation();
 
 		if (e.shiftKey) {
-			// emit custom event
 			this.dispatchEvent(
 				new CustomEvent("shift-click", {
 					detail: {
@@ -87,6 +71,8 @@ export class ColumnItem extends Component {
 		this.selectionController.handleClick(this.columnItemInfo!, e);
 	};
 
+	// ------- Rendering ------ //
+
 	render() {
 		return html`
 			<card-component>
@@ -97,4 +83,27 @@ export class ColumnItem extends Component {
 			</card-component>
 		`;
 	}
+
+	static styles = css`
+		:host {
+			width: 100%;
+			height: 5rem;
+			display: flex;
+			cursor: grab;
+		}
+		:host(.selected) > card-component {
+			background-color: var(--bg-selected);
+		}
+		.content {
+			padding: 0.5rem;
+			display: flex;
+			flex-direction: column;
+			flex-grow: 1;
+			justify-content: center;
+		}
+		.text {
+			text-align: center;
+			user-select: none;
+		}
+	`;
 }

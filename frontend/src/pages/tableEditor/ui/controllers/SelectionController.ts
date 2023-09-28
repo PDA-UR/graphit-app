@@ -1,11 +1,13 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import { ColumnItemInfo } from "./DragController";
 
+/**
+ * The selection controller handles the selection of items.
+ */
 export class SelectionController implements ReactiveController {
 	host: ReactiveControllerHost;
 
 	private selectedItems: ColumnItemInfo[] = [];
-
 	private callbacks: ((selectedItems: ColumnItemInfo[]) => void)[] = [];
 
 	constructor(host: ReactiveControllerHost) {
@@ -57,6 +59,11 @@ export class SelectionController implements ReactiveController {
 		this.notifyListeners();
 	}
 
+	/**
+	 * Handles a click event on an item.
+	 * @param item The item that has been clicked
+	 * @param e The click event
+	 */
 	handleClick(item: ColumnItemInfo, e: MouseEvent) {
 		if (e.shiftKey) {
 			if (!this.isSelected(item)) this.selectItem(item);
@@ -73,11 +80,14 @@ export class SelectionController implements ReactiveController {
 	}
 
 	private notifyListeners() {
-		console.log("notify", this.selectedItems);
-
 		this.callbacks.forEach((callback) => callback(this.selectedItems));
 	}
 
+	/**
+	 * Registers a callback that is called when the selection changes.
+	 * @param callback The callback that is called when the selection changes.
+	 * @returns A function that unregisters the callback.
+	 */
 	public registerSelectionChangeCallback(
 		callback: (selectedItems: ColumnItemInfo[]) => void
 	): () => void {

@@ -1,5 +1,5 @@
 import { WikibasePropertyModel } from "../../../../shared/client/ApiClient";
-import { ColumnItemModel, WikibaseItem } from "./ColumnItemModel";
+import { WikibaseItem } from "./ColumnItemModel";
 import { v4 as uuidv4 } from "uuid";
 
 export interface ColumnModel {

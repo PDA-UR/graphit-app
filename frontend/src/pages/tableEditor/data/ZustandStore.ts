@@ -29,6 +29,10 @@ export interface Store extends StoreActions {
 	sidebarIsOpen: boolean;
 }
 
+/**
+ * Zustand store for the table editor.
+ * This is the main state store for the table editor.
+ */
 export const zustandStore = createStore<Store>(
 	// @ts-ignore
 	persist(

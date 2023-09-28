@@ -1,6 +1,9 @@
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 
+/**
+ * <card-component> is a basic card with a shadow.
+ */
 @customElement("card-component")
 export class CardComponent extends LitElement {
 	static styles = css`

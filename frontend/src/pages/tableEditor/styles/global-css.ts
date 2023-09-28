@@ -46,5 +46,3 @@ export const globalCss = css`
 		display: none;
 	}
 `;
-
-// remove all styling from buttons so only text is visible
