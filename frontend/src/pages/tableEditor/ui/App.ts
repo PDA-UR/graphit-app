@@ -46,7 +46,7 @@ export default class AppRoot extends Component {
 	);
 
 	onDarkmodeChange() {
-		document.body.classList.toggle("dark", this.zustand.isDarkMode);
+		document.body.classList.toggle("dark", this.zustand.isDarkMode === true);
 	}
 	updated() {
 		this.onDarkmodeChange();
@@ -82,7 +82,6 @@ export default class AppRoot extends Component {
 
 		document.addEventListener("click", (e) => {
 			// if event has not been handled
-			console.log("click", e);
 			this.selectionController.deselectAll();
 		});
 
