@@ -10,6 +10,9 @@ import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { RemoveClaim } from "../../models/claim/RemoveClaimModel";
 import { ConvertClaim } from "../../models/claim/MoveClaimModel";
 
+/**
+ * Controller for claim related actions.
+ */
 @Controller("/claim")
 export class Claim {
 	@Inject()

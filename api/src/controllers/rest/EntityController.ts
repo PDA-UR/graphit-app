@@ -11,6 +11,10 @@ import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
 import { WikibaseProperty } from "../../models/PropertyModel";
+
+/**
+ * Controller for entity related actions.
+ */
 @Controller("/entity")
 export class Entity {
 	@Inject()

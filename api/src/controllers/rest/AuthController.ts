@@ -8,6 +8,9 @@ import { WikibaseEditService } from "../../services/WikibaseEditService";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { UserSession } from "../../models/UserSessionModel";
 
+/**
+ * Controller for authentication related actions.
+ */
 @Controller("/auth")
 export class Auth {
 	@Inject()

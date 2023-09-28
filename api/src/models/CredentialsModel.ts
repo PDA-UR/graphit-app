@@ -1,5 +1,8 @@
 import { Property, Required } from "@tsed/schema";
 
+/**
+ * Credentials of a user.
+ */
 export class Credentials {
 	@Required()
 	@Property()

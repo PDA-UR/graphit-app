@@ -7,6 +7,9 @@ import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { Credentials, isValid } from "../../models/CredentialsModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
 
+/**
+ * Controller for user related actions.
+ */
 @Controller("/user")
 export class User {
 	@Inject()
@@ -18,7 +21,7 @@ export class User {
 	@Inject()
 	actionExecutor: ActionExecuterService;
 
-	@Post("/:userId/:propertyId/:entityId/toggle/:isInterested")
+	@Post("/:userId/:propertyId/:entityId/toggle/:isOn")
 	@Description("Toggle a property on or off for a user")
 	@Returns(200, Object).ContentType("application/json")
 	@Returns(400, String).ContentType("text/plain")
@@ -27,14 +30,14 @@ export class User {
 		@PathParams("userId") userId: string,
 		@PathParams("propertyId") propertyId: string,
 		@PathParams("entityId") entityId: string,
-		@PathParams("isInterested") isInterested: boolean,
+		@PathParams("isOn") isOn: boolean,
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		try {
 			const r = await this.actionExecutor.toggleUserProperty(
 				propertyId,
-				isInterested,
+				isOn,
 				userId,
 				entityId,
 				credentials,

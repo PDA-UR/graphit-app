@@ -1,6 +1,10 @@
 import { Constant, Service } from "@tsed/di";
 import { ServerInfo } from "../models/ServerInfoModel";
 
+/**
+ * Simple service to get information about the server
+ * and the environment.
+ */
 @Service()
 export class ServerInfoService {
 	@Constant("isProduction")

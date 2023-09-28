@@ -3,6 +3,10 @@ import wbEdit from "wikibase-edit-retry";
 import { Credentials } from "../models/CredentialsModel";
 import { SessionService } from "./SessionService";
 
+/**
+ * The wikibase edit service is a wrapper around the wikibase-edit library.
+ * It provides methods to preform WRITE operations on wikibase.
+ */
 @Service()
 export class WikibaseEditService extends SessionService<any> {
 	private wikibaseEditConfig = (credentials: Credentials) => ({

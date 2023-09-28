@@ -4,6 +4,9 @@ import { Logger } from "@tsed/logger";
 import { Credentials } from "../models/CredentialsModel";
 import { WikibaseEditService } from "./WikibaseEditService";
 
+/**
+ * Helper service to execute write actions on wikibase.
+ */
 @Service()
 export class ActionExecuterService {
 	@Inject()
@@ -12,6 +15,14 @@ export class ActionExecuterService {
 	@Inject()
 	wikibaseEditService: WikibaseEditService;
 
+	/**
+	 * Execute a claim action.
+	 * @param object Target of the action (currently only "claim" is supported)
+	 * @param action Action to execute
+	 * @param data Data to pass to the action
+	 * @param credentials User credentials
+	 * @returns Result of the action
+	 */
 	async executeClaimAction(
 		object: "claim",
 		action: "create" | "update" | "remove",
@@ -32,6 +43,16 @@ export class ActionExecuterService {
 		}
 	}
 
+	/**
+	 * Toggle a user property (e.g. interested in or has completed)
+	 * @param propertyId The property to toggle
+	 * @param doToggleOn Whether to toggle on or off
+	 * @param userId Id of the user
+	 * @param targetEntityId Id of the target entity (e.g. which topic the user is interested in)
+	 * @param credentials User credentials
+	 * @param wikibaseSdk Wikibase sdk instance
+	 * @returns Result of the action
+	 */
 	async toggleUserProperty(
 		propertyId: string,
 		doToggleOn: boolean,
@@ -73,7 +94,7 @@ export class ActionExecuterService {
 				);
 			actions.push(action);
 		} else {
-			this.logger.info(
+			this.logger.error(
 				"cant remove completion since it does not exist " +
 					targetEntityId +
 					" " +
@@ -83,7 +104,6 @@ export class ActionExecuterService {
 
 		const runningActions = actions.map(async (a) => await a());
 		const r = await Promise.all(runningActions);
-		this.logger.info(r);
 		return r;
 	}
 }

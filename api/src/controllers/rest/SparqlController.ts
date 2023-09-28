@@ -7,6 +7,9 @@ import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { Credentials, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
 
+/**
+ * Controller for sparql related actions.
+ */
 @Controller("/sparql")
 export class Sparql {
 	@Inject()

@@ -1,6 +1,9 @@
 import { Pattern, Property, Required } from "@tsed/schema";
 import { entityPattern } from "./SetClaimModel";
 
+/**
+ * A claim to be updated.
+ */
 export class UpdateClaim {
 	@Required()
 	@Pattern(entityPattern)

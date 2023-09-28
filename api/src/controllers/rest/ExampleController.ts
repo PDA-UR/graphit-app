@@ -3,6 +3,9 @@ import { Description, Get, Returns } from "@tsed/schema";
 import { ServerInfo } from "../../models/ServerInfoModel";
 import { ServerInfoService } from "../../services/ServerInfoService";
 
+/**
+ * Controller for info related actions.
+ */
 @Controller("/info")
 export class Info {
 	@Inject()

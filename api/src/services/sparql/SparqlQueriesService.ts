@@ -1,5 +1,11 @@
 import { Service } from "@tsed/di";
 
+/**
+ * SPARQL-Query for retrieving the user graph.
+ * ONLY WORKS IN PRODUCTION INSTANCE BECAUSE OF THE HARDCODED PROPERTY IDS
+ * @param userId Id of the user
+ * @returns The user graph
+ */
 const userGraph = (
 	userId = "Q157"
 ) => `PREFIX wd: <https://graphit.ur.de/entity/>
@@ -88,6 +94,9 @@ WHERE {
 }
 `;
 
+/**
+ * Service for retrieving SPARQL-Queries
+ */
 @Service()
 export class SparqlQueryTemplateService {
 	public getUserGraph(userId: string) {

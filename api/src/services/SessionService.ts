@@ -3,6 +3,9 @@ import { ServerInfoService } from "./ServerInfoService";
 import { Credentials } from "../models/CredentialsModel";
 import { Logger } from "@tsed/logger";
 
+/**
+ * Service to manage sessions and user data.
+ */
 @Service()
 export abstract class SessionService<T> {
 	@Inject()

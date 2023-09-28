@@ -1,5 +1,8 @@
 import { Property, Required } from "@tsed/schema";
 
+/**
+ * Information about the server.
+ */
 export class ServerInfo {
 	@Required()
 	@Property()

@@ -6,6 +6,10 @@ import { SparqlQueryTemplateService } from "./sparql/SparqlQueriesService";
 import { SparqlResult } from "../models/SparqlResultModel";
 import { WikibaseProperty } from "../models/PropertyModel";
 
+/**
+ * The wikibase sdk service is a wrapper around the wikibase-sdk library.
+ * It provides methods to preform READ operations on wikibase.
+ */
 @Service()
 export class WikibaseSdkService extends SessionService<Wbk> {
 	@Inject(SparqlQueryTemplateService)
@@ -19,6 +23,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return wbk;
 	}
 
+	/**
+	 * Search for entities.
+	 * @param credentials User credentials
+	 * @param search Search string
+	 * @returns Search results
+	 */
 	async search(
 		credentials: Credentials,
 		search: string
@@ -36,6 +46,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return { data };
 	}
 
+	/**
+	 * Query the sparql endpoint.
+	 * @param credentials User credentials
+	 * @param query Sparql query
+	 * @returns Query results
+	 */
 	async query(credentials: Credentials, query: string): Promise<SparqlResult> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.sparqlQuery(query);
@@ -46,6 +62,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return { data };
 	}
 
+	/**
+	 * Get entities by id.
+	 * @param credentials User credentials
+	 * @param ids Entity ids
+	 * @returns Entities that match the ids
+	 */
 	async getEntities(
 		credentials: Credentials,
 		ids: EntityId[]
@@ -59,6 +81,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return { data };
 	}
 
+	/**
+	 * Get claims of an entity.
+	 * @param credentials User credentials
+	 * @param id Entity id
+	 * @returns Claims of the entity
+	 */
 	async getClaims(credentials: Credentials, id: EntityId): Promise<any> {
 		const wikibaseResponse = await this.getEntities(credentials, [id]),
 			entities = wikibaseResponse.data.entities,
@@ -67,6 +95,13 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return entity.claims;
 	}
 
+	/**
+	 * Get a claim of an entity.
+	 * @param credentials User credentials
+	 * @param entityId Entity id
+	 * @param claimId Claim id
+	 * @returns Claim of the entity that matches the claim id
+	 */
 	async getClaim(
 		credentials: Credentials,
 		entityId: EntityId,
@@ -82,6 +117,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		}
 	}
 
+	/**
+	 * Get the page content of a wikibase page.
+	 * @param credentials User credentials
+	 * @param title Title of the page
+	 * @returns Page content
+	 */
 	async getWikibasePageContent(
 		credentials: Credentials,
 		title: string
@@ -107,6 +148,11 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		}
 	}
 
+	/**
+	 * Parse the user item id from the user page content.
+	 * @param userPageContent User page content
+	 * @returns User item id
+	 */
 	private async parseUserItemId(userPageContent: string): Promise<string> {
 		const regex = /\[\[Item:Q\d+(\|.*)?\]\]/g;
 
@@ -122,6 +168,11 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 		return "";
 	}
+	/**
+	 * Get the user item id for a user.
+	 * @param credentials User credentials
+	 * @returns User item id
+	 */
 
 	async getUserItemId(credentials: Credentials): Promise<string> {
 		const htmlUserPage = await this.getWikibasePageContent(

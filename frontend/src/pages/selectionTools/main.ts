@@ -30,8 +30,6 @@ const main = async () => {
 	const elements = await wikibaseClient.getUserGraph(),
 		experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
 
-	console.log(elements);
-
 	experimentApp.style.display = "flex";
 	const { resetControllers, toggleControllers } = onStartExperimentCondition(
 		elements,
