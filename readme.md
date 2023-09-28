@@ -15,3 +15,9 @@ Frontend + API server for the GraphIT project.
       3. Alternative: replace the dev script in the package.json file (root) with `"start npm run dev --workspace=api & start npm run dev --workspace=frontend"`
       4. Alternative: run the app on `wsl` (not tested)
    2. visit (http://localhost:8081/app for the webapp, http://localhost:8081/doc for the api docs)
+
+## Deployment
+
+The app is automatically built and deployed via GitHub actions:
+- push to `dev` branch: https://test.graphit.ur.de/app
+- push to `main` branch: https://graph.graphit.ur.de/app

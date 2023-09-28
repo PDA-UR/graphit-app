@@ -1,5 +1,10 @@
 #! /bin/bash
 
+# Builds a docker container containing frontend and backend
+# and tags it with the given version.
+
+# USED IN GITHUB ACTION
+
 export VERSION=$1
 export ENV_FILE="$2"
 export NAME=graphit-app

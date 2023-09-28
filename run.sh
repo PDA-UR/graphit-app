@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# Runs the docker container built with build.sh
+# Can be used for testing the build locally
+
 export ENV_FILE="$1"
 export VERSION="$2"
 export NAME=graphit-app

@@ -1,5 +1,8 @@
 "use strict";
 
+// Script, used for running the app in production mode
+// in a docker container.
+
 const path = require("path");
 const defaultLogFile = path.join(__dirname, "/logs/project-server.log");
 
