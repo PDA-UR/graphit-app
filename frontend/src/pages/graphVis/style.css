@@ -55,7 +55,7 @@ body {
 
     /* Information for the node */
     #node-icon {
-        content: url("../visualisierung/global/icons/node-course.svg");
+        content: url("../graphVis/global/icons/node-course.svg");
         grid-column: 1;
         grid-row: 1 / 2;
         width: 50px;
@@ -116,7 +116,7 @@ body {
     }
 
     .resource-icon {
-        content: url("../visualisierung/global/icons/open.png"); /*oder: link*/
+        content: url("../graphVis/global/icons/open.png"); /*oder: link*/
         height: 15px;
         width: 15px;
         display: block;
@@ -162,7 +162,7 @@ body {
 /* ---- INFO-UTILITIES --- */
 
 .info-icon {
-    content: url("../visualisierung/global/icons/info.svg");
+    content: url("../graphVis/global/icons/info.svg");
     width: 25px;
     height: 25px;
     opacity: 60%;
@@ -187,7 +187,7 @@ body {
 }
 
 .info-box-close {
-    content: url("../visualisierung/global/icons/close.png");
+    content: url("../graphVis/global/icons/close.png");
     width: 15px;
     height: 15px;
 }

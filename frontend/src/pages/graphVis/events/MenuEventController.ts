@@ -60,6 +60,7 @@ export class MenuEventController {
 
     private openResource = (res:any) => {
         window.open(res.data("url"), "_blank")?.focus();
+        console.log("openRes");
     }
 
     // TDOD: separte click on course + nodes
