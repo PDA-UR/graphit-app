@@ -1,0 +1,1746 @@
+[
+    {
+      "data": {
+        "id": "Concept/Binärzahlen",
+        "label": "Binärzahlen",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Zahlensysteme",
+        "label": "Zahlensysteme",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Dezimalsystem",
+        "label": "Dezimalsystem",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/natürliche_Zahlen",
+        "label": "natürliche Zahlen",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Multiplikation",
+        "label": "Multiplikation",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Addition",
+        "label": "Addition",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/_elektrische_Spannung_",
+        "label": "(elektrische Spannung)",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hexadezimalzahlen",
+        "label": "Hexadezimalzahlen",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binärzahlen_mit_Nachkommastellen",
+        "label": "Binärzahlen mit Nachkommastellen",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Addition_von_Binärzahlen",
+        "label": "Addition von Binärzahlen",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Zweierkomplementdarstellung",
+        "label": "Zweierkomplementdarstellung",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Subtraktion_von_Binärzahlen",
+        "label": "Subtraktion von Binärzahlen",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Rechenregeln_im_Binärsystem",
+        "label": "Rechenregeln im Binärsystem",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Division",
+        "label": "Division",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Subtraktion",
+        "label": "Subtraktion",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Bitweise_Operatoren",
+        "label": "Bitweise Operatoren",
+        "parent": "VL1"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Boolesche_Operatoren",
+        "label": "Boolesche Operatoren",
+        "parent": "VL1"
+      }
+    },
+
+    {
+      "data": {
+        "id": "Concept/Semiotik",
+        "label": "Semiotik",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Zeichenvorrat",
+        "label": "Zeichenvorrat",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung",
+        "label": "Codierung",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binärcodierung",
+        "label": "Binärcodierung",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/RAM_und_HDD",
+        "label": "RAM und HDD",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Bits",
+        "label": "Bits",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Bytes",
+        "label": "Bytes",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/_Hexadezimalzahlen_",
+        "label": "(Hexadezimalzahlen)",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Weitere_Größeneinheiten",
+        "label": "Weitere Größeneinheiten",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Datentypen",
+        "label": "Datentypen",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Speicherreihenfolge",
+        "label": "Speicherreihenfolge",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Overflow",
+        "label": "Overflow",
+        "parent": "VL2"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Endianness",
+        "label": "Endianness",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vorzeichen_Bit",
+        "label": "Vorzeichen-Bit",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Festkommazahlen",
+        "label": "Binäre Festkommazahlen",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Gleitkommazahlen",
+        "label": "Binäre Gleitkommazahlen",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Rundungsfehler",
+        "label": "Rundungsfehler",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Zeilenumbrüche",
+        "label": "Zeilenumbrüche",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Morse_Code",
+        "label": "Morse-Code",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Baudot_Code",
+        "label": "Baudot-Code",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ASCII",
+        "label": "ASCII",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ISO_8859",
+        "label": "ISO-8859",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/_ASCII_",
+        "label": "(ASCII)",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Unicode",
+        "label": "Unicode",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hex_Editor",
+        "label": "Hex-Editor",
+        "parent": "VL3"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Anzeige_einer_Textdatei_durch_Texteditor",
+        "label": "Anzeige einer Textdatei durch Texteditor",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_32",
+        "label": "UTF-32",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_16",
+        "label": "UTF-16",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/BOM",
+        "label": "BOM",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_8",
+        "label": "UTF-8",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8",
+        "label": "Codierung von Unicode-Codepoints in UTF-8",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Datei",
+        "label": "Datei",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Plain_Text_Dateiformate",
+        "label": "Plain-Text-Dateiformate",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Markupsprachen",
+        "label": "Markupsprachen",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/XML",
+        "label": "XML",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Dateiformate",
+        "label": "Binäre Dateiformate",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_von_Plain_Text_und_Binär",
+        "label": "Vergleich von Plain-Text und Binär",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/IFF",
+        "label": "IFF",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ZIP",
+        "label": "ZIP",
+        "parent": "VL4"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/A_Mathematical_Theory_of_Communication",
+        "label": "A Mathematical Theory of Communication",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Arten_von_Fehlern",
+        "label": "Arten von Fehlern",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Luhn_Algorithmus",
+        "label": "Luhn-Algorithmus",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ISBN",
+        "label": "ISBN",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Fehler_bei_Binärcodierung",
+        "label": "Fehler bei Binärcodierung",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Wiederholungen",
+        "label": "Wiederholungen",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Parität",
+        "label": "Parität",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Distanz",
+        "label": "Hamming-Distanz",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Redundanz_nach_Hamming",
+        "label": "Redundanz nach Hamming",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Fehlerkorrigierende_Codes",
+        "label": "Fehlerkorrigierende Codes",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Code",
+        "label": "Hamming-Code",
+        "parent": "VL5"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Effiziente_Codierung",
+        "label": "Effiziente Codierung",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_mit_Code_Tabelle",
+        "label": "Codierung mit Code-Tabelle",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropiecodierung",
+        "label": "Entropiecodierung",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Präfixcode",
+        "label": "Präfixcode",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Informationsgehalt",
+        "label": "Informationsgehalt",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Redundanz",
+        "label": "Redundanz",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropie",
+        "label": "Entropie ",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Logarithmus",
+        "label": "Logarithmus",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_von_Kompression_und_Fehlerkorrektur",
+        "label": "Vergleich von Kompression und Fehlerkorrektur",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Huffman_Codierung",
+        "label": "Huffman-Codierung",
+        "parent": "VL6"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Übersicht_Kompressionsverfahren",
+        "label": "Übersicht Kompressionsverfahren",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Kolmogorow_Komplexität",
+        "label": "Kolmogorow-Komplexität",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Algorithmische_Tiefe",
+        "label": "Algorithmische Tiefe",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Arithmetische_Codierung",
+        "label": "Arithmetische Codierung",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Run_Length_Encoding",
+        "label": "Run Length Encoding",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/LZ77",
+        "label": "LZ77",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/LZW_Komprimierung",
+        "label": "LZW-Komprimierung",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Decodierung_mit_LZW",
+        "label": "Decodierung mit LZW",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_der_Kompressionsverfahren",
+        "label": "Vergleich der Kompressionsverfahren",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Aufbau_einer_ZIP_Datei",
+        "label": "Aufbau einer ZIP-Datei",
+        "parent": "VL7"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binärzahlen-Concept/Zahlensysteme",
+        "source": "Concept/Binärzahlen",
+        "target": "Concept/Zahlensysteme",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Binärzahlen-Concept/Dezimalsystem",
+        "source": "Concept/Binärzahlen",
+        "target": "Concept/Dezimalsystem",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Zahlensysteme-Concept/natürliche_Zahlen",
+        "source": "Concept/Zahlensysteme",
+        "target": "Concept/natürliche_Zahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Zahlensysteme-Concept/Multiplikation",
+        "source": "Concept/Zahlensysteme",
+        "target": "Concept/Multiplikation",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Zahlensysteme-Concept/Addition",
+        "source": "Concept/Zahlensysteme",
+        "target": "Concept/Addition",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Multiplikation-Concept/Addition",
+        "source": "Concept/Multiplikation",
+        "target": "Concept/Addition",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Binärzahlen-Concept/_elektrische_Spannung_",
+        "source": "Concept/Binärzahlen",
+        "target": "Concept/_elektrische_Spannung_",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Hexadezimalzahlen-Concept/Zahlensysteme",
+        "source": "Concept/Hexadezimalzahlen",
+        "target": "Concept/Zahlensysteme",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Hexadezimalzahlen-Concept/Binärzahlen",
+        "source": "Concept/Hexadezimalzahlen",
+        "target": "Concept/Binärzahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Binärzahlen_mit_Nachkommastellen-Concept/Binärzahlen",
+        "source": "Concept/Binärzahlen_mit_Nachkommastellen",
+        "target": "Concept/Binärzahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Addition_von_Binärzahlen-Concept/Binärzahlen",
+        "source": "Concept/Addition_von_Binärzahlen",
+        "target": "Concept/Binärzahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Addition_von_Binärzahlen-Concept/Addition",
+        "source": "Concept/Addition_von_Binärzahlen",
+        "target": "Concept/Addition",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Zweierkomplementdarstellung-Concept/Addition_von_Binärzahlen",
+        "source": "Concept/Zweierkomplementdarstellung",
+        "target": "Concept/Addition_von_Binärzahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Subtraktion_von_Binärzahlen-Concept/Zweierkomplementdarstellung",
+        "source": "Concept/Subtraktion_von_Binärzahlen",
+        "target": "Concept/Zweierkomplementdarstellung",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Rechenregeln_im_Binärsystem-Concept/Binärzahlen",
+        "source": "Concept/Rechenregeln_im_Binärsystem",
+        "target": "Concept/Binärzahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Rechenregeln_im_Binärsystem-Concept/Addition",
+        "source": "Concept/Rechenregeln_im_Binärsystem",
+        "target": "Concept/Addition",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Rechenregeln_im_Binärsystem-Concept/Multiplikation",
+        "source": "Concept/Rechenregeln_im_Binärsystem",
+        "target": "Concept/Multiplikation",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Rechenregeln_im_Binärsystem-Concept/Dezimalsystem",
+        "source": "Concept/Rechenregeln_im_Binärsystem",
+        "target": "Concept/Dezimalsystem",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Rechenregeln_im_Binärsystem-Concept/Division",
+        "source": "Concept/Rechenregeln_im_Binärsystem",
+        "target": "Concept/Division",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Rechenregeln_im_Binärsystem-Concept/Subtraktion",
+        "source": "Concept/Rechenregeln_im_Binärsystem",
+        "target": "Concept/Subtraktion",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Bitweise_Operatoren-Concept/Binärzahlen",
+        "source": "Concept/Bitweise_Operatoren",
+        "target": "Concept/Binärzahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Bitweise_Operatoren-Concept/Boolesche_Operatoren",
+        "source": "Concept/Bitweise_Operatoren",
+        "target": "Concept/Boolesche_Operatoren",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung-Concept/Zeichenvorrat",
+        "source": "Concept/Codierung",
+        "target": "Concept/Zeichenvorrat",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Binärcodierung-Concept/Binärzahlen",
+        "source": "Concept/Binärcodierung",
+        "target": "Concept/Binärzahlen",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/Binärcodierung-Concept/Codierung",
+        "source": "Concept/Binärcodierung",
+        "target": "Concept/Codierung",
+        "edgeType": "type1"
+      },
+      "group": "edges"
+    },
+    {
+      "data": {
+        "id": "Concept/RAM_und_HDD-Concept/Binärzahlen",
+        "source": "Concept/RAM_und_HDD",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Bits-Concept/Binärzahlen",
+        "source": "Concept/Bits",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Bytes-Concept/Bits",
+        "source": "Concept/Bytes",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Bytes-Concept/Binärzahlen",
+        "source": "Concept/Bytes",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Bytes-Concept/_Hexadezimalzahlen_",
+        "source": "Concept/Bytes",
+        "target": "Concept/_Hexadezimalzahlen_"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Weitere_Größeneinheiten-Concept/Bits",
+        "source": "Concept/Weitere_Größeneinheiten",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Weitere_Größeneinheiten-Concept/Bytes",
+        "source": "Concept/Weitere_Größeneinheiten",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Weitere_Größeneinheiten-Concept/Binärzahlen",
+        "source": "Concept/Weitere_Größeneinheiten",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Datentypen-Concept/Bytes",
+        "source": "Concept/Datentypen",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Datentypen-Concept/Binärzahlen",
+        "source": "Concept/Datentypen",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Speicherreihenfolge-Concept/Bits",
+        "source": "Concept/Speicherreihenfolge",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Speicherreihenfolge-Concept/Binärzahlen",
+        "source": "Concept/Speicherreihenfolge",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Overflow-Concept/Bits",
+        "source": "Concept/Overflow",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Overflow-Concept/Binärzahlen",
+        "source": "Concept/Overflow",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Overflow-Concept/Datentypen",
+        "source": "Concept/Overflow",
+        "target": "Concept/Datentypen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Endianness-Concept/Bytes",
+        "source": "Concept/Endianness",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Endianness-Concept/Binärzahlen",
+        "source": "Concept/Endianness",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Endianness-Concept/Hexadezimalzahlen",
+        "source": "Concept/Endianness",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vorzeichen_Bit-Concept/Binärzahlen",
+        "source": "Concept/Vorzeichen_Bit",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vorzeichen_Bit-Concept/Bits",
+        "source": "Concept/Vorzeichen_Bit",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Zweierkomplementdarstellung-Concept/Binärzahlen",
+        "source": "Concept/Zweierkomplementdarstellung",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Zweierkomplementdarstellung-Concept/Bits",
+        "source": "Concept/Zweierkomplementdarstellung",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Festkommazahlen-Concept/Binärzahlen",
+        "source": "Concept/Binäre_Festkommazahlen",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Gleitkommazahlen-Concept/Binärzahlen",
+        "source": "Concept/Binäre_Gleitkommazahlen",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Gleitkommazahlen-Concept/Vorzeichen_Bit",
+        "source": "Concept/Binäre_Gleitkommazahlen",
+        "target": "Concept/Vorzeichen_Bit"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Zeilenumbrüche-Concept/Codierung",
+        "source": "Concept/Zeilenumbrüche",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Morse_Code-Concept/Codierung",
+        "source": "Concept/Morse_Code",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Baudot_Code-Concept/Codierung",
+        "source": "Concept/Baudot_Code",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ASCII-Concept/Codierung",
+        "source": "Concept/ASCII",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ASCII-Concept/Hexadezimalzahlen",
+        "source": "Concept/ASCII",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ISO_8859-Concept/Codierung",
+        "source": "Concept/ISO_8859",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ISO_8859-Concept/Hexadezimalzahlen",
+        "source": "Concept/ISO_8859",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ISO_8859-Concept/_ASCII_",
+        "source": "Concept/ISO_8859",
+        "target": "Concept/_ASCII_"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Unicode-Concept/Codierung",
+        "source": "Concept/Unicode",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Unicode-Concept/Hexadezimalzahlen",
+        "source": "Concept/Unicode",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hex_Editor-Concept/Hexadezimalzahlen",
+        "source": "Concept/Hex_Editor",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hex_Editor-Concept/Bytes",
+        "source": "Concept/Hex_Editor",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hex_Editor-Concept/Codierung",
+        "source": "Concept/Hex_Editor",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Anzeige_einer_Textdatei_durch_Texteditor-Concept/Codierung",
+        "source": "Concept/Anzeige_einer_Textdatei_durch_Texteditor",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_32-Concept/Bytes",
+        "source": "Concept/UTF_32",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_32-Concept/Unicode",
+        "source": "Concept/UTF_32",
+        "target": "Concept/Unicode"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_32-Concept/Hexadezimalzahlen",
+        "source": "Concept/UTF_32",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_16-Concept/Bytes",
+        "source": "Concept/UTF_16",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_16-Concept/Unicode",
+        "source": "Concept/UTF_16",
+        "target": "Concept/Unicode"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/BOM-Concept/Endianness",
+        "source": "Concept/BOM",
+        "target": "Concept/Endianness"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/BOM-Concept/Bytes",
+        "source": "Concept/BOM",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/BOM-Concept/Hexadezimalzahlen",
+        "source": "Concept/BOM",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_8-Concept/Bytes",
+        "source": "Concept/UTF_8",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_8-Concept/Unicode",
+        "source": "Concept/UTF_8",
+        "target": "Concept/Unicode"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_8-Concept/ASCII",
+        "source": "Concept/UTF_8",
+        "target": "Concept/ASCII"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/UTF_8-Concept/Hexadezimalzahlen",
+        "source": "Concept/UTF_8",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8-Concept/Bytes",
+        "source": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8-Concept/Bits",
+        "source": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8-Concept/Binärzahlen",
+        "source": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8-Concept/Unicode",
+        "source": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8",
+        "target": "Concept/Unicode"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8-Concept/Hexadezimalzahlen",
+        "source": "Concept/Codierung_von_Unicode_Codepoints_in_UTF_8",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Plain_Text_Dateiformate-Concept/Codierung",
+        "source": "Concept/Plain_Text_Dateiformate",
+        "target": "Concept/Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Plain_Text_Dateiformate-Concept/Datei",
+        "source": "Concept/Plain_Text_Dateiformate",
+        "target": "Concept/Datei"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Markupsprachen-Concept/Plain_Text_Dateiformate",
+        "source": "Concept/Markupsprachen",
+        "target": "Concept/Plain_Text_Dateiformate"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/XML-Concept/Markupsprachen",
+        "source": "Concept/XML",
+        "target": "Concept/Markupsprachen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Dateiformate-Concept/Datei",
+        "source": "Concept/Binäre_Dateiformate",
+        "target": "Concept/Datei"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Dateiformate-Concept/Bytes",
+        "source": "Concept/Binäre_Dateiformate",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Binäre_Dateiformate-Concept/Hexadezimalzahlen",
+        "source": "Concept/Binäre_Dateiformate",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_von_Plain_Text_und_Binär-Concept/Plain_Text_Dateiformate",
+        "source": "Concept/Vergleich_von_Plain_Text_und_Binär",
+        "target": "Concept/Plain_Text_Dateiformate"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_von_Plain_Text_und_Binär-Concept/Binäre_Dateiformate",
+        "source": "Concept/Vergleich_von_Plain_Text_und_Binär",
+        "target": "Concept/Binäre_Dateiformate"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/IFF-Concept/Binäre_Dateiformate",
+        "source": "Concept/IFF",
+        "target": "Concept/Binäre_Dateiformate"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ZIP-Concept/Binäre_Dateiformate",
+        "source": "Concept/ZIP",
+        "target": "Concept/Binäre_Dateiformate"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Fehler_bei_Binärcodierung-Concept/Binärcodierung",
+        "source": "Concept/Fehler_bei_Binärcodierung",
+        "target": "Concept/Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Fehler_bei_Binärcodierung-Concept/Arten_von_Fehlern",
+        "source": "Concept/Fehler_bei_Binärcodierung",
+        "target": "Concept/Arten_von_Fehlern"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Wiederholungen-Concept/Fehler_bei_Binärcodierung",
+        "source": "Concept/Wiederholungen",
+        "target": "Concept/Fehler_bei_Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Wiederholungen-Concept/Bits",
+        "source": "Concept/Wiederholungen",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Parität-Concept/Fehler_bei_Binärcodierung",
+        "source": "Concept/Parität",
+        "target": "Concept/Fehler_bei_Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Parität-Concept/Bits",
+        "source": "Concept/Parität",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Distanz-Concept/Fehler_bei_Binärcodierung",
+        "source": "Concept/Hamming_Distanz",
+        "target": "Concept/Fehler_bei_Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Distanz-Concept/Bits",
+        "source": "Concept/Hamming_Distanz",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Distanz-Concept/Zeichenvorrat",
+        "source": "Concept/Hamming_Distanz",
+        "target": "Concept/Zeichenvorrat"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Redundanz_nach_Hamming-Concept/Hamming_Distanz",
+        "source": "Concept/Redundanz_nach_Hamming",
+        "target": "Concept/Hamming_Distanz"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Redundanz_nach_Hamming-Concept/Bits",
+        "source": "Concept/Redundanz_nach_Hamming",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Fehlerkorrigierende_Codes-Concept/Fehler_bei_Binärcodierung",
+        "source": "Concept/Fehlerkorrigierende_Codes",
+        "target": "Concept/Fehler_bei_Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Code-Concept/Fehlerkorrigierende_Codes",
+        "source": "Concept/Hamming_Code",
+        "target": "Concept/Fehlerkorrigierende_Codes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Code-Concept/Parität",
+        "source": "Concept/Hamming_Code",
+        "target": "Concept/Parität"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Hamming_Code-Concept/Bits",
+        "source": "Concept/Hamming_Code",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Effiziente_Codierung-Concept/Binärcodierung",
+        "source": "Concept/Effiziente_Codierung",
+        "target": "Concept/Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_mit_Code_Tabelle-Concept/Binärcodierung",
+        "source": "Concept/Codierung_mit_Code_Tabelle",
+        "target": "Concept/Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Codierung_mit_Code_Tabelle-Concept/Bits",
+        "source": "Concept/Codierung_mit_Code_Tabelle",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropiecodierung-Concept/Binärcodierung",
+        "source": "Concept/Entropiecodierung",
+        "target": "Concept/Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropiecodierung-Concept/Bits",
+        "source": "Concept/Entropiecodierung",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropiecodierung-Concept/Effiziente_Codierung",
+        "source": "Concept/Entropiecodierung",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Präfixcode-Concept/Effiziente_Codierung",
+        "source": "Concept/Präfixcode",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Präfixcode-Concept/Bits",
+        "source": "Concept/Präfixcode",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Präfixcode-Concept/Binärcodierung",
+        "source": "Concept/Präfixcode",
+        "target": "Concept/Binärcodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Redundanz-Concept/Informationsgehalt",
+        "source": "Concept/Redundanz",
+        "target": "Concept/Informationsgehalt"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Redundanz-Concept/Entropie",
+        "source": "Concept/Redundanz",
+        "target": "Concept/Entropie"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Redundanz-Concept/Bits",
+        "source": "Concept/Redundanz",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropie-Concept/Informationsgehalt",
+        "source": "Concept/Entropie",
+        "target": "Concept/Informationsgehalt"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropie-Concept/Bits",
+        "source": "Concept/Entropie",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Entropie-Concept/Logarithmus",
+        "source": "Concept/Entropie",
+        "target": "Concept/Logarithmus"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_von_Kompression_und_Fehlerkorrektur-Concept/Effiziente_Codierung",
+        "source": "Concept/Vergleich_von_Kompression_und_Fehlerkorrektur",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_von_Kompression_und_Fehlerkorrektur-Concept/Fehlerkorrigierende_Codes",
+        "source": "Concept/Vergleich_von_Kompression_und_Fehlerkorrektur",
+        "target": "Concept/Fehlerkorrigierende_Codes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_von_Kompression_und_Fehlerkorrektur-Concept/Redundanz",
+        "source": "Concept/Vergleich_von_Kompression_und_Fehlerkorrektur",
+        "target": "Concept/Redundanz"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Huffman_Codierung-Concept/Effiziente_Codierung",
+        "source": "Concept/Huffman_Codierung",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Huffman_Codierung-Concept/Bits",
+        "source": "Concept/Huffman_Codierung",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Huffman_Codierung-Concept/Entropiecodierung",
+        "source": "Concept/Huffman_Codierung",
+        "target": "Concept/Entropiecodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Huffman_Codierung-Concept/Redundanz",
+        "source": "Concept/Huffman_Codierung",
+        "target": "Concept/Redundanz"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Huffman_Codierung-Concept/Präfixcode",
+        "source": "Concept/Huffman_Codierung",
+        "target": "Concept/Präfixcode"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Übersicht_Kompressionsverfahren-Concept/Effiziente_Codierung",
+        "source": "Concept/Übersicht_Kompressionsverfahren",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Kolmogorow_Komplexität-Concept/Informationsgehalt",
+        "source": "Concept/Kolmogorow_Komplexität",
+        "target": "Concept/Informationsgehalt"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Algorithmische_Tiefe-Concept/Kolmogorow_Komplexität",
+        "source": "Concept/Algorithmische_Tiefe",
+        "target": "Concept/Kolmogorow_Komplexität"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Algorithmische_Tiefe-Concept/Informationsgehalt",
+        "source": "Concept/Algorithmische_Tiefe",
+        "target": "Concept/Informationsgehalt"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Arithmetische_Codierung-Concept/Entropiecodierung",
+        "source": "Concept/Arithmetische_Codierung",
+        "target": "Concept/Entropiecodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Arithmetische_Codierung-Concept/Effiziente_Codierung",
+        "source": "Concept/Arithmetische_Codierung",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Arithmetische_Codierung-Concept/Binärzahlen",
+        "source": "Concept/Arithmetische_Codierung",
+        "target": "Concept/Binärzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Run_Length_Encoding-Concept/Effiziente_Codierung",
+        "source": "Concept/Run_Length_Encoding",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/LZ77-Concept/Effiziente_Codierung",
+        "source": "Concept/LZ77",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/LZW_Komprimierung-Concept/Effiziente_Codierung",
+        "source": "Concept/LZW_Komprimierung",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/LZW_Komprimierung-Concept/LZ77",
+        "source": "Concept/LZW_Komprimierung",
+        "target": "Concept/LZ77"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Decodierung_mit_LZW-Concept/LZW_Komprimierung",
+        "source": "Concept/Decodierung_mit_LZW",
+        "target": "Concept/LZW_Komprimierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_der_Kompressionsverfahren-Concept/Effiziente_Codierung",
+        "source": "Concept/Vergleich_der_Kompressionsverfahren",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_der_Kompressionsverfahren-Concept/Entropie",
+        "source": "Concept/Vergleich_der_Kompressionsverfahren",
+        "target": "Concept/Entropie"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_der_Kompressionsverfahren-Concept/Entropiecodierung",
+        "source": "Concept/Vergleich_der_Kompressionsverfahren",
+        "target": "Concept/Entropiecodierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_der_Kompressionsverfahren-Concept/Run_Length_Encoding",
+        "source": "Concept/Vergleich_der_Kompressionsverfahren",
+        "target": "Concept/Run_Length_Encoding"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Vergleich_der_Kompressionsverfahren-Concept/LZW_Komprimierung",
+        "source": "Concept/Vergleich_der_Kompressionsverfahren",
+        "target": "Concept/LZW_Komprimierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ZIP-Concept/Effiziente_Codierung",
+        "source": "Concept/ZIP",
+        "target": "Concept/Effiziente_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ZIP-Concept/Huffman_Codierung",
+        "source": "Concept/ZIP",
+        "target": "Concept/Huffman_Codierung"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/ZIP-Concept/LZ77",
+        "source": "Concept/ZIP",
+        "target": "Concept/LZ77"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Aufbau_einer_ZIP_Datei-Concept/ZIP",
+        "source": "Concept/Aufbau_einer_ZIP_Datei",
+        "target": "Concept/ZIP"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Aufbau_einer_ZIP_Datei-Concept/Bytes",
+        "source": "Concept/Aufbau_einer_ZIP_Datei",
+        "target": "Concept/Bytes"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Aufbau_einer_ZIP_Datei-Concept/Hexadezimalzahlen",
+        "source": "Concept/Aufbau_einer_ZIP_Datei",
+        "target": "Concept/Hexadezimalzahlen"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Aufbau_einer_ZIP_Datei-Concept/Bits",
+        "source": "Concept/Aufbau_einer_ZIP_Datei",
+        "target": "Concept/Bits"
+      }
+    },
+    {
+      "data": {
+        "id": "Concept/Aufbau_einer_ZIP_Datei-Concept/Endianness",
+        "source": "Concept/Aufbau_einer_ZIP_Datei",
+        "target": "Concept/Endianness"
+      }
+    }]
