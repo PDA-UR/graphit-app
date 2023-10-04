@@ -4,9 +4,9 @@ import { eventBus } from "../global/EventBus";
 export class MenuEventController {
 
     private readonly cy: cytoscape.Core;
-    private pathInfo: HTMLElement;
-    private graphInfo: HTMLElement;
-    private sidebarBtn: HTMLElement;
+    // private pathInfo: HTMLElement;
+    // private graphInfo: HTMLElement;
+    // private sidebarBtn: HTMLElement;
     private container: HTMLElement;
     // private closeBtn: HTMLElement
     private openMenu: boolean = true;
@@ -18,15 +18,15 @@ export class MenuEventController {
         // eventBus.on("menuClick", this.openResource);
         // eventBus.on("hotlistClick", this.clickSideBar);
 
-        this.pathInfo = document.getElementById("path-info") as HTMLElement;
-        this.graphInfo = document.getElementById("graph-info") as HTMLElement;
-        this.sidebarBtn = document.getElementById("sidebar-icon") as HTMLElement;
+        // this.pathInfo = document.getElementById("path-info") as HTMLElement;
+        // this.graphInfo = document.getElementById("graph-info") as HTMLElement;
+        // this.sidebarBtn = document.getElementById("sidebar-icon") as HTMLElement;
         this.container = document.getElementById("sidebar") as HTMLElement;
         //this.closeBtn = document.getElementsByClassName("info-box-close")
 
         this.initListeners();
         this.initEvents();
-        this.populateSideBar();
+        // this.populateSideBar();
 
     }
 
@@ -36,9 +36,9 @@ export class MenuEventController {
     }
 
     private initListeners() {
-        this.pathInfo.addEventListener("click", this.onClick);
-        this.graphInfo.addEventListener("click", this.onClick)
-        this.sidebarBtn.addEventListener("click", this.onClick)
+        // this.pathInfo.addEventListener("click", this.onClick);
+        // this.graphInfo.addEventListener("click", this.onClick)
+        // this.sidebarBtn.addEventListener("click", this.onClick)
     }
 
     public populateSideBar(){
@@ -58,7 +58,7 @@ export class MenuEventController {
 
     /* ---- EVENTS  AND EVENT FUNCTIONS ---- */
 
-    private openResource = (res:any) => {
+    private openResource = (res:any) => { //buggy(why?)
         window.open(res.data("url"), "_blank")?.focus();
         console.log("openRes");
     }

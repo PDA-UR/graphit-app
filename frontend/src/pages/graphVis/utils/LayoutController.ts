@@ -23,23 +23,25 @@ export class LayoutController {
 
     /* ---- LAYOUT MAIN GRAPH ---- */
 
-    // The main layout function
+    /**
+     * The main layout function
+     */
     private layoutGraph() {
         this.tempEdges = this.cy.elements().edges("edge[temp]");
-
-        console.log("temp-edges", this.tempEdges);
-
+        // console.log("temp-edges", this.tempEdges);
         this.cy.layout(GLOBALS.graphLayout).run();
         this.styler.styleGraph(this.cy.elements());
     }
 
-    // Layout the full graph
+    /**
+     * Lays out the full graph
+     */
     public layoutFullGraph() {
         this.dataManager.addCourses();
         this.layoutGraph();
     }
 
-    // BUG: EIMI looses its edges
+    
     public relayoutFullGraph() {
         const eles = this.cy.elements();
 
@@ -59,6 +61,10 @@ export class LayoutController {
 
     /* ---- LAYOUT COURSE --- */
 
+    /**
+     * Layout a course
+     * @param courseNodes All Nodes of the course (super+sub-nodes)
+     */
     public layoutCourse(courseNodes: cytoscape.Collection) {
         this.styler.ghost(false, courseNodes); // unghost all elements
         this.styler.hide(true, this.cy.elements().not(courseNodes)); // hide other

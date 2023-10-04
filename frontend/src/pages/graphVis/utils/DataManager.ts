@@ -15,8 +15,7 @@ export class DataManager {
     }
 
     /**
-     * Adds additional courses
-     * Currently only EIMI
+     * Adds additional courses (super- and sub-nodes). INFO: Needs rework
      */
     public addCourses() {
         this.cy.add(COURSES);
@@ -24,12 +23,11 @@ export class DataManager {
         this.connectCourse(this.cy, this.cy.elements(), "cgbv");
         this.cy.elements().data("course", "cgbv"); // add data field for access (magical "number"!)
         
-        // Eimi -> knoten sind nicht mit kurs verbinden -> manchmal keine Sinks
-        // TODO: Hier: die maxDegrees mit Kurs verbinden + Knoten ohne verbindungen
-        const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
-        eimiData.move({parent: null}); //move Eimi out of parents
-        this.connectCourse(this.cy, eimiData, "eimi");
-        eimiData.data("course", "eimi");
+        // Eimi (only works with eimi.js) + courseData.ts (uncomment eimi-section)
+        // const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
+        // eimiData.move({parent: null}); //move Eimi out of parents
+        // this.connectCourse(this.cy, eimiData, "eimi");
+        // eimiData.data("course", "eimi");
 
         this.cy.add(EDUCATORS);
 

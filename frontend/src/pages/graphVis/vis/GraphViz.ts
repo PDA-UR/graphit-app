@@ -42,7 +42,7 @@ export class MainGraph {
         });
         this.cy.ready(this.layoutGraph);
         this.pathViz = new PathViz();
-        // new MenuEventController(this.cy);
+        new MenuEventController(this.cy);
         // this.menuer.populateSideBar();
         
         this.initGraphEvents();
@@ -145,7 +145,7 @@ export class MainGraph {
         const nodeDiv = document.getElementById("node-name") as HTMLElement; 
         const courseDiv = document.getElementById("course-name") as HTMLElement;
         const resDiv = document.getElementById("resource-container") as HTMLElement;
-        const resParent = document.getElementById("resources") as HTMLElement;
+        // const resParent = document.getElementById("resources") as HTMLElement;
 
         // Node-name
         const name : string = target.data("label");
@@ -166,7 +166,7 @@ export class MainGraph {
 
             let icon = document.createElement("div");
             icon.setAttribute("class", "resource-icon");
-            icon.addEventListener("click", () => eventBus.emit("menuClick", r));
+            icon.addEventListener("click", () => eventBus.emit("menuClick", r));;
 
             let name = document.createElement("div");
             name.setAttribute("class", "resource-name");
@@ -181,8 +181,7 @@ export class MainGraph {
     }
 
     /* ---- EVENT FUNCTIONS ---- */
-    // NOTE: verbesserung -> if course entered -> click different course -> enter this course
-    // also usefull for sidebar
+    // NOTE: Better? -> if course entered -> click different course -> enter this course
     private onClick = (target:cytoscape.NodeSingular) => {
         console.log("click", target.data("label"), target.position(), target.classes());
         console.log("click", target.cy());
@@ -190,7 +189,6 @@ export class MainGraph {
         const targetCore = target.cy() as cytoscape.Core;
         console.log(targetCore.container()?.id);
         if(targetCore.container()?.id == "path") {
-            // this.cy.fit(target.neighborhood(), 200);
             target = this.cy.$id(target.id()); // use the target in the full dataset
             this.cy.fit(target.neighborhood(), 200);
         }
@@ -221,7 +219,7 @@ export class MainGraph {
     }
 }
 
-// Auslagern
+// Temporary ("move" to/use from Stylemanager.ts)
 function toggleHoverStyle (target:any, show:boolean) {
     target.toggleClass("hover", show);
     if(!target.hasClass("ghost")){

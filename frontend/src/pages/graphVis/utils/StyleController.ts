@@ -46,6 +46,10 @@ export class StyleController {
         hide ? this.api.hide(eles) : this.api.show(eles);
     }
 
+    /**
+     * Styles the entire graph (default styleing)
+     * @param eles The graph (or part of graph) to be styled
+     */
     public styleGraph(eles: cytoscape.Collection) {
         const displayed = this.cy.$(".course").neighborhood("[[degree >"+ 4 + "]]");
         displayed.data("important", "true"); // added for easier access
@@ -54,19 +58,24 @@ export class StyleController {
         this.hide(true, this.cy.$("node[url]"));
     }
 
+    /**
+     * Styles a singular course
+     * @param eles The course elements
+     */
     public styleCourse(eles: cytoscape.Collection) {
         const ghost = eles.not("node[important]");
         this.ghost(true, ghost, true);
     }
 
-    // BUG: sometimes Edges stay as labels
+    /**
+     * Styles all elements connected to the selection
+     * @param target The selection (clicked)
+     * @param eles All connected elements
+     */
     public styleConnected(
         target:cytoscape.NodeSingular,
         eles: cytoscape.Collection
     ) {
-
-        // console.log("connected in StyleController", eles);
-
         // (re)ghost all nodes that are not important
         const ghost = this.cy.elements().not(eles).not("node[important]");
         this.ghost(true, ghost, true);
