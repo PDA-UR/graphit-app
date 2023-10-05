@@ -1,6 +1,6 @@
 import "./style.css";
-import CGBV from "./global/data/cgbv.json";
-import { ElementDefinition } from "cytoscape";
+// import CGBV from "./global/data/cgbv.json";
+// import { ElementDefinition } from "cytoscape";
 import { MainGraph } from "./vis/GraphViz";
 import { dragElement } from "./utils/Splitter";
 import { getElements } from "./global/DataManager";

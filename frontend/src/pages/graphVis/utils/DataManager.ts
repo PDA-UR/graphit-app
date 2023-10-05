@@ -1,6 +1,6 @@
 import cytoscape from "cytoscape";
 
-import EIMI from "../global/data/eimi.json"; 
+// import EIMI from "../global/data/eimi.json"; 
 import { COURSES, EDUCATORS } from "../global/data/courseData";
 
 // Manage additional Data that is to be added to the cy-core
