@@ -1,6 +1,7 @@
 import cytoscape from "cytoscape";
 
 // import EIMI from "../global/data/eimi.json"; 
+import EIMI from "../../../data/eimi.json";
 import { COURSES, EDUCATORS } from "../global/data/courseData";
 
 // Manage additional Data that is to be added to the cy-core
@@ -24,10 +25,10 @@ export class DataManager {
         this.cy.elements().data("course", "cgbv"); // add data field for access (magical "number"!)
         
         // Eimi (only works with eimi.js) + courseData.ts (uncomment eimi-section)
-        // const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
-        // eimiData.move({parent: null}); //move Eimi out of parents
-        // this.connectCourse(this.cy, eimiData, "eimi");
-        // eimiData.data("course", "eimi");
+        const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
+        eimiData.move({parent: null}); //move Eimi out of parents
+        this.connectCourse(this.cy, eimiData, "eimi");
+        eimiData.data("course", "eimi");
 
         this.cy.add(EDUCATORS);
 
