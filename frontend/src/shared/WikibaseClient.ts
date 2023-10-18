@@ -91,8 +91,8 @@ export default class WikibaseClient {
 	async getWissGraph(): Promise<ElementDefinition[]> {
 		const results = await this.api.sparql.wissArb();
 		const graph = this.sparqlParser.parsePairs(
-			["item", "source"],
-			"includes",
+			["source", "dependency"],
+			"depends on",
 			results.data
 		);
 		return graph;
