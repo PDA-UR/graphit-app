@@ -27,7 +27,8 @@ const main = async () => {
 	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
 
 	const userInfo = await wikibaseClient.login();
-	const elements = await wikibaseClient.getUserGraph(),
+	// const elements = await wikibaseClient.getUserGraph(), // works
+	const elements = await wikibaseClient.getWissGraph(),
 		experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
 
 	experimentApp.style.display = "flex";

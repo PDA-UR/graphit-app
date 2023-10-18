@@ -94,6 +94,36 @@ WHERE {
 }
 `;
 
+// Temporary query for WissArb-Graph
+const wissGraph = (
+    userId = "Q157"
+) => `# Retrieve all items that are part of the Course "Wissenschaftliches Arbeiten"
+PREFIX wd: <https://graphit.ur.de/entity/>
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+SELECT distinct
+?course ?courseLabel
+?item ?itemLabel 
+?itemType ?itemTypeLabel
+?source ?sourceLabel
+?dependency ?dependencyLabel
+WHERE {
+  
+  BIND (wd:Q171 as ?course). # wd:Q468
+  
+  # Get all included items
+  ?course wdt:P14 ?item.
+  
+  # Get type of Item (catgegory, session) + their included sources
+  OPTIONAL {
+    ?item wdt:P3 ?itemType.
+    ?item wdt:P14 ?source.
+    OPTIONAL {?source wdt:P1 ?dependency.}
+  }
+  
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+`;
+
 /**
  * Service for retrieving SPARQL-Queries
  */
@@ -110,4 +140,8 @@ export class SparqlQueryTemplateService {
 	public getResources(userId: string) {
 		return resourceQuery(userId);
 	}
+
+  public getWissGraph(userId: string){
+    return wissGraph(userId);
+  }
 }

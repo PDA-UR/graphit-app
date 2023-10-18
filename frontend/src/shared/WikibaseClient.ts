@@ -87,6 +87,17 @@ export default class WikibaseClient {
 		return resources;
 	}
 
+	// To handle WissGraph
+	async getWissGraph(): Promise<ElementDefinition[]> {
+		const results = await this.api.sparql.wissArb();
+		const graph = this.sparqlParser.parsePairs(
+			["item", "source"],
+			"includes",
+			results.data
+		);
+		return graph;
+	}
+
 	async getEntities(entityIds: string[]): Promise<any> {
 		// if more than 50 entityIds, split into multiple requests
 		if (entityIds.length > 50) {
