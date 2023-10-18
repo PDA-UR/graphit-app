@@ -96,7 +96,7 @@ WHERE {
 
 // Temporary query for WissArb-Graph
 const wissGraph = (
-    userId = "Q157"
+    userId = "Q157",
 ) => `# Retrieve all items that are part of the Course "Wissenschaftliches Arbeiten"
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
@@ -106,6 +106,8 @@ SELECT DISTINCT
 ?itemType ?itemTypeLabel
 ?source ?sourceLabel
 ?dependency ?dependencyLabel
+?sourceCompleted ?dependencyCompleted
+?sourceInterested ?dependencyInterested
 WHERE {
 {
   # SELECT ALL elements INCLUDED in <Course>
@@ -120,6 +122,17 @@ WHERE {
   ?source wdt:P1+ ?dependency.
   }
   
+  # Check if the source node has completed (Property P12)
+  BIND(EXISTS { wd:${userId} wdt:P12 ?source } AS ?sourceCompleted)
+  
+  # Check if the dependent node has completed (Property P12)
+  BIND(EXISTS { wd:${userId} wdt:P12 ?dependency } AS ?dependencyCompleted)
+  
+  # Check if ${userId} is interested in the source node (Property P23)
+  BIND(EXISTS { wd:${userId} wdt:P23 ?source } AS ?sourceInterested)
+  
+  # Check if ${userId} is interested in the dependent node (Property P23)
+  BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
   
   service wikibase:label { bd:serviceParam wikibase:language "en" }
 }
