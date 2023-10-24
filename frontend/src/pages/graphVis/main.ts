@@ -22,6 +22,7 @@ main();
 
 async function initGraph() {
     const elements = await getElements(); // currently only Cv&Bg
+    console.log("elements", elements);
     const app = document.getElementById("graph")!;
     const graphViz = new MainGraph(elements, app);
 }

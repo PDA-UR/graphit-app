@@ -20,19 +20,79 @@ export class DataManager {
      */
     public addCourses() {
         this.cy.add(COURSES);
-    
-        this.connectCourse(this.cy, this.cy.elements(), "cgbv");
-        this.cy.elements().data("course", "cgbv"); // add data field for access (magical "number"!)
+
+        // TODO: check for edges, that want wissArb as source/target
+        // These cause issues (temp fixed) later on
+
+        // NOTE: wissArb-Elemente have no nodeClass!! BUT this also gets other eles
+        let nodes = this.cy.elements().nodes().filter('[^nodeClass]')
+            .not('[label="Python Basics"]')
+            .not('[label="2D Vector Graphics"]')
+            .not('[label="Neural Radiance Fields (NeRFs)"]')
+            .not('[label="Exam: CGBV SS23"]')
+            .not('[label="Mathematical Foundations"]')
+            .not('[label="SL: Mini-Gimp"]'); 
+        // let nodes = this.cy.elements().filter('[courseLabel="Wissenschaftliches Arbeiten 23/24WS"]');
+            // Geht nicht, warum?????
+
+        // // // ?? also gets all other elements without node classes, i.e. 2D Vector Graphics
+        let wissArbData: cytoscape.Collection = nodes;
+        wissArbData = wissArbData.union(nodes.connectedEdges());
+        // console.log("wissArbData", wissArbData);
+        this.connectCourseOLD(this.cy, wissArbData, "wissArb");
+        // this.cy.elements().data("course", "wissArb");
+        wissArbData.data("course", "wissArb");
+        console.log("wissArbData:", wissArbData);
         
+        // CGBV
+        let cgbvData = this.cy.elements().not(wissArbData);
+        cgbvData = cgbvData.union(cgbvData.connectedEdges());
+        // this.connectCourse(this.cy, this.cy.elements(), "cgbv");
+        this.connectCourse(this.cy, cgbvData, "cgbv");
+        // this.cy.elements().data("course", "cgbv"); // add data field for access (magical "number"!)
+        cgbvData.data("course", "cgbv");
+
         // Eimi (only works with eimi.js) + courseData.ts (uncomment eimi-section)
         const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
         eimiData.move({parent: null}); //move Eimi out of parents
         this.connectCourse(this.cy, eimiData, "eimi");
         eimiData.data("course", "eimi");
 
-        this.cy.add(EDUCATORS);
+        // this.cy.add(EDUCATORS);
+
+        // TEST remove edges between courses //wissArb wissArb, cgbv wissArb, eimi wissArb, wissArb cgbv
+        // this.cy.remove("#wissArb-wissArb");
+    }
+
+    //NEW: for Testing
+    // Connect only to the course and not the courses to each other
+
+    /**
+     * Connects all Sources/Origins of a Course to the Course-Node
+     * NOTE: hides edges between supernodes (i.e courses)
+     * @param cy The cytoscape core for the graph
+     * @param eles The collection of elements to connect (includes course)
+     * @param courseId The course to connect to
+     */
+    private connectCourse(
+        cy:cytoscape.Core, 
+        eles:cytoscape.Collection,
+        courseId:String,
+    ) {
+        // const maxD = eles.nodes().maxDegree(false);
+
+        eles.nodes().forEach(ele => {
+            if(ele.outdegree(false) == 0) {
+                let edge = cy.add(this.newCourseEdge(ele.id(), courseId));
+                if(ele.hasClass("course")) { // hide the edges between supernodes (courses)
+                    // console.log("edge", edge.id());
+                    edge.style("visibility", "hidden");
+                }
+            }
+        })
 
     }
+
 
     /**
      * A function that connects all Sources/Origins of a Course to the Course-Node (additionally)
@@ -42,16 +102,19 @@ export class DataManager {
      * @param courseId The course to which they should connect
      */
     // TODO: Hier: die maxDegrees mit Kurs verbinden + Knoten ohne Verbindungen
-    private connectCourse(
+    private connectCourseOLD(
         cy:cytoscape.Core, 
         eles:cytoscape.Collection,
         courseId:String,
     ) {
         const maxD = eles.nodes().maxDegree(false);
 
+        // TEST: Do not make edges between the courses
+
         eles.nodes().forEach(ele => {
-            if(ele.outdegree(false) == 0) { // If node is source/origin
-                // connect to course-node
+            if(ele.outdegree(false) == 0) { // If node is source/origin connect to course-node
+                // Here: edge problems later on -> don't connect courses together
+                if(ele.hasClass("course")) console.log("eles", ele.id(), courseId);
                 cy.add(this.newCourseEdge(ele.id(), courseId));
             } else if(ele.outdegree(false) == 0 && ele.indegree(false) == 0) { // If node is orphan ??
                 cy.add(this.newCourseEdge(ele.id(), courseId));

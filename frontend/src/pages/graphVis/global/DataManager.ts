@@ -46,10 +46,13 @@ export const getElements = async () => {
 		//const elements = await wikibase.getDefaultGraph(); 
 		
 		let elements = await wikibase.getUserGraph();
-		const resources = await wikibase.getResource();
-		// // const parents = await wikibase.getCategories();
-		// //elements = elements.concat(resources, parents);
-		elements = elements.concat(resources);
+		// const resources = await wikibase.getResource(); //temp-remove
+		// elements = elements.concat(resources);
+	 	const wissArb = await wikibase.getWissGraph();
+		elements = elements.concat(wissArb);
+		// // // const parents = await wikibase.getCategories();
+		// elements = elements.concat(resources, wissArb);
+		//let elements = await wikibase.getWissGraph();
 		console.log(elements);
 		localStorage.setItem(
 			localStorageKey,

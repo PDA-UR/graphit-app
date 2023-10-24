@@ -28,17 +28,19 @@ export class PathViz {
         futureEles: cytoscape.Collection,
     ) { 
         // Style the elements
+        console.log("in setElements()", pathElements, futureEles)
         this.styler.ghost(false, pathElements);
         this.styler.ghost(false, futureEles);
 
         this.styler.setConnectedColor(pathElements[0], pathElements);
-        // const pathers = pathElements.filter("node[weight]");
+        // // const pathers = pathElements.filter("node[weight]");
         this.styler.styleEdgesAndNodes(true, pathElements, ["direct", "edge-direct"], true); // style the Learn-path elemets
         this.styler.styleEdgesAndNodes(true, futureEles, ["connect", "edge-connect"]); // style the rest elements
 
         this.styler.hide(true, this.cy.$("node[url]")); // hide resources
 
         this.cy.remove(this.cy.elements());
+        // Problem cant create edge with nonexistent target
         this.cy.add(pathElements);
         this.cy.add(futureEles);
 

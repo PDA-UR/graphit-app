@@ -21,8 +21,10 @@ WHERE {
   # Retrieve the source node and its dependent node
   ?source wdt:P1 ?dependency.
   
-  # Retrieve the class of the source node
+  # Retrieve the class of the source node (if P2: subclass of )
   ?source wdt:P2 ?sourceNodeClass.
+  # OPTIONAL {?source wdt:P2 ?sourceNodeClass.}
+  # NOTE: All items with a NodeClass are items of the course: cgbv
   
   # Retrieve the image of the source node (if available)
   OPTIONAL { ?source wdt:P9 ?sourceNodeImage. }
@@ -101,7 +103,7 @@ const wissGraph = (
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
 SELECT DISTINCT 
-?course ?courseLabel
+?sourceCourse ?sourceCourseLabel
 ?item ?itemLabel
 ?itemType ?itemTypeLabel
 ?source ?sourceLabel
@@ -112,9 +114,9 @@ WHERE {
 {
   # SELECT ALL elements INCLUDED in <Course>
   { SELECT distinct * WHERE {
-    BIND (wd:Q468 as ?course).
+    BIND (wd:Q468 as ?sourceCourse).
     # Retrieve all items in the course
-    ?course wdt:P14 ?item. # = session or category
+    ?sourceCourse wdt:P14 ?item. # = session or category
     #?item wdt:P14 ?itemType.
     ?item wdt:P14 ?source.
   } 

@@ -3,6 +3,17 @@ import { NodeDefinition } from "cytoscape";
 // Parent nodes for the courses depicted in the graph
 // Currently static
 export const COURSES : NodeDefinition[] = [
+
+    // WissArb.
+    { group: "nodes",
+        data: {
+            id: "wissArb",
+            label: "Wissenschaftliches Arbeiten"
+        },
+        classes: "course"
+    },
+
+    // CGBV
     { group: "nodes", 
         data: {
             id: "cgbv",
@@ -19,14 +30,14 @@ export const COURSES : NodeDefinition[] = [
         classes: "course"
     },
 
-    { group: "edges",
-    data: {
-        id: "eimi-cgbv",
-        source: "cgbv",
-        target: "eimi",
-        course: "true",
-        }
-    },
+    // { group: "edges",
+    // data: {
+    //     id: "eimi-cgbv",
+    //     source: "cgbv",
+    //     target: "eimi",
+    //     course: "true",
+    //     }
+    // },
 
     //OLD
     /*{ group: "nodes",

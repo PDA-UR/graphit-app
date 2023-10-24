@@ -69,7 +69,10 @@ export class MainGraph {
     /* ---- GRAPH FUNCTIONS ---- */
     private enterCourse(target:any) {
         let courseNodes = this.cy.$("[course =" + "'" + target.id() + "'" + "]");
+        courseNodes = courseNodes.not(".course"); // remove all supernodes
         courseNodes = courseNodes.union(target);
+
+        console.log("course", courseNodes);
 
         // this.layouter.layoutCourse(courseNodes);
         const redString = this.layouter.layoutRedString(courseNodes);
@@ -111,20 +114,27 @@ export class MainGraph {
             let preview = target.neighborhood();
             preview = target.union(preview);
             console.log("prev", preview);
-            this.pathViz.setPreview(preview);
+            // this.pathViz.setPreview(preview);
             return;
         }
 
+        // Remove edges that want to have the course: wissarb as a source/target
         let learners = target.successors()
             .not(".course")
             .not("edge[target=" + "'" + target.data("course") + "'" + "]")
-            .not("edge[source=" + "'" + target.data("course") + "'" + "]");
+            .not("edge[source=" + "'" + target.data("course") + "'" + "]")//;
+            .not("edge[source=" + "'" + "wissArb" + "'" + "]")
+            .not("edge[target=" + "'" + "wissArb" + "'" + "]");
+            // NOTE: ISUUE: somewhere edges  are added that want "wissArb" as a source/target
         learners = target.union(learners); // target is first item
-        // let futureLearners = target.incomers("")
+
         let futureLs = target.incomers()
             .not("node[url]") //filter out resources and their edges
             .not(target.incomers().filter("node[url]").connectedEdges());
         // learners = learners.union(futureLs); // include first incoming -> next learn target
+        
+        //TEST -> here Problem with edges -> 
+        console.log("!! pathViz:", this.pathViz);
         this.pathViz.setElements(learners, futureLs);
     }
 
