@@ -39,7 +39,7 @@ export class DataManager {
         let wissArbData: cytoscape.Collection = nodes;
         wissArbData = wissArbData.union(nodes.connectedEdges());
         // console.log("wissArbData", wissArbData);
-        this.connectCourseOLD(this.cy, wissArbData, "wissArb");
+        this.connectCourse(this.cy, wissArbData, "wissArb");
         // this.cy.elements().data("course", "wissArb");
         wissArbData.data("course", "wissArb");
         console.log("wissArbData:", wissArbData);
