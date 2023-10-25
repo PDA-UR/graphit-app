@@ -32,8 +32,8 @@ export class DataManager {
             .not('[label="Exam: CGBV SS23"]')
             .not('[label="Mathematical Foundations"]')
             .not('[label="SL: Mini-Gimp"]'); 
-        // let nodes = this.cy.elements().filter('[courseLabel="Wissenschaftliches Arbeiten 23/24WS"]');
-            // Geht nicht, warum?????
+        // let nodes = this.cy.elements().nodes().filter('[courseLabel="Wissenschaftliches Arbeiten 23/24WS"]');
+            // Geht nicht, warum????? -> course: "wissArb" later gets overwritten
 
         // // // ?? also gets all other elements without node classes, i.e. 2D Vector Graphics
         let wissArbData: cytoscape.Collection = nodes;
@@ -45,12 +45,13 @@ export class DataManager {
         console.log("wissArbData:", wissArbData);
         
         // CGBV
-        let cgbvData = this.cy.elements().not(wissArbData);
+        let cgbvData = this.cy.elements().nodes().not(wissArbData);
         cgbvData = cgbvData.union(cgbvData.connectedEdges());
         // this.connectCourse(this.cy, this.cy.elements(), "cgbv");
         this.connectCourse(this.cy, cgbvData, "cgbv");
         // this.cy.elements().data("course", "cgbv"); // add data field for access (magical "number"!)
         cgbvData.data("course", "cgbv");
+        console.log("cgbvData", cgbvData.filter("[course='wissArb']"))
 
         // Eimi (only works with eimi.js) + courseData.ts (uncomment eimi-section)
         const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);

@@ -62,8 +62,8 @@ export class MainGraph {
         eventBus.on("sidebarSelect", this.onClick);
         eventBus.on("mouseover", this.hightlightNodeOnHover);
         eventBus.on("mouseout", this.noHightlightNodeOnHover);
+        eventBus.on("dblclick", this.onDblClick);
         // eventBus.on("zoom", this.onZoomChange);
-        // eventBus.on("dblclick", this.onDblClick);
     }
 
     /* ---- GRAPH FUNCTIONS ---- */
@@ -160,6 +160,7 @@ export class MainGraph {
         // Node-name
         const name : string = target.data("label");
         name ? nodeDiv!.innerText = target.data("label") : null;
+        // TODO: Add click-event to open Wikibase-page -> or dbl click on items (or both)
 
         // Course-name
         const course : string = target.data("course");
@@ -191,6 +192,7 @@ export class MainGraph {
     }
 
     /* ---- EVENT FUNCTIONS ---- */
+
     // NOTE: Better? -> if course entered -> click different course -> enter this course
     private onClick = (target:cytoscape.NodeSingular) => {
         console.log("click", target.data("label"), target.position(), target.classes());
@@ -226,6 +228,32 @@ export class MainGraph {
     private noHightlightNodeOnHover (target:any) {
         toggleHoverStyle(target, false);
         // this.styleController.toggleHoverStyle(target, false);
+    }
+
+
+    // Open the Wikibase-page for the target item
+    private onDblClick(target:any) {
+        console.log("dblclick: open page:", target.id());
+        let url = target.id();
+        // Check if page is a functional url, e.g. https://graphit.ur.de/entity/Q608
+        if(isValidUrl(url)) {
+            window.open(target.id(), "_blank")?.focus();
+        } else {
+            console.log("no valid url");
+        }
+    }
+
+
+}
+
+//--- short ADDITIONAL UTIL FUNCTIONS ----
+
+function isValidUrl(url:string){
+    try {
+        new URL(url);
+        return true;
+    } catch (err) {
+        return false;
     }
 }
 
