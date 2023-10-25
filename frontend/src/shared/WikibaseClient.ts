@@ -80,7 +80,7 @@ export default class WikibaseClient {
 		// @ts-ignore
 		const results = await this.api.sparql.resources();
 		const resources = this.sparqlParser.parsePairs(
-			["dependency", "source"],
+			["resource", "source"],
 			"resource",
 			results.data
 		);

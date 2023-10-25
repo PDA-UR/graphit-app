@@ -17,14 +17,15 @@ SELECT
   ?dependencyNodeClass ?dependencyNodeClassLabel ?dependencyNodeImage
   ?sourceCompleted ?dependencyCompleted
   ?sourceInterested ?dependencyInterested
+  # ?sourceResource ?sourceResourceLabel ?sourceResourceUrl
+  # ?dependencyResource ?dependencyResourceLabel ?dependencyResourceUrl
 WHERE {
   # Retrieve the source node and its dependent node
   ?source wdt:P1 ?dependency.
   
-  # Retrieve the class of the source node (if P2: subclass of )
+  # Retrieve the class of the source node (if P2: subclass of ) -> only cgbv
   ?source wdt:P2 ?sourceNodeClass.
-  # OPTIONAL {?source wdt:P2 ?sourceNodeClass.}
-  # NOTE: All items with a NodeClass are items of the course: cgbv
+  # OPTIONAL {?source wdt:P2 ?sourceNodeClass.} # + all other items (curr in diff query)
   
   # Retrieve the image of the source node (if available)
   OPTIONAL { ?source wdt:P9 ?sourceNodeImage. }
@@ -34,7 +35,17 @@ WHERE {
   
   # Retrieve the image of the dependent node (if available)
   OPTIONAL { ?dependency wdt:P9 ?dependencyNodeImage. }
+
+
+  # Retrieve the resources of the source 
+  # OPTIONAL {?source wdt:P21 ?sourceResource.
+  #           ?sourceResource wdt:P20 ?sourceResourceUrl.}
   
+  # Retrieve the resources of the dependency 
+  # OPTIONAL {?dependency wdt:P21 ?dependencyResource.
+  #           ?dependencyResource wdt:P20 ?dependencyResourceUrl.}
+  
+
   # Check if the source node has completed (Property P12)
   BIND(EXISTS { wd:${userId} wdt:P12 ?source } AS ?sourceCompleted)
   
@@ -72,25 +83,26 @@ const resourceQuery = (
 ) => `# Retrieve all Resources and Items their linked to
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
-SELECT ?source ?sourceLabel ?dependency ?dependencyLabel 
-       ?dependencyUrl ?dependencyResourceType ?dependencyRypeLabel
-       ?dependencyCompleted ?dependencyInterested
+SELECT ?source ?sourceLabel 
+       ?resource ?resourceLabel 
+       ?resourceUrl ?resourceType ?resourceTypeLabel
+       ?resourceCompleted ?resourceInterested
 WHERE {
   
   # Retrieve Items and their linked Resources
-  ?source wdt:P21 ?dependency. 
+  ?source wdt:P21 ?resource. 
   
   # Retrieve the url(P20) of the Resource
-  ?dependency wdt:P20 ?dependencyUrl.
+  ?resource wdt:P20 ?resourceUrl.
   
   # Retrieve the instance of (P3) the Resource (e.g. Article, Code example)
-  ?dependency wdt:P3 ?dependencyResourceType.
+  ?resource wdt:P3 ?resourceType.
   
   # Check if the dependent node has completed (Property P12)
-  BIND(EXISTS { wd:${userId} wdt:P12 ?dependency } AS ?dependencyCompleted)
+  BIND(EXISTS { wd:${userId} wdt:P12 ?resource } AS ?resourceCompleted)
   
   # Check if ${userId} is interested in the dependent node (Property P23)
-  BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
+  BIND(EXISTS { wd:${userId} wdt:P23 ?resource } AS ?resourceInterested)
   
   service wikibase:label { bd:serviceParam wikibase:language "en" }
 }

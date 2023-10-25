@@ -160,7 +160,6 @@ export class MainGraph {
         // Node-name
         const name : string = target.data("label");
         name ? nodeDiv!.innerText = target.data("label") : null;
-        // TODO: Add click-event to open Wikibase-page -> or dbl click on items (or both)
 
         // Course-name
         const course : string = target.data("course");
@@ -171,6 +170,10 @@ export class MainGraph {
         // Resource + Resource-names
         const res = target.neighborhood("node[url]") as cytoscape.Collection;
         resDiv.innerHTML = "";
+
+        if(res.length == 0) resDiv.innerHTML="<small>Nothing yet</small>";
+        // console.log("res", res);
+        
         res.forEach(r => {
             let div = document.createElement("div");
             div.setAttribute("class", "resource-items");
@@ -240,6 +243,7 @@ export class MainGraph {
             window.open(target.id(), "_blank")?.focus();
         } else {
             console.log("no valid url");
+            // Give alert, e.g.: https://stackoverflow.com/a/30747020
         }
     }
 
@@ -255,7 +259,7 @@ function isValidUrl(url:string){
     } catch (err) {
         return false;
     }
-}
+} // via: https://www.freecodecamp.org/news/how-to-validate-urls-in-javascript/ 
 
 // Temporary ("move" to/use from Stylemanager.ts)
 function toggleHoverStyle (target:any, show:boolean) {

@@ -39,21 +39,28 @@ export const getElements = async () => {
 		return parsedElements;
 	} else {
 		console.log("loading from wikibase");
+		// Get and set credentials and api
 		const credentials = getCredentials();
 		const api = createApiClient();
 		const wikibase = new WikibaseClient(credentials, api);
-		//Test: less items, as resources are in Metadata (change Parser)
-		//const elements = await wikibase.getDefaultGraph(); 
 		
+		// Get elements
 		let elements = await wikibase.getUserGraph();
-		// const resources = await wikibase.getResource(); //temp-remove
-		// elements = elements.concat(resources);
+
+		const resources = await wikibase.getResource();
+		// addResAsMeta(elements, resources);
+		elements = elements.concat(resources); 
 	 	const wissArb = await wikibase.getWissGraph();
 		elements = elements.concat(wissArb);
 		// // // const parents = await wikibase.getCategories();
 		// elements = elements.concat(resources, wissArb);
-		//let elements = await wikibase.getWissGraph();
+
+		// IDEA: parse resource-items to add as metadata to elements
+
 		console.log(elements);
+		console.log("resources", resources);
+
+		// Store elements for the session
 		localStorage.setItem(
 			localStorageKey,
 			JSON.stringify(elements, getCircularReplacer()),
@@ -62,11 +69,32 @@ export const getElements = async () => {
 		return elements;
 	}
 
-	function download(content:any, fileName:any, contentType:any) {
+	/**
+	 * Download the data (for dev use)
+	 * @param content stringified content of the file (e.g.: parsed wikibase-elements)
+	 * @param fileName The name of the file to download 
+	 * @param contentType What filetype (e.g.: 'json')
+	 */
+	function download(content:any, fileName:string, contentType:string) {
 		var a = document.createElement("a");
 		var file = new Blob([content], {type: contentType});
 		a.href = URL.createObjectURL(file);
 		a.download = fileName;
 		a.click();
-	}
+	} // NOTE: was: fileName: any, contentType:any
+	// e.g.: download(JSON.stringify(elements, getCircularReplacer()), "cgbv.json", 'json');
 };
+
+// TEST:
+function addResAsMeta(elements:any, resources:any){
+	// go through res-array -> find matching eles (id's) -> add res-data to eles
+	resources.forEach((res: any) => {
+		for(let ele of elements) {
+			if(ele.data.id == res.data.id) {
+				// ele.data.push(res.data);
+				//ele = [...ele.data, res.data]
+				console.log(ele.data,"+", res.data);
+			} else console.log("no match for res:", res.data.label);
+		}
+	});
+}
