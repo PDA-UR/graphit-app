@@ -44,9 +44,11 @@ export const getElements = async () => {
 		const api = createApiClient();
 		const wikibase = new WikibaseClient(credentials, api);
 		
+		// Login:
+		const userInfo = await wikibase.login();
+
 		// Get elements
 		let elements = await wikibase.getUserGraph();
-
 		const resources = await wikibase.getResource();
 		// addResAsMeta(elements, resources);
 		elements = elements.concat(resources); 
