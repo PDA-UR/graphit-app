@@ -235,7 +235,7 @@ export class MainGraph {
 
 
     // Open the Wikibase-page for the target item
-    private onDblClick(target:any) {
+    private onDblClick(target:cytoscape.NodeSingular) {
         console.log("dblclick: open page:", target.id());
         let url = target.id();
         // Check if page is a functional url, e.g. https://graphit.ur.de/entity/Q608
