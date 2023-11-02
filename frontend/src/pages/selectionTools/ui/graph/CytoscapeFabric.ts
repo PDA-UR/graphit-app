@@ -63,12 +63,7 @@ const nodeSize = (ele: any) => {
 };
 
 export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
-	layout: GLOBALS.graphLayout,
-	// layout: {
-	// 	name: "fcose",
-	// 	quality: "proof",
-	// 	randomize: false,
-	// } as FcoseLayoutOptions,
+	layout: GLOBALS.courseLayout,
 
 	style: [
 		{
