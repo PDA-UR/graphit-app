@@ -1,11 +1,12 @@
 import cytoscape from "cytoscape-select";
 
-import fcose from "cytoscape-fcose";
+import fcose, { FcoseLayoutOptions } from "cytoscape-fcose";
 
 import dagre from "cytoscape-dagre";
 import nodeHtmlLabel from "cytoscape-node-html-label";
 import lasso from "../../../../shared/extensions/lasso-rectangle/lasso";
 import undo from "../../../../shared/extensions/undo/undo";
+import { GLOBALS } from "../../../graphVis/global/config";
 
 export const getExperimentCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("experiment-cy")!;
@@ -62,9 +63,12 @@ const nodeSize = (ele: any) => {
 };
 
 export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
-	layout: {
-		name: "fcose",
-	},
+	layout: GLOBALS.graphLayout,
+	// layout: {
+	// 	name: "fcose",
+	// 	quality: "proof",
+	// 	randomize: false,
+	// } as FcoseLayoutOptions,
 
 	style: [
 		{
