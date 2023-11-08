@@ -56,6 +56,9 @@ const main = async () => {
 			experimentApp.classList.add("error");
 			console.error(e.error);
 			Toast.error("Error saving changes!", ToastLength.LONG).show();
+		} else if (progress === GraphSaveProgress.COUNT_WARNING) { 
+			const str = "Saving more than 50 items can take a long time.";
+			Toast.info(str, ToastLength.LONG).show();
 		}
 	});
 };

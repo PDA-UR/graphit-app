@@ -78,3 +78,9 @@
 .filter-bar-separator {
     width: 0.1em;
 }
+
+/* A simple counter for all to-be-saved items */
+#save-counter {
+    margin-right: 15px;
+    width:fit-content;
+}

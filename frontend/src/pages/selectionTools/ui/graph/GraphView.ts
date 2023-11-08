@@ -136,7 +136,7 @@ export abstract class GraphView extends View {
 	// ~~~~~~~~~~ Keyboard Listeners ~~~~~~~~~ //
 
 	public onKeydown = (e: any) => {
-		console.log(e);
+		// console.log(e);
 		const isInputElement = e.target instanceof HTMLInputElement;
 
 		// return if ctrl a
@@ -245,6 +245,7 @@ export abstract class GraphView extends View {
 		if (isCanvas) this.onNormalClickCanvas();
 		else {
 			const isNode = event.target.isNode();
+			// console.log("clicked node:", event.target.data("label"), event.target.id());
 			if (isNode) this._onNormalClickNode(event, dataAtClick);
 		}
 		this.resetDataAtFirstClick();
@@ -323,6 +324,7 @@ export abstract class GraphView extends View {
 
 		this.actionManager.do(actionToDo);
 	};
+
 
 	// --- Hover Events --- //
 

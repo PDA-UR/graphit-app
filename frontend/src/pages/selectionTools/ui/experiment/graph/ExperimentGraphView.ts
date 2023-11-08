@@ -56,7 +56,7 @@ export class ExperimentGraphView extends GraphView {
 	protected onCyKeyDown = (e: any) => {
 		const modifierKeys = fromKeyboardEvent(e),
 			selectionType = getSelectionType(modifierKeys);
-		console.log("Key down", e);
+		// console.log("Key down", e);
 		if (e.key === "Shift") {
 			console.log("Shift pressed");
 			const hoveringNode = this.cy.$(".indicated").filter("node");
