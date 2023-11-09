@@ -9,6 +9,7 @@ import {
 	PropertyModalControllerEvents,
 } from "../propertyModal/PropertyModalController";
 import { SaveButtonEvents } from "../saveButton/SaveButtonView";
+import { LogOutButtonEvents } from "../logoutButton/logoutButtonView";
 import { GraphView } from "./GraphView";
 
 export const GRAPH_SAVE_EVENT = "GRAPH_SAVE_EVENT";
@@ -38,6 +39,17 @@ export abstract class GraphController<
 			SaveButtonEvents.SAVE_BUTTON_CLICK,
 			this.onSaveButtonClick
 		);
+
+		experimentEventBus.addListener(
+			LogOutButtonEvents.LOGOUT_BUTTON_CLICK,
+			this.onLogoutButtonClick
+		);
+	}
+
+	private onLogoutButtonClick = () => {
+		this.client.logout(); // Throws error, but works
+		localStorage.clear();
+		history.back();
 	}
 
 	private onSaveButtonClick = () => {

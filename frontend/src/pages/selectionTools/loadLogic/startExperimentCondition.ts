@@ -7,6 +7,7 @@ import { FilterBarController } from "../ui/experiment/filter/FilterBarController
 import { ExperimentGraphController } from "../ui/experiment/graph/ExperimentGraphController";
 import { SearchViewController } from "../ui/experiment/search/SearchController";
 import { getExperimentCy } from "../ui/graph/CytoscapeFabric";
+import LogoutButtonController from "../ui/logoutButton/logoutButtonController";
 import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
 import SaveButtonController from "../ui/saveButton/SaveButtonController";
 import { SelectionTypeIndicatorController } from "../ui/shared/selectionTypeIndicator/SelectionTypeIndicatorController";
@@ -39,6 +40,7 @@ export const onStartExperimentCondition = (
 		new SelectionTypeIndicatorController();
 	const propertyModalController = new PropertyModalController();
 	const saveButtonController = new SaveButtonController();
+	const logoutButtonController = new LogoutButtonController();
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
@@ -46,6 +48,7 @@ export const onStartExperimentCondition = (
 		filterController.toggle(on);
 		propertyModalController.toggle(on);
 		saveButtonController.toggle(on);
+		logoutButtonController.toggle(on);
 
 		app.classList.toggle("disabled", !on);
 	};
