@@ -61,4 +61,8 @@ export class CompositeAction<T extends Action> extends Action {
 	getName(): string {
 		return "CompositeAction";
 	}
+
+	getLength() {
+		return this.actions.length;
+	}
 }

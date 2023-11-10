@@ -7,6 +7,7 @@ import { FilterBarController } from "../ui/experiment/filter/FilterBarController
 import { ExperimentGraphController } from "../ui/experiment/graph/ExperimentGraphController";
 import { SearchViewController } from "../ui/experiment/search/SearchController";
 import { getExperimentCy } from "../ui/graph/CytoscapeFabric";
+import LegendButtonController from "../ui/legend/legendButtonControler";
 import LogoutButtonController from "../ui/logoutButton/logoutButtonController";
 import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
 import SaveButtonController from "../ui/saveButton/SaveButtonController";
@@ -41,6 +42,7 @@ export const onStartExperimentCondition = (
 	const propertyModalController = new PropertyModalController();
 	const saveButtonController = new SaveButtonController();
 	const logoutButtonController = new LogoutButtonController();
+	const legendButtonController = new LegendButtonController();
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
@@ -49,6 +51,7 @@ export const onStartExperimentCondition = (
 		propertyModalController.toggle(on);
 		saveButtonController.toggle(on);
 		logoutButtonController.toggle(on);
+		legendButtonController.toggle(on);
 
 		app.classList.toggle("disabled", !on);
 	};
