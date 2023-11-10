@@ -81,7 +81,7 @@ export abstract class GraphController<
 			.finally(() => {
 				console.log("finally");
 			});
-		// console.log("editActions", editActions);
+		console.log("!!actions", individualActions, executions);
 	};
 
 	private onEditPropertyActionClicked = (action: PropertyEditAction) => {
@@ -126,7 +126,8 @@ export abstract class GraphController<
 		);
 
 		this.view.do(compositeAction);
-		this.updateSaveCounter(newValue, numUncompleted, numCompleted);
+	
+		this.updateSaveCounter();
 	};
 
 	private onInterestedPropertyClicked = () => {
@@ -154,28 +155,25 @@ export abstract class GraphController<
 			compositeAction = new CompositeAction(actions);
 
 		this.view.do(compositeAction);
-		this.updateSaveCounter(newValue, numUninterested, numInterested);
+
+		this.updateSaveCounter()
 	};
 
-	
-	private updateSaveCounter(update:string, add:number, remove:number) {
-		const counterDiv = document.getElementById("save-counter") as HTMLElement;
-		let num = Number(counterDiv.innerHTML);
+	private updateSaveCounter() {
+		const div = document.getElementById("save-counter") as HTMLElement;
+		const actions = this.view.getWikibaseActions();
+		const individualActions = actions.getActions().length;
 
-		(update === "true") ? num += add : num -= remove; //items added or removed
-		
-		if (num < 0) num *= -1;
-		counterDiv.innerHTML = "Saving " + num.toString();
-		console.log("num", num);
+		div.innerHTML = `<b> ${individualActions} </b> unsaved changes`;
 
-		// Give notice about save-time
-		if (num > 40) {
+		// Color-coding and warning
+		if(individualActions > 35){
 			experimentEventBus.emit(GRAPH_SAVE_EVENT, {
 				progress: GraphSaveProgress.COUNT_WARNING,
 			});
-			if (num > 60) counterDiv.style.color = "red";
-			else counterDiv.style.color = "DarkOrange";
-		} else counterDiv.style.color = "black";
+			if (individualActions > 60) div.style.color = "red";
+			else div.style.color = "DarkOrange";
+		} else div.style.color = "black";
 	}
 
 	private initMouseListeners = (on = true) => {

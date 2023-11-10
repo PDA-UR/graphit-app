@@ -15,7 +15,7 @@ import { UserInfo } from "os";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 
 // OLD function -> remove once new one works and is tested enough
-const mainOLD = async () => {
+const main = async () => {
 	const api = createApiClient();
 
 	const localStorageElements = localStorage.getItem("elements");
@@ -68,8 +68,14 @@ const mainOLD = async () => {
 	});
 };
 
-// TODO: test + ?update graph after save?
-const main = async () => {
+/* 
+This function can be used for developing. 
+It saves the data in the localstorage, meaning it:
+- doesn't pull data from wikibase on every reload of the page
+- will not show changes to the data on reload (not saved in localStorage, YET) 
+-> probably won't need this for acutal usage as users will not reload the page that often 
+*/
+const mainDev = async () => {
 	const api = createApiClient();
 
 	const localStorageElements = localStorage.getItem("elements");
@@ -137,10 +143,11 @@ const main = async () => {
 			console.error(e.error);
 			Toast.error("Error saving changes!", ToastLength.LONG).show();
 		} else if (progress === GraphSaveProgress.COUNT_WARNING) { 
-			const str = "Saving more than 50 items can take a long time.";
+			const str = "Saving more than 50 changes can take a long time.";
 			Toast.info(str, ToastLength.LONG).show();
 		}
 	});
 };
 
 main();
+// mainDev();
