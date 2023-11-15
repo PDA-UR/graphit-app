@@ -11,14 +11,15 @@ import {
 	GraphSaveProgress,
 } from "./ui/graph/GraphController";
 import { Toast, ToastLength } from "./ui/toast/Toast";
-import { UserInfo } from "os";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
+import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
 
-// OLD function -> remove once new one works and is tested enough
+// Pulls the graph anew on every reload
 const main = async () => {
-	const api = createApiClient();
+	const spinner = new LoadingSpinner();
+	spinner.start();
 
-	const localStorageElements = localStorage.getItem("elements");
+	const api = createApiClient();
 
 	const localStorageCredentials = localStorage.getItem("credentials");
 	let credentials: CredentialsModel;
@@ -66,14 +67,16 @@ const main = async () => {
 			Toast.info(str, ToastLength.LONG).show();
 		}
 	});
+
+	spinner.stop();
 };
 
 /* 
 This function can be used for developing. 
 It saves the data in the localstorage, meaning it:
 - doesn't pull data from wikibase on every reload of the page
-- will not show changes to the data on reload (not saved in localStorage, YET) 
--> probably won't need this for acutal usage as users will not reload the page that often 
+- will not show changes to the data on reload 
+-> users will not reload the page that often 
 */
 const mainDev = async () => {
 	const api = createApiClient();
