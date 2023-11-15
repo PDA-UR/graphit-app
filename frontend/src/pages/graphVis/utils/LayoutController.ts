@@ -1,5 +1,5 @@
 import cytoscape from "cytoscape";
-import { DataManager } from "./DataManager";
+import { DataManager } from "./GraphDataManager";
 import { GLOBALS } from "../global/config";
 import { StyleController } from "./StyleController";
 

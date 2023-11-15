@@ -1,7 +1,7 @@
 import WikibaseClient from "../../../shared/WikibaseClient";
 import { getCredentials } from "../../../shared/util/GetCredentials";
 import { createApiClient } from "../../../shared/util/getApiClient";
-import { LoadingSpinner } from "../utils/SpinnerManager";
+import { LoadingSpinner } from "../../../shared/ui/LoadingSpinner/SpinnerManager";
 
 export const getCircularReplacer = () => {
 	const seen = new WeakSet();

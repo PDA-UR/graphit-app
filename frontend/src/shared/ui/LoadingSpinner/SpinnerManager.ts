@@ -1,6 +1,5 @@
-/**
- * Handels the start/stop of a loading spinner
- */
+import "./Spinner.css"
+
 export class LoadingSpinner {
 
     private target: HTMLElement;
@@ -24,3 +23,9 @@ export class LoadingSpinner {
     }
 
 }
+
+/**
+ * Necessary component in the html-file:
+ * <div id="ring" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+ * 
+ */
