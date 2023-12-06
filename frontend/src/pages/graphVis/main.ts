@@ -21,8 +21,11 @@ async function main() {
 main();
 
 async function initGraph() {
-    const elements = await getElements(); // currently only Cv&Bg
+    const items = await getElements(); // currently only Cv&Bg
+    const client = items[0];
+    const elements = items[1];
     console.log("elements", elements);
+    console.log("client", client);
     const app = document.getElementById("graph")!;
-    const graphViz = new MainGraph(elements, app);
+    const graphViz = new MainGraph(elements, app, client);
 }

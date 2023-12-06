@@ -10,6 +10,11 @@ import { GraphEvents } from "../events/GraphEventController";
 import { StyleController } from "../utils/StyleController";
 import { PathViz } from "./PathViz";
 import { MenuEventController } from "../events/MenuEventController";
+import LogoutButtonController from "../../../shared/ui/LogoutButton/LogoutButtonController";
+import { on } from "events";
+import { LogOutButtonEvents } from "../../../shared/ui/LogoutButton/LogoutButtonView";
+import WikibaseClient from "../../../shared/WikibaseClient";
+import { sharedEventBus } from "../../../shared/ui/SharedEventBus";
 
 // INIT EXTENSIONS
 cytoscape.use(fcose);
@@ -20,6 +25,7 @@ export class MainGraph {
 
     private readonly cy: cytoscape.Core;
     private readonly $container: HTMLElement;
+    private readonly client: WikibaseClient;
     private layouter: any;
     private styler: any;
     private pathViz: any
@@ -30,8 +36,10 @@ export class MainGraph {
     constructor(
         graphElements: cytoscape.ElementDefinition[],
         $container: HTMLElement,
+        client: WikibaseClient,
     ) {
         // init graph with cy
+        this.client = client;
         this.$container = $container;
         this.cy = cytoscape({
             container: this.$container,
@@ -45,6 +53,8 @@ export class MainGraph {
         new MenuEventController(this.cy);
         // this.menuer.populateSideBar();
         
+        this.initControllers();
+
         this.initGraphEvents();
     }
 
@@ -56,6 +66,16 @@ export class MainGraph {
         this.layouter.layoutFullGraph();
     }
 
+    private initControllers(){
+        // new MenuEventController(this.cy)
+        const logoutButtonController = new LogoutButtonController();
+        logoutButtonController.toggle(true);
+        sharedEventBus.addListener(
+            LogOutButtonEvents.LOGOUT_BUTTON_CLICK,
+            this.onLogoutButtonClick
+        );
+    }
+
     private initGraphEvents() {
         new GraphEvents(this.cy, this.pathViz.getCore());
         eventBus.on("click", this.onClick);
@@ -65,6 +85,7 @@ export class MainGraph {
         eventBus.on("dblclick", this.onDblClick);
         // eventBus.on("zoom", this.onZoomChange);
     }
+
 
     /* ---- GRAPH FUNCTIONS ---- */
     private enterCourse(target:any) {
@@ -245,6 +266,12 @@ export class MainGraph {
             console.log("no valid url");
             // Give alert, e.g.: https://stackoverflow.com/a/30747020
         }
+    }
+
+    private onLogoutButtonClick = () => {
+        this.client.logout();
+        localStorage.clear();
+        history.back();
     }
 
 

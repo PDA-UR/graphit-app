@@ -2,6 +2,7 @@ import WikibaseClient from "../../../shared/WikibaseClient";
 import { getCredentials } from "../../../shared/util/GetCredentials";
 import { createApiClient } from "../../../shared/util/getApiClient";
 import { LoadingSpinner } from "../../../shared/ui/LoadingSpinner/SpinnerManager";
+import { ApiClient, CredentialsModel } from "../../../shared/client/ApiClient";
 
 export const getCircularReplacer = () => {
 	const seen = new WeakSet();
@@ -30,45 +31,57 @@ export const downloadJson = (data: any, filename: string) => {
 	a.click();
 };
 
-let progValue = 1; // initial value for progressbar
-
 // HANDELS GETTING THE ELEMENTS
 export const getElements = async () => {
 	const localStorageKey = "elements";
-	const elements = localStorage.getItem(localStorageKey);
+	const credetialsKey = "credentials";
+	const storedElements = localStorage.getItem(localStorageKey);
+	const storedCredentials = localStorage.getItem(credetialsKey);
 	// const loader = document.getElementById("loader") as HTMLElement;
 	const spinner = new LoadingSpinner();
 	spinner.start();
 
-	if (elements) {
+	const api = createApiClient() as ApiClient<unknown>;
+
+	let credentials: CredentialsModel;
+	if(storedCredentials){
+		credentials = JSON.parse(storedCredentials);
+	} else {
+		credentials = getCredentials();
+		localStorage.setItem(credetialsKey, JSON.stringify(credentials));
+	}
+	
+	const wikibaseClient = new WikibaseClient(credentials, api);
+
+	if (storedElements) {
 		console.log("loading from local storage");
-		const parsedElements = JSON.parse(elements);
+		const elements = JSON.parse(storedElements);
 		spinner.stop();
-		return parsedElements;
+		return [wikibaseClient, elements];
 	} else {
 		console.log("loading from wikibase");
 
 		// Get and set credentials and api
-		const credentials = getCredentials();
-		const api = createApiClient();
-		const wikibase = new WikibaseClient(credentials, api);
+		// const credentials = getCredentials();
+		// const api = createApiClient();
 		
 		// Login:
-		const userInfo = await wikibase.login();
+		const userInfo = await wikibaseClient.login();
 
 		// Get Elements !!
-		const elements = await getElementsFromWikibase(wikibase);
+		const elements = await getElementsFromWikibase(wikibaseClient);
 
 		// Store elements for the session
 		localStorage.setItem(
 			localStorageKey,
 			JSON.stringify(elements, getCircularReplacer()),
 		);
+
 		// download(JSON.stringify(elements, getCircularReplacer()), "cgbv.json", 'json');
 		
 		spinner.stop();
 
-		return elements;
+		return [wikibaseClient, elements];
 	}
 };
 
@@ -83,6 +96,8 @@ async function getElementsFromWikibase(client: WikibaseClient) {
 	
 	return elements;
 }
+
+
 
 /**
 	 * Download the data (for dev use)

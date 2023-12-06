@@ -191,3 +191,15 @@ body {
     width: 15px;
     height: 15px;
 }
+
+.base-item {
+	padding: 5px;
+	box-sizing: border-box;
+	border: 1px dashed #b0b0b0; /* Dashed border */
+	background-color: #f8f8f8;
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out; /* Smooth transition */
+	text-align: center;
+	align-items: center;
+	user-select: none;
+}
