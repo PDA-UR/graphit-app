@@ -2,24 +2,29 @@ import "./Spinner.css"
 
 export class LoadingSpinner {
 
-    private target: HTMLElement;
+    private spinner: HTMLElement;
+    private dimmer: HTMLElement;
 
     constructor(){
-        this.target = document.getElementById("ring") as HTMLElement;
+        this.spinner = document.getElementById("ring") as HTMLElement;
+        this.dimmer = document.createElement("div") as HTMLElement;
+        this.dimmer.setAttribute("class", "dimmer");
     }
 
     /**
      * Start the spinner (call before awaiting results)
      */
     public start(){
-        this.target.style.display = "inline-block";
+        this.spinner.style.display = "inline-block";
+        document.body.appendChild(this.dimmer);
     }
 
     /**
      * Stop the spinner (call after awaiting results)
      */
     public stop(){
-        this.target.style.display = "none";
+        this.spinner.style.display = "none";
+        document.body.removeChild(this.dimmer);
     }
 
 }
