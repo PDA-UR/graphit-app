@@ -109,8 +109,10 @@ WHERE {
 `;
 
 // Temporary query for WissArb-Graph
+// TODO change name
 const wissGraph = (
     userId = "Q157",
+    courseId = "Q468",
 ) => `# Retrieve all items that are part of the Course "Wissenschaftliches Arbeiten"
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
@@ -126,14 +128,20 @@ WHERE {
 {
   # SELECT ALL elements INCLUDED in <Course>
   { SELECT distinct * WHERE {
-    BIND (wd:Q468 as ?sourceCourse).
+    BIND (wd:${courseId} as ?sourceCourse).
     # Retrieve all items in the course
     ?sourceCourse wdt:P14 ?item. # = session or category
     #?item wdt:P14 ?itemType.
     ?item wdt:P14 ?source.
   } 
   }
+  # Get dependencies of all items
   ?source wdt:P1+ ?dependency.
+  # Get descriptions of all items
+  OPTIONAL {
+    ?source schema:description ?sourceDesc.
+    ?dependency schema:description ?dependencyDesc.
+  }
   }
   
   # Check if the source node has completed (Property P12)
@@ -169,7 +177,7 @@ export class SparqlQueryTemplateService {
 		return resourceQuery(userId);
 	}
 
-  public getWissGraph(userId: string){
-    return wissGraph(userId);
+  public getWissGraph(userId: string, courseId: string){
+    return wissGraph(userId, courseId);
   }
 }

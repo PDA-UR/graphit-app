@@ -12,6 +12,7 @@ import LogoutButtonController from "../ui/logoutButton/logoutButtonController";
 import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
 import SaveButtonController from "../ui/saveButton/SaveButtonController";
 import { SelectionTypeIndicatorController } from "../ui/shared/selectionTypeIndicator/SelectionTypeIndicatorController";
+import { SwitchCourseController } from "../ui/switchCourseButton/switchCourseController";
 import { ExperimentStarter } from "./startExperiment";
 
 export const onStartExperimentCondition = (
@@ -43,6 +44,7 @@ export const onStartExperimentCondition = (
 	const saveButtonController = new SaveButtonController();
 	const logoutButtonController = new LogoutButtonController();
 	const legendButtonController = new LegendButtonController();
+	const switchCourseController = new SwitchCourseController(client, cy);
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
@@ -52,6 +54,7 @@ export const onStartExperimentCondition = (
 		saveButtonController.toggle(on);
 		logoutButtonController.toggle(on);
 		legendButtonController.toggle(on);
+		switchCourseController.toggleHtmlListeners(on);
 
 		app.classList.toggle("disabled", !on);
 	};

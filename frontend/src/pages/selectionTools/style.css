@@ -153,3 +153,12 @@ div {
 	pointer-events: none;
 	background-color: #ffa1a1;
 }
+
+.floating-menu {
+	display: flex;
+	flex-direction: row;
+	height: 3em;
+	gap: .5em;
+	align-items: center;
+	padding: 0;
+}

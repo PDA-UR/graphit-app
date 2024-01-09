@@ -4,7 +4,7 @@ import { onStartExperimentCondition } from "./loadLogic/startExperimentCondition
 import { createApiClient } from "../../shared/util/getApiClient";
 import WikibaseClient from "../../shared/WikibaseClient";
 import { getCredentials } from "../../shared/util/GetCredentials";
-import { CredentialsModel } from "../../shared/client/ApiClient";
+import { CredentialsModel, UserSessionModel } from "../../shared/client/ApiClient";
 import { experimentEventBus } from "./global/ExperimentEventBus";
 import {
 	GRAPH_SAVE_EVENT,
@@ -14,11 +14,14 @@ import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
 
+
 // Pulls the graph anew on every reload
 const main = async () => {
+
 	const spinner = new LoadingSpinner();
 	spinner.start();
 
+	// Init Application:
 	const api = createApiClient();
 
 	const localStorageCredentials = localStorage.getItem("credentials");
@@ -33,10 +36,12 @@ const main = async () => {
 	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
 
 	const userInfo = await wikibaseClient.login();
-	// const elements = await wikibaseClient.getUserGraph(), // works
-	const elements = await wikibaseClient.getWissGraph(),
+
+	// const elements = await wikibaseClient.getUserGraph(), // works -> CGBV
+	const elements = await wikibaseClient.getWissGraph("Q468"), // slightly hacky
 		experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
 
+	//initApp(wikibaseClient, elements);
 	experimentApp.style.display = "flex";
 	const { resetControllers, toggleControllers } = onStartExperimentCondition(
 		elements,
@@ -78,7 +83,12 @@ It saves the data in the localstorage, meaning it:
 - will not show changes to the data on reload 
 -> users will not reload the page that often 
 */
+// HACK
 const mainDev = async () => {
+
+	const spinner = new LoadingSpinner();
+	spinner.start();
+
 	const api = createApiClient();
 
 	const localStorageElements = localStorage.getItem("elements");
@@ -108,7 +118,7 @@ const mainDev = async () => {
 		elements = JSON.parse(localStorageElements);
 	} else {
 		console.log("loading from wikibase 2");
-		elements = await wikibaseClient.getWissGraph(); // WissArb-query
+		elements = await wikibaseClient.getWissGraph("Q468"); // WissArb-query -> change from magic num
 		// const elements = await wikibaseClient.getUserGraph(), // cgbv-query
 		
 		// Store elements for the session
@@ -150,7 +160,10 @@ const mainDev = async () => {
 			Toast.info(str, ToastLength.LONG).show();
 		}
 	});
+
+	spinner.stop();
 };
 
-main();
-// mainDev();
+//HACK
+//main();
+mainDev();

@@ -22,6 +22,7 @@ export default class LegendButtonController extends ViewController<LegendButtonV
                 LegendViewEvents.TOGGLE_BUTTON_CLICK,
                 this.onToggle
             );
+            // console.log("! click");
         }
     }
 

@@ -266,9 +266,10 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 	async getWissGraph(
 		credentials: Credentials,
-		userId: string
+		userId: string,
+		courseId: string,
 	): Promise<SparqlResult> {
-		const query = this.templateService.getWissGraph(userId);
+		const query = this.templateService.getWissGraph(userId, courseId);
 		return this.query(credentials, query);
 	}
 }

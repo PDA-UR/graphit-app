@@ -529,14 +529,15 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      * @description Retrieve the Graph for Wissenschaftliches Arbeiten
      *
      * @tags Sparql
-     * @name Resources
+     * @name wissArb
      * @request GET:/api/sparql/wissGraph
      */
-    wissArb: (params: RequestParams = {}) =>
+    wissArb: (course: string, params: RequestParams = {}) =>
     this.request<SparqlResultModel, string>({
-      path: `/api/sparql/wissGraph`,
+      path: `/api/sparql/wissGraph/${course}`,
       method: "GET",
       format: "json",
+      // body: course,
       ...params,
     }),
   };

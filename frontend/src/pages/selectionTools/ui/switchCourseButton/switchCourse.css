@@ -1,0 +1,9 @@
+#switch-course{
+    margin-right: 5px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+#label{
+    font-size: small;
+}

@@ -79,18 +79,25 @@ export class Sparql {
 		return r;
 	}
 
-	@Get("/wissGraph")
+	@Get("/wissGraph/:course")
 	@Description("Retrieve the Graph for Wissenschaftl. Arbeiten")
 	@Returns(200, SparqlResult).ContentType("application/json")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
-	async wissGraph(@Session("user") credentials: Credentials) {
+	async wissGraph(
+		@Session("user") credentials: Credentials,
+		@PathParams("course") course: string
+	) {
 		this.logger.info("Checking credentials", credentials);
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		const userId = await this.wikibaseSdk.getUserItemId(credentials);
+
+		console.log("!! courseId is", course);
 		if (userId == "")
 			return new BadRequest("No user item id found for this user");
-		const r = await this.wikibaseSdk.getWissGraph(credentials, userId);
+		if (course == "") 
+			return new BadRequest("No course item found")
+		const r = await this.wikibaseSdk.getWissGraph(credentials, userId, course);
 		return r;
 	}
 }
