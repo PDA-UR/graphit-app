@@ -58,11 +58,14 @@ export class PathViz {
         this.cy.remove(this.cy.elements());
         this.cy.add(eles);
 
-        // this.cy.fit(eles);
+        // remove the parent-node(course name)
+        this.cy.remove(".course")
+
+        this.cy.fit(eles);
 
         // keep a SIMILAR layout as the grap
-        this.cy.layout(GLOBALS.courseLayout).run();
-        //this.cy.layout(GLOBALS.dagre).run();
+        //this.cy.layout(GLOBALS.courseLayout).run();
+        this.cy.layout(GLOBALS.dagre).run();
     }
 
     public setRedString(eles: cytoscape.Collection) {
