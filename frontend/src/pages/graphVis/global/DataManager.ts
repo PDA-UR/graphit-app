@@ -91,7 +91,7 @@ async function getElementsFromWikibase(client: WikibaseClient) {
 	const resources = await client.getResource();
 	elements = elements.concat(resources); 
 	// addResAsMeta(elements, resources); // IDEA: parse res as metadata to eles
-	const wissArb = await client.getWissGraph();
+	const wissArb = await client.getCourseQuery("Q468");
 	elements = elements.concat(wissArb);
 	
 	return elements;

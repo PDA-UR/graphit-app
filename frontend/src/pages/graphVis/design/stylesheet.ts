@@ -186,6 +186,15 @@ export const stylesheet: Stylesheet[] =  [
         }
     },
 
+    // PARENTS:
+    { selector: ':parent',
+        style: {
+            'background-opacity': 0,
+            'border-width': 0,
+            events: "no",
+        }
+    },
+
 /* ---------------------------------------- */
 
     /* EDGES */

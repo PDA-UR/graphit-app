@@ -49,7 +49,7 @@ export class SwitchCourseController extends View {
         if(courseQID == "Q171") { // get CGBV -> has diff. query
             elements = await this.client.getUserGraph();
         } else { // get all other courses
-            elements = await this.client.getWissGraph(courseQID);
+            elements = await this.client.getCourseQuery(courseQID);
         }
 
         spinner.stop();

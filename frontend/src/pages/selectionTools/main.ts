@@ -38,7 +38,7 @@ const main = async () => {
 	const userInfo = await wikibaseClient.login();
 
 	// const elements = await wikibaseClient.getUserGraph(), // works -> CGBV
-	const elements = await wikibaseClient.getWissGraph("Q468"), // slightly hacky
+	const elements = await wikibaseClient.getCourseQuery("Q468"), // slightly hacky
 		experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
 
 	//initApp(wikibaseClient, elements);
@@ -118,7 +118,7 @@ const mainDev = async () => {
 		elements = JSON.parse(localStorageElements);
 	} else {
 		console.log("loading from wikibase 2");
-		elements = await wikibaseClient.getWissGraph("Q468"); // WissArb-query -> change from magic num
+		elements = await wikibaseClient.getCourseQuery("Q468"); // WissArb-query -> change from magic num
 		// const elements = await wikibaseClient.getUserGraph(), // cgbv-query
 		
 		// Store elements for the session
@@ -165,5 +165,5 @@ const mainDev = async () => {
 };
 
 //HACK
-//main();
-mainDev();
+main();
+//mainDev();

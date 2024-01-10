@@ -21,7 +21,7 @@ async function main() {
 main();
 
 async function initGraph() {
-    const items = await getElements(); // currently only Cv&Bg
+    const items = await getElements();
     const client = items[0];
     const elements = items[1];
     console.log("elements", elements);

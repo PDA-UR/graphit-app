@@ -264,12 +264,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		return this.query(credentials, query);
 	}
 
-	async getWissGraph(
+	async getCourseQuery(
 		credentials: Credentials,
 		userId: string,
 		courseId: string,
 	): Promise<SparqlResult> {
-		const query = this.templateService.getWissGraph(userId, courseId);
+		const query = this.templateService.getCourseQuery(userId, courseId);
 		return this.query(credentials, query);
 	}
 }

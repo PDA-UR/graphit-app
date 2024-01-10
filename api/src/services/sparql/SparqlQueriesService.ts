@@ -108,9 +108,9 @@ WHERE {
 }
 `;
 
-// Temporary query for WissArb-Graph
+// Course-query for all courses that use "includes" to link to childs
 // TODO change name
-const wissGraph = (
+const courseQuery = (
     userId = "Q157",
     courseId = "Q468",
 ) => `# Retrieve all items that are part of the Course "Wissenschaftliches Arbeiten"
@@ -177,7 +177,7 @@ export class SparqlQueryTemplateService {
 		return resourceQuery(userId);
 	}
 
-  public getWissGraph(userId: string, courseId: string){
-    return wissGraph(userId, courseId);
+  public getCourseQuery(userId: string, courseId: string){
+    return courseQuery(userId, courseId);
   }
 }
