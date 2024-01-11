@@ -57,6 +57,7 @@ export abstract class GraphView extends View {
 	toggleHtmlListeners(on: boolean): void {
 		if (on) {
 			this.cy.on("click", this.onAtomicClick);
+			this.cy.on("cxttap", "node", this.onRightClick);
 			this.cy.on("select unselect", this.onSelectionChanged);
 			this.cy.on("multiSelect", this.onMultiSelect);
 			this.cy.on("mouseover", "node", this._onHoverNode);
@@ -278,6 +279,25 @@ export abstract class GraphView extends View {
 		clickedNode: any,
 		dataAtClick: any
 	) => void;
+
+	// open WikibasePage for a selected Node
+	protected onRightClick = (event:any) => {
+		const node = event.target;
+		let url = node.id() as string;
+		console.log("open", url);
+		if(this.isValidUrl(url)) {
+			window.open(url, "_blank")?.focus();
+		} else { console.log("no valid url"); }
+	}
+
+	private isValidUrl(url:string) {
+		try {
+			new URL(url);
+			return true;
+		} catch (err) {
+			return false;
+		}
+	} // via: https://www.freecodecamp.org/news/how-to-validate-urls-in-javascript/ 
 
 	// --- Selection Events --- //
 
