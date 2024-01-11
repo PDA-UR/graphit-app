@@ -2,7 +2,7 @@
     width:2em;
     height: 2em;
     margin: 0.5em;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     z-index: 1000;
 
     background-image: url("../../icons/info.svg");

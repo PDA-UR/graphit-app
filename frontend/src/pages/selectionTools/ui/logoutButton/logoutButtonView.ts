@@ -6,9 +6,7 @@ export enum LogOutButtonEvents {
 }
 
 export class LogOutButtonView extends View {
-    toggleHtmlListeners(on: boolean): void {
-		console.warn("Method not implemented.");
-	}
+
 	private readonly $logoutButton: HTMLButtonElement;
 
 	constructor() {
@@ -16,17 +14,22 @@ export class LogOutButtonView extends View {
 		this.$logoutButton = document.getElementById(
 			"logout-button"
 		) as HTMLButtonElement;
-
-		this.$initListeners();
 	}
 
-	private $initListeners() {
-		this.$logoutButton.addEventListener("click", this.onLogoutButtonClick);
+    // ~~~~~~~~~~~~ HTML Listeners ~~~~~~~~~~~ //
+
+	toggleHtmlListeners(on: boolean): void {
+		if(on) {
+			this.$logoutButton.addEventListener("click", this.onLogoutButtonClick);
+		} else {
+			this.$logoutButton.removeEventListener("click", this.onLogoutButtonClick);
+		}
 	}
 
 	private onLogoutButtonClick = (event: MouseEvent) => {
-		event.stopPropagation();
 		console.log("LogoutButtonView.onLogOutButtonClick");
+		event.stopPropagation();
 		this.emit(LogOutButtonEvents.LOGOUT_BUTTON_CLICK);
 	};
+
 }
