@@ -3,8 +3,8 @@ import "tippy.js/dist/tippy.css";
 import { onStartExperimentCondition } from "./loadLogic/startExperimentCondition";
 import { createApiClient } from "../../shared/util/getApiClient";
 import WikibaseClient from "../../shared/WikibaseClient";
-import { getCredentials } from "../../shared/util/GetCredentials";
-import { CredentialsModel, UserSessionModel } from "../../shared/client/ApiClient";
+import { getCredentials, getCredentialsNew } from "../../shared/util/GetCredentials";
+import { ApiClient, CredentialsModel, UserSessionModel } from "../../shared/client/ApiClient";
 import { experimentEventBus } from "./global/ExperimentEventBus";
 import {
 	GRAPH_SAVE_EVENT,
@@ -14,6 +14,20 @@ import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
 
+async function handleLogin(api:ApiClient<unknown>, errorMsg:string="") {
+	// getCred
+	const credentials: CredentialsModel = getCredentials(errorMsg);
+	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
+	let userInfo;
+	try {
+		userInfo = await wikibaseClient.login();
+	} catch (err) {
+		console.log("false login");
+		return handleLogin(api, "Incorrect Login: Try again.");
+	}
+	localStorage.setItem("credentials", JSON.stringify(credentials));
+	return [wikibaseClient, userInfo]
+}
 
 // Pulls the graph anew on every reload
 const main = async () => {
@@ -26,16 +40,26 @@ const main = async () => {
 
 	const localStorageCredentials = localStorage.getItem("credentials");
 	let credentials: CredentialsModel;
+	let wikibaseClient: WikibaseClient;
+	let userInfo;
 	if (localStorageCredentials) {
 		credentials = JSON.parse(localStorageCredentials);
+		wikibaseClient = new WikibaseClient(credentials, api);
+		userInfo = await wikibaseClient.login();
 	} else {
-		credentials = getCredentials();
-		localStorage.setItem("credentials", JSON.stringify(credentials));
+		// credentials = getCredentials();
+		// localStorage.setItem("credentials", JSON.stringify(credentials));
+		let logRes:Array<any> = await handleLogin(api);
+		wikibaseClient = logRes[0];
+		userInfo = logRes[1];
 	}
 
-	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
+	// const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
 
-	const userInfo = await wikibaseClient.login();
+	// const userInfo = await wikibaseClient.login();
+
+	// confirm credentials
+	console.log("userInfo", userInfo);
 
 	// const elements = await wikibaseClient.getUserGraph(), // works -> CGBV
 	const elements = await wikibaseClient.getCourseQuery("Q468"), // slightly hacky
@@ -105,7 +129,7 @@ const mainDev = async () => {
 	} else {
 		console.log("loading from wikibase");
 		fromStorage = false;
-		credentials = getCredentials();
+		credentials = getCredentials("");
 		localStorage.setItem("credentials", JSON.stringify(credentials));
 	}
 

@@ -1,4 +1,5 @@
 import { Credentials } from "../WikibaseEditConfig";
+import { loginHtml } from "../ui/LoginModule/LoginModule";
 
 const getCredentialsFromLocalStorage = (): Credentials | null => {
 	const username = localStorage.getItem("username");
@@ -11,14 +12,15 @@ const getCredentialsFromLocalStorage = (): Credentials | null => {
 		password,
 	};
 };
-export const getCredentials = (): Credentials => {
-	const username = prompt("Enter your username");
+export const getCredentials = (errMsg:string=""): Credentials => {
+	console.log("old creds");
+	const username = prompt(`${errMsg}\nEnter your username`);
 	if (!username) {
-		return getCredentials();
+		return getCredentials(errMsg);
 	}
 	const password = prompt("Enter your password");
 	if (!password) {
-		return getCredentials();
+		return getCredentials(errMsg);
 	}
 
 	return {
