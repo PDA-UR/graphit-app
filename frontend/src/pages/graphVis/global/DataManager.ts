@@ -1,5 +1,5 @@
 import WikibaseClient from "../../../shared/WikibaseClient";
-import { getCredentials } from "../../../shared/util/GetCredentials";
+import { getCredentials, handleCredentials } from "../../../shared/util/GetCredentials";
 import { createApiClient } from "../../../shared/util/getApiClient";
 import { LoadingSpinner } from "../../../shared/ui/LoadingSpinner/SpinnerManager";
 import { ApiClient, CredentialsModel } from "../../../shared/client/ApiClient";
@@ -44,14 +44,21 @@ export const getElements = async () => {
 	const api = createApiClient() as ApiClient<unknown>;
 
 	let credentials: CredentialsModel;
+	let wikibaseClient: WikibaseClient;
+	let userInfo;
 	if(storedCredentials){
 		credentials = JSON.parse(storedCredentials);
+		wikibaseClient = new WikibaseClient(credentials, api);
+		userInfo = await wikibaseClient.login();
 	} else {
-		credentials = getCredentials();
-		localStorage.setItem(credetialsKey, JSON.stringify(credentials));
+		// credentials = getCredentials();
+		// localStorage.setItem(credetialsKey, JSON.stringify(credentials));
+		let logRes:Array<any> = await handleCredentials(api);
+		wikibaseClient = logRes[0];
+		userInfo = logRes[1];
 	}
 	
-	const wikibaseClient = new WikibaseClient(credentials, api);
+	// const wikibaseClient = new WikibaseClient(credentials, api);
 
 	if (storedElements) {
 		console.log("loading from local storage");
@@ -66,7 +73,7 @@ export const getElements = async () => {
 		// const api = createApiClient();
 		
 		// Login:
-		const userInfo = await wikibaseClient.login();
+		// const userInfo = await wikibaseClient.login();
 
 		// Get Elements !!
 		const elements = await getElementsFromWikibase(wikibaseClient);

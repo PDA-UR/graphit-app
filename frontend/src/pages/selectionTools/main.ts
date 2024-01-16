@@ -3,7 +3,7 @@ import "tippy.js/dist/tippy.css";
 import { onStartExperimentCondition } from "./loadLogic/startExperimentCondition";
 import { createApiClient } from "../../shared/util/getApiClient";
 import WikibaseClient from "../../shared/WikibaseClient";
-import { getCredentials, getCredentialsNew } from "../../shared/util/GetCredentials";
+import { getCredentials, handleCredentials} from "../../shared/util/GetCredentials";
 import { ApiClient, CredentialsModel, UserSessionModel } from "../../shared/client/ApiClient";
 import { experimentEventBus } from "./global/ExperimentEventBus";
 import {
@@ -13,21 +13,6 @@ import {
 import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
-
-async function handleLogin(api:ApiClient<unknown>, errorMsg:string="") {
-	// getCred
-	const credentials: CredentialsModel = getCredentials(errorMsg);
-	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
-	let userInfo;
-	try {
-		userInfo = await wikibaseClient.login();
-	} catch (err) {
-		console.log("false login");
-		return handleLogin(api, "Incorrect Login: Try again.");
-	}
-	localStorage.setItem("credentials", JSON.stringify(credentials));
-	return [wikibaseClient, userInfo]
-}
 
 // Pulls the graph anew on every reload
 const main = async () => {
@@ -49,7 +34,7 @@ const main = async () => {
 	} else {
 		// credentials = getCredentials();
 		// localStorage.setItem("credentials", JSON.stringify(credentials));
-		let logRes:Array<any> = await handleLogin(api);
+		let logRes:Array<any> = await handleCredentials(api);
 		wikibaseClient = logRes[0];
 		userInfo = logRes[1];
 	}
