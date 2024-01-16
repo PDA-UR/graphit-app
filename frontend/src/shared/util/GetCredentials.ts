@@ -37,9 +37,8 @@ export const getCredentials = (errMsg:string=""): Credentials => {
  * @param errorMsg A default or custom error msg
  * @returns Array [wikibaseClient, userInfo];
  */
-export async function handleCredentials(
-	api:ApiClient<unknown>, 
-	errorMsg:string="") {
+export async function handleCredentials(api:ApiClient<unknown>, errorMsg:string="") 
+: Promise<Array<any>> {
 	// getCred
 	const credentials: CredentialsModel = getCredentials(errorMsg);
 	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
