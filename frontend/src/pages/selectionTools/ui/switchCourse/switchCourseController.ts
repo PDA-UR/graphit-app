@@ -54,15 +54,38 @@ export class SwitchCourseController extends View {
         }
 
         spinner.stop();
-        
-        // Reset the displayed graph
+
+        // Rest the graph
         this.cy.elements().remove();
-        this.cy.add(elements);
+        if(elements.length == 0) {
+            this.emptyCourseInfo()
+        } else {
+            this.cy.add(elements);
+        }
         this.cy.layout(GLOBALS.courseLayout).run();
 
         // Reset the searchbar
         experimentEventBus.emit(SwitchCourseEvents.SWITCH_COURSE);
         console.log(experimentEventBus.eventNames);        
+    }
+
+    private emptyCourseInfo(){
+        console.log("empty course");
+        this.cy.add({
+            group: "nodes",
+            data: { 
+                id: "construction",
+                label: "Still under construction...",
+            },
+            style: {
+                "shape": "diamond",
+                "background-color": "#FFE115",
+                "border-width": "1",
+                "border-color": "#000000",
+                "width": "10",
+                "height": "10",
+            },
+        });
     }
 
 }
