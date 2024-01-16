@@ -1,5 +1,5 @@
 import { View } from "../View";
-import "./logoutButton.css";
+import "./LogoutButton.css";
 
 export enum LogOutButtonEvents {
     LOGOUT_BUTTON_CLICK = "logoutButtonClick",
