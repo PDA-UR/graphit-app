@@ -2,6 +2,7 @@ import WikibaseClient from "../../../../shared/WikibaseClient";
 import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
 import { View } from "../../../../shared/ui/View";
 import { GLOBALS } from "../../../graphVis/global/config";
+import { experimentEventBus } from "../../global/ExperimentEventBus";
 import "./switchCourse.css";
 
 export enum SwitchCourseEvents {
@@ -58,7 +59,10 @@ export class SwitchCourseController extends View {
         this.cy.elements().remove();
         this.cy.add(elements);
         this.cy.layout(GLOBALS.courseLayout).run();
-        
+
+        // Reset the searchbar
+        experimentEventBus.emit(SwitchCourseEvents.SWITCH_COURSE);
+        console.log(experimentEventBus.eventNames);        
     }
 
 }

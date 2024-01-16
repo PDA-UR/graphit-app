@@ -12,6 +12,7 @@ import { FilterManagerEvents } from "../filter/Filter";
 import { ExperimentGraphViewEvents } from "../graph/ExperimentGraphView";
 import { NodeData, getNodeDatasFromCy } from "./NodeData";
 import { SearchView, SearchViewEvents } from "./SearchView";
+import { SwitchCourseEvents } from "../../switchCourse/switchCourseController";
 
 export enum SearchViewControllerEvents {
 	SELECT_NODE = "selectNode",
@@ -157,6 +158,11 @@ export class SearchViewController extends ViewController<SearchView> {
 			GraphViewEvents.LAST_CLICKED_CHANGED,
 			(lastClickedId: string) =>
 				this.listenerGate(this.view.onLastClickedChanged, lastClickedId)
+		);
+
+		experimentEventBus.addListener(
+			SwitchCourseEvents.SWITCH_COURSE, 
+			this.refreshData
 		);
 	};
 

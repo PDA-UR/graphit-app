@@ -12,7 +12,7 @@ import LogoutButtonController from "../ui/logoutButton/logoutButtonController";
 import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
 import SaveButtonController from "../ui/saveButton/SaveButtonController";
 import { SelectionTypeIndicatorController } from "../ui/shared/selectionTypeIndicator/SelectionTypeIndicatorController";
-import { SwitchCourseController } from "../ui/switchCourseButton/switchCourseController";
+import { SwitchCourseController } from "../ui/switchCourse/switchCourseController";
 import { ExperimentStarter } from "./startExperiment";
 
 export const onStartExperimentCondition = (
