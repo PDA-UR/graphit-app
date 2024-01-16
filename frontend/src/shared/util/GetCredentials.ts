@@ -1,7 +1,6 @@
 import WikibaseClient from "../WikibaseClient";
 import { Credentials } from "../WikibaseEditConfig";
 import { ApiClient, CredentialsModel } from "../client/ApiClient";
-import { loginHtml } from "../ui/LoginModule/LoginModule";
 
 const getCredentialsFromLocalStorage = (): Credentials | null => {
 	const username = localStorage.getItem("username");
