@@ -35,9 +35,9 @@ export class Filter {
 	}
 
 	// resets the filter when the course gets switched to use the new data
-	public resetNodes(cy:any){
+	public resetNodes(){
 		this.nodesToShow = this.cy.elements();
-		this.nodesToHide = cy.$(":visible").unmerge(this.nodesToShow);
+		this.nodesToHide = this.cy.$(":visible").unmerge(this.nodesToShow);
 	} 
 
 	public startPreview() {
@@ -50,7 +50,7 @@ export class Filter {
 
 		const hiddenElements = this.cy
 			.elements()
-			.unmerge(this.nodesToShow) //remove nodesToShow
+			.unmerge(this.nodesToShow)
 			.unmerge(this.nodesToHide);
 
 		hiddenElements.hide();
@@ -60,8 +60,7 @@ export class Filter {
 			node.connectedEdges().addClass("filter-fade");
 		});
 
-		//TODO
-		console.log("prev:", "show=", this.nodesToShow.length,
+		console.log("prev:", "show=", this.nodesToShow.length, this.nodesToShow,
 		"\nhidden=", hiddenElements.length, hiddenElements, 
 		"\nhide=", this.nodesToHide.length);
 	}
@@ -125,6 +124,17 @@ export class FilterManager extends EventEmitter {
 			this.activeFilterIndex = this.filters.length - 1;
 			if (this.activeFilterIndex >= 0) this.getActiveFilter().apply();
 			this.emit(FilterManagerEvents.FILTER_REMOVED, filterIndex);
+		}
+	}
+
+	//remove all active filters for a graph (used when course is switched)
+	public removeAllActiveFilters(){
+		console.log("remove all active Filters", this.filters.length)
+		const last = this.filters.length - 1;
+		for(let i = last ; i > 0; i--){
+			this.stopFilterPreview(i);
+			this.removeFilter(i);
+			console.log("len", this.filters.length);
 		}
 	}
 
@@ -194,12 +204,14 @@ export class FilterManager extends EventEmitter {
 	}
 
 	// ...to use the new graph data, when a new course gets pulled
-	public resetRoot(cy:any) {
-		console.log("filters", this.filters);
+	// BUG -> nodes are faded, when there where filters applied
+	// TODO: test bugfix -> but should work
+	public resetRoot(cy:any) { 
+		this.removeAllActiveFilters();
+		this.reset();
 		const rootFilter = this.filters[0];
-		console.log("root", rootFilter.nodesToShow, rootFilter.nodesToHide);
-		rootFilter.resetNodes(cy);
-		console.log("re-filters", rootFilter, "\n=>", this.filters);
-
+		rootFilter.resetNodes();
+		cy.elements().removeClass("dimmed"); // so that graph renders undimmed
+		cy.style().update();
 	}
 }

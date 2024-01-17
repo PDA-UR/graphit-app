@@ -117,7 +117,7 @@ export class ExperimentGraphView extends GraphView {
 		dataAtClick: any,
 		isSearch: boolean
 	) => {
-		console.log("normal click");
+		console.log("normal click on", clickedNode);
 		const doSelectShortestPathBetween = this.doSelectShortestPathBetween(
 				dataAtClick.modifierKeys
 			),
