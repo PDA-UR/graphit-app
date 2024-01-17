@@ -44,7 +44,7 @@ export const onStartExperimentCondition = (
 	const saveButtonController = new SaveButtonController();
 	const logoutButtonController = new LogoutButtonController();
 	const legendButtonController = new LegendButtonController();
-	const switchCourseController = new SwitchCourseController(client, cy);
+	const switchCourseController = new SwitchCourseController(client, cy, filterManager);
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);

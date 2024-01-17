@@ -3,6 +3,7 @@ import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerMana
 import { View } from "../../../../shared/ui/View";
 import { GLOBALS } from "../../../graphVis/global/config";
 import { experimentEventBus } from "../../global/ExperimentEventBus";
+import { FilterManager } from "../experiment/filter/Filter";
 import "./switchCourse.css";
 
 export enum SwitchCourseEvents {
@@ -13,12 +14,18 @@ export class SwitchCourseController extends View {
 
     private readonly client: WikibaseClient;
     private readonly cy: cytoscape.Core;
+    private readonly filterManager: FilterManager;
     private $switchMenu: HTMLSelectElement;
 
-    constructor(client:WikibaseClient, cy:cytoscape.Core){
+    constructor(
+        client:WikibaseClient, 
+        cy:cytoscape.Core,
+        filterManager: FilterManager,
+    ){
         super();
         this.client = client;
         this.cy = cy;
+        this.filterManager = filterManager;
 
         // Init events
         this.$switchMenu = document.getElementById(
@@ -55,18 +62,19 @@ export class SwitchCourseController extends View {
 
         spinner.stop();
 
-        // Rest the graph
+        // Reset the graph
         this.cy.elements().remove();
         if(elements.length == 0) {
-            this.emptyCourseInfo()
+            this.emptyCourseInfo();
         } else {
             this.cy.add(elements);
         }
         this.cy.layout(GLOBALS.courseLayout).run();
 
-        // Reset the searchbar
+        // Reset searchbar (if opened) and FilterBar
         experimentEventBus.emit(SwitchCourseEvents.SWITCH_COURSE);
-        console.log(experimentEventBus.eventNames);        
+        this.filterManager.resetRoot(this.cy);
+        console.log("switched course");        
     }
 
     private emptyCourseInfo(){
