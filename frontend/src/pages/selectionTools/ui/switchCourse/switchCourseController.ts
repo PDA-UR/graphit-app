@@ -72,8 +72,8 @@ export class SwitchCourseController extends View {
         this.cy.layout(GLOBALS.courseLayout).run();
 
         // Reset searchbar (if opened) and FilterBar
+        this.filterManager.resetRoot(this.cy); // Reset all applied filters
         experimentEventBus.emit(SwitchCourseEvents.SWITCH_COURSE);
-        this.filterManager.resetRoot(this.cy);
         console.log("switched course");        
     }
 
