@@ -205,5 +205,6 @@ export class FilterManager extends EventEmitter {
 		rootFilter.resetNodes();
 		cy.elements().removeClass("dimmed"); // so that graph renders undimmed
 		cy.style().update();
+		this.startFilterPreview(0);
 	}
 }
