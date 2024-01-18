@@ -81,7 +81,6 @@ export class FilterBarView extends View {
 	};
 
 	private $onHoverFilterItemStart = (event: MouseEvent) => {
-		console.log("$onHoverFilterItemStart");
 		const $filterItem = event.target as HTMLDivElement;
 		$filterItem.classList.add("hover");
 		const filterId = $filterItem.dataset.filterId!,

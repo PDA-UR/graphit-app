@@ -59,10 +59,6 @@ export class Filter {
 			node.addClass("filter-fade");
 			node.connectedEdges().addClass("filter-fade");
 		});
-
-		console.log("prev:", "show=", this.nodesToShow.length, this.nodesToShow,
-		"\nhidden=", hiddenElements.length, hiddenElements, 
-		"\nhide=", this.nodesToHide.length);
 	}
 
 	public stopPreview() {
@@ -129,12 +125,10 @@ export class FilterManager extends EventEmitter {
 
 	//remove all active filters for a graph (used when course is switched)
 	public removeAllActiveFilters(){
-		console.log("remove all active Filters", this.filters.length)
 		const last = this.filters.length - 1;
 		for(let i = last ; i > 0; i--){
 			this.stopFilterPreview(i);
 			this.removeFilter(i);
-			console.log("len", this.filters.length);
 		}
 	}
 
@@ -204,8 +198,6 @@ export class FilterManager extends EventEmitter {
 	}
 
 	// ...to use the new graph data, when a new course gets pulled
-	// BUG -> nodes are faded, when there where filters applied
-	// TODO: test bugfix -> but should work
 	public resetRoot(cy:any) { 
 		this.removeAllActiveFilters();
 		this.reset();
