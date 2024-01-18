@@ -1,7 +1,11 @@
-#switch-course{
+.switch-course {
     margin-right: 5px;
     cursor: pointer;
     z-index: 1000;
+    background: #77aeff;
+    border: 5px solid transparent;
+    box-shadow: 2px 2px 4px #00000026;
+    border-radius: 3px;
 }
 
 #label{
