@@ -1,6 +1,6 @@
 import WikibaseClient from "../WikibaseClient";
 import { Credentials } from "../WikibaseEditConfig";
-import { ApiClient, CredentialsModel } from "../client/ApiClient";
+import { CredentialsModel } from "../client/ApiClient";
 
 const getCredentialsFromLocalStorage = (): Credentials | null => {
 	const username = localStorage.getItem("username");
@@ -13,13 +13,25 @@ const getCredentialsFromLocalStorage = (): Credentials | null => {
 		password,
 	};
 };
+
+/**
+ * Let users input their credentials using prompt + displays an error message if smth goes wrong
+ * @param errMsg 
+ * @returns Credentials = {username, password}
+ */
 export const getCredentials = (errMsg:string=""): Credentials => {
-	console.log("old creds");
-	const username = prompt(`${errMsg}\nEnter your username`);
-	if (!username) {
-		return getCredentials(errMsg);
+	const username = prompt(`${errMsg}\nEnter your username (Wikibase user-page)`);
+	if (username === null) { // on "Cancel"btn return to homepage
+		history.back()
 	}
+	if (!username) { // on "OK", with no input -> repeat 
+		return getCredentials(errMsg); 
+	}
+
 	const password = prompt("Enter your password");
+	if (password === null) {
+		history.back()
+	}
 	if (!password) {
 		return getCredentials(errMsg);
 	}
@@ -30,57 +42,74 @@ export const getCredentials = (errMsg:string=""): Credentials => {
 	};
 };
 
+
+// Note: Rework of the old handleLogin
 /**
- * Handles the input and checks if the credentials are correct
- * @param api The created api client
- * @param errorMsg A default or custom error msg
- * @returns Array [wikibaseClient, userInfo];
+ * Trys to login to wikibase account, using login
+ * @param api the wikibase api instance
+ * @param error (leave empty) optional error message after failed login
+ * @returns logged in and created WikibaseClient and userInfo as array
  */
-export async function handleCredentials(api:ApiClient<unknown>, errorMsg:string="") 
-: Promise<Array<any>> {
-	// getCred
-	const credentials: CredentialsModel = getCredentials(errorMsg);
+export const tryLogin = async (api:any, error:any=""): Promise<any> => {
+
+	const credentials: CredentialsModel = getCredentials(error)
+
 	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
 	let userInfo;
-	if(errorMsg == "") { errorMsg="Incorrect Login: Try again"};
 	try {
 		userInfo = await wikibaseClient.login();
-	} catch (err) {
-		console.log("false login");
-		return handleCredentials(api, errorMsg);
+		return [wikibaseClient, userInfo] as Array<any>;
+	} catch (error:any) { 
+		// parse the error into a readable message
+		let str = error.message
+		str = str.split('message":')
+		let errorMsg = str[1].replace("}", ""); // rm trailing }
+		
+		return tryLogin(api, errorMsg) // try login again
 	}
-	localStorage.setItem("credentials", JSON.stringify(credentials));
-	return [wikibaseClient, userInfo] as Array<any>;
-}
 
 
-// // TODO: open as modal, not as popup??
-// export const getCredentialsNew = (): Credentials => {
-// 	console.log("new creds");
-// 	// const url = "../ui/LoginModule/index.html";
-// 	const url = URL.createObjectURL(new Blob([loginHtml], {type: ("text/html")}));
-// 	const params = `width=400, height=500, location=no, resizable=no, menubar=no, toolbar=no`
+};
 
-// 	window.open(url, "_blank", params);
+// old-code
 
-// 	const username = prompt("Enter your username");
+// export const getCredentials = (errMsg:string=""): Credentials => {
+// 	console.log("old creds");
+// 	const username = prompt(`${errMsg}\nEnter your username`);
 // 	if (!username) {
-// 		return getCredentials();
+// 		return getCredentials(errMsg);
 // 	}
 // 	const password = prompt("Enter your password");
 // 	if (!password) {
-// 		return getCredentials();
+// 		return getCredentials(errMsg);
 // 	}
-
-// 	URL.revokeObjectURL(url);
 
 // 	return {
 // 		username,
 // 		password,
 // 	};
-// }
-// create modal using custom html elements or templates
-// https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements
-// https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots
+// };
 
-// TODO: do signup at hub == EASIEST => one signup for all pages
+// /**
+//  * Handles the input and checks if the credentials are correct
+//  * @param api The created api client
+//  * @param errorMsg A default or custom error msg
+//  * @returns Array [wikibaseClient, userInfo];
+//  */
+// export async function handleCredentials(api:ApiClient<unknown>, errorMsg:string="") 
+// : Promise<Array<any>> {
+// 	// getCred
+// 	const credentials: CredentialsModel = getCredentials(errorMsg);
+// 	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
+// 	let userInfo;
+// 	if(errorMsg == "") { errorMsg="Incorrect Login: Try again"};
+// 	try {
+// 		userInfo = await wikibaseClient.login();
+// 	} catch (err) {
+// 		console.log("false login");
+// 		return handleCredentials(api, errorMsg);
+// 	}
+// 	localStorage.setItem("credentials", JSON.stringify(credentials));
+// 	return [wikibaseClient, userInfo] as Array<any>;
+// } // Working 
+
