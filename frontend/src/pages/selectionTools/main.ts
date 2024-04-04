@@ -3,8 +3,8 @@ import "tippy.js/dist/tippy.css";
 import { onStartExperimentCondition } from "./loadLogic/startExperimentCondition";
 import { createApiClient } from "../../shared/util/getApiClient";
 import WikibaseClient from "../../shared/WikibaseClient";
-import { getCredentials, handleCredentials} from "../../shared/util/GetCredentials";
-import { ApiClient, CredentialsModel, UserSessionModel } from "../../shared/client/ApiClient";
+import { getCredentials} from "../../shared/util/GetCredentials";
+import { CredentialsModel } from "../../shared/client/ApiClient";
 import { experimentEventBus } from "./global/ExperimentEventBus";
 import {
 	GRAPH_SAVE_EVENT,
@@ -13,6 +13,17 @@ import {
 import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
+import { tryLogin } from "../../shared/util/GetCredentials";
+
+/**
+ * Get the qid (e.g. Q926) of the default course,
+ * i.e. the course, that is preselected in the dropdown menu (see: selectionTools/index.html)
+ * @returns the qid as a string
+ */
+function getDefaultCourse() {
+	const menu = document.getElementById("switch-course") as HTMLSelectElement;
+	return menu.selectedOptions[0].value as string;
+}
 
 // Pulls the graph anew on every reload
 const main = async () => {
@@ -34,7 +45,10 @@ const main = async () => {
 	} else {
 		// credentials = getCredentials();
 		// localStorage.setItem("credentials", JSON.stringify(credentials));
-		let logRes:Array<any> = await handleCredentials(api);
+		// let logRes:any = await handleCredentials(api);
+		let logRes = await tryLogin(api)
+		// TODO: do proper await
+		console.log("main", logRes)
 		wikibaseClient = logRes[0];
 		userInfo = logRes[1];
 	}
@@ -47,7 +61,9 @@ const main = async () => {
 	console.log("userInfo", userInfo);
 
 	// const elements = await wikibaseClient.getUserGraph(), // works -> CGBV
-	const elements = await wikibaseClient.getCourseQuery("Q468"), // slightly hacky
+
+	// TODO -> get default-selected course from dropdown menu
+	const elements = await wikibaseClient.getCourseQuery(getDefaultCourse()), // slightly hacky
 		experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
 
 	//initApp(wikibaseClient, elements);
@@ -127,7 +143,7 @@ const mainDev = async () => {
 		elements = JSON.parse(localStorageElements);
 	} else {
 		console.log("loading from wikibase 2");
-		elements = await wikibaseClient.getCourseQuery("Q468"); // WissArb-query -> change from magic num
+		elements = await wikibaseClient.getCourseQuery(getDefaultCourse()); // WissArb-query -> change from magic num
 		// const elements = await wikibaseClient.getUserGraph(), // cgbv-query
 		
 		// Store elements for the session
@@ -175,4 +191,4 @@ const mainDev = async () => {
 
 //HACK
 main();
-//mainDev();
+// mainDev();
