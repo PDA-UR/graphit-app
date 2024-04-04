@@ -78,8 +78,10 @@ SELECT ?itemLabel
 }`;
 
 // Query for retrieving ALL Resources and their links
+// TODO, for specific course only
 const resourceQuery = (
-	userId = "Q157"
+	userId = "Q157",
+  courseId = "Q926"
 ) => `# Retrieve all Resources and Items their linked to
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
@@ -88,6 +90,9 @@ SELECT ?source ?sourceLabel
        ?resourceUrl ?resourceType ?resourceTypeLabel
        ?resourceCompleted ?resourceInterested
 WHERE {
+
+  # get only the resources linked to by item inside the course
+  wd:${courseId} wdt:P14/wdt:P14 ?source.
   
   # Retrieve Items and their linked Resources
   ?source wdt:P21 ?resource. 
@@ -173,8 +178,8 @@ export class SparqlQueryTemplateService {
 		return categoriesQuery();
 	}
 
-	public getResources(userId: string) {
-		return resourceQuery(userId);
+	public getResources(userId: string, courseId: string) {
+		return resourceQuery(userId, courseId);
 	}
 
   public getCourseQuery(userId: string, courseId: string){

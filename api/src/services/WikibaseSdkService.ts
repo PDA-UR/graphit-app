@@ -55,10 +55,19 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	async query(credentials: Credentials, query: string): Promise<SparqlResult> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.sparqlQuery(query);
-		const headers = {};
+		// const headers = {}; // old
+		const headers = new Headers({
+			"User-Agent": "Dev User Agent"
+		}); // HACK
+		// NOTE: not sure this is necessary
+		// had a bug, where the response had been a html-page, asking me to set my user-agent (see: https://foundation.wikimedia.org/wiki/Policy:User-Agent_policy)
+		// except: "Api-User-Agent" (as in official docs) does nothing
+		// and if you look at the request using the browser dev tool, its still the same user agent as before
+		// Also, was only an issue on localhost -> same code, but empty header worked on server
+		// maybe helpful: https://stackoverflow.com/a/42815264
 
 		const response = await fetch(url, { headers });
-		const data = await response.json();
+		const data = await response.json()
 		return { data };
 	}
 
@@ -258,9 +267,10 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 	async getResources(
 		credentials: Credentials,
-		userId: string
+		userId: string, 
+		courseId: string,
 	): Promise<SparqlResult> {
-		const query = this.templateService.getResources(userId);
+		const query = this.templateService.getResources(userId, courseId);
 		return this.query(credentials, query);
 	}
 

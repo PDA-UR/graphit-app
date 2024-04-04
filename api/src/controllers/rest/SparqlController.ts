@@ -64,18 +64,21 @@ export class Sparql {
 		return r;
 	}
 
-	@Get("/resources")
+	@Get("/resources/:courseId")
 	@Description("Retrieve all resources in the wiki")
 	@Returns(200, SparqlResult).ContentType("application/json")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
-	async resources(@Session("user") credentials: Credentials) {
+	async resources(
+		@Session("user") credentials: Credentials,
+		@PathParams("courseId") courseId: string,
+	) {
 		this.logger.info("Checking credentials", credentials);
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		const userId = await this.wikibaseSdk.getUserItemId(credentials);
 		if (userId == "")
 			return new BadRequest("No user item id found for this user");
-		const r = await this.wikibaseSdk.getResources(credentials, userId);
+		const r = await this.wikibaseSdk.getResources(credentials, userId, courseId);
 		return r;
 	}
 

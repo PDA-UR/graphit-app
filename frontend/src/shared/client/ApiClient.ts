@@ -517,9 +517,9 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      * @name Resources
      * @request GET:/api/sparql/resources
      */
-    resources: (params: RequestParams = {}) =>
+    resources: (courseId: string, params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
-        path: `/api/sparql/resources`,
+        path: `/api/sparql/resources/${courseId}`,
         method: "GET",
         format: "json",
         ...params,

@@ -76,9 +76,9 @@ export default class WikibaseClient {
 		return parents;
 	}
 
-	async getResource(): Promise<ElementDefinition[]> {
+	async getResource(courseId:string): Promise<ElementDefinition[]> {
 		// @ts-ignore
-		const results = await this.api.sparql.resources();
+		const results = await this.api.sparql.resources(courseId);
 		const resources = this.sparqlParser.parsePairs(
 			["resource", "source"],
 			"resource",
