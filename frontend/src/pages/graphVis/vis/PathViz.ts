@@ -78,7 +78,7 @@ export class PathViz {
         eles.removeClass("hover");
 
         this.cy.remove(this.cy.elements());
-        this.cy.add(eles);
+        this.cy.add(eles); // NOTE: will course issue if the course node does not exist
         // this.cy.add(pathEdges);
 
         this.cy.layout(GLOBALS.dagre).run();

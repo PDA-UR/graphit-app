@@ -22,22 +22,30 @@ export const COURSES : NodeDefinition[] = [
         classes: "course",
     },
     //EIMI
-    { group: "nodes",
-        data: {
-            id: "eimi",
-            label: "Einführung in die Medieninformatik",
-        },
-        classes: "course"
-    },
-
-    // { group: "edges",
-    // data: {
-    //     id: "eimi-cgbv",
-    //     source: "cgbv",
-    //     target: "eimi",
-    //     course: "true",
-    //     }
+    // { group: "nodes",
+    //     data: {
+    //         id: "eimi",
+    //         label: "Einführung in die Medieninformatik",
+    //     },
+    //     classes: "course"
     // },
+
+    { group: "edges",
+    data: {
+        id: "wissArb-cgbv",
+        source: "wissArb",
+        target: "cgbv",
+        course: "true",
+        }
+    },
+    { group: "edges",
+    data: {
+        id: "cgbv-wissArb",
+        source: "cgbv",
+        target: "wissArb",
+        course: "true",
+        }
+    },
 
     //OLD
     /*{ group: "nodes",

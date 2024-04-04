@@ -3,6 +3,7 @@ import cytoscape from "cytoscape";
 // import EIMI from "../global/data/eimi.json"; 
 import EIMI from "../../../data/eimi.json";
 import { COURSES, EDUCATORS } from "../global/data/courseData";
+import { getCircularReplacer } from "../global/DataManager";
 
 // Manage additional Data that is to be added to the cy-core
 export class DataManager {
@@ -19,45 +20,53 @@ export class DataManager {
      * Adds additional courses (super- and sub-nodes). INFO: Needs rework
      */
     public addCourses() {
-        this.cy.add(COURSES);
+        // BUG: adds the COURSES-nodes, but also not really -> needs edges
+        const courseNodes = this.cy.add(COURSES);
+        console.log("hi1", courseNodes)
+        console.log("hi", this.cy.elements("#wissArb").data(), this.cy.elements("#wissArb").id())
+        console.log("cl", this.cy.elements("#wissArb").classes())
+        // console.log(JSON.stringify(this.cy.elements(), getCircularReplacer()))
 
         // TODO: check for edges, that want wissArb as source/target
         // These cause issues (temp fixed) later on
 
         // NOTE: wissArb-Elemente have no nodeClass!! BUT this also gets other eles
-        let nodes = this.cy.elements().nodes().filter('[^nodeClass]')
-            .not('[label="Python Basics"]')
-            .not('[label="2D Vector Graphics"]')
-            .not('[label="Neural Radiance Fields (NeRFs)"]')
-            .not('[label="Exam: CGBV SS23"]')
-            .not('[label="Mathematical Foundations"]')
-            .not('[label="SL: Mini-Gimp"]'); 
-        // let nodes = this.cy.elements().nodes().filter('[courseLabel="Wissenschaftliches Arbeiten 23/24WS"]');
-            // Geht nicht, warum????? -> course: "wissArb" later gets overwritten
+        // let nodes = this.cy.elements().nodes()
+        // .filter('[^nodeClass]')
+        //     .not('[label="Python Basics"]')
+        //     .not('[label="2D Vector Graphics"]')
+        //     .not('[label="Neural Radiance Fields (NeRFs)"]')
+        //     .not('[label="Exam: CGBV SS23"]')
+        //     .not('[label="Mathematical Foundations"]')
+        //     .not('[label="SL: Mini-Gimp"]'); 
 
-        // // // ?? also gets all other elements without node classes, i.e. 2D Vector Graphics
-        let wissArbData: cytoscape.Collection = nodes;
-        wissArbData = wissArbData.union(nodes.connectedEdges());
-        // console.log("wissArbData", wissArbData);
+
+        // NOTE: get all nodes part of the specific course
+        let wissArbData = this.cy.elements().nodes().filter('[courseLabel="Wissenschaftliches Arbeiten 24SS"]');
+        wissArbData = wissArbData.union(wissArbData.connectedEdges());
+
         this.connectCourse(this.cy, wissArbData, "wissArb");
         // this.cy.elements().data("course", "wissArb");
         wissArbData.data("course", "wissArb");
-        console.log("wissArbData:", wissArbData);
-        
-        // CGBV
-        let cgbvData = this.cy.elements().nodes().not(wissArbData);
-        cgbvData = cgbvData.union(cgbvData.connectedEdges());
-        // this.connectCourse(this.cy, this.cy.elements(), "cgbv");
-        this.connectCourse(this.cy, cgbvData, "cgbv");
-        // this.cy.elements().data("course", "cgbv"); // add data field for access (magical "number"!)
-        cgbvData.data("course", "cgbv");
-        console.log("cgbvData", cgbvData.filter("[course='wissArb']"))
 
-        // Eimi (only works with eimi.js) + courseData.ts (uncomment eimi-section)
-        const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
-        eimiData.move({parent: null}); //move Eimi out of parents
-        this.connectCourse(this.cy, eimiData, "eimi");
-        eimiData.data("course", "eimi");
+
+        // CGBV
+        // let cgbvData = this.cy.elements().nodes().not(wissArbData);
+        let cgbvData = this.cy.elements().nodes().filter("[courseLabel='CGBV 24SS']")
+        cgbvData = cgbvData.union(cgbvData.connectedEdges());
+
+        this.connectCourse(this.cy, cgbvData, "cgbv");
+        cgbvData.data("course", "cgbv"); // add data field for access (magical "number"!)
+        console.log("cgbvData", cgbvData)
+
+        // console.log("hi", this.cy.elements("#wissArb").data())
+        // console.log("cl", this.cy.elements("#wissArb").classes())
+
+        // // Eimi (only works with eimi.js) + courseData.ts (uncomment eimi-section)
+        // const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
+        // eimiData.move({parent: null}); //move Eimi out of parents
+        // this.connectCourse(this.cy, eimiData, "eimi");
+        // eimiData.data("course", "eimi");
 
         // this.cy.add(EDUCATORS);
 
@@ -83,10 +92,11 @@ export class DataManager {
         // const maxD = eles.nodes().maxDegree(false);
 
         eles.nodes().forEach(ele => {
-            if(ele.outdegree(false) == 0) {
+            if(ele.outdegree(false) <= 1) { // if no sources
                 let edge = cy.add(this.newCourseEdge(ele.id(), courseId));
+                // console.log(edge.style())
                 if(ele.hasClass("course")) { // hide the edges between supernodes (courses)
-                    // console.log("edge", edge.id());
+                    console.log("edge", edge.id());
                     edge.style("visibility", "hidden");
                 }
             }
