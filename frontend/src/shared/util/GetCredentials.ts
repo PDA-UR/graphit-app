@@ -22,7 +22,7 @@ const getCredentialsFromLocalStorage = (): Credentials | null => {
 export const getCredentials = (errMsg:string=""): Credentials => {
 	const username = prompt(`${errMsg}\nEnter your username (Wikibase user-page)`);
 	if (username === null) { // on "Cancel"btn return to homepage
-		history.back()
+		window.location.href=window.location.origin+"/app/";
 	}
 	if (!username) { // on "OK", with no input -> repeat 
 		return getCredentials(errMsg); 
@@ -30,7 +30,7 @@ export const getCredentials = (errMsg:string=""): Credentials => {
 
 	const password = prompt("Enter your password");
 	if (password === null) {
-		history.back()
+		window.location.href=window.location.origin+"/app/";
 	}
 	if (!password) {
 		return getCredentials(errMsg);
@@ -58,6 +58,7 @@ export const tryLogin = async (api:any, error:any=""): Promise<any> => {
 	let userInfo;
 	try {
 		userInfo = await wikibaseClient.login();
+		localStorage.setItem("credentials", JSON.stringify(credentials));
 		return [wikibaseClient, userInfo] as Array<any>;
 	} catch (error:any) { 
 		// parse the error into a readable message
