@@ -98,22 +98,18 @@ async function getElementsFromWikibase(client: WikibaseClient) {
 	let elements = await client.getCourseQuery("Q932") // CGBV 24SS
 	let cgbvRes = await client.getResource("Q932")
 	elements = elements.concat(cgbvRes)
-	console.log("cgbv", elements)
+	// console.log("cgbv", elements.length, elements)
 
-	// TODO: get resources only from the course
-	//const resources = await client.getResource();
-	// elements = elements.concat(resources); 
-
-	// addResAsMeta(elements, resources); // IDEA: parse res as metadata to eles
+	// // addResAsMeta(elements, resources); // IDEA: parse res as metadata to eles
 	
-	// const wissArb = await client.getCourseQuery("Q468"); // WissArb 23WS
+	// // const wissArb = await client.getCourseQuery("Q468"); // WissArb 23WS
 	const wissArb = await client.getCourseQuery("Q926") // WissArb 24SS
 	let wissRes = await client.getResource("Q926")
-	// console.log("wissarb", JSON.stringify(wissArb[0]))
+	// console.log("wissarb", wissArb.length)
 
 	elements = elements.concat(wissArb);
 	elements = elements.concat(wissRes)
-	
+	// let elements = wissArb.concat(wissRes);
 	return elements;
 }
 

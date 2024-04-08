@@ -26,7 +26,7 @@ async function main() {
 	}
 	const elements = await wikibase.getUserGraph();
 	const parents = await wikibase.getCategories();
-	const resources = await wikibase.getResource();
+	// const resources = await wikibase.getResource("Q171");
 
 	const graph = parents.concat(elements)//.concat(resources);
 

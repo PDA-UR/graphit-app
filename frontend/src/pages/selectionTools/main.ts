@@ -146,7 +146,7 @@ const mainDev = async () => {
 		elements = await wikibaseClient.getCourseQuery(getDefaultCourse()); // WissArb-query -> change from magic num
 		// const elements = await wikibaseClient.getUserGraph(), // cgbv-query
 		
-		// Store elements for the session
+		// Store elements for the sessionp
 		localStorage.setItem(
 			"elements",
 			JSON.stringify(elements, getCircularReplacer()),

@@ -22,10 +22,6 @@ export class DataManager {
     public addCourses() {
         // BUG: adds the COURSES-nodes, but also not really -> needs edges
         const courseNodes = this.cy.add(COURSES);
-        console.log("hi1", courseNodes)
-        console.log("hi", this.cy.elements("#wissArb").data(), this.cy.elements("#wissArb").id())
-        console.log("cl", this.cy.elements("#wissArb").classes())
-        // console.log(JSON.stringify(this.cy.elements(), getCircularReplacer()))
 
         // TODO: check for edges, that want wissArb as source/target
         // These cause issues (temp fixed) later on
@@ -57,10 +53,6 @@ export class DataManager {
 
         this.connectCourse(this.cy, cgbvData, "cgbv");
         cgbvData.data("course", "cgbv"); // add data field for access (magical "number"!)
-        console.log("cgbvData", cgbvData)
-
-        // console.log("hi", this.cy.elements("#wissArb").data())
-        // console.log("cl", this.cy.elements("#wissArb").classes())
 
         // // Eimi (only works with eimi.js) + courseData.ts (uncomment eimi-section)
         // const eimiData = this.cy.add(EIMI as cytoscape.ElementDefinition[]);
@@ -94,7 +86,7 @@ export class DataManager {
         eles.nodes().forEach(ele => {
             if(ele.outdegree(false) <= 1) { // if no sources
                 let edge = cy.add(this.newCourseEdge(ele.id(), courseId));
-                // console.log(edge.style())
+                // console.log(edge.id(), ele.classes())
                 if(ele.hasClass("course")) { // hide the edges between supernodes (courses)
                     console.log("edge", edge.id());
                     edge.style("visibility", "hidden");

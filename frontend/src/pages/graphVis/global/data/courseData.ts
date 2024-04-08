@@ -8,16 +8,18 @@ export const COURSES : NodeDefinition[] = [
     { group: "nodes",
         data: {
             id: "wissArb",
-            label: "Wissenschaftliches Arbeiten"
+            label: "Wissenschaftliches Arbeiten",
+            courseLabel :"Wissenschaftliches Arbeiten 24SS"
         },
         classes: "course"
     },
 
-    // CGBV
+    //CGBV
     { group: "nodes", 
         data: {
             id: "cgbv",
             label: "Computergraphik und Bildverarbeitung",
+            courseLabel: 'CGBV 24SS',
         },
         classes: "course",
     },
@@ -30,22 +32,24 @@ export const COURSES : NodeDefinition[] = [
     //     classes: "course"
     // },
 
-    { group: "edges",
-    data: {
-        id: "wissArb-cgbv",
-        source: "wissArb",
-        target: "cgbv",
-        course: "true",
-        }
-    },
-    { group: "edges",
-    data: {
-        id: "cgbv-wissArb",
-        source: "cgbv",
-        target: "wissArb",
-        course: "true",
-        }
-    },
+    // { group: "edges",
+    // data: {
+    //     id: "wissArb-cgbv",
+    //     source: "wissArb",
+    //     target: "cgbv",
+    //     course: "true",
+    //     },
+    //     classes: "course",
+    // },
+    // { group: "edges",
+    // data: {
+    //     id: "cgbv-wissArb",
+    //     source: "cgbv",
+    //     target: "wissArb",
+    //     course: "true",
+    //     },
+    //     classes: "course"
+    // },
 
     //OLD
     /*{ group: "nodes",
