@@ -141,7 +141,7 @@ WHERE {
   } 
   }
   # Get dependencies of all items
-  ?source wdt:P1+ ?dependency.
+  ?source wdt:P1 ?dependency. # was: wdt:P1+ (but this return a big mess for cgbv SS24)
   # Get descriptions of all items
   OPTIONAL {
     ?source schema:description ?sourceDesc.
