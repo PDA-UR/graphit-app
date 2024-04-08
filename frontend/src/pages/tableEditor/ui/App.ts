@@ -151,7 +151,9 @@ export default class AppRoot extends Component {
 		this.logoutTask.run();
 	}
 
-	onLogin() {
+	onLogin(error:any|null=null) {
+		// reset credentials if there was an error on login (e.g. invalid pw)
+		if(error) { this.zustand.credentials = undefined} 
 		this.loginTask.run();
 	}
 
@@ -216,7 +218,7 @@ export default class AppRoot extends Component {
 				),
 			error: (e) => html`
 				<div style="color: red">Error: ${e}</div>
-				<button @click="${() => this.onLogin()}">Retry Login</button>
+				<button @click="${() => this.onLogin(e)}">Retry Login</button>
 				<button @click="${() => this.onLogout()}">Logout</button>
 			`,
 		});
