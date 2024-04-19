@@ -166,15 +166,32 @@ WHERE {
 
 } UNION {
   # get & mark the remaining goals that aren't "included" in course + union with rest
-  BIND (wd:${courseId} as ?sourceCourse). # rebind course!!
+  BIND (wd:${courseId} as ?sourceCourse). #rebind
   ?sourceCourse wdt:P36 ?source.
   MINUS { ?sourceCourse wdt:P14/wdt:P14 ?source }
+  #
   { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). } 
+
+  # mark the items that are a "goal" of the course.
+  OPTIONAL { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). }
+
+  # Check if the source node has completed (Property P12)
+  BIND(EXISTS { wd:${userId} wdt:P12 ?source } AS ?sourceCompleted)
+  
+  # Check if the dependent node has completed (Property P12)
+  BIND(EXISTS { wd:${userId} wdt:P12 ?dependency } AS ?dependencyCompleted)
+  
+  # Check if ${userId} is interested in the source node (Property P23)
+  BIND(EXISTS { wd:${userId} wdt:P23 ?source } AS ?sourceInterested)
+  
+  # Check if ${userId} is interested in the dependent node (Property P23)
+  BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
 }
   
   service wikibase:label { bd:serviceParam wikibase:language "en" }
 }
 `;
+// NOTE: query bit repetitive
 
 /**
  * Service for retrieving SPARQL-Queries
