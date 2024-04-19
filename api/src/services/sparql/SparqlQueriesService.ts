@@ -129,6 +129,7 @@ SELECT DISTINCT
 ?dependency ?dependencyLabel
 ?sourceCompleted ?dependencyCompleted
 ?sourceInterested ?dependencyInterested
+?sourceGoal
 WHERE {
 {
   # SELECT ALL elements INCLUDED in <Course>
@@ -147,8 +148,10 @@ WHERE {
     ?source schema:description ?sourceDesc.
     ?dependency schema:description ?dependencyDesc.
   }
-  }
   
+  # mark the items that are a "goal" of the course.
+  OPTIONAL { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). }
+
   # Check if the source node has completed (Property P12)
   BIND(EXISTS { wd:${userId} wdt:P12 ?source } AS ?sourceCompleted)
   
@@ -160,6 +163,14 @@ WHERE {
   
   # Check if ${userId} is interested in the dependent node (Property P23)
   BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
+
+} UNION {
+  # get & mark the remaining goals that aren't "included" in course + union with rest
+  BIND (wd:${courseId} as ?sourceCourse). # rebind course!!
+  ?sourceCourse wdt:P36 ?source.
+  MINUS { ?sourceCourse wdt:P14/wdt:P14 ?source }
+  { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). } 
+}
   
   service wikibase:label { bd:serviceParam wikibase:language "en" }
 }

@@ -8,6 +8,7 @@ export const initNodeHtmlLabel = (cy: any) => {
 			badges.push(
 				"<div class='badge'><img src='" + interestedNormal + "'/></div>"
 			);
+		// NOTE: adds images to nodes, but will just append a second different image
 
 		return `<div class="badges">${badges.join("")}</div>`;
 	};

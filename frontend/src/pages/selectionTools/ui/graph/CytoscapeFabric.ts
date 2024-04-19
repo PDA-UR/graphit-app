@@ -58,7 +58,10 @@ function loadExtensions(extensions: any[]) {
 }
 
 const nodeSize = (ele: any) => {
-	const degree = ele.degree();
+	let degree = ele.degree();
+	if(degree == 0) {
+		degree = 1;
+	}
 	return 7 + degree * 7;
 };
 
@@ -104,6 +107,29 @@ export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
 			selector: "node[completed = 'true']",
 			style: {
 				"background-color": "#6DBB6D",
+			},
+		},
+		{
+			selector: "node[interested = 'true']",
+			style: {
+				"shape": "star",
+			}
+		},
+		{ // only style goals, that are not yet completed
+			selector: "node[goal = 'true']",
+			style: { // NOTE: background-image handled in CytoscapeExtension.ts
+				"background-color": "#BE234F", //#FF5484
+				"z-index": 0,
+			},
+		},
+		{ // style goals that have been completed (othwise doesn't style)
+			selector: "node[goal = 'true'][completed = 'true']",
+			style: { // NOTE: background-image handled in CytoscapeExtension.ts
+				"border-width": "3px",
+				"border-color": "#BE234F",
+				"background-color": "#6DBB6D", 
+				"z-index": 0,
+				// combines both styles
 			},
 		},
 		{
@@ -153,6 +179,7 @@ export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
 				opacity: 0.4,
 			},
 		},
+
 	],
 	selectionType: "single",
 };
