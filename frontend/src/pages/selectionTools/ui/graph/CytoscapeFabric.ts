@@ -7,6 +7,7 @@ import nodeHtmlLabel from "cytoscape-node-html-label";
 import lasso from "../../../../shared/extensions/lasso-rectangle/lasso";
 import undo from "../../../../shared/extensions/undo/undo";
 import { GLOBALS } from "../../../graphVis/global/config";
+import { stylesheet } from "../../global/Stylesheet";
 
 export const getExperimentCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("experiment-cy")!;
@@ -57,137 +58,32 @@ function loadExtensions(extensions: any[]) {
 	});
 }
 
-const nodeSize = (ele: any) => {
-	let degree = ele.degree();
-	if(degree == 0) {
-		degree = 1;
-	}
-	return 7 + degree * 7;
-};
-
 export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
-	layout: GLOBALS.courseLayout,
-
-	style: [
-		{
-			selector: "node",
-			style: {
-				"background-color": "#666",
-				label: "data(label)",
-				width: nodeSize,
-				height: nodeSize,
-			},
-		},
-		{
-			selector: "node:selected",
-			style: {
-				// BLUE select
-				"background-color": "#257AFD",
-				"text-background-color": "#81b3ff",
-				"text-background-opacity": 1,
-				"text-background-shape": "roundrectangle",
-				"text-background-padding": "3px",
-			},
-		},
-		// edges of selected nodes
-		{
-			selector: "node[label]",
-			style: {
-				// @ts-ignore
-				"text-margin-y": "-8px",
-			},
-		},
-		{
-			selector: "node.indicated[label]",
-			style: {
-				"z-index": 9999999999,
-			},
-		},
-		{
-			selector: "node[completed = 'true']",
-			style: {
-				"background-color": "#6DBB6D",
-			},
-		},
-		{
-			selector: "node[interested = 'true']",
-			style: {
-				"shape": "star",
-			}
-		},
-		{ // only style goals, that are not yet completed
-			selector: "node[goal = 'true']",
-			style: { // NOTE: background-image handled in CytoscapeExtension.ts
-				"background-color": "#BE234F", //#FF5484
-				"z-index": 0,
-			},
-		},
-		{ // style goals that have been completed (othwise doesn't style)
-			selector: "node[goal = 'true'][completed = 'true']",
-			style: { // NOTE: background-image handled in CytoscapeExtension.ts
-				"border-width": "3px",
-				"border-color": "#BE234F",
-				"background-color": "#6DBB6D", 
-				"z-index": 0,
-				// combines both styles
-			},
-		},
-		{
-			selector: "edge",
-			style: {
-				width: 3,
-				"line-color": "#ccc",
-				"target-arrow-color": "#ccc",
-				"target-arrow-shape": "triangle",
-				"curve-style": "bezier",
-			},
-		},
-
-		{
-			selector: "node.last-clicked",
-			style: {
-				backgroundColor: "#474747",
-				"border-width": "7px",
-				"border-color": "black",
-			},
-		},
-		{
-			selector: "node:selected.last-clicked",
-			style: {
-				backgroundColor: "#4377c6",
-			},
-		},
-		{
-			selector: "node.indicated",
-			style: {
-				"border-color": "#FEDD00",
-				"border-width": "3px",
-				"text-background-color": "#FEDD00",
-				"text-background-opacity": 1,
-				"z-index": 10,
-			},
-		},
-		{
-			selector: ".dimmed, .path-dimmed",
-			style: {
-				opacity: 0.4,
-			},
-		},
-		{
-			selector: ".filter-fade",
-			style: {
-				opacity: 0.4,
-			},
-		},
-
-	],
+	layout: {
+		name: 'fcose',
+		// @ts-ignore
+		randomize: false,
+		animate: true,
+		fit: true, 
+		packComponents: false,
+		padding: 5,
+		nodeDimensionsIncludeLabels: true,
+		avoidOverlap: true,
+		nodeRepulsion: 5500,
+		idealEdgeLength: 150,
+		edgeElasticity: 0.3,
+		nestingFactor: 0.1,
+		tile: true,
+	},
+	//GLOBALS.courseLayout,
+	style: stylesheet,
 	selectionType: "single",
 };
 
 const EXPERIMENT_STYLE: any[] = [
 	//
 	{
-		selector: ".incoming, .outgoing",
+		selector: "edge.incoming, edge.outgoing",
 		style: {
 			"line-fill": "linear-gradient",
 			// @ts-ignore
@@ -195,6 +91,9 @@ const EXPERIMENT_STYLE: any[] = [
 			// @ts-ignore
 			"line-gradient-stop-colors": "black #FEDD00",
 			"target-arrow-color": "#FEDD00",
+			"width": 4,
+			"mid-target-arrow-shape": "triangle",
+			"mid-target-arrow-color": "#7F6F00",
 		},
 	},
 
