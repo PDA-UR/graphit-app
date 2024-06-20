@@ -22,6 +22,7 @@ import {
 } from "../../graph/CytoscapeElements";
 import { initLassoSelection } from "../../graph/CytoscapeExtensions";
 import { GraphView } from "../../graph/GraphView";
+import { PathViewControllerEvents } from "../../learnpath/PathViewController";
 import {
 	sharedEventBus,
 	SharedEventBusEvent,
@@ -112,6 +113,7 @@ export class ExperimentGraphView extends GraphView {
 		};
 	}
 
+	// NOTE: here
 	onNormalClickNode = (
 		clickedNode: any,
 		dataAtClick: any,
@@ -201,6 +203,11 @@ export class ExperimentGraphView extends GraphView {
 		this.availablePathSelectionIndex = -1;
 		this.availablePathsToggleCount = 0;
 		this.setLastClicked(clickedNode);
+
+		experimentEventBus.emit(
+			PathViewControllerEvents.NODE_CLICK,
+			clickedNode
+			)
 	};
 
 	public _onNormalClickNode = (event: any, dataAtClick: any) => {

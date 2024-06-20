@@ -1,0 +1,81 @@
+#path-toggle-button {
+	width: 3em;
+	height: 3em;
+    margin: 0.5em;
+    margin-top: 1em;
+
+    position: absolute;
+    top: 80px;
+    right: 0;
+
+    background-image: url("../../icons/fork_left_fill.svg");
+    background-color: #f8f8f8;
+    /* transform: rotate(90deg); */
+
+    background-size: 1.5em;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+
+    cursor: pointer;
+    z-index: 1000;
+}
+
+#path-toggle-button.active {
+    background-image: url("../../icons/double_arrow_fill.svg");
+    border-color: #b6b6b6;
+
+    width: 2em;
+	height: 2em;
+    transform:  scale(0.6);
+    margin-top: 0.5em;
+    margin-right: 0.1em;
+
+    border-width: 1px;
+    border-style: solid;
+}
+
+.path-view {
+    /* display: none; */
+    width: 25%;
+    height: 90%;
+    position: absolute;
+    right: 0;
+    top: 10%;
+    z-index: 1;
+}
+
+
+.slided-out-right {
+    animation: slide-out-right 0.1s ease-in-out forwards;
+}
+
+.slided-in-right {
+    animation: slide-in-right 0.1s ease-in-out forwards;
+}
+
+@keyframes slide-out-right {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slide-in-right {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.hidden-cy {
+    /* can't use display: "none" for cy-container see: https://stackoverflow.com/a/10786656*/
+    position: absolute; 
+    right: -9999px;
+
+}
