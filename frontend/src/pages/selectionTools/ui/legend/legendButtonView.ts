@@ -1,7 +1,7 @@
 // import { View } from "../../../../shared/ui/View";
 import tippy from "tippy.js";
 import { View } from "../../../../shared/ui/View";
-import "./legendButton.css";
+import "./legend.css";
 
 export enum LegendViewEvents {
 	TOGGLE_BUTTON_CLICK = "toggleButtonClick",

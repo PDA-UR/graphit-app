@@ -1,0 +1,66 @@
+#legend-toggle-button {
+    width:2em;
+    height: 2em;
+    margin: 0.5em;
+    margin-bottom: 10px;
+    z-index: 1000;
+
+    background-image: url("../../icons/info.svg");
+    background-size: 1.5em;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    border-radius: 5px;
+    background-color: #f8f8f8;
+
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+#color-legend {
+    display: flex;
+}
+
+.rect{
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border: solid 2px transparent;
+    background-size: 15px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#default-node {
+    background-color: #999 ;
+}
+
+#goal-node{
+    background-color: #2473BC;
+    background-image: url("../../icons/flag_FILL.svg");
+    background-image: fill(#FFF);
+}
+
+#complete-node{
+    background-color: #6DBB6D;
+    background-image: url("../../icons/check-circle.svg");
+}
+
+#interest-node{
+    background-color: #6340E3;
+    background-image: url("../../icons/interested_normal.svg");
+    background-image: fill(#FFF);
+    /* TODO? shape */
+}
+
+.indicated {
+    /* yellow border */
+    border: solid 2px #FEDD00;
+}
+
+.selected {
+    border: solid 2px #257AFD;
+}

@@ -118,6 +118,7 @@ export const stylesheet: Stylesheet[] = [
             "text-border-width": 2,
             "text-border-color": "#6340E3",
             "text-border-style": "dashed",
+            "background-color": "#6340E3"
         }
     },
     {
@@ -135,7 +136,7 @@ export const stylesheet: Stylesheet[] = [
             "text-border-opacity": 1,
             "text-border-width": 2,
             "text-border-color": "#6DBB6D", //"#BE234F",
-            "background-color": "#6DBB6D", 
+            // "background-color": "#6DBB6D", 
             "z-index": 0,
         },
     },
@@ -143,6 +144,7 @@ export const stylesheet: Stylesheet[] = [
         selector: "node[goal = 'true'][interest = 'true']",
         style: {
             "text-border-color": "#6340E3", //"#BE234F",
+            "background-color": "#6340E3",
         },
     },
     {

@@ -41,7 +41,7 @@ export abstract class GraphView extends View {
 		super();
 		this.cy = cy;
 
-		initNodeHtmlLabel(this.cy);
+		// initNodeHtmlLabel(this.cy); // for adding images to a node
 		this.actionManager = initUndoRedo(this.cy);
 
 		this.cy.userPanningEnabled(false);

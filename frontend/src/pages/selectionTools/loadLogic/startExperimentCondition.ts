@@ -8,6 +8,7 @@ import { ExperimentGraphController } from "../ui/experiment/graph/ExperimentGrap
 import { SearchViewController } from "../ui/experiment/search/SearchController";
 import { getExperimentCy } from "../ui/graph/CytoscapeFabric";
 import { PathViewController } from "../ui/learnpath/PathViewController";
+import { ColorLegendController } from "../ui/legend/colorLegendController";
 import LegendButtonController from "../ui/legend/legendButtonControler";
 import LogoutButtonController from "../ui/logoutButton/logoutButtonController";
 import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
@@ -47,6 +48,7 @@ export const onStartExperimentCondition = (
 	const legendButtonController = new LegendButtonController();
 	const switchCourseController = new SwitchCourseController(client, cy, filterManager);
 	const pathViewController = new PathViewController(cy);
+	const colorLegendController = new ColorLegendController(cy);
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
@@ -58,6 +60,7 @@ export const onStartExperimentCondition = (
 		legendButtonController.toggle(on);
 		switchCourseController.toggleHtmlListeners(on);
 		pathViewController.toggle(on);
+		colorLegendController.toggle(on)
 
 
 		app.classList.toggle("disabled", !on);
