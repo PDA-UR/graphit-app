@@ -2,6 +2,7 @@ import tippy from "tippy.js";
 import { experimentEventBus } from "../../global/ExperimentEventBus";
 import "./path.css"
 import { PathViewGraph } from "./PathViewGraph";
+import { dragSpacer } from "./PathSpacer";
 
 export enum PathViewControllerEvents {
     NODE_CLICK = "nodeClick"
@@ -13,6 +14,7 @@ export class PathViewController {
     private readonly graph: PathViewGraph;
     private readonly $container: HTMLDivElement;
     private readonly $toggleBtn: HTMLButtonElement;
+    private readonly $spacer: HTMLDivElement;
     private isOpen: boolean;
     private selectedNode: any | null = null;
 
@@ -20,9 +22,12 @@ export class PathViewController {
         this.cy = cy
         this.graph = new PathViewGraph()
 
-        this.$container = document.getElementById("path-view") as HTMLDivElement;
-        this.$toggleBtn = document.getElementById("path-toggle-button") as HTMLButtonElement; 
+        this.$container = document.getElementById("path-container") as HTMLDivElement;
+        this.$toggleBtn = document.getElementById("path-toggle-button") as HTMLButtonElement;
+        this.$spacer = document.getElementById("path-spacer") as HTMLDivElement; 
         this.isOpen = false;
+
+        dragSpacer(this.$spacer, this.cy, this.graph.getPathCore());
 
         tippy(this.$toggleBtn, {
             content: "Lernpfad ein/ausblenden (Ctrl + L)",
@@ -40,7 +45,7 @@ export class PathViewController {
         this.$container.classList.toggle("hidden-cy", !isVisible);
 		this.$container.classList.toggle("slided-out-right", !isVisible);
 		this.$container.classList.toggle("slided-in-right", isVisible);
-		this.$container.classList.toggle("path-view", isVisible);
+		this.$container.classList.toggle("show-cy", isVisible);
         this.$toggleBtn.classList.toggle("active", isVisible);
         this.isOpen = isVisible;
     }
@@ -52,6 +57,10 @@ export class PathViewController {
         } else {
             this.onOpen(false);
         }
+    }
+
+    private reshapeView(event:MouseEvent) {
+        dragSpacer(this.$spacer, this.cy, this.graph.getPathCore());
     }
 
     private setSelectedNode(target:any) {
@@ -78,9 +87,8 @@ export class PathViewController {
     // Toggle on all events
     public toggle(on: boolean): void {
         console.log("toggle:", on)
-        this.$toggleBtn.addEventListener("click", () => {
-            this.toggleView()
-        })
+        this.$toggleBtn.addEventListener("click", () => this.toggleView() )
+        this.$spacer.addEventListener("mousedown", (event:MouseEvent) => this.reshapeView )
 
         experimentEventBus.on(
             PathViewControllerEvents.NODE_CLICK, 

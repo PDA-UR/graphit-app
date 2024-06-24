@@ -113,7 +113,6 @@ export class ExperimentGraphView extends GraphView {
 		};
 	}
 
-	// NOTE: here
 	onNormalClickNode = (
 		clickedNode: any,
 		dataAtClick: any,
@@ -424,7 +423,8 @@ export class ExperimentGraphView extends GraphView {
 		this.cy.elements().removeClass("indicated");
 	}
 
-	setNodeNeighborHighlight(rootNode: any, on: boolean) {
+	// NOTE: set node hightlights
+	public setNodeNeighborHighlight(rootNode: any, on: boolean) {
 		const neighbors = rootNode.neighborhood(),
 			incomingElements: any[] = [],
 			outgoingElements: any[] = [];
