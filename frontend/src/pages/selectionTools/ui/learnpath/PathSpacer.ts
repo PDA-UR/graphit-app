@@ -4,6 +4,7 @@
 export function dragSpacer(element: HTMLElement, cy: cytoscape.Core, pathCy: cytoscape.Core) {
 
     const container = document.getElementById("path-container") as HTMLElement;
+    const pane = document.getElementById("main-pane") as HTMLDivElement;
 
     element.onmousedown = onMouseDown;
 
@@ -12,16 +13,23 @@ export function dragSpacer(element: HTMLElement, cy: cytoscape.Core, pathCy: cyt
         document.onmousemove = onMouseMove;
         document.onmouseup = () => {
             document.onmousemove = document.onmouseup = null;
+
+            // re-enable events after dragging stopped
             cy.elements().selectify()
             pathCy.panningEnabled(true)
+            pathCy.boxSelectionEnabled(false)
+            pane.style.pointerEvents = "auto"
         }
     }
 
     function onMouseMove(e:MouseEvent)
     {
+        // disable events while dragging
         cy.elements().unselectify()
         pathCy.panningEnabled(false)
+        pathCy.boxSelectionEnabled(false)
         e.stopPropagation
+        pane.style.pointerEvents = "none"
 
         let xPercent = ((innerWidth-e.clientX) / window.innerWidth) * 100
         container.style.width = xPercent + "%";

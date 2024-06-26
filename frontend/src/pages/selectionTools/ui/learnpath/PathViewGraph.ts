@@ -26,7 +26,7 @@ export class PathViewGraph {
             elements: INFO_NODES,
             layout: this.layoutOptions, //, pathLayout, //GLOBALS.dagre,
         });
-        // on itit container has different dimensions
+        // on init container has different dimensions, because it's closed
         this.cy.pan({x: 100, y:200})
         this.cy.zoom({level: 2.5})
         console.log(this.cy.width(), this.cy.height())
@@ -60,12 +60,13 @@ export class PathViewGraph {
 
         this.cy.add(path)
         this.cy.layout(this.layoutOptions).run()
+        // TODO: use other layout, if to many node in one rank
+        
     }
 
     // TODO: styling
     // TODO: interaction between graphs
     // TODO: interaction with path (zoom, highlight neighbors)
-    // TODO: let users change width of view + remember after close
 
     /* -- EVENTS -- */
 
