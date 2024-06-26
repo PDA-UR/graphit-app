@@ -44,20 +44,32 @@
 				<div class="spacer"></div> 
 				<div id="legend-toggle-button" class="button"></div>
 				<div id="logout-button" class="base-item">Logout</div>
-				<div id="selection-type-indicator" class="base-container card"></div>
+				<div id="bottom-info-container">
+					<div id="selection-type-indicator" class="base-container card"></div>
+					<div id="color-legend" class="base-container card">
+						<!-- <div id="default-node" class="rect"></div> -->
+						<div id="goal-node" class="rect"></div>
+						<div id="complete-node" class="rect"></div>
+						<div id="interest-node" class="rect"></div>
+					</div>
+				</div>
+
 			</div>
 
 			<div id="path-toggle-button" class="button"></div>
-			<div id="path-view" class="base-container slided-out-right hidden-cy"></div>
+			<div id="path-container" class="slided-out-right hidden-cy">
+				<div id="path-spacer" draggable="true"></div>
+				<!-- <div id="path-view"></div> -->
+			</div>
 
 			<div id="property-modal" class="modal base-container">
-				<div id="complete" class="property base-item">
-					<span>Toggle completion</span>
+				<div id="interest" class="property base-item">
+					<span>Toggle interest</span>
 					<span class="spacer"></span>
 					<span class="keyboard-shortcut">1</span>
 				</div>
-				<div id="interest" class="property base-item">
-					<span>Toggle interest</span>
+				<div id="complete" class="property base-item">
+					<span>Toggle completion</span>
 					<span class="spacer"></span>
 					<span class="keyboard-shortcut">2</span>
 				</div>
