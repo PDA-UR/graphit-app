@@ -193,6 +193,19 @@ WHERE {
 `;
 // NOTE: query bit repetitive
 
+const itemResource = (
+  qid = "Q21",
+) => `PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+PREFIX wd: <https://graphit.ur.de/entity/>
+SELECT DISTINCT ?resource ?resourceLabel ?url
+WHERE {
+  # Select all resources and their types for a specific item
+  BIND (wd:${qid} as ?item).
+  ?item wdt:P21 ?resource.
+  ?resource wdt:P20 ?url.  
+  service wikibase:label { bd:serviceParam wikibase:language "en". }
+}`
+
 /**
  * Service for retrieving SPARQL-Queries
  */
@@ -212,5 +225,9 @@ export class SparqlQueryTemplateService {
 
   public getCourseQuery(userId: string, courseId: string){
     return courseQuery(userId, courseId);
+  }
+
+  public getItemResource(qid: string) {
+    return itemResource(qid)
   }
 }

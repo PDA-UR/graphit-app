@@ -97,6 +97,16 @@ export default class WikibaseClient {
 		return graph;
 	}
 
+	async getItemResource(qid: string): Promise<ElementDefinition[]> {
+		const result = await this.api.sparql.itemResource(qid)
+		// console.log(result.data)
+		// const resources = this.sparqlParser.parseNodes(
+		// 	["resource", "url"],
+		// 	result.data
+		// )
+		return result.data.results.bindings;
+	}
+
 	async getEntities(entityIds: string[]): Promise<any> {
 		// if more than 50 entityIds, split into multiple requests
 		if (entityIds.length > 50) {

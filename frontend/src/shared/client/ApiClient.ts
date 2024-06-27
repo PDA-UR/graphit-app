@@ -539,6 +539,24 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       format: "json",
       ...params,
     }),
+
+    /**
+     * @description Retrieve all resources and their types from a single item
+     * 
+     * @param qid the qid of the item to get the resources of (e.g. Q21)
+     * @tags Sparql
+     * @name itemResource
+     * @request GET: /api/sparql/itemResource/:qid
+     * @returns 
+     */
+    itemResource: (qid: string, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/itemResource/${qid}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
   };
   user = {
     /**
