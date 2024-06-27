@@ -86,7 +86,6 @@ export class PathViewController {
 
     // Toggle on all events
     public toggle(on: boolean): void {
-        console.log("toggle:", on)
         this.$toggleBtn.addEventListener("click", () => this.toggleView() )
         this.$spacer.addEventListener("mousedown", (event:MouseEvent) => this.reshapeView )
 

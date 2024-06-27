@@ -69,6 +69,7 @@ export const stylesheet: Stylesheet[] = [
             // @ts-ignore
             "text-background-shape": "round-rectangle",
             "text-background-padding": "3px",
+            "z-index": nodeSize,
         },
     },
     {
@@ -115,7 +116,7 @@ export const stylesheet: Stylesheet[] = [
             "width": nodeSize,
             "height": nodeSize,
             "text-border-opacity": 1,
-            "text-border-width": 2,
+            "text-border-width": 3,
             "text-border-color": "#6340E3",
             "text-border-style": "dashed",
             "background-color": "#6340E3"
@@ -124,9 +125,9 @@ export const stylesheet: Stylesheet[] = [
     {
         selector: "node[goal = 'true']",
         style: { 
-            "background-color": "#2473BC", //"#BE234F", //#FF5484
-            "text-background-color": "#2473BC", // "#BE234F",
-            "color": switchTextColor,
+            "background-color": "#B7B10F", //"#BE234F", //#FF5484
+            "text-background-color": "#B7B10F", // "#BE234F",
+            // "color": switchTextColor,
             "z-index": 0,
         },
     },

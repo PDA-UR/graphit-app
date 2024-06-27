@@ -1,12 +1,15 @@
+#path {
+    display: block;
+    height: 90%;
+}
+
 #path-toggle-button {
 	width: 3em;
 	height: 3em;
-    margin: 0.5em;
-    margin-top: 1em;
-
-    position: absolute;
-    top: 80px;
-    right: 0;
+    margin: 5px 2px 5px auto;
+    /* position: absolute; */
+    /* top: 120px; TODO change with height of info */
+    /* right: 0; */
 
     background-image: url("../../icons/fork_left_fill.svg");
     background-color: #f8f8f8;
@@ -20,6 +23,7 @@
 
     cursor: pointer;
     z-index: 1000;
+    border-radius: 3px;
 }
 
 #path-toggle-button.active {
@@ -39,20 +43,21 @@
 #path-container {
     width: 25%;
     min-width: 11%;
-    top: 100px;
+    top: 130px; /*TODO change with height of info*/
     bottom: 10px;
     z-index: 1;
     background-color: #f8f8f8;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: row;
+    /* height:90%; */
 }
 
 #path-spacer{
     width: 10px;
     background-color: #b6b6b6;
     cursor: col-resize;
-    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #path-view {
@@ -60,6 +65,14 @@
     right: 0;
     height: 100%;
     width: 95%;
+}
+
+#path-info {
+    z-index: 10000;
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    color: gray;
 }
 
 .show-cy {

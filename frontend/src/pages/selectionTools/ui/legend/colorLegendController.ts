@@ -27,12 +27,6 @@ export class ColorLegendController {
     }
 
     private initTippy() {
-        // tippy(this.$defaultNode, {
-        //     content: "node",
-        //     placement: "top",
-        //     duration: 300,
-        //     theme: "dark",
-        // });
         tippy(this.$goalNode, {
             content: "goal",
             placement: "top",
@@ -58,19 +52,12 @@ export class ColorLegendController {
         this.setClassesForLegend(node, on, "indicated")
     }
 
-    // private setSelection(node:cytoscape.NodeSingular, on: boolean, cssClass:string) {
-    //     this.clearSelection()
-    //     this.setClassesForLegend(node, true, "selected")
-
-    // }
-
     private setSelection = (event:any) => {
-        // console.log("clicked", event.target.isNode())
+        this.clearSelection();
         if(event.target.isNode) {
             this.setClassesForLegend(event.target, true, "selected")
-        } else {
-            this.clearSelection();
-        }
+        } 
+        
     }
 
     private clearSelection(){
@@ -84,13 +71,10 @@ export class ColorLegendController {
 
         if (data["completed"] == "true")
             this.$completeNode.classList.toggle(cssClass, on)
-            // this.$completeNode.classList.toggle("selected", !on)
         if (data["interested"] == "true")
             this.$interestNode.classList.toggle(cssClass, on)
-            // this.$interestNode.classList.toggle("selected", !on)
         if (data["goal"] == "true")
             this.$goalNode.classList.toggle(cssClass, on)
-            // this.$goalNode.classList.toggle("selected", !on)
     }
 
     // Toggle on all events

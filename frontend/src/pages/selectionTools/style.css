@@ -164,8 +164,19 @@ div {
 }
 
 
+#right-sidebar {
+	width: 25%;
+	height: 85%;
+	position: absolute;
+	right: 0;
+	top: 100px;
+	display: flex;
+	flex-direction: column;
+}
+
 #bottom-info-container {
 	display: flex;
+	flex-direction: row;
 }
 
 label {

@@ -4,7 +4,7 @@
 export function dragSpacer(element: HTMLElement, cy: cytoscape.Core, pathCy: cytoscape.Core) {
 
     const container = document.getElementById("path-container") as HTMLElement;
-    const pane = document.getElementById("main-pane") as HTMLDivElement;
+    const pane = document.getElementById("experiment-app") as HTMLDivElement;
 
     element.onmousedown = onMouseDown;
 
@@ -30,6 +30,7 @@ export function dragSpacer(element: HTMLElement, cy: cytoscape.Core, pathCy: cyt
         pathCy.boxSelectionEnabled(false)
         e.stopPropagation
         pane.style.pointerEvents = "none"
+        
 
         let xPercent = ((innerWidth-e.clientX) / window.innerWidth) * 100
         container.style.width = xPercent + "%";
