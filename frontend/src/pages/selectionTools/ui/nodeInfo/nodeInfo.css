@@ -18,7 +18,7 @@
     padding: 2px 25px 2px 5px;
     /* width: 88%; */
     background-color: #77aeff;
-    border-radius: 3px;
+    border-radius: 3px 3px 0 0;
 }
 
 #info-dropdown-btn {
@@ -54,11 +54,10 @@
     background-image: url("../../../graphVis/global/icons/open.png");
     background-size: 15px;
     background-repeat: no-repeat;
-    width: 15px;
+    width: 7%;
     height: 15px;
     display: block;
     margin-right: 2px;
-    padding: 2px;
 }
 
 .resource-link:hover {
@@ -69,4 +68,8 @@
 .resource-label {
     display: block;
     font-size: small;
+}
+
+.resource-loader {
+    background-color: #afbcd1;
 }

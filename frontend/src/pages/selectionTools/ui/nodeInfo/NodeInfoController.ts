@@ -3,6 +3,7 @@ import { experimentEventBus } from "../../global/ExperimentEventBus";
 import "./nodeInfo.css"
 import { PathViewControllerEvents } from "../learnpath/PathViewController";
 import WikibaseClient from "../../../../shared/WikibaseClient";
+import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
 
 
 export class NodeInfoController {
@@ -76,29 +77,17 @@ export class NodeInfoController {
 
         const id = this.currentSelection.id()
         const qid = id.match(/(Q\d+)/g)
-        console.log("show res for", qid)
+        
+        this.$content.classList.add("dimmer")
 
-        // for dev
-        // const result = [
-        //     {   resource: { type: "uri", value: "https://graphit.ur.de/entity/Q230" },
-        //         resourceLabel: { "xml:lang": "en", type: "literal", 
-        //             value: "Video-Snippet: Vectors" },
-        //         url: { type: "uri", value: "https://mediathek2.uni-regensburg.de/playthis/618ea4d763d011.14489599" },
-        //     },
-        //     {   resource: { type: "uri", value: "https://graphit.ur.de/entity/Q293" },
-        //         resourceLabel: { "xml:lang": "en", type: "literal", 
-        //             value: "Wikipedia: Vector" },
-        //         url: { type: "uri", value: "https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)" }
-        //     }
-        // ]
-
-        // // works
         let result;
         if (qid != null)
             result = await this.client.getItemResource(qid[0])    
-        console.log("[RES]", result)
+        // console.log("[RES]", result)
 
         this.createResourceList(result)
+
+        this.$content.classList.remove("dimmer")
     }
 
     private createResourceList(resources: any) {
