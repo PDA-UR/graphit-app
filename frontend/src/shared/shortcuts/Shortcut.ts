@@ -48,6 +48,22 @@ export const SHARED_SHORTCUTS: ShortcutInfo[] = [
 
 export const SHARED_SHORTCUTS_END: ShortcutInfo[] = [
 	{
+		category: "Informationen",
+		description: "Resourcen ansehen",
+		shortcut: {
+			key: "+",
+			modifierKeys: [ModifierKey.ALT],
+		}
+	},
+	{
+		category: "Informationen",
+		description: "Lernpfad öffnen",
+		shortcut: {
+			key: "L",
+			modifierKeys: [ModifierKey.CTRL],
+		}
+	},
+	{
 		category: "Hilfe",
 		description: "Dieses Hilfe-Menü öffnen",
 		shortcut: {
