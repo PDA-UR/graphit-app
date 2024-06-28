@@ -11,6 +11,7 @@ import { PathViewController } from "../ui/learnpath/PathViewController";
 import { ColorLegendController } from "../ui/legend/colorLegendController";
 import LegendButtonController from "../ui/legend/legendButtonControler";
 import LogoutButtonController from "../ui/logoutButton/logoutButtonController";
+import { NodeInfoController } from "../ui/nodeInfo/NodeInfoController";
 import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
 import SaveButtonController from "../ui/saveButton/SaveButtonController";
 import { SelectionTypeIndicatorController } from "../ui/shared/selectionTypeIndicator/SelectionTypeIndicatorController";
@@ -49,6 +50,7 @@ export const onStartExperimentCondition = (
 	const switchCourseController = new SwitchCourseController(client, cy, filterManager);
 	const pathViewController = new PathViewController(cy);
 	const colorLegendController = new ColorLegendController(cy);
+	const nodeInfoController = new NodeInfoController(cy, client)
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
@@ -61,6 +63,7 @@ export const onStartExperimentCondition = (
 		switchCourseController.toggleHtmlListeners(on);
 		pathViewController.toggle(on);
 		colorLegendController.toggle(on)
+		nodeInfoController.toggle(on)
 
 
 		app.classList.toggle("disabled", !on);
