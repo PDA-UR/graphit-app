@@ -12,6 +12,7 @@ export class NodeInfoController {
     private readonly client: WikibaseClient;
     private readonly $container: HTMLDivElement;
     private readonly $nodeName: HTMLDivElement;
+    // private readonly $wikibaseLink: HTMLLinkElement
     private readonly $dropdownBtn: HTMLDivElement;
     private readonly $content: HTMLDivElement;
     private readonly $pathBtn: HTMLDivElement;
@@ -26,6 +27,7 @@ export class NodeInfoController {
 
         this.$container = document.getElementById("node-info-container") as HTMLDivElement;
         this.$nodeName = document.getElementById("node-info-name") as HTMLDivElement;
+        // this.$wikibaseLink = document.getElementById("wikibase-item-link") as HTMLLinkElement;
         this.$dropdownBtn = document.getElementById("info-dropdown-btn") as HTMLDivElement;
         this.$content = document.getElementById("info-content") as HTMLDivElement;
         this.$pathBtn = document.getElementById("path-toggle-button") as HTMLDivElement;
@@ -44,16 +46,23 @@ export class NodeInfoController {
             this.currentSelection = target;
             this.setName(target);
             this.setResources();
+            // this.$nodeName.classList.remove("disabled-link");
+            // this.$wikibaseLink.classList.add("resouce-link");
         } else {
+            console.log("click on canvas")
             this.currentSelection = null;
             this.$content.innerHTML = "";
             this.$nodeName.innerText = "Item";
+            // this.$wikibaseLink.classList.add("disabled-link");
+            // this.$wikibaseLink.classList.remove("resouce-link");
         }
     }
 
     private setName(node: cytoscape.NodeSingular) {
         let str = node.data("label") + this.getStatus(node)
         this.$nodeName.innerText = str;
+        // this.$wikibaseLink.href = node.id();
+        // this.$wikibaseLink.target = "_blank";
     }
 
     // ??: Expand idea
@@ -105,6 +114,7 @@ export class NodeInfoController {
         const linkDiv = document.createElement("a")
         linkDiv.classList.add("resource-link")
         linkDiv.href = url
+        linkDiv.target = "_blank"
 
         const labelDiv = document.createElement("div")
         labelDiv.classList.add("resource-label")
@@ -123,7 +133,7 @@ export class NodeInfoController {
         this.$dropdownBtn.addEventListener("click", this.toggleDropDown); 
         this.$content.addEventListener("mouseenter", () => this.toggleScrollEvents(false));
         this.$content.addEventListener("mouseleave", () => this.toggleScrollEvents(true))
-        
+
         this.cy.on("click", (event:any) => this.setInfo(event.target))
 
         this.initKeyboardListeners(on);
@@ -158,7 +168,6 @@ export class NodeInfoController {
 	};
 
 	private onKeydown = (e: KeyboardEvent) => {
-        console.log(e.code)
         if (e.code === "BracketRight" && e.altKey) {
             this.toggleDropDown()
         }

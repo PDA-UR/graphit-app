@@ -19,6 +19,13 @@
     /* width: 88%; */
     background-color: #77aeff;
     border-radius: 3px 3px 0 0;
+    cursor: pointer;
+}
+
+.disabled-link {
+    width: 0px;
+    pointer-events: none;
+    cursor: default;
 }
 
 #info-dropdown-btn {
@@ -60,10 +67,10 @@
     margin-right: 2px;
 }
 
-.resource-link:hover {
+/* .resource-link:hover {
     background-color: #cce0ff;
     border-radius: 2px;
-}
+} */
 
 .resource-label {
     display: block;

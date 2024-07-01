@@ -48,22 +48,23 @@ export class ColorLegendController {
     }
 
     private setIndication(id: string, on: boolean) {
+        if (id == undefined) return
         const node = this.cy.filter(`[id = "${id}"]`);
-        this.setClassesForLegend(node, on, "indicated")
+        this.setClassesForLegend(node, on, "legend-indicated")
     }
 
     private setSelection = (event:any) => {
         this.clearSelection();
         if(event.target.isNode) {
-            this.setClassesForLegend(event.target, true, "selected")
+            this.setClassesForLegend(event.target, true, "legend-selected")
         } 
         
     }
 
     private clearSelection(){
-        this.$completeNode.classList.toggle("selected", false)
-        this.$interestNode.classList.toggle("selected", false)
-        this.$goalNode.classList.toggle("selected", false)
+        this.$completeNode.classList.toggle("legend-selected", false)
+        this.$interestNode.classList.toggle("legend-selected", false)
+        this.$goalNode.classList.toggle("legend-selected", false)
     }
 
     private setClassesForLegend(node:cytoscape.NodeSingular, on: boolean, cssClass:string) {

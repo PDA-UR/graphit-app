@@ -54,6 +54,8 @@ export class PathViewController {
         console.log("toggle path view", this.isVisible())
         if(this.isVisible()) {
             this.onOpen(true);
+            if (this.selectedNode != undefined) 
+                this.showPath()
         } else {
             this.onOpen(false);
         }
@@ -64,6 +66,7 @@ export class PathViewController {
     }
 
     private setSelectedNode(target:any) {
+        if (target == undefined) return;
         this.selectedNode = target;
         if (this.isOpen) {
             this.showPath()
@@ -79,6 +82,7 @@ export class PathViewController {
     }
 
     private createPath() {
+        console.log("show path for", this.selectedNode)
         this.graph.showPath(this.selectedNode)
         // get all path nodes, from the selected on
     }
@@ -89,11 +93,23 @@ export class PathViewController {
         this.$toggleBtn.addEventListener("click", () => this.toggleView() )
         this.$spacer.addEventListener("mousedown", (event:MouseEvent) => this.reshapeView )
 
+        this.$container.addEventListener("mouseover", () => this.toggleMainGraphEvents(false))
+        this.$container.addEventListener("mouseout", () => this.toggleMainGraphEvents(true))
+
         experimentEventBus.on(
             PathViewControllerEvents.NODE_CLICK, 
             (target) => this.setSelectedNode(target))
         
         this.initKeyboardListeners(on)
+    }
+
+    /**
+     * Toggle events of the main cytoscape core on/off when the mouse is on/off the learning path.
+     * Prevents viewport changes on both graphs at the same time.
+     * @param on 
+     */
+    private toggleMainGraphEvents(on: boolean){
+        this.cy.zoomingEnabled(on)
     }
 
     private initKeyboardListeners = (on: boolean) => {

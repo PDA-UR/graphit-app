@@ -54,13 +54,13 @@
     background-size: 13px;
 }
 
-.indicated { 
+.legend-indicated { 
     border: solid 2px #000;
     /* box-shadow: 2px 2px 2px #FEDD00; */
     /* border-radius: 10px; */
 }
 
-.selected {
+.legend-selected {
     /* border: solid 2px #0066ff; */
     box-shadow: 2px 2px 2px #0066ff;
     border-radius: 10px;

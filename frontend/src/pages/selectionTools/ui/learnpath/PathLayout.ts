@@ -1,5 +1,8 @@
 import cytoscapeDagre from "cytoscape-dagre";
 
+let previousY: number | null = null;
+let count: number = 1
+
 export const pathLayout: cytoscapeDagre.DagreLayoutOptions = {
     name: "dagre",
     // dagre algo options, uses default value on undefined
@@ -16,7 +19,7 @@ export const pathLayout: cytoscapeDagre.DagreLayoutOptions = {
     
     // general layout options
     fit: true, // whether to fit to viewport
-    padding: 30, // fit padding
+    padding: 20, // fit padding
     spacingFactor: undefined, // Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up
     nodeDimensionsIncludeLabels: false, // whether labels should be included in determining the space used by a node
     animate: false, // whether to transition the node positions
@@ -24,7 +27,19 @@ export const pathLayout: cytoscapeDagre.DagreLayoutOptions = {
     animationDuration: 500, // duration of animation in ms if enabled
     animationEasing: undefined, // easing of animation if enabled
     boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-    transform: function( node, pos ){ return pos; }, // a function that applies a transform to the final node position
+    transform: function( node, pos ) {   
+        // if (previousY == null) previousY = pos.y
+        // console.log("pre", previousY)
+        // if (previousY == pos.y) {
+        //     // TODO
+        //     // pos.x = pos.x / 2; // gather around middle
+        //     pos.x = pos.x / 1.2;
+        //     pos.y = pos.y - count;
+        //     console.log("new", pos.x, pos.y)  
+        //     count += 20;          
+        // } else previousY = pos.y
+        // console.log("n", pos.x)
+        return pos; }, // a function that applies a transform to the final node position
     ready: function(){}, // on layoutready
     sort: undefined, // a sorting function to order the nodes and edges; e.g. function(a, b){ return a.data('weight') - b.data('weight') }
                         // because cytoscape dagre creates a directed graph, and directed graphs use the node order as a tie breaker when
