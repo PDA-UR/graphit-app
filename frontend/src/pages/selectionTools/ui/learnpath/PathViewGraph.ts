@@ -59,18 +59,6 @@ export class PathViewGraph {
         target.removeClass("indicated") // BUG: otherwise style will show (stays over from interaction with normal graph)
         this.cy.remove(this.cy.elements())
         
-        // IDEA: if successor/incomers to many -> use a grid layout on the as a collection
-
-        // let path = target.successors();
-
-        // path = path.union(target.incomers())
-        // path = path.union(target)
-        
-        // path.forEach(node => {
-        //     node.data("degree", node.degree(false))
-        // });
-        // this.cy.add(path)
-        
         let successors = target.successors() as cytoscape.NodeCollection;
         let incomers = target.incomers() as cytoscape.NodeCollection;
 
@@ -82,7 +70,6 @@ export class PathViewGraph {
 
         console.log("s", successors.length, "i", incomers.length)
 
-        // works
         if(incomers.length >= 10) { // only incomers of the same level?
             incomers.layout(GLOBALS.gridLayout).run()
             // TODO: better grid layout 

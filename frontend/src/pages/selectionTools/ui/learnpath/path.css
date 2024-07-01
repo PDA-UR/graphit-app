@@ -7,13 +7,9 @@
 	width: 3em;
 	height: 3em;
     margin: 5px 2px 5px auto;
-    /* position: absolute; */
-    /* top: 120px; TODO change with height of info */
-    /* right: 0; */
 
     background-image: url("../../icons/fork_left_fill.svg");
     background-color: #f8f8f8;
-    /* transform: rotate(90deg); */
 
     background-size: 1.5em;
     background-repeat: no-repeat;
@@ -50,7 +46,6 @@
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: row;
-    /* height:90%; */
 }
 
 #path-spacer{

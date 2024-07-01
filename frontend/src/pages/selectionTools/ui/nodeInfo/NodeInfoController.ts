@@ -1,10 +1,6 @@
 import tippy from "tippy.js";
-import { experimentEventBus } from "../../global/ExperimentEventBus";
 import "./nodeInfo.css"
-import { PathViewControllerEvents } from "../learnpath/PathViewController";
 import WikibaseClient from "../../../../shared/WikibaseClient";
-import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
-
 
 export class NodeInfoController {
 
