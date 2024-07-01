@@ -58,7 +58,7 @@ function loadExtensions(extensions: any[]) {
 	});
 }
 
-export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
+export const DEFAULT_OPTIONS: any = {
 	layout: {
 		name: 'fcose',
 		// @ts-ignore
@@ -70,7 +70,9 @@ export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
 		nodeDimensionsIncludeLabels: true,
 		avoidOverlap: true,
 		nodeRepulsion: 5500,
+		// @ts-ignore
 		idealEdgeLength: 150,
+		// @ts-ignore
 		edgeElasticity: 0.3,
 		nestingFactor: 0.1,
 		tile: true,
