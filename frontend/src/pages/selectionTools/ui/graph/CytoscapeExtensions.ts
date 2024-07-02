@@ -29,6 +29,10 @@ export const initLassoSelection = (cy: any) => {
 	return cy.lassoSelectionEnabled(true);
 };
 
+export const toggleLassoSelection = (cy: any, on: boolean) => {
+	cy.lassoSelectionEnabled(on)
+}
+
 export const initUndoRedo = (cy: any) => {
 	return cy.undoRedo();
 };
