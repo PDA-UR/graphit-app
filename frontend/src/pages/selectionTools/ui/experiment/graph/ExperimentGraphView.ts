@@ -202,17 +202,21 @@ export class ExperimentGraphView extends GraphView {
 		this.availablePathSelectionIndex = -1;
 		this.availablePathsToggleCount = 0;
 		this.setLastClicked(clickedNode);
-
-		experimentEventBus.emit(
-			PathViewControllerEvents.NODE_CLICK,
-			clickedNode
-			)
 	};
 
 	public _onNormalClickNode = (event: any, dataAtClick: any) => {
 		console.log("_normal click");
 		const clickedNode = event.target!;
 		this.onNormalClickNode(clickedNode, dataAtClick, false);
+
+		const core = event.cy._private.container.id
+		if (core != "path-container") {
+			// resets the pathview (only when the click comes from the main core)
+			experimentEventBus.emit(
+				PathViewControllerEvents.NODE_CLICK,
+				clickedNode
+			)
+		}
 	};
 
 	public onDoubleClickNode = (clickedNode: any, dataAtClick: any) => {

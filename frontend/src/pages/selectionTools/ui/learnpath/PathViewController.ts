@@ -3,9 +3,10 @@ import { experimentEventBus } from "../../global/ExperimentEventBus";
 import "./path.css"
 import { PathViewGraph } from "./PathViewGraph";
 import { dragSpacer } from "./PathSpacer";
+import { toggleLassoSelection } from "../graph/CytoscapeExtensions";
 
 export enum PathViewControllerEvents {
-    NODE_CLICK = "nodeClick"
+    NODE_CLICK = "nodeClick",
 }
 
 export class PathViewController {
@@ -109,7 +110,9 @@ export class PathViewController {
      * @param on 
      */
     private toggleMainGraphEvents(on: boolean){
-        this.cy.zoomingEnabled(on)
+        this.cy.zoomingEnabled(on);
+        this.cy.panningEnabled(on);
+        toggleLassoSelection(this.cy, on);
     }
 
     private initKeyboardListeners = (on: boolean) => {

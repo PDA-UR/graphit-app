@@ -21,6 +21,7 @@ import { getAllSelectionElements } from "./CytoscapeElements";
 import { initNodeHtmlLabel, initUndoRedo } from "./CytoscapeExtensions";
 import { zoom } from "./CytoscapeView";
 import { SelectionType } from "../../global/SelectionType";
+import { PathViewEvents } from "../learnpath/PathViewGraph";
 
 export enum GraphViewEvents {
 	SELECTION_CHANGED = "selectionChanged",
@@ -63,6 +64,7 @@ export abstract class GraphView extends View {
 			this.cy.on("mouseover", "node", this._onHoverNode);
 			this.cy.on("mouseout", "node", this.onHoverNodeEnd);
 			this.cy.on("boxselect", this._onBoxSelect);
+			experimentEventBus.on(PathViewEvents.NODE_SELECT, this.onAtomicClick);
 		} else {
 			this.cy.removeListener("click", this.onAtomicClick);
 			this.cy.removeListener("select unselect", this.onSelectionChanged);
@@ -70,6 +72,7 @@ export abstract class GraphView extends View {
 			this.cy.removeListener("mouseover", "node", this._onHoverNode);
 			this.cy.removeListener("mouseout", "node", this.onHoverNodeEnd);
 			this.cy.removeListener("boxselect", this._onBoxSelect);
+			experimentEventBus.on(PathViewEvents.NODE_SELECT, this.onAtomicClick);
 		}
 	}
 

@@ -7,6 +7,12 @@ import { GLOBALS } from "../../../graphVis/global/config";
 import cytoscapeFcose from "cytoscape-fcose";
 import { experimentEventBus } from "../../global/ExperimentEventBus";
 import { ExperimentGraphViewEvents } from "../experiment/graph/ExperimentGraphView";
+import { PropertyEditAction } from "../propertyModal/PropertyModalController";
+
+export enum PathViewEvents {
+    NODE_SELECT = "nodeSelect", // select the same item in both graphs (don't change path-layout)
+    PROPERTY_ACTION_CLICKED = "propertyActionClicked",
+}
 
 /**
  * A separate cytoscape core to show a 
@@ -19,6 +25,8 @@ export class PathViewGraph {
     private readonly $container: HTMLDivElement;
     // private readonly layoutOptions: cytoscapeDagre.DagreLayoutOptions;
     private layoutOptions: any;
+    private isPanning: boolean = false;
+    private selectedNode: any;
 
     constructor() {
         // initialise use of extension for the separate cytoscape core instance
@@ -39,7 +47,7 @@ export class PathViewGraph {
         // on init container has different dimensions, because it's closed
         this.cy.pan({x: 100, y:200})
         this.cy.zoom({level: 2.5})
-        console.log(this.cy.width(), this.cy.height())
+
         this.initGraphEvents()
     }
 
@@ -49,13 +57,21 @@ export class PathViewGraph {
 
     // Events exclusive for the path graph
     private initGraphEvents() {
+        // window.addEventListener("mousedown", this.onMouseDown);
+        // window.addEventListener("mouseup", this.onMouseUp);
+        // window.addEventListener("mousemove", this.onMouseMove);
+
         this.cy.on("mouseover", "node", this.onHoverNode);
 		this.cy.on("mouseout", "node", this.onHoverNodeEnd);
+        this.cy.on("click", "node", this.onNodeSelected);
+        experimentEventBus.addListener(PathViewEvents.PROPERTY_ACTION_CLICKED, this.updateStyle)
         // this.cy.on("scrollzoom", "cy", this.zoom)
     }
 
     public showPath(target:cytoscape.NodeSingular) {
         // let path = target.closedNeighborhood() 
+        console.log(target)
+
         target.removeClass("indicated") // BUG: otherwise style will show (stays over from interaction with normal graph)
         this.cy.remove(this.cy.elements())
         
@@ -76,15 +92,47 @@ export class PathViewGraph {
             // keep target in the middle 
             // put incomers above target
         } 
-        
+
+        // re-get target, so that it is from the right core
+        this.selectedNode = this.cy.$(`[label = "${target.data("label")}"]`); // uses label bc. id's uses chars that would need to be escaped
+        // console.log("selected", target.id(), this.selectedNode)
     }
 
-    // TODO: styling
     // TODO: interaction between graphs
     // TODO: interaction with path (zoom, highlight neighbors)
-    // TODO: graph editing
 
     /* -- EVENTS -- */
+
+    public onMouseDown = (event:any) => {
+        if (event.buttons == 2) {
+            this.isPanning = true;
+            this.cy.panningEnabled(true)
+        } else {
+            this.isPanning = false;
+            this.cy.panningEnabled(false)
+        }
+    }
+
+    public onMouseUp = () => {
+        if (this.isPanning) 
+			this.isPanning = false;
+    }
+
+    public onMouseMove = (e: any) => {
+		if (this.isPanning) {
+            console.log("pan");
+			this.cy.panBy({
+				x: e.movementX,
+				y: e.movementY,
+			});
+		}
+	};
+
+    public onNodeSelected = (event:any) => {
+        experimentEventBus.emit(PathViewEvents.NODE_SELECT, event);
+        this.cy.elements().removeClass("last-clicked"); // removes the black border around the nodes, that would otherwise stay
+        this.selectedNode = event.target;
+    }
 
     private onHoverNode = (event:any) => {
         const node = event.target! as cytoscape.NodeSingular;
@@ -94,7 +142,6 @@ export class PathViewGraph {
             ExperimentGraphViewEvents.INDICATE_NODE_START, 
             node.id()
         );
-
     }
     
     private onHoverNodeEnd = (event:any) => {
@@ -106,4 +153,13 @@ export class PathViewGraph {
             node.id()
         );
     }
+
+    private updateStyle = (action: PropertyEditAction) => {
+        // console.log("update style", action, this.selectedNode)
+        if (action === PropertyEditAction.COMPLETE)
+            this.selectedNode.data("completed", "true");
+		else if (action === PropertyEditAction.INTEREST)
+            this.selectedNode.data("interested", "true");
+    }
+
 }

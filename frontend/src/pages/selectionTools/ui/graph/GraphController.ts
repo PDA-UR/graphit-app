@@ -11,6 +11,7 @@ import {
 import { SaveButtonEvents } from "../saveButton/SaveButtonView";
 import { LogOutButtonEvents } from "../logoutButton/logoutButtonView";
 import { GraphView } from "./GraphView";
+import { PathViewEvents } from "../learnpath/PathViewGraph";
 
 export const GRAPH_SAVE_EVENT = "GRAPH_SAVE_EVENT";
 export enum GraphSaveProgress {
@@ -89,6 +90,9 @@ export abstract class GraphController<
 			this.onCompletedPropertyClicked();
 		else if (action === PropertyEditAction.INTEREST)
 			this.onInterestedPropertyClicked();
+
+		// update style in Path
+		experimentEventBus.emit(PathViewEvents.PROPERTY_ACTION_CLICKED, action)
 	};
 
 	private onCompletedPropertyClicked = () => {
