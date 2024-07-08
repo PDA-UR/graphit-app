@@ -61,14 +61,15 @@ function loadExtensions(extensions: any[]) {
 export const DEFAULT_OPTIONS: any = {
 	layout: {
 		name: 'fcose',
-		// @ts-ignore
+		quality: "proof",
 		randomize: false,
 		animate: true,
 		fit: true, 
 		packComponents: false,
-		padding: 5,
+		padding: 20,
 		nodeDimensionsIncludeLabels: true,
 		avoidOverlap: true,
+		nodeSeparation: 250,
 		nodeRepulsion: 5500,
 		// @ts-ignore
 		idealEdgeLength: 150,
