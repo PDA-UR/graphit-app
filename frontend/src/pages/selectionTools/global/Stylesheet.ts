@@ -1,5 +1,15 @@
 import { Stylesheet} from "cytoscape"
 
+const colors = {
+    default: "#999",
+    completed: "#6DBB6D",
+    goal: "#B7B10F",
+    interested: "#6340E3",
+    indicated: "#FEDD00",
+    lastClicked: "#77aeff",
+    selected: "#92b0dd", //"#4377c6",
+}
+
 const nodeSize = (ele: any) => {
 	let degree = ele.degree();
 	if(degree == 0) {
@@ -11,12 +21,12 @@ const nodeSize = (ele: any) => {
 const maxFont = 32
 const minFont = 12
 const fontSize = (ele: any) => {
-	let size = nodeSize(ele) / 2;
+	let size = nodeSize(ele) / 3;
 	// let size = ele.degree() * 2;
 	if (size > maxFont) return maxFont
 	if (size < minFont) return minFont;
 	return size;
-    return nodeSize(ele) / 2;
+    // return nodeSize(ele) / 2;
 }
 
 const lineLength = (ele:any) => {
@@ -31,7 +41,7 @@ const lineLength = (ele:any) => {
 
 
 const selectedFontSize = (ele:any) => {
-	return fontSize(ele) + 5;
+	return fontSize(ele) + 2;
 }
 
 const nodeDarken = (ele:any) => {
@@ -48,107 +58,32 @@ const switchTextColor = (ele:any) => {
 }
 
 export const stylesheet: Stylesheet[] = [ 
-    {
+    { // Default node style
         selector: "node",
         style: {
-            "background-color": "#999", //"#666", //"#D6D6D6",
+            "background-color": colors.default, //"#666", //"#D6D6D6",
             "background-opacity": nodeDarken,
             "label": "data(label)",
-            "width": nodeSize,
-            "height": nodeSize,
-            "shape": "ellipse",
-            "text-justification": "center",
-            "text-valign": "center",
-            "text-halign": "center",
+            "width": "label",
+            "height": "label",
+            "shape": "round-rectangle",
+
+            'text-halign': 'center',
+            'text-valign': 'center',
+            // @ts-ignore
+            "padding": 5,
             "font-size": fontSize,
             "text-events": "yes",
             "text-wrap": "wrap",
             "text-max-width": lineLength, //px -> use size of node
-            "text-background-color": "#C2C2C2",
-            "text-background-opacity": nodeDarken, //0.75,
-            // @ts-ignore
-            "text-background-shape": "round-rectangle",
             "text-background-padding": "3px",
             "z-index": nodeSize,
+
+            "border-width": "2px",
+            "border-opacity": 0,
         },
     },
-    {
-        selector: "node:selected",
-        style: { // BLUE select
-            "background-color": "#257AFD",
-            "text-background-color": "#81b3ff",
-            "text-background-opacity": 1,
-            "text-background-shape": "roundrectangle",
-            "text-background-padding": "3px",
-            "color": "black"
-        },
-    },
-    // edges of selected nodes
-    {
-        selector: "node[label]",
-        style: {
-            // @ts-ignore
-            "text-margin-y": "-8px",
-        },
-    },
-    {
-        selector: "node.indicated[label]",
-        style: {
-            "z-index": 9999999999,
-            "font-size": selectedFontSize,
-        },
-    },
-    {
-        selector: "node[completed = 'true']",
-        style: {
-            "background-color": "#6DBB6D",
-            "text-background-color": "#6DBB6D",
-            "text-border-color": "#6DBB6D",
-            // "background-blacken": 0, 
-        },
-    },
-    {
-        selector: "node[interested = 'true']",
-        style: { // NOTE: background-image handled in CytoscapeExtension.ts
-            "shape": "star",
-            'text-halign': 'center',
-            'text-valign': 'center',
-            "width": nodeSize,
-            "height": nodeSize,
-            "text-border-opacity": 1,
-            "text-border-width": 3,
-            "text-border-color": "#6340E3",
-            "text-border-style": "dashed",
-            "background-color": "#6340E3"
-        }
-    },
-    {
-        selector: "node[goal = 'true']",
-        style: { 
-            "background-color": "#B7B10F", //"#BE234F", //#FF5484
-            "text-background-color": "#B7B10F", // "#BE234F",
-            // "color": switchTextColor,
-            "z-index": 0,
-        },
-    },
-    { // style goals that have been completed (othwise doesn't style)
-        selector: "node[goal = 'true'][completed = 'true']",
-        style: {
-            "text-border-opacity": 1,
-            "text-border-width": 2,
-            "text-border-color": "#6DBB6D", //"#BE234F",
-            // "background-color": "#6DBB6D", 
-            "z-index": 0,
-        },
-    },
-    {
-        selector: "node[goal = 'true'][interest = 'true']",
-        style: {
-            "text-border-color": "#6340E3", //"#BE234F",
-            "background-color": "#6340E3",
-        },
-    },
-    {
+    { // Default edge style
         selector: "edge",
         style: {
             width: 3,
@@ -158,31 +93,80 @@ export const stylesheet: Stylesheet[] = [
             "curve-style": "bezier",
         },
     },
-
+    {
+        selector: "node[completed = 'true']",
+        style: {
+            "background-color": colors.completed,
+        },
+    },
+    {
+        selector: "node[interested = 'true']",
+        style: { // NOTE: background-image handled in CytoscapeExtension.ts
+            "background-color": colors.interested,
+        }
+    },
+    {
+        selector: "node[interested = 'true'][completed = 'true']",
+        style: { 
+            "background-color": colors.completed,
+            "border-color": colors.interested,
+            "border-opacity": 1,
+        },
+    },
+    {
+        selector: "node[goal = 'true']",
+        style: { 
+            "border-color": colors.goal,
+            "border-style": "double",
+            "border-opacity": 1,
+            "border-width": "4px",
+            "z-index": 50, 
+        },
+    },
+    {
+        selector: "node:selected",
+        style: { // BLUE select, e.g. lasso
+            "background-color": colors.selected,
+            "background-opacity": 1,
+            "border-opacity": 1,
+            "border-color": "#2063c9", // "#4377c6",
+            "z-index": 1,
+        },
+    },
     {
         selector: "node.last-clicked",
         style: {
-            backgroundColor: "#474747",
-            "border-width": "7px",
+            "background-color":  colors.lastClicked, // "#474747",
+            "background-opacity": 1,
+            "border-width": "3px",
             "border-color": "black",
         },
     },
     {
         selector: "node:selected.last-clicked",
         style: {
-            backgroundColor: "#4377c6",
+            "background-color": colors.lastClicked, // "#4377c6",
+            "background-opacity": 1,
         },
     },
+
     {
         selector: "node.indicated",
         style: {
-            "border-color": "#FEDD00",
-            "border-width": "3px",
-            "text-background-color": "#FEDD00",
-            "text-background-opacity": 1,
-            "z-index": 10,
+            "background-color": colors.indicated,
+            "background-opacity": 1,
+            "z-index": 500,
         },
     },
+    {
+        selector: "node.indicated[label]",
+        style: {
+            "z-index": 9999999999,
+            "font-size": selectedFontSize,
+            "font-weight": "bold",
+        },
+    },
+
     {
         selector: ".dimmed, .path-dimmed",
         style: {

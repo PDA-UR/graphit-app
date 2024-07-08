@@ -22,6 +22,7 @@ import { initNodeHtmlLabel, initUndoRedo } from "./CytoscapeExtensions";
 import { zoom } from "./CytoscapeView";
 import { SelectionType } from "../../global/SelectionType";
 import { PathViewEvents } from "../learnpath/PathViewGraph";
+import cytoscape from "cytoscape";
 
 export enum GraphViewEvents {
 	SELECTION_CHANGED = "selectionChanged",

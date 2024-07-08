@@ -83,7 +83,7 @@ export const DEFAULT_OPTIONS: any = {
 };
 
 const EXPERIMENT_STYLE: any[] = [
-	//
+	
 	{
 		selector: "edge.incoming, edge.outgoing",
 		style: {
@@ -96,6 +96,8 @@ const EXPERIMENT_STYLE: any[] = [
 			"width": 4,
 			"mid-target-arrow-shape": "triangle",
 			"mid-target-arrow-color": "#7F6F00",
+			"z-index": 1000,
+			"line-opacity": 1,
 		},
 	},
 
@@ -106,7 +108,10 @@ const EXPERIMENT_STYLE: any[] = [
 			// "text-background-color": "black",
 			// "text-background-opacity": 1,
 			"z-index": 10,
-			// "background-color": "black",
+			// "background-color": "#C8C3A1",
+			"border-color": "#FEDD00",
+			// "boder-color": "black",
+			"border-opacity": 1,
 		},
 	},
 	{
