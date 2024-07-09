@@ -4,6 +4,7 @@ import "./path.css"
 import { PathViewGraph } from "./PathViewGraph";
 import { dragSpacer } from "./PathSpacer";
 import { toggleLassoSelection } from "../graph/CytoscapeExtensions";
+import cytoscape from "cytoscape";
 
 export enum PathViewControllerEvents {
     NODE_CLICK = "nodeClick",
@@ -52,7 +53,7 @@ export class PathViewController {
     }
 
     public toggleView() {
-        console.log("toggle path view", this.isVisible())
+        // console.log("toggle path view", this.isVisible())
         if(this.isVisible()) {
             this.onOpen(true);
             if (this.selectedNode != undefined) 
@@ -83,10 +84,8 @@ export class PathViewController {
     }
 
     private createPath() {
-        console.log("show path for", this.selectedNode)
-        this.graph.showPath(this.selectedNode)
-        // get all path nodes, from the selected on
-    }
+        // console.log("show path for", this.selectedNode)
+        this.graph.showPath(this.selectedNode)    }
 
 
     // Toggle on all events
@@ -113,6 +112,7 @@ export class PathViewController {
         this.cy.zoomingEnabled(on);
         this.cy.panningEnabled(on);
         toggleLassoSelection(this.cy, on);
+        this.graph.removeRemainingStyling()
     }
 
     private initKeyboardListeners = (on: boolean) => {

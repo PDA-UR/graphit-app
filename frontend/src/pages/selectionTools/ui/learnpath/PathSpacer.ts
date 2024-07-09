@@ -1,8 +1,9 @@
-// Via: https://stackoverflow.com/a/55202728 und
-// Via: https://stackoverflow.com/a/70108281
 
+import cytoscape from "cytoscape";
 import { toggleLassoSelection } from "../graph/CytoscapeExtensions";
 
+// Via: https://stackoverflow.com/a/55202728 und
+// Via: https://stackoverflow.com/a/70108281
 export function dragSpacer(element: HTMLElement, cy: cytoscape.Core, pathCy: cytoscape.Core) {
 
     const container = document.getElementById("path-container") as HTMLElement;
