@@ -23,7 +23,7 @@
 .rect{
     width: 20px;
     height: 20px;
-    margin: 0 4px;
+    margin: 2px 4px;
     border-radius: 5px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -38,30 +38,32 @@
     background-color: #999 ;
 }
 
-#goal-node{
+.goal-node{
     background-color: rgb(183, 177, 15, 0.8);
     background-image: url("../../icons/flag_FILL.svg");
 }
 
-#complete-node{
+.complete-node{
     background-color: rgb(109, 187, 109, 0.8);
     background-image: url("../../icons/check-circle.svg");
 }
 
-#interest-node{
+.interest-node{
     background-color: rgb(99, 64, 227, 0.7);
     background-image: url("../../icons/interested_normal.svg");  
     background-size: 13px;
 }
 
 .legend-indicated { 
-    border: solid 2px #000;
+    box-shadow: 3px 3px 1px #FEDD00;
+    border-radius: 10px;
+    /* border: solid 2px #000; */
     /* box-shadow: 2px 2px 2px #FEDD00; */
     /* border-radius: 10px; */
 }
 
 .legend-selected {
-    /* border: solid 2px #0066ff; */
-    box-shadow: 2px 2px 2px #0066ff;
-    border-radius: 10px;
+    border: solid 2px #0066ff;
+    /* box-shadow: 3px 3px 2px #0066ff; */
+    /* border-radius: 10px; */
 }

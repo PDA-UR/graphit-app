@@ -97,12 +97,16 @@ export const stylesheet: Stylesheet[] = [
         selector: "node[completed = 'true']",
         style: {
             "background-color": colors.completed,
+            "border-color": colors.completed,
+            "border-opacity": 1, 
         },
     },
     {
         selector: "node[interested = 'true']",
         style: { // NOTE: background-image handled in CytoscapeExtension.ts
             "background-color": colors.interested,
+            "border-color": colors.interested,
+            "border-opacity": 1, 
         }
     },
     {
@@ -123,13 +127,14 @@ export const stylesheet: Stylesheet[] = [
             "z-index": 50, 
         },
     },
+
     {
         selector: "node:selected",
         style: { // BLUE select, e.g. lasso
             "background-color": colors.selected,
             "background-opacity": 1,
-            "border-opacity": 1,
-            "border-color": "#2063c9", // "#4377c6",
+            // "border-opacity": 1,
+            // "border-color": "#2063c9", // "#4377c6",
             "z-index": 1,
         },
     },
@@ -137,11 +142,12 @@ export const stylesheet: Stylesheet[] = [
         selector: "node.last-clicked",
         style: {
             "background-color":  colors.lastClicked, // "#474747",
-            "background-opacity": 1,
-            "border-width": "3px",
-            "border-color": "black",
+            // "background-opacity": 1,
+            // "border-width": "3px",
+            // "border-color": "black",
         },
     },
+
     {
         selector: "node:selected.last-clicked",
         style: {
@@ -180,4 +186,29 @@ export const stylesheet: Stylesheet[] = [
         },
     },
 
+
+    // PATH-CORE (for easier separation)
+    {
+		selector: "edge.path-incoming, edge.path-outgoing",
+		style: {
+			"line-fill": "linear-gradient",
+			// @ts-ignore
+			"line-gradient-stop-positions": "0 100%",
+			// @ts-ignore
+			"line-gradient-stop-colors": "black #FEDD00",
+			"target-arrow-color": "#FEDD00",
+			"width": 4,
+			"z-index": 1000,
+			"line-opacity": 1,
+		},
+	},
+
+	{
+		selector: ".path-neighbor",
+		style: {
+			"z-index": 10,
+			"border-color": "#FEDD00",
+			"border-opacity": 1,
+		},
+	},
 ]

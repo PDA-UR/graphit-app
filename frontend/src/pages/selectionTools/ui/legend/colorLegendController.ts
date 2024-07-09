@@ -3,6 +3,7 @@ import "./legend.css";
 import { experimentEventBus } from "../../global/ExperimentEventBus";
 import { ExperimentGraphViewEvents } from "../experiment/graph/ExperimentGraphView";
 import { PathViewControllerEvents } from "../learnpath/PathViewController";
+import cytoscape from "cytoscape";
 
 /**
  * Mirror the hover/click actions on the graph nodes 
@@ -47,7 +48,7 @@ export class ColorLegendController {
         });
     }
 
-    private setIndication(id: string, on: boolean) {
+    private setIndication(id: string|undefined, on: boolean) {
         if (id == undefined) return
         const node = this.cy.filter(`[id = "${id}"]`);
         this.setClassesForLegend(node, on, "legend-indicated")
