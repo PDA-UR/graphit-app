@@ -1,3 +1,4 @@
+import cytoscape from "cytoscape";
 import { experimentEventBus } from "../../../global/ExperimentEventBus";
 import {
 	fromKeyboardEvent,
@@ -29,7 +30,7 @@ import {
 } from "../../shared/SharedEventBus";
 import { Toast } from "../../toast/Toast";
 import { SearchViewControllerEvents } from "../search/SearchController";
-import cytoscape from "cytoscape-select";
+// import cytoscape from "cytoscape-select";
 
 export enum ExperimentGraphViewEvents {
 	INDICATE_NODE_START = "hoverNodeStart",

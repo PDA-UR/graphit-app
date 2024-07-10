@@ -187,7 +187,7 @@ export const stylesheet: Stylesheet[] = [
     },
 
 
-    // PATH-CORE (for easier separation)
+    // STYLES FOR THE PATH-CORE (for easier separation)
     {
 		selector: "edge.path-incoming, edge.path-outgoing",
 		style: {
@@ -202,7 +202,6 @@ export const stylesheet: Stylesheet[] = [
 			"line-opacity": 1,
 		},
 	},
-
 	{
 		selector: ".path-neighbor",
 		style: {
@@ -211,4 +210,11 @@ export const stylesheet: Stylesheet[] = [
 			"border-opacity": 1,
 		},
 	},
+    {
+        selector: ".neighbor-previuew",
+        style: {
+            "backgroundColor": "#FFF",
+            "border-color": colors.default,
+        }
+    }
 ]

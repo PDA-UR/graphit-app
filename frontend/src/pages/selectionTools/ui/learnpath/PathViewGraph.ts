@@ -152,6 +152,8 @@ export class PathViewGraph {
         experimentEventBus.emit(PathViewEvents.NODE_SELECT, event);
         this.removeRemainingStyling();
         this.selectedNode = event.target;
+
+        // IDEA: show the neighbours -> get from main core
     }
 
     public removeRemainingStyling() {
