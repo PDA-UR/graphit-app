@@ -27,6 +27,7 @@ import cytoscape from "cytoscape";
 export enum GraphViewEvents {
 	SELECTION_CHANGED = "selectionChanged",
 	LAST_CLICKED_CHANGED = "lastClickedChanged",
+	PATH_SELECTION_CHANGED = "pathSelectionChanged",
 }
 
 export abstract class GraphView extends View {
@@ -314,6 +315,10 @@ export abstract class GraphView extends View {
 						GraphViewEvents.SELECTION_CHANGED,
 						selectedNodes
 					);
+					experimentEventBus.emit(
+						GraphViewEvents.PATH_SELECTION_CHANGED,
+						this.cy.$(":selected").map((n: any) => n.data("label"))
+					)
 					this.selectEventTimeout = null;
 				}, 10);
 		}

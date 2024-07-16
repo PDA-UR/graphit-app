@@ -7,6 +7,7 @@ import cytoscapeFcose from "cytoscape-fcose";
 import { experimentEventBus } from "../../global/ExperimentEventBus";
 import { ExperimentGraphViewEvents } from "../experiment/graph/ExperimentGraphView";
 import { PropertyEditAction } from "../propertyModal/PropertyModalController";
+import { GraphViewEvents } from "../graph/GraphView";
 
 export enum PathViewEvents {
     NODE_SELECT = "nodeSelect", // select the same item in both graphs (don't change path-layout)
@@ -54,10 +55,17 @@ export class PathViewGraph {
 
     // Events exclusive for the path graph
     private initGraphEvents() {
-        // TODO: mirror graph interaction of main core (i.e. drag with right mb)
+        // TODO: mirror graph interaction of main core (i.e. drag with right mb) -> creates bugs :(
         // window.addEventListener("mousedown", this.onMouseDown);
         // window.addEventListener("mouseup", this.onMouseUp);
         // window.addEventListener("mousemove", this.onMouseMove);
+        // this.cy.on("click", "cy", this.onCanvasClick)
+
+        // this.cy.on("multiSelect", this.onMultiSelect);
+        experimentEventBus.addListener(
+            GraphViewEvents.PATH_SELECTION_CHANGED,
+            this.onSelectionChanged
+        );
 
         this.cy.on("mouseover", "node", this.onHoverNode);
 		this.cy.on("mouseout", "node", this.onHoverNodeEnd);
@@ -120,8 +128,15 @@ export class PathViewGraph {
     // IDEA !!: gradient on edges -> darker = closer to selection/target
     // TODO: interaction with path same as main (zoom, highlight neighbors, indication)
     // ??: Move along the graph within the path view, instead of just visible selection
+    // Show lasso selection
 
     /* -- EVENTS -- */
+
+    private onCanvasClick = (event:any) => {
+        console.log("hi");
+        event.preventDefault();
+        // stops panning on left mouse button
+    }
 
     public onMouseDown = (event:any) => {
         if (event.buttons == 2) {
@@ -178,6 +193,7 @@ export class PathViewGraph {
     private onHoverNode = (event:any) => {
         const node = event.target! as cytoscape.NodeSingular;
         node.addClass("indicated");
+        // node.removeClass("path-selected")
         
         const id = node.id();
 
@@ -225,9 +241,9 @@ export class PathViewGraph {
     private setNodeIndication(id:string, on:boolean) {
         const node = this.cy.getElementById(id);
 		if (on) {
-			node.addClass("indicated");
+			node.addClass("path-indicated");
 		} else {
-			node.removeClass("indicated");
+			node.removeClass("path-indicated");
 		}
     }
 
@@ -260,5 +276,19 @@ export class PathViewGraph {
 			outgoingElements.forEach((ele: any) => ele.removeClass("path-outgoing"));
 		}
 	}
+
+    private onSelectionChanged = (selectedLabels: any) => {
+        // mimic the selection of the main core (lasso-selects)
+        this.cy.elements().removeClass("path-selected");
+
+        selectedLabels.forEach((label:string) => {
+            const el = this.cy.nodes(`[label ="${label}"]`);
+            if (el.length >= 1){
+                el.addClass("path-selected")
+            }
+        });
+
+    }
+
 
 }

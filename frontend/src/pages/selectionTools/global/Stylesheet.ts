@@ -8,6 +8,7 @@ const colors = {
     indicated: "#FEDD00",
     lastClicked: "#77aeff",
     selected: "#92b0dd", //"#4377c6",
+    parent: "#f7f7f7"
 }
 
 const nodeSize = (ele: any) => {
@@ -211,10 +212,40 @@ export const stylesheet: Stylesheet[] = [
 		},
 	},
     {
-        selector: ".neighbor-previuew",
+        selector: ".neighbor-preview",
         style: {
             "backgroundColor": "#FFF",
             "border-color": colors.default,
         }
-    }
+    },
+    {
+        selector: ":parent",
+        style: {
+            "background-color": colors.parent,
+        }
+    },
+    {
+        selector: ":parent.indicated",
+        style: {
+            "background-color": colors.parent,
+            "background-blacken": 0.05, 
+            "z-index": 500,
+        }
+    },
+    {
+        selector: ".path-selected",
+        style: { // BLUE select, e.g. lasso
+            "background-color": colors.selected,
+            "background-opacity": 0.7,
+            "z-index": 1,
+        },
+    },
+    {
+        selector: ".path-indicated",
+        style: {
+            "background-color": colors.indicated,
+            "background-opacity": 1,
+            "z-index": 500,
+        },
+    },
 ]

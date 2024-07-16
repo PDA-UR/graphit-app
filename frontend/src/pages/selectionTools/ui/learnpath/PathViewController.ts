@@ -18,6 +18,7 @@ export class PathViewController {
     private readonly $toggleBtn: HTMLButtonElement;
     private readonly $spacer: HTMLDivElement;
     private isOpen: boolean;
+    private isMultiSelect: boolean = false;
     private selectedNode: any | null = null;
 
     constructor(cy: cytoscape.Core) {
@@ -68,8 +69,9 @@ export class PathViewController {
     }
 
     private setSelectedNode(target:any) {
-        if (target == undefined) return;
+        if (target == undefined || this.isMultiSelect) return;
         this.selectedNode = target;
+
         if (this.isOpen) {
             this.showPath()
         }
@@ -84,8 +86,8 @@ export class PathViewController {
     }
 
     private createPath() {
-        // console.log("show path for", this.selectedNode)
-        this.graph.showPath(this.selectedNode)    }
+        this.graph.showPath(this.selectedNode)   
+    }
 
 
     // Toggle on all events
@@ -121,12 +123,19 @@ export class PathViewController {
 	};
 
 	private onKeydown = (e: KeyboardEvent) => {
+        this.isMultiSelect = false
 		if (e.code === "KeyL" && e.ctrlKey) {
 			e.preventDefault();
 			e.stopPropagation();
-
 			this.toggleView()
-		}
+        } else if (e.code === "ShiftLeft" || e.code == "ControlLeft") {
+            e.preventDefault();
+            e.stopPropagation()
+            this.isMultiSelect = true;
+            // Don't change the selection 
+            // ??: show path of shift selection
+        }
+
 	};
     
 }
