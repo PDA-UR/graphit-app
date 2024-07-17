@@ -38,12 +38,13 @@ export const onStartExperimentCondition = (
 		client,
 		userEntityId
 	);
+
 	//@ts-ignore
 	const searchController = new SearchViewController(cy);
 	const filterController = new FilterBarController(cy, filterManager);
 	const selectionTypeIndicatorController =
 		new SelectionTypeIndicatorController();
-	const propertyModalController = new PropertyModalController();
+	const propertyModalController = new PropertyModalController(userEntityId); // flag demo
 	const saveButtonController = new SaveButtonController();
 	const logoutButtonController = new LogoutButtonController();
 	const legendButtonController = new LegendButtonController();
@@ -56,7 +57,9 @@ export const onStartExperimentCondition = (
 		graphController.toggle(on);
 		searchController.toggle(on);
 		filterController.toggle(on);
-		propertyModalController.toggle(on);
+		if (userEntityId != "Q157") { // disable for demo
+			propertyModalController.toggle(on)
+		}
 		saveButtonController.toggle(on);
 		logoutButtonController.toggle(on);
 		legendButtonController.toggle(on);

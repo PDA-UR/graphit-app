@@ -35,11 +35,6 @@ export class User {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		if (isDemo(credentials)) return new Unauthorized("Demo User");
-		// const demo = isDemo(credentials);
-		// console.log("!!!! demo", demo);
-		// if (demo === true) {
-		// 	console.log("demo 2")
-		// }
 
 		try {
 			const r = await this.actionExecutor.toggleUserProperty(

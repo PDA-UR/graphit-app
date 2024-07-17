@@ -19,6 +19,7 @@ export enum GraphSaveProgress {
 	COMPLETE,
 	ERROR,
 	COUNT_WARNING,
+	UNAUTHORIZED,
 }
 
 export abstract class GraphController<
@@ -69,15 +70,22 @@ export abstract class GraphController<
 			.then((results) => {
 				this.view.clearActions();
 				this.view.applyChanges();
-				experimentEventBus.emit(GRAPH_SAVE_EVENT, {
-					progress: GraphSaveProgress.COMPLETE,
-				});
+				if (results[0].status === 401 ) { 
+					experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+						progress: GraphSaveProgress.UNAUTHORIZED,
+					});
+				} else {
+					experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+						progress: GraphSaveProgress.COMPLETE,
+					});
+				}
 			})
 			.catch((error) => {
 				experimentEventBus.emit(GRAPH_SAVE_EVENT, {
 					progress: GraphSaveProgress.ERROR,
 					error,
 				});
+				console.log("error")
 			})
 			.finally(() => {
 				console.log("finally");

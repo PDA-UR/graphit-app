@@ -141,5 +141,4 @@ export class PropertyModalView extends View {
 		this.toggleVisibility(false);
 	}
 
-	// TODO: toggle open/close 
 }

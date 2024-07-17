@@ -183,3 +183,8 @@ div {
 label {
 	z-index: 1000;
 }
+
+#username {
+	color: gray;
+	font-size: small;
+}

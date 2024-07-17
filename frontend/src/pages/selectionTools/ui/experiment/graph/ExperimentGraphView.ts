@@ -59,7 +59,7 @@ export class ExperimentGraphView extends GraphView {
 		const modifierKeys = fromKeyboardEvent(e),
 			selectionType = getSelectionType(modifierKeys);
 		// console.log("Key down", e);
-		if (e.key === "Shift") {
+		if (e.key === "Shift") { 
 			console.log("Shift pressed");
 			const hoveringNode = this.cy.$(".indicated").filter("node");
 			if (hoveringNode) {
@@ -428,7 +428,6 @@ export class ExperimentGraphView extends GraphView {
 		this.cy.elements().removeClass("indicated");
 	}
 
-	// NOTE: set node hightlights
 	public setNodeNeighborHighlight(rootNode: any, on: boolean) {
 		const neighbors = rootNode.neighborhood(),
 			incomingElements: any[] = [],
