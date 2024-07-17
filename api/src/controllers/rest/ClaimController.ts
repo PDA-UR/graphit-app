@@ -4,7 +4,7 @@ import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Post, Required, Returns } from "@tsed/schema";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
-import { Credentials, isValid } from "../../models/CredentialsModel";
+import { Credentials, isDemo, isValid } from "../../models/CredentialsModel";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { RemoveClaim } from "../../models/claim/RemoveClaimModel";
@@ -32,6 +32,7 @@ export class Claim {
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (isDemo(credentials)) return new Unauthorized("Demo User");
 
 		const r = await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -59,6 +60,7 @@ export class Claim {
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (isDemo(credentials)) return new Unauthorized("Demo User");
 
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -82,6 +84,7 @@ export class Claim {
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (isDemo(credentials)) return new Unauthorized("Demo User");
 
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -105,6 +108,7 @@ export class Claim {
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (isDemo(credentials)) return new Unauthorized("Demo User");
 
 		const addResult = await this.actionExecutor.executeClaimAction(
 			"claim",

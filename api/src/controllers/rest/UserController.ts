@@ -4,7 +4,7 @@ import { Logger } from "@tsed/logger";
 import { PathParams, Session } from "@tsed/platform-params";
 import { Description, Post, Returns } from "@tsed/schema";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
-import { Credentials, isValid } from "../../models/CredentialsModel";
+import { Credentials, isDemo, isValid } from "../../models/CredentialsModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
 
 /**
@@ -34,6 +34,13 @@ export class User {
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		// const demo = isDemo(credentials);
+		// console.log("!!!! demo", demo);
+		// if (demo === true) {
+		// 	console.log("demo 2")
+		// }
+
 		try {
 			const r = await this.actionExecutor.toggleUserProperty(
 				propertyId,

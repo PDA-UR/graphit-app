@@ -21,3 +21,11 @@ export const isValid = (credentials: Credentials): boolean => {
 		credentials.password !== ""
 	);
 };
+
+
+// Don't allow a demo user to edit the graph
+export const isDemo = (credentials: Credentials): boolean => {
+	return (
+		credentials.username == "Max Mustermann"
+	);
+};
