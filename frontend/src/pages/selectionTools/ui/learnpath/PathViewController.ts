@@ -129,8 +129,8 @@ export class PathViewController {
 			e.stopPropagation();
 			this.toggleView()
         } else if (e.code === "ShiftLeft" || e.code == "ControlLeft") {
-            e.preventDefault();
-            e.stopPropagation()
+            // e.preventDefault();
+            // e.stopPropagation()
             this.isMultiSelect = true;
             // Don't change the selection 
             // ??: show path of shift selection

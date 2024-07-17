@@ -44,7 +44,7 @@ export const onStartExperimentCondition = (
 	const filterController = new FilterBarController(cy, filterManager);
 	const selectionTypeIndicatorController =
 		new SelectionTypeIndicatorController();
-	const propertyModalController = new PropertyModalController(userEntityId); // flag demo
+	const propertyModalController = new PropertyModalController(); // flag demo
 	const saveButtonController = new SaveButtonController();
 	const logoutButtonController = new LogoutButtonController();
 	const legendButtonController = new LegendButtonController();

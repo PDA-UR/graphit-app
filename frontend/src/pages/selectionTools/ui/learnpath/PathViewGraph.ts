@@ -28,7 +28,7 @@ export class PathViewGraph {
     private selectedNode: any;
 
     constructor() {
-        // initialise use of extension for the separate cytoscape core instance
+        // initialize use of extension for the separate cytoscape core instance
         cytoscape.use(cytoscapeDagre)
         cytoscape.use(cytoscapeFcose)
 
@@ -61,7 +61,6 @@ export class PathViewGraph {
         // window.addEventListener("mousemove", this.onMouseMove);
         // this.cy.on("click", "cy", this.onCanvasClick)
 
-        // this.cy.on("multiSelect", this.onMultiSelect);
         experimentEventBus.addListener(
             GraphViewEvents.PATH_SELECTION_CHANGED,
             this.onSelectionChanged
@@ -80,7 +79,6 @@ export class PathViewGraph {
             ExperimentGraphViewEvents.INDICATE_NODE_START, 
             this.onIndirectIndicationStart
         )
-        // this.cy.on("scrollzoom", "cy", this.zoom)
     }
 
     public showPath(target:cytoscape.NodeSingular) {
@@ -125,15 +123,10 @@ export class PathViewGraph {
         this.selectedNode = this.cy.$(`[label = "${target.data("label")}"]`); // uses label bc. id's uses chars that would need to be escaped
     }
 
-    // IDEA !!: gradient on edges -> darker = closer to selection/target
-    // TODO: interaction with path same as main (zoom, highlight neighbors, indication)
-    // ??: Move along the graph within the path view, instead of just visible selection
-    // Show lasso selection
-
     /* -- EVENTS -- */
 
     private onCanvasClick = (event:any) => {
-        console.log("hi");
+        console.log("canvas click");
         event.preventDefault();
         // stops panning on left mouse button
     }
@@ -172,7 +165,7 @@ export class PathViewGraph {
     }
 
     public removeRemainingStyling() {
-        this.cy.elements().removeClass("last-clicked"); // removes the class, that would otherwise stay
+        this.cy.elements().removeClass("last-clicked"); // remove, otherwise style stays
         this.cy.elements().removeClass("incoming");
         this.cy.elements().removeClass("outgoing");
         this.cy.elements().removeClass("neighbor");
@@ -193,7 +186,6 @@ export class PathViewGraph {
     private onHoverNode = (event:any) => {
         const node = event.target! as cytoscape.NodeSingular;
         node.addClass("indicated");
-        // node.removeClass("path-selected")
         
         const id = node.id();
 
@@ -223,6 +215,8 @@ export class PathViewGraph {
     }
 
     private updateStyle = (action: PropertyEditAction) => {
+        if (this.selectedNode == undefined) return;
+
         if (action === PropertyEditAction.COMPLETE)
             this.selectedNode.data("completed", "true");
 		else if (action === PropertyEditAction.INTEREST)
@@ -287,6 +281,7 @@ export class PathViewGraph {
                 el.addClass("path-selected")
             }
         });
+        console.log("selection changed path")
 
     }
 
