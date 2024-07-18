@@ -23,9 +23,9 @@ export class Claim {
 
 	@Post("/:id/create")
 	@Description("Create a claim")
-	@Returns(200, String).ContentType("text/plain")
-	@Returns(500, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, String).ContentType("text/plain"))
+	@(Returns(500, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async create(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() createClaim: CreateClaim,
@@ -51,9 +51,9 @@ export class Claim {
 
 	@Post("/:id/remove")
 	@Description("Remove a claim")
-	@Returns(200, String).ContentType("text/plain")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, String).ContentType("text/plain"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async remove(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() removeClaim: RemoveClaim,
@@ -75,9 +75,9 @@ export class Claim {
 
 	@Post("/:id/update")
 	@Description("Update a claim")
-	@Returns(200, String).ContentType("text/plain")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, String).ContentType("text/plain"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async update(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() updateData: UpdateClaim,
@@ -99,9 +99,9 @@ export class Claim {
 
 	@Post("/:id/convertClaim")
 	@Description("Convert a claim")
-	@Returns(200, String).ContentType("text/plain")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, String).ContentType("text/plain"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async move(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() convertData: ConvertClaim,

@@ -20,9 +20,9 @@ export class Sparql {
 
 	@Post("/query/:sparql")
 	@Description("Execute a sparql query")
-	@Returns(200, SparqlResult).ContentType("application/json")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, SparqlResult).ContentType("application/json"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async query(
 		@Session("user") credentials: Credentials,
 		@PathParams("sparql") sparql: string
@@ -37,9 +37,9 @@ export class Sparql {
 
 	@Post("/categories")
 	@Description("Retrieve all categories in the wiki")
-	@Returns(200, SparqlResult).ContentType("application/json")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, SparqlResult).ContentType("application/json"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async categories(@Session("user") credentials: Credentials) {
 		this.logger.info("Checking credentials", credentials);
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
@@ -51,9 +51,9 @@ export class Sparql {
 	@Description(
 		"Retrieve the users graph (learning contents, completions, etc.)"
 	)
-	@Returns(200, SparqlResult).ContentType("application/json")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, SparqlResult).ContentType("application/json"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async userGraph(@Session("user") credentials: Credentials) {
 		this.logger.info("Checking credentials", credentials);
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
@@ -66,9 +66,9 @@ export class Sparql {
 
 	@Get("/resources/:courseId")
 	@Description("Retrieve all resources in the wiki")
-	@Returns(200, SparqlResult).ContentType("application/json")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, SparqlResult).ContentType("application/json"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async resources(
 		@Session("user") credentials: Credentials,
 		@PathParams("courseId") courseId: string,
@@ -84,9 +84,9 @@ export class Sparql {
 
 	@Get("/courseQuery/:courseId")
 	@Description("Retrieve the graph for a specific course")
-	@Returns(200, SparqlResult).ContentType("application/json")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, SparqlResult).ContentType("application/json"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async wissGraph(
 		@Session("user") credentials: Credentials,
 		@PathParams("courseId") courseId: string
@@ -105,9 +105,9 @@ export class Sparql {
 
 	@Get("/itemResource/:qid")
 	@Description("Retrieve the resources attached to a single item")
-	@Returns(200, SparqlResult).ContentType("application/json")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, SparqlResult).ContentType("application/json"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	async getItemResource(
 		@Session("user") credentials: Credentials,
 		@PathParams("qid") qid: string,

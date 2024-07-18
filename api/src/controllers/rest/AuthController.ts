@@ -25,8 +25,8 @@ export class Auth {
 
 	@Get("/whoami")
 	@Description("Returns the current session")
-	@Returns(200, UserSession).ContentType("application/json")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, UserSession).ContentType("application/json"))
+	@(Returns(401, String).ContentType("text/plain"))
 	whoAmI(@Session("user") credentials: Credentials) {
 		console.log("Session =>", credentials);
 		if (isValid(credentials)) {
@@ -42,9 +42,9 @@ export class Auth {
 
 	@Post("/login")
 	@Description("Login to the API (using Wikibase credentials)")
-	@Returns(200, UserSession).ContentType("text/plain")
-	@Returns(400, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("application/json")
+	@(Returns(200, UserSession).ContentType("text/plain"))
+	@(Returns(400, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("application/json"))
 	async login(
 		@Required() @BodyParams() credentials: Credentials,
 		@Session("user") existingSession: Credentials
@@ -53,7 +53,8 @@ export class Auth {
 		if (existingSession.username == "Max Mustermann") {
 			existingSession.password = demoPassword; // password in .env
 			this.logger.info("Demo Login", existingSession)
-		} else existingSession.password = credentials.password;
+		} else 
+			existingSession.password = credentials.password;
 
 		this.logger.info("Logging in as", existingSession);
 		const wbEdit = this.wikibaseEditService.getSessionData(existingSession);
@@ -91,8 +92,8 @@ export class Auth {
 
 	@Post("/logout")
 	@Description("Logout from the API (using Wikibase credentials)")
-	@Returns(200, String).ContentType("text/plain")
-	@Returns(401, String).ContentType("text/plain")
+	@(Returns(200, String).ContentType("text/plain"))
+	@(Returns(401, String).ContentType("text/plain"))
 	logout(@Session("user") session: Credentials) {
 		if (isValid(session)) {
 			this.logger.info("Successfully logged out from", session);
