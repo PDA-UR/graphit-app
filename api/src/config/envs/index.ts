@@ -8,3 +8,5 @@ export const envs = {
 console.log(dotenv.config().parsed);
 
 export const isProduction = process.env.NODE_ENV === "production";
+
+export const demoPassword = process.env.DEMO_SECRET as string;
