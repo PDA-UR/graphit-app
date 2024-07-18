@@ -25,6 +25,7 @@ export class PathViewGraph {
     private readonly $container: HTMLDivElement;
     private layoutOptions: any;
     private isPanning: boolean = false;
+    private cursorOverContainer: boolean = false;
     private selectedNode: any;
 
     constructor() {
@@ -59,13 +60,14 @@ export class PathViewGraph {
         // window.addEventListener("mousedown", this.onMouseDown);
         // window.addEventListener("mouseup", this.onMouseUp);
         // window.addEventListener("mousemove", this.onMouseMove);
-        // this.cy.on("click", "cy", this.onCanvasClick)
-
+        
         experimentEventBus.addListener(
             GraphViewEvents.PATH_SELECTION_CHANGED,
             this.onSelectionChanged
         );
 
+        // this.cy.on("mouseover", this.onHoverContainer);
+		// this.cy.on("mouseout", this.onHoverContainerEnd);
         this.cy.on("mouseover", "node", this.onHoverNode);
 		this.cy.on("mouseout", "node", this.onHoverNodeEnd);
         this.cy.on("click", "node", this.onNodeSelected);
@@ -131,7 +133,12 @@ export class PathViewGraph {
         // stops panning on left mouse button
     }
 
-    public onMouseDown = (event:any) => {
+    public onMouseDown = (event:MouseEvent) => {
+        // Only pan if mouse is over canvas
+        console.log("pan1", this.cursorOverContainer)
+        if (!this.cursorOverContainer) return;
+
+        console.log("pan2", event)
         if (event.buttons == 2) {
             this.isPanning = true;
             this.cy.panningEnabled(true)
@@ -181,6 +188,35 @@ export class PathViewGraph {
             return false;
         }
         return url.protocol === "http:" || url.protocol === "https:"; 
+    }
+
+    private onHoverContainer = (event: any) => {
+        console.log("on")
+        try {
+            if (event.target.isNode()) {
+                this.onHoverNode(event)
+            } else if (event.target.container() != null) {
+                this.cursorOverContainer = true;
+            }
+        } catch {
+            this.cursorOverContainer = true;
+            return;
+        }
+    }
+
+    // BUG: doesn't switch on/off after panning "on" a node
+    private onHoverContainerEnd = (event: any) => {
+        console.log("off")
+        try {
+            if (event.target.isNode()) {
+                this.onHoverNodeEnd(event) // NOTE: convert to function to use this way
+            } else if (event.target.container() != null) {
+                this.cursorOverContainer = false;
+            }
+        } catch {
+            this.cursorOverContainer = false;
+            return;
+        }
     }
 
     private onHoverNode = (event:any) => {
