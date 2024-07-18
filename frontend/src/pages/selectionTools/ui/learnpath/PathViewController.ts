@@ -69,7 +69,9 @@ export class PathViewController {
     }
 
     private setSelectedNode(target:any) {
+        console.log("multi-select", this.isMultiSelect)
         if (target == undefined || this.isMultiSelect) return;
+        
         this.selectedNode = target;
 
         if (this.isOpen) {
@@ -120,6 +122,7 @@ export class PathViewController {
     private initKeyboardListeners = (on: boolean) => {
 		const fn = on ? window.addEventListener : window.removeEventListener;
 		fn("keydown", this.onKeydown);
+        fn("keyup", this.onKeyUp);
 	};
 
 	private onKeydown = (e: KeyboardEvent) => {
@@ -129,13 +132,15 @@ export class PathViewController {
 			e.stopPropagation();
 			this.toggleView()
         } else if (e.code === "ShiftLeft" || e.code == "ControlLeft") {
-            // e.preventDefault();
-            // e.stopPropagation()
-            this.isMultiSelect = true;
-            // Don't change the selection 
-            // ??: show path of shift selection
+            this.isMultiSelect = true; // Don't change the selection 
         }
 
 	};
+
+    private onKeyUp = (e: KeyboardEvent) => {
+        if (e.code === "ShiftLeft" || e.code == "ControlLeft") {
+            this.isMultiSelect = false;
+        }
+    }
     
 }
