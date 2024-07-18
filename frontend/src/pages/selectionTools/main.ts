@@ -3,7 +3,6 @@ import "tippy.js/dist/tippy.css";
 import { onStartExperimentCondition } from "./loadLogic/startExperimentCondition";
 import { createApiClient } from "../../shared/util/getApiClient";
 import WikibaseClient from "../../shared/WikibaseClient";
-import { getCredentials} from "../../shared/util/GetCredentials";
 import { CredentialsModel } from "../../shared/client/ApiClient";
 import { experimentEventBus } from "./global/ExperimentEventBus";
 import {
@@ -14,6 +13,8 @@ import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
 import { tryLogin } from "../../shared/util/GetCredentials";
+import { getEnvVar } from "../../shared/util/Env";
+
 
 /**
  * Get the qid (e.g. Q926) of the default course,
@@ -25,48 +26,45 @@ function getDefaultCourse() {
 	return menu.selectedOptions[0].value as string;
 }
 
-// Pulls the graph anew on every reload
-const main = async () => {
 
+/**
+ * Starts the application.
+ * Checks the if current environment is production or local development 
+ */
+const main = async() => {
+	const instance = getEnvVar("VITE_WIKIBASE_INSTANCE");
+
+	let isProd = true
+	if(instance.includes("localhost")) {
+		isProd = false;
+	} 
+	console.log("[PROD]", isProd)
+
+	initApp(isProd);
+}
+
+
+/**
+ * Loads the graph according to the environment.
+ * Start the necessary services and controllers for the application.
+ * @param isProd is the app in production?
+ */
+const initApp = async (isProd: boolean) => {
 	const spinner = new LoadingSpinner();
 	spinner.start();
 
-	// Init Application:
-	const api = createApiClient();
+	const { wikibaseClient, userInfo } = await doLogin()
 
-	const localStorageCredentials = localStorage.getItem("credentials");
-	let credentials: CredentialsModel;
-	let wikibaseClient: WikibaseClient;
-	let userInfo;
-	if (localStorageCredentials) {
-		credentials = JSON.parse(localStorageCredentials);
-		wikibaseClient = new WikibaseClient(credentials, api);
-		userInfo = await wikibaseClient.login();
+	// Get the elements for the graph
+	let elements: any;
+	if (isProd) {
+		elements = await wikibaseClient.getCourseQuery(getDefaultCourse());
 	} else {
-		// credentials = getCredentials();
-		// localStorage.setItem("credentials", JSON.stringify(credentials));
-		// let logRes:any = await handleCredentials(api);
-		let logRes = await tryLogin(api)
-		// TODO: do proper await
-		console.log("main", logRes)
-		wikibaseClient = logRes[0];
-		userInfo = logRes[1];
+		elements = await getElementsForDev(wikibaseClient);
 	}
 
-	// const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
-
-	// const userInfo = await wikibaseClient.login();
-
-	// confirm credentials
-	console.log("userInfo", userInfo);
-
-	// const elements = await wikibaseClient.getUserGraph(), // works -> CGBV
-
-	// TODO -> get default-selected course from dropdown menu
-	const elements = await wikibaseClient.getCourseQuery(getDefaultCourse()), // slightly hacky
-		experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
-
-	//initApp(wikibaseClient, elements);
+	// init the application
+	const experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
 	experimentApp.style.display = "flex";
 	const { resetControllers, toggleControllers } = onStartExperimentCondition(
 		elements,
@@ -87,6 +85,7 @@ const main = async () => {
 			toggleControllers(true);
 			experimentApp.classList.remove("loading");
 			Toast.success("Changes saved!").show();
+			console.log("save successful")
 		} else if (progress === GraphSaveProgress.ERROR) {
 			experimentApp.classList.remove("loading");
 			experimentApp.classList.add("error");
@@ -95,100 +94,104 @@ const main = async () => {
 		} else if (progress === GraphSaveProgress.COUNT_WARNING) { 
 			const str = "Saving more than 50 items can take a long time.";
 			Toast.info(str, ToastLength.LONG).show();
+		} else if (progress === GraphSaveProgress.UNAUTHORIZED) {
+			toggleControllers(true);
+			experimentApp.classList.remove("loading");
+			Toast.error("Unauthorized action", ToastLength.SHORT).show();
+			console.log("unauthorized action")
 		}
 	});
 
 	spinner.stop();
-};
+}
 
-/* 
-This function can be used for developing. 
-It saves the data in the localstorage, meaning it:
-- doesn't pull data from wikibase on every reload of the page
-- will not show changes to the data on reload 
--> users will not reload the page that often 
-*/
-// HACK
-const mainDev = async () => {
-
-	const spinner = new LoadingSpinner();
-	spinner.start();
+/**
+ * Creates a wikibaseClient to handle the login (normal or demo).
+ * @returns both {wikibaseClient, userInfo}
+ */
+async function doLogin() {
+	const localStorageCredentials = localStorage.getItem("credentials");
+	let credentials: CredentialsModel;
+	let wikibaseClient: WikibaseClient;
+	let userInfo;
 
 	const api = createApiClient();
 
-	const localStorageElements = localStorage.getItem("elements");
-	const localStorageCredentials = localStorage.getItem("credentials");
-	let credentials: CredentialsModel;
-	let elements: any;
-	let fromStorage: Boolean;
-	
-	// get Credentials
+	const demoText = "View Demo?\nYou can explore without editing."
+	const wantsDemo = confirm(demoText);
+	let userString = "[username]";
+
+	if (wantsDemo) {
+		console.log("[DEMO]")
+		credentials = getDemoCredentials()
+		wikibaseClient = new WikibaseClient(credentials, api);
+		userInfo = await wikibaseClient.login();
+		userString = "[DEMO]";
+	} else 
 	if (localStorageCredentials) {
-		console.log("loading from local storage");
-		fromStorage = true;
 		credentials = JSON.parse(localStorageCredentials);
+		wikibaseClient = new WikibaseClient(credentials, api);
+		userInfo = await wikibaseClient.login();
+		userString = "[" + userInfo.username + "]";
 	} else {
-		console.log("loading from wikibase");
-		fromStorage = false;
-		credentials = getCredentials("");
-		localStorage.setItem("credentials", JSON.stringify(credentials));
+		let logRes = await tryLogin(api)
+		wikibaseClient = logRes[0];
+		userInfo = logRes[1];
+		userString = "[" + userInfo.username + "]";
 	}
 
-	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
-	const userInfo = await wikibaseClient.login();
+	// display username
+	const userDiv = document.getElementById("username") as HTMLDivElement;
+	userDiv.innerText = userString;
 
-	// Get Elements
-	if(fromStorage && localStorageElements) { 
-		console.log("loading from local storage 2");
+	return {
+		wikibaseClient,
+		userInfo
+	}
+}
+
+/**
+ * Uses the "Max Mustermann" account to login for demo. Doesn't have editing rights.
+ * @returns credentials
+ */
+function getDemoCredentials() {
+	return {
+		username: "Max Mustermann",
+		password: "mm" // placeholder password to access login
+	} as CredentialsModel
+}
+
+/**
+ * Gets the graph elements once and then saves them in localStorage.
+ * This is to prevent too many calls to Wikibase, when developing/testing things.
+ * Elements are deleted if you return to the homepage. Or do it manually.
+ * @param wikibaseClient 
+ * @returns elements
+ */
+async function getElementsForDev(wikibaseClient: WikibaseClient) {
+	const localStorageElements = localStorage.getItem("elements");
+	let elements: any;
+
+	// check if elements are saved in localStorage
+	if(localStorageElements) { 
+		console.log("[DEV] loading from local storage");
 		elements = JSON.parse(localStorageElements);
 	} else {
-		console.log("loading from wikibase 2");
-		elements = await wikibaseClient.getCourseQuery(getDefaultCourse()); // WissArb-query -> change from magic num
-		// const elements = await wikibaseClient.getUserGraph(), // cgbv-query
+		console.log("[DEV] loading from wikibase");
+		elements = await wikibaseClient.getCourseQuery(getDefaultCourse());
 		
-		// Store elements for the sessionp
+		// Store elements for the session
 		localStorage.setItem(
 			"elements",
 			JSON.stringify(elements, getCircularReplacer()),
 		);
 	}
 
-	const experimentApp = document.getElementById("experiment-app") as HTMLDivElement;
+	return elements;
+	
+}
 
-	experimentApp.style.display = "flex";
-	const { resetControllers, toggleControllers } = onStartExperimentCondition(
-		elements,
-		experimentApp,
-		wikibaseClient,
-		userInfo.userItemId
-	);
-	resetControllers();
-	toggleControllers(true);
 
-	experimentEventBus.addListener(GRAPH_SAVE_EVENT, (e) => {
-		const progress = e.progress;
-		if (progress === GraphSaveProgress.START) {
-			toggleControllers(false);
-			experimentApp.classList.add("loading");
-			Toast.info("Saving changes...").show();
-		} else if (progress === GraphSaveProgress.COMPLETE) {
-			toggleControllers(true);
-			experimentApp.classList.remove("loading");
-			Toast.success("Changes saved!").show();
-		} else if (progress === GraphSaveProgress.ERROR) {
-			experimentApp.classList.remove("loading");
-			experimentApp.classList.add("error");
-			console.error(e.error);
-			Toast.error("Error saving changes!", ToastLength.LONG).show();
-		} else if (progress === GraphSaveProgress.COUNT_WARNING) { 
-			const str = "Saving more than 50 changes can take a long time.";
-			Toast.info(str, ToastLength.LONG).show();
-		}
-	});
+/* MAIN */
 
-	spinner.stop();
-};
-
-//HACK
 main();
-// mainDev();
