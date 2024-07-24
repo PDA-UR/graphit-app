@@ -45,7 +45,7 @@ export const onStartExperimentCondition = (
 	const selectionTypeIndicatorController =
 		new SelectionTypeIndicatorController();
 	const propertyModalController = new PropertyModalController(); // flag demo
-	const saveButtonController = new SaveButtonController();
+	const saveButtonController = new SaveButtonController(userEntityId);
 	const logoutButtonController = new LogoutButtonController();
 	const legendButtonController = new LegendButtonController();
 	const switchCourseController = new SwitchCourseController(client, cy, filterManager);
@@ -59,8 +59,9 @@ export const onStartExperimentCondition = (
 		filterController.toggle(on);
 		if (userEntityId != "Q157") { // disable for demo
 			propertyModalController.toggle(on)
+			saveButtonController.toggle(on)
 		}
-		saveButtonController.toggle(on);
+		// saveButtonController.toggle(on);
 		logoutButtonController.toggle(on);
 		legendButtonController.toggle(on);
 		switchCourseController.toggleHtmlListeners(on);

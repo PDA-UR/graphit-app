@@ -3,8 +3,8 @@ import { experimentEventBus } from "../../global/ExperimentEventBus";
 import { SaveButtonEvents, SaveButtonView } from "./SaveButtonView";
 
 export default class SaveButtonController extends ViewController<SaveButtonView> {
-	constructor() {
-		super(new SaveButtonView());
+	constructor(userId: string) {
+		super(new SaveButtonView(userId));
 	}
 
 	protected toggleListeners(on: boolean): void {
