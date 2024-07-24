@@ -30,9 +30,9 @@ export class Entity {
 	@Description(
 		"Retrieve all entities with the given ids. The ids should be separated by a |"
 	)
-	@(Returns(200, SparqlResult).ContentType("application/json"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, SparqlResult).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	async entities(
 		@Session("user") credentials: Credentials,
 		@PathParams("ids") ids: string
@@ -48,9 +48,9 @@ export class Entity {
 
 	@Get("/:id/claims")
 	@Description("Retrieve all claims for the given entity")
-	@(Returns(200, Object).ContentType("application/json"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, Object).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	async claims(
 		@Session("user") credentials: Credentials,
 		@PathParams("id") id: string
@@ -71,9 +71,9 @@ export class Entity {
 
 	@Post("/:id/createClaim")
 	@Description("Create a claim (fails if it already exists)")
-	@(Returns(200, String).ContentType("text/plain"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	async createClaim(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() createClaim: CreateClaim,
@@ -97,9 +97,9 @@ export class Entity {
 
 	@Post("/:id/updateClaim")
 	@Description("Update a claim (fails if it doesn't exist)")
-	@(Returns(200, String).ContentType("text/plain"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	async updateClaim(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() updateData: UpdateClaim,
@@ -121,9 +121,9 @@ export class Entity {
 
 	@Get("/search/:query")
 	@Description("Search for entities")
-	@(Returns(200, Array).Of(Object).ContentType("application/json"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, Array).Of(Object).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	async search(
 		@Session("user") credentials: Credentials,
 		@PathParams("query") query: string
@@ -136,9 +136,9 @@ export class Entity {
 
 	@Get("/property/all")
 	@Description("Retrieve all properties in the wiki")
-	@(Returns(200, Array).Of(WikibaseProperty).ContentType("application/json"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, Array).Of(WikibaseProperty).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	async properties(@Session("user") credentials: Credentials) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 

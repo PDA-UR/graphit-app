@@ -23,9 +23,9 @@ export class User {
 
 	@Post("/:userId/:propertyId/:entityId/toggle/:isOn")
 	@Description("Toggle a property on or off for a user")
-	@(Returns(200, Object).ContentType("application/json"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, Object).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	async toggleProperty(
 		@PathParams("userId") userId: string,
 		@PathParams("propertyId") propertyId: string,

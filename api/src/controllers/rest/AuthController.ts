@@ -7,7 +7,6 @@ import { Credentials, isValid } from "../../models/CredentialsModel";
 import { WikibaseEditService } from "../../services/WikibaseEditService";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { UserSession } from "../../models/UserSessionModel";
-import { demoPassword } from "src/config/envs";
 
 /**
  * Controller for authentication related actions.
@@ -25,8 +24,8 @@ export class Auth {
 
 	@Get("/whoami")
 	@Description("Returns the current session")
-	@(Returns(200, UserSession).ContentType("application/json"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, UserSession).ContentType("application/json")
+	@Returns(401, String).ContentType("text/plain")
 	whoAmI(@Session("user") credentials: Credentials) {
 		console.log("Session =>", credentials);
 		if (isValid(credentials)) {
@@ -42,19 +41,20 @@ export class Auth {
 
 	@Post("/login")
 	@Description("Login to the API (using Wikibase credentials)")
-	@(Returns(200, UserSession).ContentType("text/plain"))
-	@(Returns(400, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("application/json"))
+	@Returns(200, UserSession).ContentType("text/plain")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("application/json")
 	async login(
 		@Required() @BodyParams() credentials: Credentials,
 		@Session("user") existingSession: Credentials
 	) {
 		existingSession.username = credentials.username;
-		if (existingSession.username == "Max Mustermann") {
-			existingSession.password = demoPassword; // password in .env
-			this.logger.info("Demo Login", existingSession)
-		} else 
-			existingSession.password = credentials.password;
+		this.logger.info("!!", existingSession)
+		// if (existingSession.username === "Max Mustermann") {
+		// 	existingSession.password = demoPassword; // works with npm run dev, but not npm run start 
+		// 	this.logger.info("Demo Login", existingSession)
+		// } else 
+		existingSession.password = credentials.password;
 
 		this.logger.info("Logging in as", existingSession);
 		const wbEdit = this.wikibaseEditService.getSessionData(existingSession);
@@ -86,14 +86,14 @@ export class Auth {
 			this.logger.error("Login error", existingSession, e.message);
 			existingSession.username = "";
 			existingSession.password = "";
-			return new Unauthorized("Invalid credentials " + e.message);
+			return new Unauthorized("Invalid credentials " + existingSession.password);
 		}
 	}
 
 	@Post("/logout")
 	@Description("Logout from the API (using Wikibase credentials)")
-	@(Returns(200, String).ContentType("text/plain"))
-	@(Returns(401, String).ContentType("text/plain"))
+	@Returns(200, String)//.ContentType("text/plain")
+	@Returns(401, String)//.ContentType("text/plain")
 	logout(@Session("user") session: Credentials) {
 		if (isValid(session)) {
 			this.logger.info("Successfully logged out from", session);
