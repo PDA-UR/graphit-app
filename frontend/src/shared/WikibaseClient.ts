@@ -34,7 +34,7 @@ export default class WikibaseClient {
 	}
 
 	async login() {
-		console.log("send login with", this.credentials)
+		// console.log("send login with", this.credentials)
 		this.userSession = await this.api.auth.login(this.credentials);
 		if (!this.userSession.username) {
 			throw new Error("Login failed: " + JSON.stringify(this.userSession));

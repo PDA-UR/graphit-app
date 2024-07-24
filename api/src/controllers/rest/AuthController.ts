@@ -7,6 +7,7 @@ import { Credentials, isValid } from "../../models/CredentialsModel";
 import { WikibaseEditService } from "../../services/WikibaseEditService";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { UserSession } from "../../models/UserSessionModel";
+import { demoPassword } from "../../config/envs/index" // "../envs/index";
 
 /**
  * Controller for authentication related actions.
@@ -49,12 +50,12 @@ export class Auth {
 		@Session("user") existingSession: Credentials
 	) {
 		existingSession.username = credentials.username;
-		this.logger.info("!!", existingSession)
-		// if (existingSession.username === "Max Mustermann") {
-		// 	existingSession.password = demoPassword; // works with npm run dev, but not npm run start 
-		// 	this.logger.info("Demo Login", existingSession)
-		// } else 
-		existingSession.password = credentials.password;
+		this.logger.info(credentials);
+		if (credentials.username == "Max Mustermann") {
+			existingSession.password = demoPassword;
+			this.logger.info("Demo login");
+		} else existingSession.password = credentials.password;
+		
 
 		this.logger.info("Logging in as", existingSession);
 		const wbEdit = this.wikibaseEditService.getSessionData(existingSession);

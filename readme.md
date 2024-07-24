@@ -21,3 +21,15 @@ Frontend + API server for the GraphIT project.
 The app is automatically built and deployed via GitHub actions:
 - push to `dev` branch: https://test.graphit.ur.de/app
 - push to `main` branch: https://graph.graphit.ur.de/app
+
+To test before deployment:
+- in /frontend: `npm run build` then `npm run preview`
+- in /backend: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
+
+#### Note:build api
+- to build the api you need to `npm install -g @tsed/cli`
+- then you can `npm run build` in the api directory (see: *api/package.json*)
+- NOTE: (as of 24.07.2024)
+  - the latest release (5.2.1) of the cli produced: `Error [ERR_REQUIRE_ESM]`
+  - to fix this the Dockerfile currently installs the the 5.2.0 version, i.e: `npm install -g @tsed/cli@5.2.0`
+  - also do this locally, if it's an issue for you

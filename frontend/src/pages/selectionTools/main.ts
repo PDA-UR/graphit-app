@@ -117,17 +117,17 @@ async function doLogin() {
 
 	const api = createApiClient();
 
-	// const demoText = "View Demo?\nYou can explore without editing."
-	// const wantsDemo = confirm(demoText);
+	const demoText = "View Demo?\nYou can explore without editing."
+	const wantsDemo = confirm(demoText);
 	let userString = "[username]";
 
-	// if (wantsDemo) {
-	// 	console.log("[DEMO]")
-	// 	credentials = getDemoCredentials()
-	// 	wikibaseClient = new WikibaseClient(credentials, api);
-	// 	userInfo = await wikibaseClient.login();
-	// 	userString = "[DEMO]";
-	// } else 
+	if (wantsDemo) {
+		console.log("[DEMO]")
+		credentials = getDemoCredentials()
+		wikibaseClient = new WikibaseClient(credentials, api);
+		userInfo = await wikibaseClient.login();
+		userString = "[DEMO]";
+	} else 
 	if (localStorageCredentials) {
 		credentials = JSON.parse(localStorageCredentials);
 		wikibaseClient = new WikibaseClient(credentials, api);
