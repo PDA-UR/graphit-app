@@ -11,6 +11,20 @@ const colors = {
     parent: "#f7f7f7"
 }
 
+const getHeight = (ele: any) => {
+    // get linelength + if text longer than it
+    // use fontSize
+    let label = ele.data("label")
+    // length dependent on fontsize
+    // console.log("h",  label.length)
+    if (label.length > 25) { // get multiplier (%)
+        console.log("h",  Math.ceil(label.length / 25))
+        return fontSize(ele) * Math.ceil(label.length / 25) // + line distance(?)
+        
+    } 
+    return fontSize(ele);
+}
+
 const nodeSize = (ele: any) => {
 	let degree = ele.degree();
 	if(degree == 0) {
@@ -31,13 +45,13 @@ const fontSize = (ele: any) => {
 }
 
 const lineLength = (ele:any) => {
-	let label = ele.data("label")
-	let len =  nodeSize(ele) + (fontSize(ele)*5)
+	let label = ele.data("label");
+	let len =  nodeSize(ele) + (fontSize(ele)*5);
 
 	if (label.length > 30) { // if label too long, longer line length
 		return (len * 2).toString();
 	}
-	return len.toString()
+	return len.toString();
 }
 
 
@@ -65,8 +79,11 @@ export const stylesheet: Stylesheet[] = [
             "background-color": colors.default, //"#666", //"#D6D6D6",
             "background-opacity": nodeDarken,
             "label": "data(label)",
+            // TODO: update: "label" is deprecated
             "width": "label",
             "height": "label",
+            // "width": lineLength,
+            // "height": getHeight, // node size seems to work
             "shape": "round-rectangle",
 
             'text-halign': 'center',
@@ -78,6 +95,9 @@ export const stylesheet: Stylesheet[] = [
             "text-wrap": "wrap",
             "text-max-width": lineLength, //px -> use size of node
             "text-background-padding": "3px",
+            // "text-background-color": colors.default,
+            // "text-background-opacity": nodeDarken,
+            // "text-background-shape": "roundrectangle",
             "z-index": nodeSize,
 
             "border-width": "2px",
