@@ -1,0 +1,3063 @@
+{
+    "nodes": [
+        {
+            "data": {
+                "id": "Reinforcement Learning",
+                "name": "Reinforcement Learning",
+                "colour": "#420042",
+                "nodetype": "field"
+            },
+            "position": {
+                "x": 1419.7303466967783,
+                "y": 32.99073687117732
+            }
+        },
+        {
+            "data": {
+                "id": "Calculus",
+                "name": "Calculus",
+                "colour": "#610061",
+                "nodetype": "field"
+            },
+            "position": {
+                "x": 5025.12790458224,
+                "y": 3560.7024286027067
+            }
+        },
+        {
+            "data": {
+                "id": "Deep Learning",
+                "name": "Deep Learning",
+                "colour": "#001975",
+                "nodetype": "field"
+            },
+            "position": {
+                "x": 4272.938982788421,
+                "y": -309.3366363816783
+            }
+        },
+        {
+            "data": {
+                "id": "Machine Learning",
+                "name": "Machine Learning",
+                "colour": "#006161",
+                "nodetype": "field"
+            },
+            "position": {
+                "x": 3327.1698908442686,
+                "y": 1254.9777289277567
+            }
+        },
+        {
+            "data": {
+                "id": "Probability & Statistics",
+                "name": "Probability & Statistics",
+                "colour": "#00404d",
+                "nodetype": "field"
+            },
+            "position": {
+                "x": 2996.8296352989814,
+                "y": 3406.808609162332
+            }
+        },
+        {
+            "data": {
+                "id": "Linear Algebra",
+                "name": "Linear Algebra",
+                "colour": "#001d4d",
+                "nodetype": "field"
+            },
+            "position": {
+                "x": 770.8495376191348,
+                "y": 2821.6986507423426
+            }
+        },
+        {
+            "data": {
+                "id": "Optimization",
+                "name": "Optimization",
+                "colour": "#210042",
+                "nodetype": "field"
+            },
+            "position": {
+                "x": 5187.824066777439,
+                "y": 1502.2854050984001
+            }
+        },
+        {
+            "data": {
+                "id": "1",
+                "name": "What is a Matrix?",
+                "lectures": "Linear Algebra",
+                "description": "A matrix is essentially a container of scalar numbers, but are incredibly powerful. Here you'll learn some rules about how to use them and how they interact. ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=0oGJTQCy4cQ",
+                    "https://www.youtube.com/watch?v=TbaltFbJ3wE",
+                    "https://www.youtube.com/watch?v=WR9qCSXJlyY"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.5652475842498528,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 966.9421397967055,
+                "y": 3736.305141032056
+            }
+        },
+        {
+            "data": {
+                "id": "2",
+                "name": "Matrix Multiplication",
+                "lectures": "Linear Algebra",
+                "description": "How should we multiply two matrices together? What if they have different shapes? Here you'll learn the rules of multiplying matrices, unlocking the building blocks used to compute the output of neural networks and many other types of model.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=kT4Mp9EdVqs",
+                    "https://www.youtube.com/watch?v=O1-9f1g0OsI",
+                    "https://www.youtube.com/watch?v=XkY2DOUCWMU"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 966.00281317647,
+                "y": 3147.1022653524046
+            }
+        },
+        {
+            "data": {
+                "id": "3",
+                "name": "Inversion & Singular Matrices",
+                "lectures": "Linear Algebra",
+                "description": "Inversion is the process of find the matrix that multiplies a matrix to produce the identity matrix. Singular matrices are non-invertible.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=iUQR0enP7RQ",
+                    "https://www.youtube.com/watch?v=01c12NaUQDw",
+                    "https://www.youtube.com/watch?v=KBYvP6YG58g"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 496.0207625635353,
+                "y": 2630.005482388215
+            }
+        },
+        {
+            "data": {
+                "id": "4",
+                "name": "Linear Equations (Ax=b)",
+                "lectures": "Linear Algebra",
+                "description": "<p>Linear algebra - matrices and vectors - can be used to represent and then solve linear equations. This is particularly useful because it allows you to solve arbitrarily large sets of linear equations efficiently!</p>",
+                "urls": [
+                    "https://www.youtube.com/watch?v=EC2mgUZyzoA"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1047.750603114966,
+                "y": 2209.8736506601895
+            }
+        },
+        {
+            "data": {
+                "id": "5",
+                "name": "Vector Spaces & Basis",
+                "lectures": "Linear Algebra",
+                "description": "A vector space is a set of vectors in which any scalar multiplication can occur and the result remains in the space",
+                "urls": [
+                    "https://www.youtube.com/watch?v=pMFv6liWK4M",
+                    "https://www.youtube.com/watch?v=zntNi3-ybfQ",
+                    "https://www.youtube.com/watch?v=XDvSsDsLVLs"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 490.49151908023555,
+                "y": 2285.8739231568616
+            }
+        },
+        {
+            "data": {
+                "id": "7",
+                "name": "Permutations",
+                "lectures": "Linear Algebra",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=d7AovBKeNMI",
+                    "https://www.youtube.com/watch?v=8OSAsm5tTwU",
+                    "https://www.youtube.com/watch?v=JibVXBElKL0"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 27.334919872248804,
+                "y": 1707.642084444893
+            }
+        },
+        {
+            "data": {
+                "id": "9",
+                "name": "Random Variables",
+                "lectures": "Probability & Statistics",
+                "description": "To use mathematical operations probabilities and uncertain events, we assign them to a variable - known as a random variable.\n\nHere, you'll learn about these variables and how you can use. They are fundamental to much of probability and statistics.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=3v9w79NhsfI",
+                    "https://www.youtube.com/watch?v=vfqPpai_9jI"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2497.9832345233704,
+                "y": 4287.749523147724
+            }
+        },
+        {
+            "data": {
+                "id": "10",
+                "name": "Probability Axioms",
+                "lectures": "Probability & Statistics",
+                "description": "What kind of events can we express with probabilities? The axioms of probability are the fundamental rules that define probabilities and how probabilities interact.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=UjcGyISekpE",
+                    "https://www.youtube.com/watch?v=pA83XtLeVig",
+                    "https://www.youtube.com/watch?v=xuv6BCR-iNc",
+                    " https://www.youtube.com/watch?v=CXY5Xvadwf8"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2504.0184678410237,
+                "y": 4503.847389346934
+            }
+        },
+        {
+            "data": {
+                "id": "11",
+                "name": "Probability density/mass functions",
+                "lectures": "Probability & Statistics",
+                "description": "What is the probability that a variable will take a value? Probability functions let us describe this. \n\nThere are important differences to learn between how to do this for continuous and discrete variables (described by density and mass functions, respectivley). ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=Fvi9A_tEmXQ",
+                    "https://www.youtube.com/watch?v=3E8BO7VRMEA",
+                    "https://www.youtube.com/watch?v=iThbNOsDj0Q",
+                    "https://www.youtube.com/watch?v=YXLVjCKVP7U",
+                    " https://www.analyticsvidhya.com/blog/2017/09/6-probability-distributions-data-science/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.9798989873223332,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2506.593295722101,
+                "y": 4003.3428084727084
+            }
+        },
+        {
+            "data": {
+                "id": "12",
+                "name": "Cumulative Distribution Functions",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=YXLVjCKVP7U",
+                    "https://www.youtube.com/watch?v=ZJsOOCghQJ0"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 4015.494464514761,
+                "y": 3381.942513966506
+            }
+        },
+        {
+            "data": {
+                "id": "13",
+                "name": "Expectations",
+                "lectures": "Probability & Statistics",
+                "description": "What you would expect the value of a random variable to be on average? ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=KLs_7b7SKi4",
+                    " https://www.youtube.com/watch?v=qafPcWNUiM8",
+                    "https://www.youtube.com/watch?v=9VbqyziBjrg"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2520.0615181621197,
+                "y": 3301.667338146777
+            }
+        },
+        {
+            "data": {
+                "id": "14",
+                "name": "Conditional Probability & Independence",
+                "lectures": "Probability & Statistics",
+                "description": "The rules governing different random variables that are correlated or depend on one another",
+                "urls": [
+                    "https://seeing-theory.brown.edu/compound-probability/index.html#section3",
+                    " https://www.youtube.com/watch?v=pIfpHdGVwLU",
+                    " https://www.youtube.com/watch?v=7B3cDe39lwY"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2916.579630145643,
+                "y": 3098.8202972291692
+            }
+        },
+        {
+            "data": {
+                "id": "15",
+                "name": "Variance",
+                "lectures": "Probability & Statistics",
+                "description": "When we observe real data, there tends to be some spread in their values. How to describe this variation? One method is to use the variance, which is a measure of the spread of data from their mean value.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=2egl_5c8i-g",
+                    " https://www.youtube.com/watch?v=x0rmUXWtSS8",
+                    " https://www.youtube.com/watch?v=SzZ6GpcfoQY"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2546.8335343379895,
+                "y": 3033.8901083682827
+            }
+        },
+        {
+            "data": {
+                "id": "16",
+                "name": "Bayes' Theorem",
+                "lectures": "Probability & Statistics",
+                "description": "Bayes' theorem describes the probability of an event, based on prior knowledge of conditions that might be related to the event.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=HZGCoVF3YvM",
+                    "http://pillowlab.princeton.edu/teaching/mathtools16/slides/lec13_BayesRule.pdf",
+                    "https://seeing-theory.brown.edu/#secondPage/chapter5"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 3257.8964511537492,
+                "y": 2473.743566229865
+            }
+        },
+        {
+            "data": {
+                "id": "17",
+                "name": "Differentiation",
+                "lectures": "Calculus",
+                "description": "Differentation let's understand the sensitivity of a function to change in its argument.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=EKvHQc3QEow",
+                    "https://www.youtube.com/watch?v=9AI3BkKQhn0",
+                    "https://www.youtube.com/watch?v=NRSmIE5MMBQ&list=PL5KkMZvBpo5DwIsDKWdHYmkRZmXMi1mE8",
+                    "https://www.youtube.com/watch?v=lowavG2SXsQ&list=PLmdFyQYShrjd4Qn42rcBeFvF6Qs-b6e-L&index=9",
+                    "https://www.youtube.com/watch?v=AOkn9-UK5AU&list=PLmdFyQYShrjd4Qn42rcBeFvF6Qs-b6e-L&index=10",
+                    "https://www.derivative-calculator.net/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.7146428199482244,
+                "parent": "Calculus"
+            },
+            "position": {
+                "x": 5120.864207968441,
+                "y": 4132.971247678781
+            }
+        },
+        {
+            "data": {
+                "id": "18",
+                "name": "Product Rule",
+                "lectures": "Calculus",
+                "description": "A method for finding the derivatives of the products of two or more functions.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=17X5g9QArTc",
+                    "https://www.youtube.com/watch?v=h78GdGiRmpM"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Calculus"
+            },
+            "position": {
+                "x": 5622.545662276544,
+                "y": 3686.75545697474
+            }
+        },
+        {
+            "data": {
+                "id": "19",
+                "name": "Chain Rule",
+                "lectures": "Calculus",
+                "description": "The chain rule provides a method of finding the derivative of composite functions. Knowing the change in z relative y and change in y relative to x lets us find the rate of change of z relative to x.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=0T0QrHO56qg",
+                    "https://www.youtube.com/watch?v=wl1myxrtQHQ",
+                    " https://www.youtube.com/watch?v=YG15m2VwSjA"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Calculus"
+            },
+            "position": {
+                "x": 5557.564430687184,
+                "y": 3339.6000160571007
+            }
+        },
+        {
+            "data": {
+                "id": "20",
+                "name": "Integration",
+                "lectures": "Calculus",
+                "description": "Methods for finding the area under a curve of a function. ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=__Uw1SXPW7s",
+                    "https://youtu.be/WUvTyaaNkzM?t=87"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Calculus"
+            },
+            "position": {
+                "x": 4477.677740019359,
+                "y": 3747.798892646197
+            }
+        },
+        {
+            "data": {
+                "id": "22",
+                "name": "Cost functions",
+                "lectures": "Optimization",
+                "description": "Cost functions are measures of how wrong a model is in estimating the relationship between its inputs and the desired output. They are often the function that we are aiming to optimise with a machine learning algorithm.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=euhATa4wgzo",
+                    "https://towardsdatascience.com/machine-learning-fundamentals-via-linear-regression-41a5d11f5220"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Optimization"
+            },
+            "position": {
+                "x": 5442.296778084376,
+                "y": 1881.8463866329364
+            }
+        },
+        {
+            "data": {
+                "id": "23",
+                "name": "Intro to Optimisation",
+                "lectures": "Optimization",
+                "description": "Optimisation is the process of maximising or minimizing a function by systematically choosing input values. It underpins many different machine learning approaches, which often try to optimise a function.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=1TK8V_qmqrk",
+                    "http://scipy-lectures.org/advanced/mathematical_optimization/",
+                    "https://deepai.org/machine-learning-glossary-and-terms/mathematical-optimization",
+                    "https://www.youtube.com/watch?v=vwUV2IDLP8Q",
+                    "https://www.youtube.com/watch?v=Ef22yTJDUZI",
+                    "https://www.youtube.com/watch?v=HsUY94Fjxao",
+                    "https://www.youtube.com/watch?v=qiku9Up_DAA"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Optimization"
+            },
+            "position": {
+                "x": 5097.937092279699,
+                "y": 2162.6153736786855
+            }
+        },
+        {
+            "data": {
+                "id": "24",
+                "name": "Projection Matrices",
+                "lectures": "Linear Algebra",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=Y_Ac6KiQ1t0",
+                    "https://www.youtube.com/watch?v=5B8XluiqdHM"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 659.6104324753405,
+                "y": 2148.453410578307
+            }
+        },
+        {
+            "data": {
+                "id": "25",
+                "name": "Ax=b Least Squares",
+                "lectures": "Linear Algebra",
+                "description": "A method for estimating unknown parameters based on mimizing the squared distance between datapoints and a regression line",
+                "urls": [
+                    "http://math.mit.edu/~gs/linearalgebra/ila0403.pdf",
+                    " https://www.youtube.com/watch?v=F2lJ7oSwcyY"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1456.7389560065567,
+                "y": 1893.3815551291223
+            }
+        },
+        {
+            "data": {
+                "id": "26",
+                "name": "Linear Regression",
+                "lectures": "Probability & Statistics",
+                "description": "A linear approach to estimating the relationship between an depedent and independent variables",
+                "urls": [
+                    "https://youtu.be/nk2CQITm_eoL",
+                    " https://www.youtube.com/watch?v=ZkjP5RJLQF4",
+                    "http://www.stat.yale.edu/Courses/1997-98/101/linreg.htm"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 2215.802254296268,
+                "y": 1506.2212489141825
+            }
+        },
+        {
+            "data": {
+                "id": "27",
+                "name": "Orthogonal Matrices",
+                "lectures": "Linear Algebra",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=0MtwqhIwdrI",
+                    "https://mathworld.wolfram.com/OrthogonalMatrix.html",
+                    "https://www.youtube.com/watch?v=IGBm-gZryVI"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 292.20953949070037,
+                "y": 2029.6754397401724
+            }
+        },
+        {
+            "data": {
+                "id": "28",
+                "name": "Determinants",
+                "lectures": "Linear Algebra",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=OU9sWHk_dlw",
+                    "https://www.youtube.com/watch?v=0c7dt2SQfLw",
+                    "https://www.youtube.com/watch?v=23LLB9mNJvc",
+                    "https://www.youtube.com/watch?v=Ip3X9LOh2dk&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab",
+                    "https://www.mathsisfun.com/algebra/matrix-inverse-minors-cofactors-adjugate.html",
+                    "https://www.youtube.com/watch?v=srxexLishgY"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 508.5138256825003,
+                "y": 3153.9615887341783
+            }
+        },
+        {
+            "data": {
+                "id": "30",
+                "name": "Eigenvectors & Eigenvalues",
+                "lectures": "Linear Algebra",
+                "description": "A fundamental feature of matrices leading to far deeper understanding of them geometrically.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=cdZnhQjJu4I",
+                    "https://www.youtube.com/watch?v=PFDu9oVAE-g"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1024.888735129011,
+                "y": 1813.9499767331927
+            }
+        },
+        {
+            "data": {
+                "id": "31",
+                "name": "Diagonalization",
+                "lectures": "Linear Algebra",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=13r9QY6cmjc"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 495.69000039842604,
+                "y": 1814.828954333629
+            }
+        },
+        {
+            "data": {
+                "id": "32",
+                "name": "Transformed distributions",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=fx3TtExi9e8",
+                    "https://web.mit.edu/urban_or_book/www/book/chapter3/3.1.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 3584.5529065100873,
+                "y": 3880.703303890323
+            }
+        },
+        {
+            "data": {
+                "id": "33",
+                "name": "Convolutions",
+                "lectures": "Calculus",
+                "description": "A mathematical operation that expresses how the shape of one function is changed by the other. Convolutions underlie the filters used in convolutional neural networks. ",
+                "urls": [
+                    "https://colah.github.io/posts/2014-07-Understanding-Convolutions/",
+                    "https://www.youtube.com/watch?v=IW4Reburjpc"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Calculus"
+            },
+            "position": {
+                "x": 4427.710146887936,
+                "y": 2497.4042235140378
+            }
+        },
+        {
+            "data": {
+                "id": "34",
+                "name": "Central Limit Theorem",
+                "lectures": "Probability & Statistics",
+                "description": "In populations with a mean and standard deviation, if you take a sufficient number of samples, the means of those samples will be normally distributed",
+                "urls": [
+                    "https://seeing-theory.brown.edu/probability-distributions/index.html",
+                    "https://www.youtube.com/watch?v=JNm3M9cqWyc",
+                    "https://sphweb.bumc.bu.edu/otlt/mph-modules/bs/bs704_probability/BS704_Probability12.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2749.490331468341,
+                "y": 2256.7866154326744
+            }
+        },
+        {
+            "data": {
+                "id": "35",
+                "name": "Gaussian Distribution",
+                "lectures": "Probability & Statistics",
+                "description": "A continuous probability distribution to approximate random variables. Also known as the 'normal distribution' or informally as the 'bell curve'",
+                "urls": [
+                    "https://www.youtube.com/watch?v=hgtMWR3TFnY",
+                    "https://www.youtube.com/watch?v=iYiOVISWXS4"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2609.0945935386876,
+                "y": 2632.7521826148673
+            }
+        },
+        {
+            "data": {
+                "id": "36",
+                "name": "Covariance",
+                "lectures": "Probability & Statistics",
+                "description": "A measure of the direction of the relationship between two random variables - this is, how they covary. ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=ualmyZiPs9w",
+                    "https://www.youtube.com/watch?v=4EXNedimDMs",
+                    "https://www.youtube.com/watch?v=u4ugaNo6v1Q",
+                    "https://www.itl.nist.gov/div898/handbook/pmc/section5/pmc541.htm",
+                    "https://towardsdatascience.com/let-us-understand-the-correlation-matrix-and-covariance-matrix-d42e6b643c22#:~:text=%E2%80%9CCovariance%E2%80%9D%20indicates%20the%20direction%20oflinear%20relationship%20between%20two%20variables."
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2235.9402963872526,
+                "y": 2678.58415379661
+            }
+        },
+        {
+            "data": {
+                "id": "41",
+                "name": "Singular value decomposition",
+                "lectures": "Linear Algebra",
+                "description": "",
+                "urls": [
+                    "https://web.mit.edu/be.400/www/SVD/Singular_Value_Decomposition.htm",
+                    "https://towardsdatascience.com/understanding-singular-value-decomposition-and-its-application-in-data-science-388a54be95d",
+                    "https://www.youtube.com/watch?v=mBcLRGuAFUk",
+                    "https://www.youtube.com/watch?v=rYz83XPxiZo"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 646.8187689147861,
+                "y": 1600.863009180834
+            }
+        },
+        {
+            "data": {
+                "id": "42",
+                "name": "Change of basis",
+                "lectures": "Linear Algebra",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=P2LTAUO1TdA",
+                    "https://www.youtube.com/watch?v=1j5WnqwMdCk",
+                    "https://www.youtube.com/watch?v=0h43aV4aH7I"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 828.831289906268,
+                "y": 2004.746463913842
+            }
+        },
+        {
+            "data": {
+                "id": "45",
+                "name": "Maximum A Posteriori (MAP) estimation",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=kkhdIriddSI",
+                    "https://machinelearningmastery.com/maximum-a-posteriori-estimation/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 3461.8054460728827,
+                "y": 2169.1645706929007
+            }
+        },
+        {
+            "data": {
+                "id": "46",
+                "name": "Maximum Likelihood (ML) estimation",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=00krscK7iBA",
+                    "https://towardsdatascience.com/probability-concepts-explained-maximum-likelihood-estimation-c7b4342fdbb1",
+                    "https://towardsdatascience.com/a-gentle-introduction-to-maximum-likelihood-estimation-9fbff27ea12f"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 3754.7271363849854,
+                "y": 2170.1067625721557
+            }
+        },
+        {
+            "data": {
+                "id": "56",
+                "name": "Generative & Discriminative Models",
+                "lectures": "Machine Learning",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=oTtow2Ui8vg",
+                    "https://medium.com/@mlengineer/generative-and-discriminative-models-af5637a66a3#:~:text=In%20General%2C%20A%20Discriminative%20modelactual%20distribution%20of%20each%20class.&text=A%20Discriminative%20model%20%E2%80%8Clearns%20theused%20in%20supervised%20learning%20problems.",
+                    "https://stats.stackexchange.com/questions/12421/generative-vs-discriminative"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 3407.120971339519,
+                "y": 1741.322498508274
+            }
+        },
+        {
+            "data": {
+                "id": "57",
+                "name": "Entropy",
+                "lectures": "Probability & Statistics",
+                "description": "The measure of uncertainty associated with the values taken by a random variable. Can also be described as the quantity of information in a set of random variables",
+                "urls": [
+                    "https://www.youtube.com/watch?v=YtebGVx-Fxw",
+                    "https://www.quora.com/What-is-an-intuitive-explanation-of-the-concept-of-entropy-in-information-theory/answer/Peter-Gribble",
+                    "http://colah.github.io/posts/2015-09-Visual-Information/#codes",
+                    "https://www.youtube.com/watch?v=YM-uykVfq_E"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2872.917111026931,
+                "y": 2739.21471741109
+            }
+        },
+        {
+            "data": {
+                "id": "58",
+                "name": "KL Divergence",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=ErfnhcEV1O8",
+                    "https://www.youtube.com/watch?v=LJwtEaP2xKA",
+                    "https://www.youtube.com/watch?v=xmvxXXZUXdk",
+                    "https://towardsdatascience.com/light-on-math-machine-learning-intuitive-guide-to-understanding-kl-divergence-2b382ca2b2a8"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2959.815159478218,
+                "y": 2082.3187358431933
+            }
+        },
+        {
+            "data": {
+                "id": "59",
+                "name": "Markov Chains",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=Ws63I3F7Moc",
+                    " https://youtu.be/i3AkTO9HLXo?t=31"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 1983.2632596503586,
+                "y": 3213.0718172601973
+            }
+        },
+        {
+            "data": {
+                "id": "60",
+                "name": "Classification: Logistic regression & softmax",
+                "lectures": "Machine Learning",
+                "description": "Classification is learning to categorise data into groups based on labels. In more mathematical vernacular, classification is the umbrella term for supervised learning problems with discrete output space.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=yIYKR4sgzI8",
+                    "https://christophm.github.io/interpretable-ml-book/logistic.html",
+                    "https://machinelearningmastery.com/logistic-regression-for-machine-learning/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 3094.719059650885,
+                "y": 1546.334845576055
+            }
+        },
+        {
+            "data": {
+                "id": "61",
+                "name": "Gradient Descent/Ascent",
+                "lectures": "Optimization",
+                "description": "A large family of optimisation algorithms based on a simple observation: to reach the bottom of a valley, try walking downhill.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=sDv4f4s2SB8",
+                    "https://ruder.io/optimizing-gradient-descent/",
+                    "https://ml-cheatsheet.readthedocs.io/en/latest/gradient_descent.html",
+                    "https://www.youtube.com/watch?v=NhGyJJvgWUA"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Optimization"
+            },
+            "position": {
+                "x": 5609.754552950252,
+                "y": 1299.338277700156
+            }
+        },
+        {
+            "data": {
+                "id": "62",
+                "name": "Regularization & Overfitting",
+                "lectures": "Machine Learning",
+                "description": "Overfitting is a perennial problem in machine learning. If a model is only effective on the dataset it was trained on, and doesn't generalise to the wider world, it isn't useful. Regularization mitigates overfitting by adding a penalty term to disincentivise overfitting.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=ndYnUrx8xvs",
+                    "https://www.datacamp.com/community/tutorials/towards-preventing-overfitting-regularization",
+                    "https://towardsdatascience.com/over-fitting-and-regularization-64d16100f45c",
+                    "https://towardsdatascience.com/machine-learning-regularization-and-over-fitting-simply-explained-d4dfdc256c9d"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 4438.537527392269,
+                "y": 987.8995129967346
+            }
+        },
+        {
+            "data": {
+                "id": "63",
+                "name": "Principal Component Analysis",
+                "lectures": "Machine Learning",
+                "description": "",
+                "urls": [
+                    "https://builtin.com/data-science/step-step-explanation-principal-component-analysis",
+                    "https://royalsocietypublishing.org/doi/10.1098/rsta.2015.0202"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 2718.4730157286394,
+                "y": 1194.2416352484145
+            }
+        },
+        {
+            "data": {
+                "id": "64",
+                "name": "Support Vector Machines",
+                "lectures": "Machine Learning",
+                "description": "A class of machine learning models used typically in binary classification. SVM's are trained with supervised learning.",
+                "urls": [
+                    "https://towardsdatascience.com/support-vector-machine-introduction-to-machine-learning-algorithms-934a444fca47",
+                    "https://www.youtube.com/watch?v=efR1C6CvhmE",
+                    "http://web.mit.edu/6.034/wwwbob/svm-notes-long-08.pdf",
+                    "https://mml-book.github.io/book/mml-book.pdf#page=376"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 3109.92103617237,
+                "y": 844.7543338636847
+            }
+        },
+        {
+            "data": {
+                "id": "65",
+                "name": "Perceptrons & Neural Networks",
+                "lectures": "Deep Learning",
+                "description": "The basis of deep learning - that a network of connected neurons have the capacity to learn amazingly powerful and varied representations. This concept starts focused on the simplest case - one neuron - and builds up to many.",
+                "urls": [
+                    "https://aegeorge42.github.io/",
+                    "https://www.simplilearn.com/what-is-perceptron-tutorial",
+                    "https://www.youtube.com/watch?v=aiDv1NPdXvU",
+                    "https://www.youtube.com/watch?v=aircAruvnKk&vl=en",
+                    "https://www.youtube.com/watch?v=MfIjxPh6Pys&list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU&index=11",
+                    "http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 3557.909233913182,
+                "y": 445.7472804718092
+            }
+        },
+        {
+            "data": {
+                "id": "66",
+                "name": "Activation Functions",
+                "lectures": "Deep Learning",
+                "description": "Activation functions determine the output of artificial neurons based on their input. They are fundamental to understanding and building neural networks for Deep Learning.",
+                "urls": [
+                    "https://machinelearningmastery.com/choose-an-activation-function-for-deep-learning/",
+                    "https://towardsdatascience.com/activation-functions-neural-networks-1cbd9f8d91d6"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 3824.836138748482,
+                "y": 359.24082985903766
+            }
+        },
+        {
+            "data": {
+                "id": "67",
+                "name": "Backpropagation",
+                "lectures": "Deep Learning",
+                "description": "The fundamental algorithm that enables training Deep Learning models with supervised learning, backpropagation updates model parameters in hidden layers to improve its predictions. ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=Ilg3gGewQ5U",
+                    "https://www.youtube.com/watch?v=tIeHLnjs5U8&vl=en",
+                    "https://colah.github.io/posts/2015-08-Backprop/",
+                    "https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/",
+                    "https://brilliant.org/wiki/backpropagation/",
+                    "http://neuralnetworksanddeeplearning.com/chap2.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.7146428199482244,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 4200.297931908293,
+                "y": 203.45617315926603
+            }
+        },
+        {
+            "data": {
+                "id": "74",
+                "name": "Ensemble Methods",
+                "lectures": "Deep Learning",
+                "description": "Instead of relying on the inference of one trained neural network, train many (an ensemble), typically with different architectures, datasets or hyperparameters and average across them",
+                "urls": [
+                    "https://www.toptal.com/machine-learning/ensemble-methods-machine-learning#:~:text=Ensemble%20methods%20are%20techniques%20thatthan%20a%20single%20model%20would.&text=These%20models%2C%20when%20used%20asare%20called%20%E2%80%9Dbase%20models%E2%80%9D.",
+                    "https://blog.statsbot.co/ensemble-learning-d1dcd548e936"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 3914.641371275046,
+                "y": -767.6948526099226
+            }
+        },
+        {
+            "data": {
+                "id": "75",
+                "name": "Dropout",
+                "lectures": "Deep Learning",
+                "description": "A method for regularizing neural networks that approximates training neural networks with many different architectures at once. Reduces the reliance on any individual node.",
+                "urls": [
+                    "https://machinelearningmastery.com/dropout-for-regularizing-deep-neural-networks/",
+                    "https://jmlr.org/papers/v15/srivastava14a.html",
+                    "https://medium.com/@amarbudhiraja/https-medium-com-amarbudhiraja-learning-less-to-learn-better-dropout-in-deep-machine-learning-74334da4bfc5"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 4994.212423576105,
+                "y": -1069.519006802323
+            }
+        },
+        {
+            "data": {
+                "id": "77",
+                "name": "Convolutional Neural Networks",
+                "lectures": "Deep Learning",
+                "description": "The fundamental technology underlying all current state-of-the-art approaches to all computer vision problems. Convolutional neural networks use a set of learned filters to extract features from images at different scales.",
+                "urls": [
+                    "https://towardsdatascience.com/a-comprehensive-guide-to-convolutional-neural-networks-the-eli5-way-3bd2b1164a53",
+                    "https://cs231n.github.io/convolutional-networks/",
+                    "https://www.freecodecamp.org/news/an-intuitive-guide-to-convolutional-neural-networks-260c2de0a050/",
+                    " https://www.youtube.com/watch?v=Xa8d_j5f2pI",
+                    " https://www.youtube.com/watch?v=ArPaAX_PhIs"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 4624.363575455584,
+                "y": 1.0198023668965064
+            }
+        },
+        {
+            "data": {
+                "id": "78",
+                "name": "K-means clustering",
+                "lectures": "Machine Learning",
+                "description": "An unsupervised learning algorithm that learns to cluster data points into distinct groups based on their values.",
+                "urls": [
+                    "https://towardsdatascience.com/understanding-k-means-clustering-in-machine-learning-6a6e67336aa1",
+                    "https://www.youtube.com/watch?v=4b5d3muPQmA"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 4057.7151366344774,
+                "y": 1668.5625657033277
+            }
+        },
+        {
+            "data": {
+                "id": "81",
+                "name": "Expectation Maximization",
+                "lectures": "Machine Learning",
+                "description": "",
+                "urls": [
+                    "https://machinelearningmastery.com/expectation-maximization-em-algorithm/",
+                    "https://www.youtube.com/watch?v=REypj2sy_5U",
+                    "https://www.youtube.com/watch?v=rVfZHWTwXSA",
+                    "https://www.youtube.com/watch?v=rVfZHWTwXSA&list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU&index=14"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 2938.0648744128243,
+                "y": 1620.3294360032298
+            }
+        },
+        {
+            "data": {
+                "id": "82",
+                "name": "EM Mixture of Gaussians",
+                "lectures": "Machine Learning",
+                "description": "",
+                "urls": [
+                    "https://stephens999.github.io/fiveMinuteStats/intro_to_em.html",
+                    "https://www.ics.uci.edu/~smyth/courses/cs274/notes/EMnotes.pdf",
+                    "http://statweb.stanford.edu/~tibs/stat315a/LECTURES/em.pdf"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 2853.980183851171,
+                "y": 1332.8965004441495
+            }
+        },
+        {
+            "data": {
+                "id": "83",
+                "name": "Factor Analysis",
+                "lectures": "Machine Learning",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=WV_jcaDBZ2I",
+                    "https://stats.idre.ucla.edu/spss/seminars/introduction-to-factor-analysis/a-practical-introduction-to-factor-analysis/",
+                    "https://www.ibm.com/docs/SSLVMB_23.0.0/spss/base/idh_fact.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 2419.5705854292437,
+                "y": 1155.1416712724645
+            }
+        },
+        {
+            "data": {
+                "id": "84",
+                "name": "Probabilistic Graphical Models",
+                "lectures": "Machine Learning",
+                "description": "A large family of probabilistic methods describing the relationships between random variables",
+                "urls": [
+                    "https://towardsdatascience.com/introduction-to-probabilistic-graphical-models-b8e0bf459812",
+                    "https://ermongroup.github.io/cs228-notes/preliminaries/introduction/ "
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 3793.398290527722,
+                "y": 1573.0338204814846
+            }
+        },
+        {
+            "data": {
+                "id": "85",
+                "name": "Autoencoders",
+                "lectures": "Deep Learning",
+                "description": "",
+                "urls": [
+                    "https://www.jeremyjordan.me/autoencoders/",
+                    "https://towardsdatascience.com/applied-deep-learning-part-3-autoencoders-1c083af4d798",
+                    "https://towardsdatascience.com/auto-encoder-what-is-it-and-what-is-it-used-for-part-1-3e5c6f017726",
+                    "https://www.deeplearningbook.org/contents/autoencoders.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 4621.728002523033,
+                "y": -1024.082756927545
+            }
+        },
+        {
+            "data": {
+                "id": "86",
+                "name": "Generative Adversarial Networks",
+                "lectures": "Deep Learning",
+                "description": "Generative Adversarial Networks (GANs) are an approach to generative modelling in which a 'generator' network plays a game to fool a 'discriminator' network. By learning to fool a discriminator, the generator learns to produce new versions of the inputs, such as images.",
+                "urls": [
+                    "https://app.learney.me/maps/GAN"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 4186.019120313311,
+                "y": -1002.3908317367543
+            }
+        },
+        {
+            "data": {
+                "id": "87",
+                "name": "Recurrent Neural Networks",
+                "lectures": "Deep Learning",
+                "description": "",
+                "urls": [
+                    "https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks",
+                    "http://www.wildml.com/2015/09/recurrent-neural-networks-tutorial-part-1-introduction-to-rnns/",
+                    "http://karpathy.github.io/2015/05/21/rnn-effectiveness/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 3551.665542000736,
+                "y": 102.84599250051835
+            }
+        },
+        {
+            "data": {
+                "id": "88",
+                "name": "LSTM",
+                "lectures": "Deep Learning",
+                "description": "Long Short-Term Memory (or LSTM for short) recurrent neural network neurons take inputs word-embeddings one-by-one.",
+                "urls": [
+                    "https://colah.github.io/posts/2015-08-Understanding-LSTMs/",
+                    "https://machinelearningmastery.com/gentle-introduction-long-short-term-memory-networks-experts/",
+                    "https://www.youtube.com/watch?v=QciIcRxJvsM",
+                    "https://www.youtube.com/watch?v=LfnrRPFhkuY"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 3556.6461553204304,
+                "y": -190.71811522389473
+            }
+        },
+        {
+            "data": {
+                "id": "89",
+                "name": "Gaussian Processes",
+                "lectures": "Machine Learning",
+                "description": "",
+                "urls": [
+                    "https://thegradient.pub/gaussian-process-not-quite-for-dummies/",
+                    "https://distill.pub/2019/visual-exploration-gaussian-processes",
+                    "https://towardsdatascience.com/an-intuitive-guide-to-gaussian-processes-ec2f0b45c71d"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 2273.4009981957784,
+                "y": 759.0329593472396
+            }
+        },
+        {
+            "data": {
+                "id": "92",
+                "name": "Transposes & Symmetry",
+                "lectures": "Linear Algebra",
+                "description": "The transpose of a matrix is the matrix flipped along it's leading diagonal (from top left to bottom right). Square matrices that are identical to their transposes are called symmetric matrices. In other words, symmetric matrices are symmetric when the entries are mirrored across the leading diagonal.",
+                "urls": [
+                    "https://stattrek.com/statistics/dictionary.aspx?definition=symmetric_matrix",
+                    "https://www.youtube.com/watch?v=2t0003_sxtU",
+                    "https://www.youtube.com/watch?v=TZrKrNVhbjI"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1200.859114664309,
+                "y": 3084.7384150499283
+            }
+        },
+        {
+            "data": {
+                "id": "93",
+                "name": "Positive Definite Matrices",
+                "lectures": "Linear Algebra",
+                "description": "A key family of matrices with interesting properties and a wide array of use cases.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=UCc9q_cAhho",
+                    "https://www.math.utah.edu/~zwick/Classes/Fall2012_2270/Lectures/Lecture33_with_Examples.pdf",
+                    "https://www.youtube.com/watch?v=ojUQk_GNQbQ"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1556.904887483412,
+                "y": 3099.675840635591
+            }
+        },
+        {
+            "data": {
+                "id": "94",
+                "name": "Markov Matrices",
+                "lectures": "Linear Algebra",
+                "description": "A Markov matrix is a square matrix with all nonnegative entries, and where the sum of the entries down any column is 1",
+                "urls": [
+                    "https://www.math.utah.edu/~zwick/Classes/Fall2012_2270/Lectures/Lecture40_with_Examples.pdf",
+                    "https://www.youtube.com/watch?v=nnssRe5DewE"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1557.2091019136137,
+                "y": 2566.068085799911
+            }
+        },
+        {
+            "data": {
+                "id": "98",
+                "name": "Linear Discriminant Analysis",
+                "lectures": "Machine Learning",
+                "description": "",
+                "urls": [
+                    "https://sebastianraschka.com/Articles/2014_python_lda.html",
+                    "https://towardsdatascience.com/linear-discriminant-analysis-explained-f88be6c1e00b",
+                    "https://www.youtube.com/watch?v=azXCzI57Yfc"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 2598.493759393041,
+                "y": 904.6364124396192
+            }
+        },
+        {
+            "data": {
+                "id": "101",
+                "name": "Markov Decision Processes",
+                "lectures": "Reinforcement Learning",
+                "description": "The fundamental mathematical framework for RL and RL-like problems. A deep understanding of this concept is key to understanding RL.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=Jk2V9yA82YU",
+                    "https://www.youtube.com/watch?v=9g32v7bK3Co",
+                    "https://www.davidsilver.uk/wp-content/uploads/2020/03/MDP.pdf"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1627.6632253264963,
+                "y": 1224.7220518582976
+            }
+        },
+        {
+            "data": {
+                "id": "102",
+                "name": "Models in RL",
+                "lectures": "Reinforcement Learning",
+                "description": "A key differentiator that separates RL methods into two families. Model-based directly models how the environment evolves, so can simulate how an action now might affect the future states, while model-free methods do not, so can't simulate ahead.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=bFPoHrAoPoQ",
+                    "https://neptune.ai/blog/model-based-and-model-free-reinforcement-learning-pytennis-case-study",
+                    "https://www.youtube.com/watch?v=nnxHlg-2WgA",
+                    "https://www.youtube.com/watch?v=PnHCvfgC_ZA",
+                    "https://www.youtube.com/watch?v=_rKzhhDRq_4"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1273.4176492131521,
+                "y": 725.5463967161755
+            }
+        },
+        {
+            "data": {
+                "id": "103",
+                "name": "Bellman Equations",
+                "lectures": "Reinforcement Learning",
+                "description": "The foundational equations of RL. These define value functions based on policies and optimal behaviour in Markov Decision Processes.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=14BfO5lMiuk",
+                    "https://towardsdatascience.com/the-bellman-equation-59258a0d3fa7",
+                    "https://medium.com/analytics-vidhya/bellman-equation-and-dynamic-programming-773ce67fc6a7"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1597.1873387287937,
+                "y": 732.253534706431
+            }
+        },
+        {
+            "data": {
+                "id": "104",
+                "name": "Dynamic Programming: Policy & Value Iteration",
+                "lectures": "Reinforcement Learning",
+                "description": "Solve MDPs exactly with these algorithms. A fundamental of RL, key aspects of these approaches are used in almost every RL algorithm.",
+                "urls": [
+                    "http://web.mit.edu/15.053/www/AMP-Chapter-11.pdf",
+                    "https://www.educative.io/courses/grokking-dynamic-programming-patterns-for-coding-interviews/m2G1pAq0OO0"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 922.9323944775408,
+                "y": 266.95516852394996
+            }
+        },
+        {
+            "data": {
+                "id": "105",
+                "name": "Monte Carlo Learning",
+                "lectures": "Reinforcement Learning",
+                "description": "RL methods that learn from rollouts of experience in the real environment.",
+                "urls": [
+                    "https://www.davidsilver.uk/wp-content/uploads/2020/03/MC-TD.pdf",
+                    "https://medium.com/ai%C2%B3-theory-practice-business/reinforcement-learning-part-5-monte-carlo-and-temporal-difference-learning-889053aba07d",
+                    "https://towardsdatascience.com/monte-carlo-learning-b83f75233f92",
+                    "https://www.youtube.com/watch?v=uiPhlFrwcw8",
+                    "https://www.youtube.com/watch?v=mMEFFN1H5Cg"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1842.8284721987825,
+                "y": -14.591873536893754
+            }
+        },
+        {
+            "data": {
+                "id": "106",
+                "name": "Value Function Approximation",
+                "lectures": "Reinforcement Learning",
+                "description": "Apply the Bellman Equations to approximate the value of a state. This is a key component of Q-learning, an algorithm which can achieve the optimal policy.",
+                "urls": [
+                    "https://www.davidsilver.uk/wp-content/uploads/2020/03/FA.pdf",
+                    "https://web.stanford.edu/class/cs234/slides/lecture5.pdf",
+                    "https://www.youtube.com/watch?v=UoPei5o4fps",
+                    "https://www.youtube.com/watch?v=buptHUzDKcE",
+                    "https://www.youtube.com/watch?v=7Dg6KiI_0eM",
+                    "https://www.youtube.com/watch?v=Ijqkc7OLenI"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1911.4298453488586,
+                "y": -661.6426055979331
+            }
+        },
+        {
+            "data": {
+                "id": "107",
+                "name": "Actor-Critic",
+                "lectures": "Reinforcement Learning",
+                "description": "A family of RL methods that explicitly train a policy and a value function. These tend to learn faster than both value-based RL methods or policy-based methods.",
+                "urls": [
+                    "https://www.davidsilver.uk/wp-content/uploads/2020/03/pg.pdf#page=23",
+                    "https://www.youtube.com/watch?v=LawaN3BdI00",
+                    "https://www.youtube.com/watch?v=bRfUxQs6xIM",
+                    "https://www.youtube.com/watch?v=n6K8FfqQ7ds",
+                    "https://towardsdatascience.com/understanding-actor-critic-methods-931b97b6df3f",
+                    "http://incompleteideas.net/book/first/ebook/node66.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1561.5811628259016,
+                "y": -1163.8390316831
+            }
+        },
+        {
+            "data": {
+                "id": "108",
+                "name": "Q-learning",
+                "lectures": "Reinforcement Learning",
+                "description": "As the first RL approach to achieve superhuman play on Atari games, Q-learning has cemented its place as a key RL algorithm.",
+                "urls": [
+                    "https://www.davidsilver.uk/wp-content/uploads/2020/03/control.pdf",
+                    "https://towardsdatascience.com/a-beginners-guide-to-q-learning-c3e2a30a653c",
+                    "https://www.gatsby.ucl.ac.uk/~dayan/papers/cjch.pdf",
+                    "https://www.freecodecamp.org/news/an-introduction-to-q-learning-reinforcement-learning-14ac0b4493cc/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1909.8064202313938,
+                "y": -1055.5019646732087
+            }
+        },
+        {
+            "data": {
+                "id": "109",
+                "name": "Exploration & Exploitation",
+                "lectures": "Reinforcement Learning",
+                "description": "A classic dichotomy for RL - should I explore (and learn more about the environment) or exploit (and do what I already know works to achieve higher rewards)? How should I balance these two?",
+                "urls": [
+                    "https://www.davidsilver.uk/wp-content/uploads/2020/03/XX.pdf",
+                    "https://towardsdatascience.com/intro-to-reinforcement-learning-the-explore-exploit-dilemma-463ceb004989",
+                    "https://www.manifold.ai/exploration-vs-exploitation-in-reinforcement-learning",
+                    "https://www.youtube.com/watch?v=eM6IBYVqXEA",
+                    "https://www.youtube.com/watch?v=sGuiWX07sKw"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1916.515584490489,
+                "y": 707.8202734080409
+            }
+        },
+        {
+            "data": {
+                "id": "111",
+                "name": "Markov Random Fields",
+                "lectures": "Machine Learning",
+                "description": "Markov Random Fields (MRFs) have applications in computer vision, graphics and computational biology. They're the undirected counterpart to the directed Bayesian Networks.",
+                "urls": [
+                    "https://ermongroup.github.io/cs228-notes/representation/undirected/",
+                    "https://www.fmrib.ox.ac.uk/datasets/techrep/tr00yz1/tr00yz1/node4.html",
+                    "https://www.youtube.com/watch?v=iBQkZdPHlCs"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 3467.5903133370234,
+                "y": 850.5166955441681
+            }
+        },
+        {
+            "data": {
+                "id": "112",
+                "name": "Bayesian Networks",
+                "lectures": "Machine Learning",
+                "description": "With uses ranging from prediction, anomaly detection to reasoning and decision making under uncertainty, Bayesian Networks are a highly flexible form of probabilistic graphical model. Bayesian networks are directed graphical models, showing how random variables depend on one another.",
+                "urls": [
+                    "https://ermongroup.github.io/cs228-notes/representation/directed/",
+                    "https://www.youtube.com/watch?v=tMwfGGkj8DE",
+                    "https://www.youtube.com/watch?v=TuGDMj43ehw",
+                    "https://www.cs.ubc.ca/~murphyk/Bayes/bnintro.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 3956.896263577547,
+                "y": 1118.585336828798
+            }
+        },
+        {
+            "data": {
+                "id": "113",
+                "name": "Variable Elimination",
+                "lectures": "Machine Learning",
+                "description": "The most basic exact inference algorithm for probabilistic graphical models.",
+                "urls": [
+                    "https://ermongroup.github.io/cs228-notes/inference/ve/",
+                    "https://www.cs.ubc.ca/~kevinlb/teaching/cs322%20-%202006-7/Lectures/lect29.pdf",
+                    "https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe_notes/scribe_note_lecture4.pdf",
+                    "https://www.cs.upc.edu/~larrosa/MEI-CSI-files/BN/2-BN-VE.pdf"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 3824.46028052169,
+                "y": 854.5744237760824
+            }
+        },
+        {
+            "data": {
+                "id": "114",
+                "name": "Belief Propagation",
+                "lectures": "Machine Learning",
+                "description": "An algorithm for inference in graphical models using message-passing",
+                "urls": [
+                    "https://ermongroup.github.io/cs228-notes/inference/jt/",
+                    "https://www.ski.org/sites/default/files/publications/bptutorial.pdf",
+                    "http://helper.ipam.ucla.edu/publications/gss2013/gss2013_11344.pdf"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Machine Learning"
+            },
+            "position": {
+                "x": 4101.556273120475,
+                "y": 863.0112937610808
+            }
+        },
+        {
+            "data": {
+                "id": "117",
+                "name": "Multivariate Gaussians",
+                "lectures": "Probability & Statistics",
+                "description": "The generalisation of the Gaussian distribution to more than one dimension (or variable).",
+                "urls": [
+                    "http://cs229.stanford.edu/section/gaussians.pdf",
+                    "https://www.cs.cmu.edu/~epxing/Class/10701-08s/recitation/gaussian.pdf",
+                    "https://www.youtube.com/watch?v=JjB58InuTqM",
+                    "https://www.youtube.com/watch?v=eho8xH3E6mE"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.5652475842498528,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2446.812518149555,
+                "y": 2244.4795562398917
+            }
+        },
+        {
+            "data": {
+                "id": "118",
+                "name": "Learning in Sequence Models",
+                "lectures": "Deep Learning",
+                "description": "",
+                "urls": [
+                    "https://wiki.pathmind.com/lstm#backpropagation",
+                    "https://towardsdatascience.com/sequence-models-by-andrew-ng-11-lessons-learned-c62fb1d3485b",
+                    "https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html",
+                    "https://www.youtube.com/watch?v=_i3aqgKVNQI&list=PLkDaE6sCZn6F6wUI9tvS_Gw1vaFAx6rd6",
+                    "https://www.youtube.com/watch?v=CznICCPa63Q",
+                    "https://www.youtube.com/watch?v=oF0Rboc4IJw"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Deep Learning"
+            },
+            "position": {
+                "x": 3577.164142549793,
+                "y": -1012.8936041045187
+            }
+        },
+        {
+            "data": {
+                "id": "119",
+                "name": "Policy Gradient Methods",
+                "lectures": "Reinforcement Learning",
+                "description": "A family of model-free RL methods based on the policy gradient theorem. It's most notable members include PPO, TRPO and REINFORCE.",
+                "urls": [
+                    "https://www.davidsilver.uk/wp-content/uploads/2020/03/pg.pdf",
+                    "http://www.scholarpedia.org/article/Policy_gradient_methods",
+                    "https://lilianweng.github.io/lil-log/2018/04/08/policy-gradient-algorithms.html",
+                    "https://towardsdatascience.com/policy-gradient-methods-104c783251e0",
+                    "https://www.youtube.com/watch?v=A_2U6Sx67sE",
+                    "https://www.youtube.com/watch?v=KHZVXao4qXs"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1332.5196055677238,
+                "y": -667.0095996842675
+            }
+        },
+        {
+            "data": {
+                "id": "123",
+                "name": "Estimators",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=qvR7sSGphQ4&ab_channel=BenLambert",
+                    "https://www.youtube.com/watch?v=UxbY85Cm9SQ&ab_channel=BenLambertBenLambert",
+                    "https://warwick.ac.uk/fac/soc/economics/staff/vetroeger/teaching/qrmnew2.pdf",
+                    "https://www.statisticshowto.com/estimator/"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 3599.2114189476947,
+                "y": 2706.819635195425
+            }
+        },
+        {
+            "data": {
+                "id": "124",
+                "name": "TD & TD(lambda) learning",
+                "lectures": "Reinforcement Learning",
+                "description": "Temporal Difference (or TD) learning refers to RL methods that learn online while interacting with an environment",
+                "urls": [
+                    "https://deepmind.com/blog/article/Dopamine-and-temporal-difference-learning-A-fruitful-relationship-between-neuroscience-and-AI",
+                    "https://medium.com/@violante.andre/simple-reinforcement-learning-temporal-difference-learning-e883ea0d65b0",
+                    "https://web.stanford.edu/group/pdplab/pdphandbook/handbookch10.html",
+                    "https://www.youtube.com/watch?v=L64E_NTZJ_0",
+                    "https://www.youtube.com/watch?v=LyCpuLikLyQ",
+                    "https://www.youtube.com/watch?v=PnHCvfgC_ZA"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1713.33590933633,
+                "y": -508.92885818174
+            }
+        },
+        {
+            "data": {
+                "id": "128",
+                "name": "Cross Entropy",
+                "lectures": "Probability & Statistics",
+                "description": "",
+                "urls": [
+                    "https://machinelearningmastery.com/cross-entropy-for-machine-learning/",
+                    "https://towardsdatascience.com/cross-entropy-loss-function-f38c4ec8643e",
+                    "http://neuralnetworksanddeeplearning.com/chap3.html",
+                    "https://stackoverflow.com/questions/41990250/what-is-cross-entropy/41990932",
+                    "https://www.youtube.com/watch?v=6ArSys5qHAU"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2919.9699800188,
+                "y": 2433.3124054073423
+            }
+        },
+        {
+            "data": {
+                "id": "129",
+                "name": "Multivariate PDFs & PMFs",
+                "lectures": "Probability & Statistics",
+                "description": "Probability functions with more than one variable. ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=PR-A3UAO7_0",
+                    "https://www.dam.brown.edu/people/huiwang/classes/am165/Prob_ch5_2007.pdf",
+                    " http://cs229.stanford.edu/notes2020fall/notes2020fall/cs229-prob.pdf#page=6"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2417.730497001486,
+                "y": 3524.286927591346
+            }
+        },
+        {
+            "data": {
+                "id": "130",
+                "name": "Stochastic Gradient Descent",
+                "lectures": "Optimization",
+                "description": "A key algorithm used to train many deep learning methods. If it's deep and it learns, chances are it's using SGD or a variant of SGD!",
+                "urls": [
+                    "https://www.youtube.com/watch?v=k3AiUhwHQ28",
+                    "https://ruder.io/optimizing-gradient-descent/",
+                    "https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31",
+                    "https://www.youtube.com/watch?v=vMh0zPT0tLI"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.4,
+                "parent": "Optimization"
+            },
+            "position": {
+                "x": 5603.045514892186,
+                "y": 841.9554365181148
+            }
+        },
+        {
+            "data": {
+                "id": "131",
+                "name": "Lagrangian Multipliers",
+                "lectures": "Optimization",
+                "description": "",
+                "urls": [
+                    "https://www.youtube.com/watch?v=vwUV2IDLP8Q",
+                    "https://tutorial.math.lamar.edu/classes/calciii/lagrangemultipliers.aspx"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Optimization"
+            },
+            "position": {
+                "x": 4756.293580604625,
+                "y": 1672.504099910129
+            }
+        },
+        {
+            "data": {
+                "id": "132",
+                "name": "Partial derivatives",
+                "lectures": "Calculus",
+                "description": "Partial derivatives let us take the derivative of a function with multiple variables.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=AXqhWeUEtQU",
+                    "https://mml-book.github.io/book/mml-book.pdf#page=152",
+                    "https://www.youtube.com/watch?v=JAf_aSIJryg",
+                    "https://www.mathsisfun.com/calculus/derivatives-partial.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Calculus"
+            },
+            "position": {
+                "x": 4824.783721885001,
+                "y": 3252.0938767071716
+            }
+        },
+        {
+            "data": {
+                "id": "133",
+                "name": "Product Rule of Probability",
+                "lectures": "Probability & Statistics",
+                "description": "Along with the sum rule, the product rule is a fundamental rule of probability, from which Bayes Rule is defined.",
+                "urls": [
+                    "https://brilliant.org/wiki/probability-rule-of-product/",
+                    "https://www.youtube.com/watch?v=1O2EBfQ-MgU"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 3254.5974523708146,
+                "y": 2772.600462300835
+            }
+        },
+        {
+            "data": {
+                "id": "134",
+                "name": "Intro to Probability",
+                "lectures": "Probability & Statistics",
+                "description": "What is random? Something you can't predict the outcome of? How can we say anything mathematical about things that are random? This concept answers these questions and, more importantly, gives you a basic intuition to probability. ",
+                "urls": [
+                    "https://seeing-theory.brown.edu/basic-probability/index.html",
+                    "https://www.youtube.com/watch?v=SkidyDQuupA",
+                    "https://www.youtube.com/watch?v=uzkc-qNVoOk",
+                    "https://www.youtube.com/watch?v=KzfWUEJjG18",
+                    "https://www.youtube.com/watch?v=1neg5RigPOU",
+                    " "
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2491.2731130793595,
+                "y": 4736.396936048627
+            }
+        },
+        {
+            "data": {
+                "id": "137",
+                "name": "Properties of symmetric matrices",
+                "lectures": "Linear Algebra",
+                "description": "Symmetric matrices have many interesting properties. This brings together a lot of linear algebra into one cohesive whole, so important if you want a deep understanding of linear algebra!",
+                "urls": [
+                    "https://www.youtube.com/watch?v=UCc9q_cAhho",
+                    "https://people.math.carleton.ca/~kcheung/math/notes/MATH1107/wk10/10_symmetric_matrices.html",
+                    "https://people.revoledu.com/kardi/tutorial/LinearAlgebra/SymmetricMatrix.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1198.2936953335275,
+                "y": 1637.6058348170993
+            }
+        },
+        {
+            "data": {
+                "id": "138",
+                "name": "Intro to Sets",
+                "lectures": "Probability & Statistics",
+                "description": "Sets underpin discrete mathematics and are fundamental to understanding probablility. Set theory allows groups of objects to be described and manipulated mathematically.",
+                "urls": [
+                    "https://seeing-theory.brown.edu/compound-probability/index.html#section1",
+                    "https://plato.stanford.edu/entries/set-theory/basic-set-theory.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Probability & Statistics"
+            },
+            "position": {
+                "x": 2683.8220188150212,
+                "y": 4647.751397135115
+            }
+        },
+        {
+            "data": {
+                "id": "140",
+                "name": "Intro to Vectors",
+                "lectures": "Linear Algebra",
+                "description": "What's the difference between velocity and speed? What are vectors and scalars? Well, here you'll find out and should learn that vectors are really fundamental objects in mathematics and have many useful applications in computers: from machine learning to 2D and 3D graphics.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=fNk_zzaMoSs",
+                    "https://www.youtube.com/watch?v=br7tS1t2SFE",
+                    "https://mathinsight.org/vector_introduction",
+                    "https://www.youtube.com/watch?v=_YkIivLaVJs"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 982.7112010661142,
+                "y": 4037.4358387366933
+            }
+        },
+        {
+            "data": {
+                "id": "142",
+                "name": "Vector addition & multiplying by scalars",
+                "lectures": "Linear Algebra",
+                "description": "What does it mean to add 2 vectors? Can we... multiply vectors by numbers? Yes we can! This adds a key new level of understanding of what a vector is and how they can be used to your toolbox.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=8QihetGj3pg",
+                    "https://www.youtube.com/watch?v=KBSCMTYaH1s",
+                    "https://youtu.be/ZN7YaSbY3-w"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 587.1891292876999,
+                "y": 3645.673701070939
+            }
+        },
+        {
+            "data": {
+                "id": "143",
+                "name": "Dot product",
+                "lectures": "Linear Algebra",
+                "description": "What does it mean to multiply two vectors? Well with vectors there are two types of product: dot products and cross products. Dot products are more common and basic - let's focus on these here!",
+                "urls": [
+                    "https://www.youtube.com/watch?v=0iNrGpwZwog",
+                    "https://www.youtube.com/watch?v=WNuIhXo39_k",
+                    "https://www.youtube.com/watch?v=KDHuWxy53uM",
+                    "https://www.mathsisfun.com/algebra/vectors-dot-product.html"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 1381.6140962527002,
+                "y": 3735.153625198222
+            }
+        },
+        {
+            "data": {
+                "id": "144",
+                "name": "Span & linear independence",
+                "lectures": "Linear Algebra",
+                "description": "We now know that multiplying a scalar by a vector always produces a vector in the same direction as the original vector. So this leads to us being able to reach any point along this line. Can we generalise this concept? What about sums of different vectors? What is required to reach any point in a plane?",
+                "urls": [
+                    "https://www.youtube.com/watch?v=CrV1xCWdY-g",
+                    "https://www.youtube.com/watch?v=k7RM-ot2NWY"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 199.96790320275898,
+                "y": 3266.846983347992
+            }
+        },
+        {
+            "data": {
+                "id": "145",
+                "name": "Cross product",
+                "lectures": "Linear Algebra",
+                "description": "The second, more challenging, type of vector multiplication, the cross product has important geometric properties.",
+                "urls": [
+                    "https://www.youtube.com/watch?v=Zy7RfbURZa4",
+                    "https://www.youtube.com/watch?v=pJzmiywagfY",
+                    "https://www.youtube.com/watch?v=eu6i7WJeinw",
+                    "https://www.youtube.com/watch?v=gPnWm-IXoAY",
+                    "https://www.youtube.com/watch?v=pWbOisq1MJU"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": -15.51002667534405,
+                "y": 3043.560644872065
+            }
+        },
+        {
+            "data": {
+                "id": "147",
+                "name": "Matrix-vector multiplication",
+                "lectures": "Linear Algebra",
+                "description": "We know that vectors can represent magnitude and direction in a 2D or 3D (or any D!) space. This can be thought of geometrically. But what does it mean to multiply a vector by a matrix geometrically?",
+                "urls": [
+                    "https://www.youtube.com/watch?v=7Mo4S2wyMg4",
+                    "https://www.youtube.com/watch?v=Awcj447pYuk",
+                    "https://www.youtube.com/watch?v=kYB8IZa5AuE",
+                    "https://www.youtube.com/watch?v=4PCktDZJH8E",
+                    "https://www.youtube.com/watch?v=v8VSDg_WQlA",
+                    "https://www.youtube.com/watch?v=cFIRXQBfgg0"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Linear Algebra"
+            },
+            "position": {
+                "x": 963.7473709843377,
+                "y": 3377.9547396472367
+            }
+        },
+        {
+            "data": {
+                "id": "148",
+                "name": "Limits & continuity",
+                "lectures": "Calculus",
+                "description": "How many numbers are there between 0 and 1? How many numbers are there between 0.9 and 1? How about 0.99 and 1? ",
+                "urls": [
+                    "https://www.youtube.com/watch?v=kfF40MiS7zA",
+                    "https://www.youtube.com/watch?v=riXcZT2ICjA",
+                    "https://www.youtube.com/watch?v=kdEQGfeC0SE"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1,
+                "parent": "Calculus"
+            },
+            "position": {
+                "x": 5116.8080709437045,
+                "y": 4624.000633691376
+            }
+        },
+        {
+            "data": {
+                "id": "149",
+                "name": "Policies & Value Functions",
+                "lectures": "Reinforcement Learning",
+                "description": "These two functions are the keys to solutions to MDPs and they are vital to understading RL.",
+                "urls": [
+                    "https://spinningup.openai.com/en/latest/spinningup/rl_intro.html#policies",
+                    "https://deeplizard.com/learn/video/eMxOGwbdqKY",
+                    "http://incompleteideas.net/book/RLbook2020.pdf#page=80"
+                ],
+                "nodetype": "concept",
+                "relative_importance": 1.212435565298214,
+                "parent": "Reinforcement Learning"
+            },
+            "position": {
+                "x": 1756.8840867956867,
+                "y": 999.9147082179203
+            }
+        }
+    ],
+    "edges": [
+        {
+            "data": {
+                "id": "143_147",
+                "source": "143",
+                "target": "147"
+            }
+        },
+        {
+            "data": {
+                "source": "27",
+                "target": "7",
+                "id": "80995991-2870-46ce-bec4-6fdce8804818"
+            }
+        },
+        {
+            "data": {
+                "id": "1_147",
+                "source": "1",
+                "target": "147"
+            }
+        },
+        {
+            "data": {
+                "id": "101_149",
+                "source": "101",
+                "target": "149"
+            }
+        },
+        {
+            "data": {
+                "id": "147_2",
+                "source": "147",
+                "target": "2"
+            }
+        },
+        {
+            "data": {
+                "id": "28_3",
+                "source": "28",
+                "target": "3"
+            }
+        },
+        {
+            "data": {
+                "id": "2_3",
+                "source": "2",
+                "target": "3"
+            }
+        },
+        {
+            "data": {
+                "id": "3_4",
+                "source": "3",
+                "target": "4"
+            }
+        },
+        {
+            "data": {
+                "id": "144_5",
+                "source": "144",
+                "target": "5"
+            }
+        },
+        {
+            "data": {
+                "id": "3_5",
+                "source": "3",
+                "target": "5"
+            }
+        },
+        {
+            "data": {
+                "id": "10_9",
+                "source": "10",
+                "target": "9"
+            }
+        },
+        {
+            "data": {
+                "id": "134_10",
+                "source": "134",
+                "target": "10"
+            }
+        },
+        {
+            "data": {
+                "id": "138_10",
+                "source": "138",
+                "target": "10"
+            }
+        },
+        {
+            "data": {
+                "id": "9_11",
+                "source": "9",
+                "target": "11"
+            }
+        },
+        {
+            "data": {
+                "id": "11_12",
+                "source": "11",
+                "target": "12"
+            }
+        },
+        {
+            "data": {
+                "id": "20_12",
+                "source": "20",
+                "target": "12"
+            }
+        },
+        {
+            "data": {
+                "id": "11_13",
+                "source": "11",
+                "target": "13"
+            }
+        },
+        {
+            "data": {
+                "id": "129_14",
+                "source": "129",
+                "target": "14"
+            }
+        },
+        {
+            "data": {
+                "id": "5b53eef1-1824-4c7b-82da-f35d41eeed1c",
+                "source": "13",
+                "target": "15"
+            }
+        },
+        {
+            "data": {
+                "id": "133_16",
+                "source": "133",
+                "target": "16"
+            }
+        },
+        {
+            "data": {
+                "id": "148_17",
+                "source": "148",
+                "target": "17"
+            }
+        },
+        {
+            "data": {
+                "id": "17_18",
+                "source": "17",
+                "target": "18"
+            }
+        },
+        {
+            "data": {
+                "id": "17_19",
+                "source": "17",
+                "target": "19"
+            }
+        },
+        {
+            "data": {
+                "id": "17_20",
+                "source": "17",
+                "target": "20"
+            }
+        },
+        {
+            "data": {
+                "id": "23_22",
+                "source": "23",
+                "target": "22"
+            }
+        },
+        {
+            "data": {
+                "id": "17_23",
+                "source": "17",
+                "target": "23"
+            }
+        },
+        {
+            "data": {
+                "id": "5_24",
+                "source": "5",
+                "target": "24"
+            }
+        },
+        {
+            "data": {
+                "id": "4_25",
+                "source": "4",
+                "target": "25"
+            }
+        },
+        {
+            "data": {
+                "id": "36_26",
+                "source": "36",
+                "target": "26"
+            }
+        },
+        {
+            "data": {
+                "id": "5_27",
+                "source": "5",
+                "target": "27"
+            }
+        },
+        {
+            "data": {
+                "id": "1_28",
+                "source": "1",
+                "target": "28"
+            }
+        },
+        {
+            "data": {
+                "id": "4_30",
+                "source": "4",
+                "target": "30"
+            }
+        },
+        {
+            "data": {
+                "id": "42_30",
+                "source": "42",
+                "target": "30"
+            }
+        },
+        {
+            "data": {
+                "id": "5_31",
+                "source": "5",
+                "target": "31"
+            }
+        },
+        {
+            "data": {
+                "id": "11_32",
+                "source": "11",
+                "target": "32"
+            }
+        },
+        {
+            "data": {
+                "id": "20_33",
+                "source": "20",
+                "target": "33"
+            }
+        },
+        {
+            "data": {
+                "id": "35_34",
+                "source": "35",
+                "target": "34"
+            }
+        },
+        {
+            "data": {
+                "id": "15_35",
+                "source": "15",
+                "target": "35"
+            }
+        },
+        {
+            "data": {
+                "id": "15_36",
+                "source": "15",
+                "target": "36"
+            }
+        },
+        {
+            "data": {
+                "id": "129_36",
+                "source": "129",
+                "target": "36"
+            }
+        },
+        {
+            "data": {
+                "id": "30_41",
+                "source": "30",
+                "target": "41"
+            }
+        },
+        {
+            "data": {
+                "id": "31_41",
+                "source": "31",
+                "target": "41"
+            }
+        },
+        {
+            "data": {
+                "id": "24_42",
+                "source": "24",
+                "target": "42"
+            }
+        },
+        {
+            "data": {
+                "id": "16_45",
+                "source": "16",
+                "target": "45"
+            }
+        },
+        {
+            "data": {
+                "id": "123_45",
+                "source": "123",
+                "target": "45"
+            }
+        },
+        {
+            "data": {
+                "id": "123_46",
+                "source": "123",
+                "target": "46"
+            }
+        },
+        {
+            "data": {
+                "id": "16_56",
+                "source": "16",
+                "target": "56"
+            }
+        },
+        {
+            "data": {
+                "id": "11_57",
+                "source": "11",
+                "target": "57"
+            }
+        },
+        {
+            "data": {
+                "id": "128_58",
+                "source": "128",
+                "target": "58"
+            }
+        },
+        {
+            "data": {
+                "id": "11_59",
+                "source": "11",
+                "target": "59"
+            }
+        },
+        {
+            "data": {
+                "id": "56_60",
+                "source": "56",
+                "target": "60"
+            }
+        },
+        {
+            "data": {
+                "id": "19_61",
+                "source": "19",
+                "target": "61"
+            }
+        },
+        {
+            "data": {
+                "id": "22_61",
+                "source": "22",
+                "target": "61"
+            }
+        },
+        {
+            "data": {
+                "id": "132_61",
+                "source": "132",
+                "target": "61"
+            }
+        },
+        {
+            "data": {
+                "id": "61_62",
+                "source": "61",
+                "target": "62"
+            }
+        },
+        {
+            "data": {
+                "id": "117_63",
+                "source": "117",
+                "target": "63"
+            }
+        },
+        {
+            "data": {
+                "id": "30_63",
+                "source": "30",
+                "target": "63"
+            }
+        },
+        {
+            "data": {
+                "id": "60_64",
+                "source": "60",
+                "target": "64"
+            }
+        },
+        {
+            "data": {
+                "id": "131_64",
+                "source": "131",
+                "target": "64"
+            }
+        },
+        {
+            "data": {
+                "id": "42_64",
+                "source": "42",
+                "target": "64"
+            }
+        },
+        {
+            "data": {
+                "id": "27_64",
+                "source": "27",
+                "target": "64"
+            }
+        },
+        {
+            "data": {
+                "id": "2_65",
+                "source": "2",
+                "target": "65"
+            }
+        },
+        {
+            "data": {
+                "id": "65_66",
+                "source": "65",
+                "target": "66"
+            }
+        },
+        {
+            "data": {
+                "id": "61_67",
+                "source": "61",
+                "target": "67"
+            }
+        },
+        {
+            "data": {
+                "id": "66_67",
+                "source": "66",
+                "target": "67"
+            }
+        },
+        {
+            "data": {
+                "id": "67_74",
+                "source": "67",
+                "target": "74"
+            }
+        },
+        {
+            "data": {
+                "id": "62_75",
+                "source": "62",
+                "target": "75"
+            }
+        },
+        {
+            "data": {
+                "id": "67_75",
+                "source": "67",
+                "target": "75"
+            }
+        },
+        {
+            "data": {
+                "id": "130_75",
+                "source": "130",
+                "target": "75"
+            }
+        },
+        {
+            "data": {
+                "id": "33_77",
+                "source": "33",
+                "target": "77"
+            }
+        },
+        {
+            "data": {
+                "id": "67_77",
+                "source": "67",
+                "target": "77"
+            }
+        },
+        {
+            "data": {
+                "id": "130_77",
+                "source": "130",
+                "target": "77"
+            }
+        },
+        {
+            "data": {
+                "id": "23_78",
+                "source": "23",
+                "target": "78"
+            }
+        },
+        {
+            "data": {
+                "id": "58_81",
+                "source": "58",
+                "target": "81"
+            }
+        },
+        {
+            "data": {
+                "id": "117_82",
+                "source": "117",
+                "target": "82"
+            }
+        },
+        {
+            "data": {
+                "id": "81_82",
+                "source": "81",
+                "target": "82"
+            }
+        },
+        {
+            "data": {
+                "id": "117_83",
+                "source": "117",
+                "target": "83"
+            }
+        },
+        {
+            "data": {
+                "id": "56_84",
+                "source": "56",
+                "target": "84"
+            }
+        },
+        {
+            "data": {
+                "id": "45_84",
+                "source": "45",
+                "target": "84"
+            }
+        },
+        {
+            "data": {
+                "id": "46_84",
+                "source": "46",
+                "target": "84"
+            }
+        },
+        {
+            "data": {
+                "id": "130_85",
+                "source": "130",
+                "target": "85"
+            }
+        },
+        {
+            "data": {
+                "id": "67_85",
+                "source": "67",
+                "target": "85"
+            }
+        },
+        {
+            "data": {
+                "id": "58_85",
+                "source": "58",
+                "target": "85"
+            }
+        },
+        {
+            "data": {
+                "id": "77_86",
+                "source": "77",
+                "target": "86"
+            }
+        },
+        {
+            "data": {
+                "id": "56_86",
+                "source": "56",
+                "target": "86"
+            }
+        },
+        {
+            "data": {
+                "id": "65_87",
+                "source": "65",
+                "target": "87"
+            }
+        },
+        {
+            "data": {
+                "id": "87_88",
+                "source": "87",
+                "target": "88"
+            }
+        },
+        {
+            "data": {
+                "id": "117_89",
+                "source": "117",
+                "target": "89"
+            }
+        },
+        {
+            "data": {
+                "id": "1_92",
+                "source": "1",
+                "target": "92"
+            }
+        },
+        {
+            "data": {
+                "id": "1_93",
+                "source": "1",
+                "target": "93"
+            }
+        },
+        {
+            "data": {
+                "id": "2_94",
+                "source": "2",
+                "target": "94"
+            }
+        },
+        {
+            "data": {
+                "id": "59_94",
+                "source": "59",
+                "target": "94"
+            }
+        },
+        {
+            "data": {
+                "id": "93_94",
+                "source": "93",
+                "target": "94"
+            }
+        },
+        {
+            "data": {
+                "id": "63_98",
+                "source": "63",
+                "target": "98"
+            }
+        },
+        {
+            "data": {
+                "id": "83_98",
+                "source": "83",
+                "target": "98"
+            }
+        },
+        {
+            "data": {
+                "id": "59_101",
+                "source": "59",
+                "target": "101"
+            }
+        },
+        {
+            "data": {
+                "id": "101_102",
+                "source": "101",
+                "target": "102"
+            }
+        },
+        {
+            "data": {
+                "id": "149_103",
+                "source": "149",
+                "target": "103"
+            }
+        },
+        {
+            "data": {
+                "id": "102_104",
+                "source": "102",
+                "target": "104"
+            }
+        },
+        {
+            "data": {
+                "id": "103_104",
+                "source": "103",
+                "target": "104"
+            }
+        },
+        {
+            "data": {
+                "id": "102_105",
+                "source": "102",
+                "target": "105"
+            }
+        },
+        {
+            "data": {
+                "id": "103_105",
+                "source": "103",
+                "target": "105"
+            }
+        },
+        {
+            "data": {
+                "id": "109_105",
+                "source": "109",
+                "target": "105"
+            }
+        },
+        {
+            "data": {
+                "id": "105_106",
+                "source": "105",
+                "target": "106"
+            }
+        },
+        {
+            "data": {
+                "id": "106_107",
+                "source": "106",
+                "target": "107"
+            }
+        },
+        {
+            "data": {
+                "id": "119_107",
+                "source": "119",
+                "target": "107"
+            }
+        },
+        {
+            "data": {
+                "id": "106_108",
+                "source": "106",
+                "target": "108"
+            }
+        },
+        {
+            "data": {
+                "id": "149_109",
+                "source": "149",
+                "target": "109"
+            }
+        },
+        {
+            "data": {
+                "id": "84_111",
+                "source": "84",
+                "target": "111"
+            }
+        },
+        {
+            "data": {
+                "id": "84_112",
+                "source": "84",
+                "target": "112"
+            }
+        },
+        {
+            "data": {
+                "id": "112_113",
+                "source": "112",
+                "target": "113"
+            }
+        },
+        {
+            "data": {
+                "id": "112_114",
+                "source": "112",
+                "target": "114"
+            }
+        },
+        {
+            "data": {
+                "id": "3_117",
+                "source": "3",
+                "target": "117"
+            }
+        },
+        {
+            "data": {
+                "id": "35_117",
+                "source": "35",
+                "target": "117"
+            }
+        },
+        {
+            "data": {
+                "id": "36_117",
+                "source": "36",
+                "target": "117"
+            }
+        },
+        {
+            "data": {
+                "id": "67_118",
+                "source": "67",
+                "target": "118"
+            }
+        },
+        {
+            "data": {
+                "id": "88_118",
+                "source": "88",
+                "target": "118"
+            }
+        },
+        {
+            "data": {
+                "id": "105_119",
+                "source": "105",
+                "target": "119"
+            }
+        },
+        {
+            "data": {
+                "id": "144_145",
+                "source": "144",
+                "target": "145"
+            }
+        },
+        {
+            "data": {
+                "id": "15_123",
+                "source": "15",
+                "target": "123"
+            }
+        },
+        {
+            "data": {
+                "id": "105_124",
+                "source": "105",
+                "target": "124"
+            }
+        },
+        {
+            "data": {
+                "id": "57_128",
+                "source": "57",
+                "target": "128"
+            }
+        },
+        {
+            "data": {
+                "id": "11_129",
+                "source": "11",
+                "target": "129"
+            }
+        },
+        {
+            "data": {
+                "id": "61_130",
+                "source": "61",
+                "target": "130"
+            }
+        },
+        {
+            "data": {
+                "id": "23_131",
+                "source": "23",
+                "target": "131"
+            }
+        },
+        {
+            "data": {
+                "id": "132_131",
+                "source": "132",
+                "target": "131"
+            }
+        },
+        {
+            "data": {
+                "id": "17_132",
+                "source": "17",
+                "target": "132"
+            }
+        },
+        {
+            "data": {
+                "id": "14_133",
+                "source": "14",
+                "target": "133"
+            }
+        },
+        {
+            "data": {
+                "id": "92_137",
+                "source": "92",
+                "target": "137"
+            }
+        },
+        {
+            "data": {
+                "id": "30_137",
+                "source": "30",
+                "target": "137"
+            }
+        },
+        {
+            "data": {
+                "id": "140_142",
+                "source": "140",
+                "target": "142"
+            }
+        },
+        {
+            "data": {
+                "id": "140_143",
+                "source": "140",
+                "target": "143"
+            }
+        },
+        {
+            "data": {
+                "id": "142_144",
+                "source": "142",
+                "target": "144"
+            }
+        }
+    ]
+}

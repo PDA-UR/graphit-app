@@ -17,6 +17,7 @@ export default defineConfig({
 				selectionTools: "src/pages/selectionTools/index.html",
 				tableEditor: "src/pages/tableEditor/index.html",
 				graphVis: "src/pages/graphVis/index.html",
+				learneyClone: "src/pages/learneyClone/index.html"
 			},
 		},
 	},

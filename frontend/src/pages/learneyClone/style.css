@@ -1,0 +1,48 @@
+/* maximize root, body and app */
+html,
+body,
+#app {
+    display: block;
+	height: 100%;
+	width: 100%;
+	background-color: #242424;
+	overflow: hidden;
+}
+
+.hidden {
+	display: none;
+}
+
+#learney-info{
+	display: flex;
+	flex-direction: row;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 10;
+}
+
+#learney-info-icon{
+	background-image: url("../selectionTools/icons/info.svg");
+	width: 20px;
+	height: 20px;
+	background-size: contain;
+	margin-right: 2px;
+	filter: invert(70%);
+}
+
+#learney-info-text{
+	color: #aeaeae;
+}
+
+#learney-info-container{
+	position: absolute;
+	left: 0;
+	top: 30px;
+	width: 25%;
+	z-index: 1000;
+	background-color: #f4f4e5;
+	border: 2px solid #d6d6c0;
+	border-radius: 5px;
+	padding: 10px;
+}
