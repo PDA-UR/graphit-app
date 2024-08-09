@@ -16,5 +16,5 @@ then
     exit 1
 fi
 
-docker-compose build server
+docker compose build server
 docker tag "graphit-app:$VERSION" "ghcr.io/pda-ur/graphit-app:$VERSION"
