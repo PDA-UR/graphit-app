@@ -42,7 +42,7 @@ body,
 	width: 25%;
 	z-index: 1000;
 	background-color: #f4f4e5;
-	border: 2px solid #d6d6c0;
+	/* border: 2px solid #d6d6c0; */
 	border-radius: 5px;
 	padding: 10px;
 }

@@ -35,8 +35,11 @@ export class LearneyInfoController {
         this.$infoContainer.innerHTML = "";
 
         const textDiv = document.createElement("span");
-        textDiv.innerText = ` Learney was created to depict learning behavior with the use of dependencies.
-        The project is currently discontinued, but can be accessed using the Wayback Machine:\n`
+        textDiv.innerText = `Learney was created to map and depict learning behavior with the use of dependencies.
+
+        As the project is currently discontinued, the graph is documented here for historical reasons with permission from the original authors.
+        
+        An older version of their website can be accessed using the Wayback Machine:\n`
 
         const wayBackLink = "https://web.archive.org/web/20230602185637/https://learney.me/";
         const linkDiv = document.createElement("a");

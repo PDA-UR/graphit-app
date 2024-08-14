@@ -12,7 +12,6 @@ const NODE_SIZE = 80;
 
 const setSize = (ele:any) => {
     const imp = ele.data("relative_importance");
-    // console.log(imp)
     if (imp === undefined) return NODE_SIZE;
     return ( NODE_SIZE * imp );    
 }
