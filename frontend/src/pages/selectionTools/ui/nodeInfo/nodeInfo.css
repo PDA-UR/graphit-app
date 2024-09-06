@@ -45,26 +45,22 @@
 
 #info-content {
     background-color: #94bfffd9; /* #8fbcff;*/
-    height: 100px; /*TODO*/
+    height: fit-content; 
     padding: 5px;
     border-radius:0 0 5px 5px;
     overflow: hidden;
     overflow-y: scroll;
+    max-height: 200px;
+    /* min-height: 10px; */
 }
 
 .resource-item {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .resource-link {
-    background-image: url("../../../graphVis/global/icons/open.png");
-    background-size: 15px;
-    background-repeat: no-repeat;
-    width: 7%;
-    height: 15px;
-    display: block;
-    margin-right: 2px;
+    font-size: medium;
 }
 
 /* .resource-link:hover {
@@ -77,6 +73,17 @@
     font-size: small;
 }
 
+.resource-description::before {
+    content: "→ ";
+}
+
+.resource-description {
+    font-size: small;
+    margin-left: 20px;
+}
+
 .resource-loader {
-    background-color: #afbcd1;
+    background-color: #bebebe;
+    height: 5px;
+    z-index: 5;
 }

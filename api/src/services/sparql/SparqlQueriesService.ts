@@ -193,16 +193,21 @@ WHERE {
 `;
 // NOTE: query bit repetitive
 
+// Query returns all resources for one item
 const itemResource = (
   qid = "Q21",
 ) => `PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
-SELECT DISTINCT ?resource ?resourceLabel ?url
+SELECT DISTINCT ?resource ?resourceLabel ?description ?alias ?url ?type ?typeLabel
 WHERE {
   # Select all resources and their types for a specific item
   BIND (wd:${qid} as ?item).
   ?item wdt:P21 ?resource.
+  OPTIONAL{?resource schema:description ?description.}
+  OPTIONAL{?resource skos:altLabel ?alias.}
   ?resource wdt:P20 ?url.  
+  ?resource wdt:P3 ?type.
+
   service wikibase:label { bd:serviceParam wikibase:language "en". }
 }`
 

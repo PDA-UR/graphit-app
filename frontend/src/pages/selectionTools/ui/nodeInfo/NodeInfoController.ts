@@ -1,6 +1,21 @@
 import tippy from "tippy.js";
 import "./nodeInfo.css"
 import WikibaseClient from "../../../../shared/WikibaseClient";
+import cytoscape from "cytoscape";
+import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
+
+const ResourceTypes : any  = {
+    "Q233": "📑", // Article
+	"Q159":"🔍", // Tutorial
+    "Q160" : "📌", // Code example
+	"Q161" : "📚", // Library
+    "Q162" : "🧠", // Quiz
+    "Q164" : "📖", // Book
+    "Q165" : "📲", // eBook
+    "Q421" : "🔊", // Lecture
+    "Q346" : "💿", // Software
+    "LINK" : "🔗", // Link
+}
 
 export class NodeInfoController {
 
@@ -80,19 +95,25 @@ export class NodeInfoController {
         if (this.isHidden) return
         if (this.currentSelection == null) return;
 
-        const id = this.currentSelection.id()
-        const qid = id.match(/(Q\d+)/g)
+        const id = this.currentSelection.id();
+        const qid = id.match(/(Q\d+)/g);
         
-        this.$content.classList.add("dimmer")
+        // add a small spinner to the info object
+        const spinner = new LoadingSpinner();
+        spinner.setResourceSpinner(true);
+        spinner.start();
+        this.$dropdownBtn.innerText = ""; //remove temporarily (looks better)
 
         let result;
         if (qid != null)
-            result = await this.client.getItemResource(qid[0])    
+            result = await this.client.getItemResource(qid[0]);   
         // console.log("[RES]", result)
+        this.createResourceList(result);
 
-        this.createResourceList(result)
-
-        this.$content.classList.remove("dimmer")
+        // rm spinner
+        spinner.stop();
+        spinner.setResourceSpinner(false);
+        this.$dropdownBtn.innerText = "-";
     }
 
     private createResourceList(resources: any) {
@@ -102,24 +123,51 @@ export class NodeInfoController {
         }); 
     }
 
+    private parseResourceType(link:string) {
+        const qid = link.match(/[Q]\d+/g)!;
+        let type = ResourceTypes[qid[0]];
+        if(type == null) {
+            type = ResourceTypes.LINK;
+        }
+        return type;
+    }
+
     private createResourceDiv(res: any) {
-        // const item = res.resource.value;
-        const label = res.resourceLabel.value;
+        let label = res.resourceLabel.value;
+        console.log("label", label);
+        if (res.alias !== undefined) {
+            label = res.alias.value;
+        }
         const url = res.url.value;
 
+        const headContainer = document.createElement("div");
+
+        const typeDiv = document.createElement("span");
+        typeDiv.innerText = this.parseResourceType(res.type.value);
+
         const linkDiv = document.createElement("a")
-        linkDiv.classList.add("resource-link")
-        linkDiv.href = url
-        linkDiv.target = "_blank"
+        linkDiv.classList.add("resource-link") // create links symbol
+        linkDiv.innerText = label;
+        linkDiv.href = url;
+        linkDiv.target = "_blank";
 
-        const labelDiv = document.createElement("div")
-        labelDiv.classList.add("resource-label")
-        labelDiv.innerText = label
-
+        const labelDiv = document.createElement("div");
+        labelDiv.classList.add("resource-label");
+        labelDiv.innerText = label;
+        
+       
         const container = document.createElement("div")
         container.classList.add("resource-item")
-        container.appendChild(linkDiv)
-        container.appendChild(labelDiv)
+        headContainer.appendChild(typeDiv);
+        headContainer.appendChild(linkDiv);
+        container.appendChild(headContainer);
+        
+        if (res.description !== undefined) {
+            const descDiv = document.createElement("div");
+            descDiv.innerText = res.description.value;
+            descDiv.classList.add("resource-description");
+            container.appendChild(descDiv);
+        }
 
         return container
     }
@@ -170,3 +218,25 @@ export class NodeInfoController {
 	};
     
 }
+
+
+
+/* Article, Code example, Tutorial, Library, Quiz, Book, eBook, Lecture, Software
+    📑 Article (&#128209;)
+    📎 Tutorial (&#128206;)  🔍 (128270;)
+    📌 Code Example (&#128204;) (💻 &#128187;)
+    📚 Library (&#128218;)
+    🧠 Quiz (&#129504;)
+    📖 Book (&#128214;)
+    📲 eBook (&#128242;)
+    🔊 Lecture (&#128266;) 
+    💿 Software (&#128191;)
+    🔗 Link (&#128279;)
+
+    | ✅ OpenGL Basic Concepts |
+    -----------------------------
+    |📎 Anton's OpenGL 4 Tutorials |
+        -> A collection of multiple OpenGL 4 Tutorials
+        Dr Anton Gerdelan
+
+*/
