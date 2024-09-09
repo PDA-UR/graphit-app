@@ -23,6 +23,7 @@ export class NodeInfoController {
     private readonly client: WikibaseClient;
     private readonly $container: HTMLDivElement;
     private readonly $nodeName: HTMLDivElement;
+    private readonly $nodeNameContainer: HTMLDivElement;
     // private readonly $wikibaseLink: HTMLLinkElement
     private readonly $dropdownBtn: HTMLDivElement;
     private readonly $content: HTMLDivElement;
@@ -38,6 +39,7 @@ export class NodeInfoController {
 
         this.$container = document.getElementById("node-info-container") as HTMLDivElement;
         this.$nodeName = document.getElementById("node-info-name") as HTMLDivElement;
+        this.$nodeNameContainer = document.getElementById("node-info-name-container") as HTMLDivElement;
         // this.$wikibaseLink = document.getElementById("wikibase-item-link") as HTMLLinkElement;
         this.$dropdownBtn = document.getElementById("info-dropdown-btn") as HTMLDivElement;
         this.$content = document.getElementById("info-content") as HTMLDivElement;
@@ -70,24 +72,41 @@ export class NodeInfoController {
     }
 
     private setName(node: cytoscape.NodeSingular) {
-        let str = node.data("label") + this.getStatus(node)
+        let str = node.data("label")
         this.$nodeName.innerText = str;
-        // this.$wikibaseLink.href = node.id();
-        // this.$wikibaseLink.target = "_blank";
+        this.getStatus(node); // works
+        
+        // 
+
     }
 
     // ??: Expand idea
+    // TODO: add icon-symbols in front of Label 
     private getStatus(node: cytoscape.NodeSingular) {
-        const data = node.data()
-        let status = ""
+        const $typeIcon = document.getElementById("node-info-icon") as HTMLDivElement;
+        
+        $typeIcon.classList.remove("complete-icon");
+        $typeIcon.classList.remove("interest-icon");
+        $typeIcon.classList.remove("goal-icon");
+        $typeIcon.classList.remove("no-icon");
 
-        if (data["completed"] == "true")
-            status += "🟢"
-        if (data["interested"] == "true")
-            status += "🟡"
-        if (data["goal"] == "true")
-            status += "🟣"
-        return status as string
+        const data = node.data()
+        if (data["completed"] == "true") {
+            $typeIcon.classList.add("complete-icon");
+            this.$nodeNameContainer.style.backgroundColor = "#82C482";
+        } else if (data["interested"] == "true") {
+            $typeIcon.classList.add("interest-icon");
+            this.$nodeNameContainer.style.backgroundColor = "#A895EF";
+        } else {
+            this.$nodeNameContainer.style.backgroundColor = "#77aeff";
+        }
+        
+        // if (data["goal"] == "true")
+        //     $typeIcon.classList.add("goal-icon");
+        // currently only works with 1 icon
+
+
+        
     }
 
     private async setResources() {
@@ -134,7 +153,7 @@ export class NodeInfoController {
 
     private createResourceDiv(res: any) {
         let label = res.resourceLabel.value;
-        console.log("label", label);
+        // console.log("label", label);
         if (res.alias !== undefined) {
             label = res.alias.value;
         }

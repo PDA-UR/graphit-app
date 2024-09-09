@@ -12,14 +12,63 @@
     /* background-color: #77aeff; */
 }
 
-#node-info-name {
-    display: block;
-    /* margin: 2px; */
+
+/* #node-info-name::before {
+    background-image: url("../../icons/interested_normal.svg");
+    background-repeat: no-repeat;
+    background-size: 20px;
+    content: "dd";
+    color: transparent;
+} */
+
+#node-info-name-container {
+    display: flex;
+    flex-direction: row;
     padding: 2px 25px 2px 5px;
     /* width: 88%; */
     background-color: #77aeff;
     border-radius: 3px 3px 0 0;
+}
+
+.interest-icon {
+    background-image: url("../../icons/interested_normal.svg");
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+}
+
+.complete-icon {
+    background-image: url("../../icons/check-circle.svg");
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+}
+
+.goal-icon {
+    background-image: url("../../icons/flag_FILL.svg");
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+}
+
+.no-icon {
+    width: 0;
+}
+
+#node-info-icon {
+    background-repeat: no-repeat;
+    margin-top: 1px;
+}
+
+#node-info-name {
+    display: block;
+    /* margin: 2px; */
+    /* padding: 2px 25px 2px 5px;
+    /* width: 88%; */
+    /* background-color: #77aeff;
+    border-radius: 3px 3px 0 0; */
     /* cursor: pointer; */
+    margin-left: 2px;
 }
 
 .disabled-link {
