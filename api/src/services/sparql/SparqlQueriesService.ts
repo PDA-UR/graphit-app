@@ -114,7 +114,6 @@ WHERE {
 `;
 
 // Course-query for all courses that use "includes" to link to childs
-// TODO change name
 const courseQuery = (
     userId = "Q157",
     courseId = "Q468",
@@ -124,7 +123,8 @@ PREFIX wd: <https://graphit.ur.de/entity/>
 SELECT DISTINCT 
 ?sourceCourse ?sourceCourseLabel
 ?item ?itemLabel
-?itemType ?itemTypeLabel
+?sourceDate ?dependencyDate
+# ?itemType ?itemTypeLabel
 ?source ?sourceLabel
 ?dependency ?dependencyLabel
 ?sourceCompleted ?dependencyCompleted
@@ -147,8 +147,21 @@ WHERE {
   OPTIONAL {
     ?source schema:description ?sourceDesc.
     ?dependency schema:description ?dependencyDesc.
+
+    # Get the date from the session the items are included in and parse them into a better format than the raw ISO
+    ?source ^wdt:P14 ?session.
+    ?session wdt:P19 ?sDate.
+    BIND( (concat(substr(?sDate, 9, 2), '.', substr(?sDate, 6, 2), '.', substr(?sDate, 1, 4))) as ?sourceDate).
+    
+    ?dependency ^wdt:P14 ?session.
+    ?session wdt:P19 ?dDate.
+    BIND( (concat(substr(?dDate, 9, 2), '.', substr(?dDate, 6, 2), '.', substr(?dDate, 1, 4))) as ?dependencyDate).
   }
   
+  # BIND the session date, if it exists.
+  BIND(IF(BOUND(?sourceDate), ?sourceDate, "false") as ?sourceDate).
+  BIND(IF(BOUND(?dependencyDate), ?dependencyDate, "false") as ?dependencyDate).
+
   # mark the items that are a "goal" of the course.
   OPTIONAL { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). }
 
