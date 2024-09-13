@@ -128,8 +128,8 @@ SELECT DISTINCT
 ?source ?sourceLabel
 ?dependency ?dependencyLabel
 ?sourceCompleted ?dependencyCompleted
-?sourceInterested ?dependencyInterested
-?sourceGoal
+?sourceInterested ?dependencyInterested ?sourceGoal
+?sourceDesc ?dependencyDesc
 WHERE {
 {
   # SELECT ALL elements INCLUDED in <Course>

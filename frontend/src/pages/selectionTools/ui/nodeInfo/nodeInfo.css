@@ -71,6 +71,22 @@
     margin-left: 2px;
 }
 
+#node-info-additional-container{
+    display: flex;
+    flex-direction: column;
+    background-color: #c6ddffd9;
+    /* padding: 5px; */
+}
+
+#node-info-additional-container:empty{
+    padding: none;
+}
+
+#node-date, #node-desc{
+    font-size: small;
+    margin-left: 5px;
+}
+
 .disabled-link {
     width: 0px;
     pointer-events: none;

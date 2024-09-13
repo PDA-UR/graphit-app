@@ -3,6 +3,8 @@ import "./nodeInfo.css"
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import cytoscape from "cytoscape";
 import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
+import { experimentEventBus } from "../../global/ExperimentEventBus";
+import { SearchViewControllerEvents } from "../experiment/search/SearchController";
 
 const ResourceTypes : any  = {
     "Q233": "📑", // Article
@@ -24,6 +26,8 @@ export class NodeInfoController {
     private readonly $container: HTMLDivElement;
     private readonly $nodeName: HTMLDivElement;
     private readonly $nodeNameContainer: HTMLDivElement;
+    private readonly $nodeDate: HTMLDivElement;
+    private readonly $nodeDesc: HTMLDivElement;
     // private readonly $wikibaseLink: HTMLLinkElement
     private readonly $dropdownBtn: HTMLDivElement;
     private readonly $content: HTMLDivElement;
@@ -40,6 +44,8 @@ export class NodeInfoController {
         this.$container = document.getElementById("node-info-container") as HTMLDivElement;
         this.$nodeName = document.getElementById("node-info-name") as HTMLDivElement;
         this.$nodeNameContainer = document.getElementById("node-info-name-container") as HTMLDivElement;
+        this.$nodeDate = document.getElementById("node-date") as HTMLDivElement;
+        this.$nodeDesc = document.getElementById("node-desc") as HTMLDivElement;
         // this.$wikibaseLink = document.getElementById("wikibase-item-link") as HTMLLinkElement;
         this.$dropdownBtn = document.getElementById("info-dropdown-btn") as HTMLDivElement;
         this.$content = document.getElementById("info-content") as HTMLDivElement;
@@ -57,31 +63,35 @@ export class NodeInfoController {
     private setInfo(target: any) {
         if(target.isNode) {
             this.currentSelection = target;
-            this.setName(target);
+            this.setMainInfo(target);
             this.setResources();
-            // this.$nodeName.classList.remove("disabled-link");
-            // this.$wikibaseLink.classList.add("resouce-link");
         } else {
             console.log("click on canvas")
             this.currentSelection = null;
             this.$content.innerHTML = "";
             this.$nodeName.innerText = "Item";
-            // this.$wikibaseLink.classList.add("disabled-link");
-            // this.$wikibaseLink.classList.remove("resouce-link");
         }
     }
 
-    private setName(node: cytoscape.NodeSingular) {
+    private setMainInfo(node: cytoscape.NodeSingular) {
         let str = node.data("label")
-        this.$nodeName.innerText = str;
-        this.getStatus(node); // works
-        
-        // 
+        this.$nodeName.innerText = str; // Node name
 
+        let date = node.data("date");
+        if (date == "false") date = "";
+        else date = "on: " + date
+        this.$nodeDate.innerHTML = date;
+
+        let desc = node.data("desc");
+        if (desc == undefined) desc = "";
+        else desc = "→ " + desc
+        this.$nodeDesc.innerHTML = desc;
+
+        this.getStatus(node); 
     }
 
     // ??: Expand idea
-    // TODO: add icon-symbols in front of Label 
+    // Adds 1 icon-symbol in front of Label (even if a node is both marked as e.g.: "interested in" and "completed")
     private getStatus(node: cytoscape.NodeSingular) {
         const $typeIcon = document.getElementById("node-info-icon") as HTMLDivElement;
         
@@ -100,13 +110,7 @@ export class NodeInfoController {
         } else {
             this.$nodeNameContainer.style.backgroundColor = "#77aeff";
         }
-        
         // if (data["goal"] == "true")
-        //     $typeIcon.classList.add("goal-icon");
-        // currently only works with 1 icon
-
-
-        
     }
 
     private async setResources() {
@@ -117,7 +121,7 @@ export class NodeInfoController {
         const id = this.currentSelection.id();
         const qid = id.match(/(Q\d+)/g);
         
-        // add a small spinner to the info object
+        // add a small spinner to the info object to show loading
         const spinner = new LoadingSpinner();
         spinner.setResourceSpinner(true);
         spinner.start();
@@ -125,8 +129,7 @@ export class NodeInfoController {
 
         let result;
         if (qid != null)
-            result = await this.client.getItemResource(qid[0]);   
-        // console.log("[RES]", result)
+            result = await this.client.getItemResource(qid[0]); // NOTE returns [] on error  
         this.createResourceList(result);
 
         // rm spinner
@@ -153,8 +156,7 @@ export class NodeInfoController {
 
     private createResourceDiv(res: any) {
         let label = res.resourceLabel.value;
-        // console.log("label", label);
-        if (res.alias !== undefined) {
+        if (res.alias !== undefined) { // set an alias if it exists, as they are usually shorter
             label = res.alias.value;
         }
         const url = res.url.value;
@@ -173,7 +175,6 @@ export class NodeInfoController {
         const labelDiv = document.createElement("div");
         labelDiv.classList.add("resource-label");
         labelDiv.innerText = label;
-        
        
         const container = document.createElement("div")
         container.classList.add("resource-item")
@@ -197,21 +198,23 @@ export class NodeInfoController {
         this.$content.addEventListener("mouseenter", () => this.toggleScrollEvents(false));
         this.$content.addEventListener("mouseleave", () => this.toggleScrollEvents(true))
 
+        // add listeners to click events on the graph nodes & the items in the search bar
         this.cy.on("click", (event:any) => this.setInfo(event.target))
+        experimentEventBus.addListener(
+			SearchViewControllerEvents.SELECT_NODE,
+            this.openFromSearchBar
+		);
 
         this.initKeyboardListeners(on);
     }
 
     private toggleDropDown = () => {
-        let hide = false;
         if (this.$content.classList.contains("invisible")) {
             this.$dropdownBtn.innerText = "-";
             this.isHidden = false
             this.setResources()
-            // TODO: show resources for last selected
         } else {
             this.$dropdownBtn.innerText = "+";
-            hide = true;
             this.isHidden = true
         }
         this.$content.classList.toggle("invisible", this.isHidden);
@@ -235,27 +238,14 @@ export class NodeInfoController {
             this.toggleDropDown()
         }
 	};
+
+    private openFromSearchBar = (e:any) => {
+        console.log("open item from searchbar", e);
+        const nodeID = e.clickedElementId;
+        // const node = this.cy.$id(nodeID);
+        const node = this.cy.filter('[id = "' + nodeID + '"]');
+        console.log("node is", node.data("label"));
+        this.setInfo(node)
+    }
     
 }
-
-
-
-/* Article, Code example, Tutorial, Library, Quiz, Book, eBook, Lecture, Software
-    📑 Article (&#128209;)
-    📎 Tutorial (&#128206;)  🔍 (128270;)
-    📌 Code Example (&#128204;) (💻 &#128187;)
-    📚 Library (&#128218;)
-    🧠 Quiz (&#129504;)
-    📖 Book (&#128214;)
-    📲 eBook (&#128242;)
-    🔊 Lecture (&#128266;) 
-    💿 Software (&#128191;)
-    🔗 Link (&#128279;)
-
-    | ✅ OpenGL Basic Concepts |
-    -----------------------------
-    |📎 Anton's OpenGL 4 Tutorials |
-        -> A collection of multiple OpenGL 4 Tutorials
-        Dr Anton Gerdelan
-
-*/
