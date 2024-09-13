@@ -66,8 +66,6 @@ export class PathViewGraph {
             this.onSelectionChanged
         );
 
-        // this.cy.on("mouseover", this.onHoverContainer);
-		// this.cy.on("mouseout", this.onHoverContainerEnd);
         this.cy.on("mouseover", "node", this.onHoverNode);
 		this.cy.on("mouseout", "node", this.onHoverNodeEnd);
         this.cy.on("click", "node", this.onNodeSelected);
@@ -76,17 +74,17 @@ export class PathViewGraph {
         experimentEventBus.addListener(
             ExperimentGraphViewEvents.INDICATE_NODE_END, 
             this.onIndirectIndicationEnd
-        )
+        );
         experimentEventBus.addListener(
             ExperimentGraphViewEvents.INDICATE_NODE_START, 
             this.onIndirectIndicationStart
-        )
+        );
     }
 
     public showPath(target:cytoscape.NodeSingular) {
 
-        target.removeClass("indicated") // BUG: otherwise style will show (stays over from interaction with normal graph)
-        this.cy.remove(this.cy.elements())
+        // target.removeClass("indicated") // BUG?: otherwise style will show (stays over from interaction with normal graph)
+        this.cy.remove(this.cy.elements());
         
         let successors = target.successors() as cytoscape.NodeCollection;
         let predecessors = target.incomers() as cytoscape.NodeCollection;
@@ -101,10 +99,10 @@ export class PathViewGraph {
                 group: "nodes",
                 data: {id: "parent", label:""}
             });
-            predecessors.move({parent:"parent"})
+            predecessors.move({parent:"parent"});
 
             // remove all edges toward the target
-            let targetEdges = predecessors.edgesTo(target)
+            let targetEdges = predecessors.edgesTo(target);
             this.cy.remove(targetEdges);
 
             this.cy.add({
@@ -123,6 +121,7 @@ export class PathViewGraph {
 
         // re-get target, so that it is from the right core
         this.selectedNode = this.cy.$(`[label = "${target.data("label")}"]`); // uses label bc. id's uses chars that would need to be escaped
+        this.selectedNode.addClass("path-opener"); // add small highlight to node that "opened" the path
     }
 
     /* -- EVENTS -- */
@@ -133,12 +132,10 @@ export class PathViewGraph {
         // stops panning on left mouse button
     }
 
+    // Only pan if mouse is over canvas
     public onMouseDown = (event:MouseEvent) => {
-        // Only pan if mouse is over canvas
-        console.log("pan1", this.cursorOverContainer)
         if (!this.cursorOverContainer) return;
 
-        console.log("pan2", event)
         if (event.buttons == 2) {
             this.isPanning = true;
             this.cy.panningEnabled(true)
@@ -168,7 +165,7 @@ export class PathViewGraph {
         this.removeRemainingStyling();
         this.selectedNode = event.target;
 
-        // IDEA: show the neighbours -> get from main core
+        // IDEA: show the neighbours of any node in the path -> get from main core
     }
 
     public removeRemainingStyling() {

@@ -270,4 +270,12 @@ export const stylesheet: Stylesheet[] = [
             "z-index": 500,
         },
     },
+    {
+        selector: ".path-opener",
+        style: {
+            "border-color": "black",
+            "border-opacity": 1,
+            "border-width": 2,
+        }
+    }
 ]
