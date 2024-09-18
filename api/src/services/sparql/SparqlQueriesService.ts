@@ -219,7 +219,7 @@ WHERE {
   OPTIONAL{?resource schema:description ?description.}
   OPTIONAL{?resource skos:altLabel ?alias.}
   ?resource wdt:P20 ?url.  
-  ?resource wdt:P3 ?type.
+  OPTIONAL {?resource wdt:P3 ?type.}
 
   service wikibase:label { bd:serviceParam wikibase:language "en". }
 }`

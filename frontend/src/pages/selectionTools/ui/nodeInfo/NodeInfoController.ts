@@ -16,6 +16,8 @@ const ResourceTypes : any  = {
     "Q165" : "📲", // eBook
     "Q421" : "🔊", // Lecture
     "Q346" : "💿", // Software
+    "Q463" : "✒️", // Coursework
+    "Q353" : "📦", //Application
     "LINK" : "🔗", // Link
 }
 
@@ -78,7 +80,7 @@ export class NodeInfoController {
         this.$nodeName.innerText = str; // Node name
 
         let date = node.data("date");
-        if (date == "false") date = "";
+        if (date == "false" || undefined) date = "";
         else date = "on: " + date
         this.$nodeDate.innerHTML = date;
 
@@ -145,12 +147,16 @@ export class NodeInfoController {
         }); 
     }
 
-    private parseResourceType(link:string) {
-        const qid = link.match(/[Q]\d+/g)!;
-        let type = ResourceTypes[qid[0]];
-        if(type == null) {
-            type = ResourceTypes.LINK;
+    private parseResourceType(res: any) {
+        let key = "LINK";
+        if (res.type != undefined) {
+            const link = res.type.value;
+            console.log("resourceType", link);
+            const qid = link.match(/[Q]\d+/g)!;
+            key = qid[0];
         }
+        let type = ResourceTypes[key];
+        if (type == undefined) type = ResourceTypes["LINK"];
         return type;
     }
 
@@ -164,7 +170,8 @@ export class NodeInfoController {
         const headContainer = document.createElement("div");
 
         const typeDiv = document.createElement("span");
-        typeDiv.innerText = this.parseResourceType(res.type.value);
+        typeDiv.innerText = this.parseResourceType(res);
+
 
         const linkDiv = document.createElement("a")
         linkDiv.classList.add("resource-link") // create links symbol
@@ -240,11 +247,9 @@ export class NodeInfoController {
 	};
 
     private openFromSearchBar = (e:any) => {
-        console.log("open item from searchbar", e);
         const nodeID = e.clickedElementId;
         // const node = this.cy.$id(nodeID);
         const node = this.cy.filter('[id = "' + nodeID + '"]');
-        console.log("node is", node.data("label"));
         this.setInfo(node)
     }
     
