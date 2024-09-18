@@ -27,6 +27,16 @@ export class LoadingSpinner {
         document.body.removeChild(this.dimmer);
     }
 
+    public setResourceSpinner(set: boolean) {
+        if (set) {
+            this.spinner.classList.add("resource-spinner");
+            this.dimmer.classList.remove("dimmer");
+        } else {
+            this.spinner.classList.remove("resource-spinner");
+            this.dimmer.classList.add("dimmer");
+        }
+    }
+
 }
 
 /**

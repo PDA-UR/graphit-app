@@ -24,7 +24,7 @@ The app is automatically built and deployed via GitHub actions:
 
 To test before deployment:
 - in /frontend: `npm run build` then `npm run preview`
-- in /backend: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
+- in /api: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
 
 #### Note:build api
 - to build the api you need to `npm install -g @tsed/cli`

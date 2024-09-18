@@ -114,7 +114,6 @@ WHERE {
 `;
 
 // Course-query for all courses that use "includes" to link to childs
-// TODO change name
 const courseQuery = (
     userId = "Q157",
     courseId = "Q468",
@@ -124,12 +123,13 @@ PREFIX wd: <https://graphit.ur.de/entity/>
 SELECT DISTINCT 
 ?sourceCourse ?sourceCourseLabel
 ?item ?itemLabel
-?itemType ?itemTypeLabel
+?sourceDate ?dependencyDate
+# ?itemType ?itemTypeLabel
 ?source ?sourceLabel
 ?dependency ?dependencyLabel
 ?sourceCompleted ?dependencyCompleted
-?sourceInterested ?dependencyInterested
-?sourceGoal
+?sourceInterested ?dependencyInterested ?sourceGoal
+?sourceDesc ?dependencyDesc
 WHERE {
 {
   # SELECT ALL elements INCLUDED in <Course>
@@ -147,8 +147,21 @@ WHERE {
   OPTIONAL {
     ?source schema:description ?sourceDesc.
     ?dependency schema:description ?dependencyDesc.
+
+    # Get the date from the session the items are included in and parse them into a better format than the raw ISO
+    ?source ^wdt:P14 ?session.
+    ?session wdt:P19 ?sDate.
+    BIND( (concat(substr(?sDate, 9, 2), '.', substr(?sDate, 6, 2), '.', substr(?sDate, 1, 4))) as ?sourceDate).
+    
+    ?dependency ^wdt:P14 ?session.
+    ?session wdt:P19 ?dDate.
+    BIND( (concat(substr(?dDate, 9, 2), '.', substr(?dDate, 6, 2), '.', substr(?dDate, 1, 4))) as ?dependencyDate).
   }
   
+  # BIND the session date, if it exists.
+  BIND(IF(BOUND(?sourceDate), ?sourceDate, "false") as ?sourceDate).
+  BIND(IF(BOUND(?dependencyDate), ?dependencyDate, "false") as ?dependencyDate).
+
   # mark the items that are a "goal" of the course.
   OPTIONAL { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). }
 
@@ -193,16 +206,21 @@ WHERE {
 `;
 // NOTE: query bit repetitive
 
+// Query returns all resources for one item
 const itemResource = (
   qid = "Q21",
 ) => `PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
-SELECT DISTINCT ?resource ?resourceLabel ?url
+SELECT DISTINCT ?resource ?resourceLabel ?description ?alias ?url ?type ?typeLabel
 WHERE {
   # Select all resources and their types for a specific item
   BIND (wd:${qid} as ?item).
   ?item wdt:P21 ?resource.
+  OPTIONAL{?resource schema:description ?description.}
+  OPTIONAL{?resource skos:altLabel ?alias.}
   ?resource wdt:P20 ?url.  
+  ?resource wdt:P3 ?type.
+
   service wikibase:label { bd:serviceParam wikibase:language "en". }
 }`
 

@@ -102,6 +102,7 @@ export const stylesheet: Stylesheet[] = [
 
             "border-width": "2px",
             "border-opacity": 0,
+            "opacity": 1,
         },
     },
     { // Default edge style
@@ -112,6 +113,7 @@ export const stylesheet: Stylesheet[] = [
             "target-arrow-color": "#ccc",
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
+            "opacity": 0.5,
         },
     },
     {
@@ -268,4 +270,12 @@ export const stylesheet: Stylesheet[] = [
             "z-index": 500,
         },
     },
+    {
+        selector: ".path-opener",
+        style: {
+            "border-color": "black",
+            "border-opacity": 1,
+            "border-width": 2,
+        }
+    }
 ]

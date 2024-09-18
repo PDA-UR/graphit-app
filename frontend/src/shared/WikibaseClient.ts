@@ -99,13 +99,12 @@ export default class WikibaseClient {
 	}
 
 	async getItemResource(qid: string): Promise<ElementDefinition[]> {
-		const result = await this.api.sparql.itemResource(qid)
-		// console.log(result.data)
-		// const resources = this.sparqlParser.parseNodes(
-		// 	["resource", "url"],
-		// 	result.data
-		// )
-		return result.data.results.bindings;
+		try {
+			const result = await this.api.sparql.itemResource(qid)
+			return result.data.results.bindings;
+		} catch (err) {
+			return [];
+		}
 	}
 
 	async getEntities(entityIds: string[]): Promise<any> {

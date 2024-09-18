@@ -1,6 +1,23 @@
 import tippy from "tippy.js";
 import "./nodeInfo.css"
 import WikibaseClient from "../../../../shared/WikibaseClient";
+import cytoscape from "cytoscape";
+import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
+import { experimentEventBus } from "../../global/ExperimentEventBus";
+import { SearchViewControllerEvents } from "../experiment/search/SearchController";
+
+const ResourceTypes : any  = {
+    "Q233": "📑", // Article
+	"Q159":"🔍", // Tutorial
+    "Q160" : "📌", // Code example
+	"Q161" : "📚", // Library
+    "Q162" : "🧠", // Quiz
+    "Q164" : "📖", // Book
+    "Q165" : "📲", // eBook
+    "Q421" : "🔊", // Lecture
+    "Q346" : "💿", // Software
+    "LINK" : "🔗", // Link
+}
 
 export class NodeInfoController {
 
@@ -8,6 +25,9 @@ export class NodeInfoController {
     private readonly client: WikibaseClient;
     private readonly $container: HTMLDivElement;
     private readonly $nodeName: HTMLDivElement;
+    private readonly $nodeNameContainer: HTMLDivElement;
+    private readonly $nodeDate: HTMLDivElement;
+    private readonly $nodeDesc: HTMLDivElement;
     // private readonly $wikibaseLink: HTMLLinkElement
     private readonly $dropdownBtn: HTMLDivElement;
     private readonly $content: HTMLDivElement;
@@ -23,6 +43,9 @@ export class NodeInfoController {
 
         this.$container = document.getElementById("node-info-container") as HTMLDivElement;
         this.$nodeName = document.getElementById("node-info-name") as HTMLDivElement;
+        this.$nodeNameContainer = document.getElementById("node-info-name-container") as HTMLDivElement;
+        this.$nodeDate = document.getElementById("node-date") as HTMLDivElement;
+        this.$nodeDesc = document.getElementById("node-desc") as HTMLDivElement;
         // this.$wikibaseLink = document.getElementById("wikibase-item-link") as HTMLLinkElement;
         this.$dropdownBtn = document.getElementById("info-dropdown-btn") as HTMLDivElement;
         this.$content = document.getElementById("info-content") as HTMLDivElement;
@@ -40,39 +63,54 @@ export class NodeInfoController {
     private setInfo(target: any) {
         if(target.isNode) {
             this.currentSelection = target;
-            this.setName(target);
+            this.setMainInfo(target);
             this.setResources();
-            // this.$nodeName.classList.remove("disabled-link");
-            // this.$wikibaseLink.classList.add("resouce-link");
         } else {
             console.log("click on canvas")
             this.currentSelection = null;
             this.$content.innerHTML = "";
             this.$nodeName.innerText = "Item";
-            // this.$wikibaseLink.classList.add("disabled-link");
-            // this.$wikibaseLink.classList.remove("resouce-link");
         }
     }
 
-    private setName(node: cytoscape.NodeSingular) {
-        let str = node.data("label") + this.getStatus(node)
-        this.$nodeName.innerText = str;
-        // this.$wikibaseLink.href = node.id();
-        // this.$wikibaseLink.target = "_blank";
+    private setMainInfo(node: cytoscape.NodeSingular) {
+        let str = node.data("label")
+        this.$nodeName.innerText = str; // Node name
+
+        let date = node.data("date");
+        if (date == "false") date = "";
+        else date = "on: " + date
+        this.$nodeDate.innerHTML = date;
+
+        let desc = node.data("desc");
+        if (desc == undefined) desc = "";
+        else desc = desc; // "→ " + desc
+        this.$nodeDesc.innerHTML = desc;
+
+        this.getStatus(node); 
     }
 
     // ??: Expand idea
+    // Adds 1 icon-symbol in front of Label (even if a node is both marked as e.g.: "interested in" and "completed")
     private getStatus(node: cytoscape.NodeSingular) {
-        const data = node.data()
-        let status = ""
+        const $typeIcon = document.getElementById("node-info-icon") as HTMLDivElement;
+        
+        $typeIcon.classList.remove("complete-icon");
+        $typeIcon.classList.remove("interest-icon");
+        $typeIcon.classList.remove("goal-icon");
+        $typeIcon.classList.remove("no-icon");
 
-        if (data["completed"] == "true")
-            status += "🟢"
-        if (data["interested"] == "true")
-            status += "🟡"
-        if (data["goal"] == "true")
-            status += "🟣"
-        return status as string
+        const data = node.data()
+        if (data["completed"] == "true") {
+            $typeIcon.classList.add("complete-icon");
+            this.$nodeNameContainer.style.backgroundColor = "#82C482";
+        } else if (data["interested"] == "true") {
+            $typeIcon.classList.add("interest-icon");
+            this.$nodeNameContainer.style.backgroundColor = "#A895EF";
+        } else {
+            this.$nodeNameContainer.style.backgroundColor = "#77aeff";
+        }
+        // if (data["goal"] == "true")
     }
 
     private async setResources() {
@@ -80,19 +118,24 @@ export class NodeInfoController {
         if (this.isHidden) return
         if (this.currentSelection == null) return;
 
-        const id = this.currentSelection.id()
-        const qid = id.match(/(Q\d+)/g)
+        const id = this.currentSelection.id();
+        const qid = id.match(/(Q\d+)/g);
         
-        this.$content.classList.add("dimmer")
+        // add a small spinner to the info object to show loading
+        const spinner = new LoadingSpinner();
+        spinner.setResourceSpinner(true);
+        spinner.start();
+        this.$dropdownBtn.innerText = ""; //remove temporarily (looks better)
 
         let result;
         if (qid != null)
-            result = await this.client.getItemResource(qid[0])    
-        // console.log("[RES]", result)
+            result = await this.client.getItemResource(qid[0]); // NOTE returns [] on error  
+        this.createResourceList(result);
 
-        this.createResourceList(result)
-
-        this.$content.classList.remove("dimmer")
+        // rm spinner
+        spinner.stop();
+        spinner.setResourceSpinner(false);
+        this.$dropdownBtn.innerText = "-";
     }
 
     private createResourceList(resources: any) {
@@ -102,24 +145,49 @@ export class NodeInfoController {
         }); 
     }
 
+    private parseResourceType(link:string) {
+        const qid = link.match(/[Q]\d+/g)!;
+        let type = ResourceTypes[qid[0]];
+        if(type == null) {
+            type = ResourceTypes.LINK;
+        }
+        return type;
+    }
+
     private createResourceDiv(res: any) {
-        // const item = res.resource.value;
-        const label = res.resourceLabel.value;
+        let label = res.resourceLabel.value;
+        if (res.alias !== undefined) { // set an alias if it exists, as they are usually shorter
+            label = res.alias.value;
+        }
         const url = res.url.value;
 
+        const headContainer = document.createElement("div");
+
+        const typeDiv = document.createElement("span");
+        typeDiv.innerText = this.parseResourceType(res.type.value);
+
         const linkDiv = document.createElement("a")
-        linkDiv.classList.add("resource-link")
-        linkDiv.href = url
-        linkDiv.target = "_blank"
+        linkDiv.classList.add("resource-link") // create links symbol
+        linkDiv.innerText = label;
+        linkDiv.href = url;
+        linkDiv.target = "_blank";
 
-        const labelDiv = document.createElement("div")
-        labelDiv.classList.add("resource-label")
-        labelDiv.innerText = label
-
+        const labelDiv = document.createElement("div");
+        labelDiv.classList.add("resource-label");
+        labelDiv.innerText = label;
+       
         const container = document.createElement("div")
         container.classList.add("resource-item")
-        container.appendChild(linkDiv)
-        container.appendChild(labelDiv)
+        headContainer.appendChild(typeDiv);
+        headContainer.appendChild(linkDiv);
+        container.appendChild(headContainer);
+        
+        if (res.description !== undefined) {
+            const descDiv = document.createElement("div");
+            descDiv.innerText = res.description.value;
+            descDiv.classList.add("resource-description");
+            container.appendChild(descDiv);
+        }
 
         return container
     }
@@ -130,21 +198,23 @@ export class NodeInfoController {
         this.$content.addEventListener("mouseenter", () => this.toggleScrollEvents(false));
         this.$content.addEventListener("mouseleave", () => this.toggleScrollEvents(true))
 
+        // add listeners to click events on the graph nodes & the items in the search bar
         this.cy.on("click", (event:any) => this.setInfo(event.target))
+        experimentEventBus.addListener(
+			SearchViewControllerEvents.SELECT_NODE,
+            this.openFromSearchBar
+		);
 
         this.initKeyboardListeners(on);
     }
 
     private toggleDropDown = () => {
-        let hide = false;
         if (this.$content.classList.contains("invisible")) {
             this.$dropdownBtn.innerText = "-";
             this.isHidden = false
             this.setResources()
-            // TODO: show resources for last selected
         } else {
             this.$dropdownBtn.innerText = "+";
-            hide = true;
             this.isHidden = true
         }
         this.$content.classList.toggle("invisible", this.isHidden);
@@ -168,5 +238,14 @@ export class NodeInfoController {
             this.toggleDropDown()
         }
 	};
+
+    private openFromSearchBar = (e:any) => {
+        console.log("open item from searchbar", e);
+        const nodeID = e.clickedElementId;
+        // const node = this.cy.$id(nodeID);
+        const node = this.cy.filter('[id = "' + nodeID + '"]');
+        console.log("node is", node.data("label"));
+        this.setInfo(node)
+    }
     
 }

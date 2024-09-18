@@ -1,3 +1,5 @@
+import { experimentEventBus } from "../../selectionTools/global/ExperimentEventBus";
+import { SearchViewControllerEvents } from "../../selectionTools/ui/experiment/search/SearchController";
 import "./nodeInfo.css";
 import cytoscape from "cytoscape";
 
@@ -18,7 +20,8 @@ export class NodeInfo {
         this.$urlContainer = document.getElementById("url-container") as HTMLUListElement;
 
         this.$urlContainer.addEventListener("mouseenter", this.onMouseEnter);
-        this.$urlContainer.addEventListener("mouseleave", this.onMouseLeave);        
+        this.$urlContainer.addEventListener("mouseleave", this.onMouseLeave);   
+
     }
 
     private onMouseEnter = () => {
