@@ -84,7 +84,7 @@ export class NodeInfoController {
 
         let desc = node.data("desc");
         if (desc == undefined) desc = "";
-        else desc = "→ " + desc
+        else desc = desc; // "→ " + desc
         this.$nodeDesc.innerHTML = desc;
 
         this.getStatus(node); 

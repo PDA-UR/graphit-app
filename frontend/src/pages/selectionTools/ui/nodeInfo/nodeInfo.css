@@ -138,9 +138,9 @@
     font-size: small;
 }
 
-.resource-description::before {
+/* .resource-description::before {
     content: "→ ";
-}
+} */
 
 .resource-description {
     font-size: small;
