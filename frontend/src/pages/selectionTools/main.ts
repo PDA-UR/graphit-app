@@ -12,7 +12,7 @@ import {
 import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
-import { tryLogin } from "../../shared/util/GetCredentials";
+import { handleLogin } from "../../shared/util/GetCredentials";
 import { getEnvVar } from "../../shared/util/Env";
 
 
@@ -50,10 +50,11 @@ const main = async() => {
  * @param isProd is the app in production?
  */
 const initApp = async (isProd: boolean) => {
+	
+	const { wikibaseClient, userInfo } = await doLogin()
+	
 	const spinner = new LoadingSpinner();
 	spinner.start();
-
-	const { wikibaseClient, userInfo } = await doLogin()
 
 	// Get the elements for the graph
 	let elements: any;
@@ -134,7 +135,7 @@ async function doLogin() {
 		userInfo = await wikibaseClient.login();
 		userString = "[" + userInfo.username + "]";
 	} else {
-		let logRes = await tryLogin(api)
+		let logRes = await handleLogin(api); // NOTE: here
 		wikibaseClient = logRes[0];
 		userInfo = logRes[1];
 		userString = "[" + userInfo.username + "]";
