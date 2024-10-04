@@ -54,6 +54,24 @@ function getPromiseFromEvent(item:any, event:any) {
 
 
 /**
+ * Create a promise for a keypress-event for the Enter-Key
+ * Source: https://stackoverflow.com/a/70789108
+ * @returns Promise that resolves when the key is pressed
+ */
+function getPromiseFromEnterKeyPress() {
+	return new Promise<void>((resolve) => {
+		document.addEventListener("keypress", onKeyHandler);
+		function onKeyHandler(e:KeyboardEvent) {
+			if(e.code === "Enter") {
+				document.removeEventListener("keypress", onKeyHandler);
+				resolve();
+			}
+		}
+	});
+}
+
+
+/**
  * Creates a "popup" to ask the User if they want to view a demo version of the 
  * @returns if the user wants to view the Demo or not (bool)
  */
@@ -97,10 +115,12 @@ export const handleLogin = async (api:any): Promise<any> => {
  * @returns logged in and created WikibaseClient and userInfo as array
  */
 async function tryLogin(api:any, controller:LoginController) {
-	// Await the button click for a login attempt
 	const btn = document.getElementById("login-button") as HTMLDivElement;
-	await getPromiseFromEvent(btn, "click"); 
-	console.log("trying...");
+	const clickPromise =  getPromiseFromEvent(btn, "click"); 
+	const keyPromise = getPromiseFromEnterKeyPress();
+
+	// Await a button-click or a enter keypress
+	await Promise.any([clickPromise, keyPromise]);
 
 	const credentials = controller.getCredentials();
 	if (credentials == null) {
@@ -120,7 +140,7 @@ async function tryLogin(api:any, controller:LoginController) {
 		// parse the error into a readable message
 		let str = error.message
 		str = str.split('message":')
-		let errorMsg = str[1].replace("} ", ""); // rm trailing } 
+		let errorMsg = str[1].replace("}", ""); // rm trailing "}" 
 		controller.setError(errorMsg);
 		
 		return tryLogin(api, controller) // try login again
