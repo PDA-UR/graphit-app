@@ -12,7 +12,7 @@ import {
 import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
-import { handleLogin } from "../../shared/util/GetCredentials";
+import { askDemoAccess, handleLogin } from "../../shared/util/GetCredentials";
 import { getEnvVar } from "../../shared/util/Env";
 
 
@@ -118,13 +118,19 @@ async function doLogin() {
 
 	const api = createApiClient();
 
-	const demoText = "View Demo?\nYou can explore without editing."
-	const wantsDemo = confirm(demoText);
+	// TODO
+	// const demoText = "View Demo?\nYou can explore without editing."
+	// const wantsDemo = confirm(demoText);
 	let userString = "[username]";
+	// const $demoContainer = document.getElementById("demo-module") as HTMLDivElement;
+	// $demoContainer.style.display = "block";
+	const wantsDemo = await askDemoAccess();
+
+	console.log("hi?!");
 
 	if (wantsDemo) {
-		console.log("[DEMO]")
-		credentials = getDemoCredentials()
+		console.log("[DEMO]");
+		credentials = getDemoCredentials();
 		wikibaseClient = new WikibaseClient(credentials, api);
 		userInfo = await wikibaseClient.login();
 		userString = "[DEMO]";
@@ -135,7 +141,7 @@ async function doLogin() {
 		userInfo = await wikibaseClient.login();
 		userString = "[" + userInfo.username + "]";
 	} else {
-		let logRes = await handleLogin(api); // NOTE: here
+		let logRes = await handleLogin(api); 
 		wikibaseClient = logRes[0];
 		userInfo = logRes[1];
 		userString = "[" + userInfo.username + "]";

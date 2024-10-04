@@ -188,3 +188,29 @@ label {
 	color: gray;
 	font-size: small;
 }
+
+/* DEMO-MODULE */
+#demo-module {
+	display: none;
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    width: 180px;
+    height: fit-content;
+    background-color: #cee1ff;
+    border: solid 3px #77adff;
+    padding: 8px;
+    border-radius: 5px;
+    z-index: 1001;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+/* #demo-access-container {
+	margin: 0 2px;
+} */
+
+#demo-btn{
+	background-color: #257AFD;
+	color: white;
+}
