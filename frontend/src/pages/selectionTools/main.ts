@@ -118,15 +118,8 @@ async function doLogin() {
 
 	const api = createApiClient();
 
-	// TODO
-	// const demoText = "View Demo?\nYou can explore without editing."
-	// const wantsDemo = confirm(demoText);
 	let userString = "[username]";
-	// const $demoContainer = document.getElementById("demo-module") as HTMLDivElement;
-	// $demoContainer.style.display = "block";
 	const wantsDemo = await askDemoAccess();
-
-	console.log("hi?!");
 
 	if (wantsDemo) {
 		console.log("[DEMO]");

@@ -114,7 +114,7 @@ export const handleLogin = async (api:any): Promise<any> => {
  * @param controller the LoginController instance
  * @returns logged in and created WikibaseClient and userInfo as array
  */
-async function tryLogin(api:any, controller:LoginController) {
+async function tryLogin(api:any, controller:LoginController): Promise<any> {
 	const btn = document.getElementById("login-button") as HTMLDivElement;
 	const clickPromise =  getPromiseFromEvent(btn, "click"); 
 	const keyPromise = getPromiseFromEnterKeyPress();
