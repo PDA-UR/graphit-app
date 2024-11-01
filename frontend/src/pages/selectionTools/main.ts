@@ -51,9 +51,12 @@ const main = async() => {
  */
 const initApp = async (isProd: boolean) => {
 	
-	const { wikibaseClient, userInfo } = await doLogin()
-	
+	// show dimmer
 	const spinner = new LoadingSpinner();
+	spinner.startDimmer();
+	
+	const { wikibaseClient, userInfo } = await doLogin();
+	
 	spinner.start();
 
 	// Get the elements for the graph
