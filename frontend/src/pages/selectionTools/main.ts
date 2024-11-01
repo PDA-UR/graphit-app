@@ -14,6 +14,7 @@ import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
 import { askDemoAccess, handleLogin } from "../../shared/util/GetCredentials";
 import { getEnvVar } from "../../shared/util/Env";
+import { PreselectCourseController } from "./ui/switchCourse/preselectCourseController";
 
 
 /**
@@ -58,13 +59,17 @@ const initApp = async (isProd: boolean) => {
 	const { wikibaseClient, userInfo } = await doLogin();
 	
 	spinner.start();
+	
+	const preselectCourse = new PreselectCourseController(wikibaseClient);
+	let course = await preselectCourse.getCurrentCourse();
+	
 
 	// Get the elements for the graph
 	let elements: any;
 	if (isProd) {
-		elements = await wikibaseClient.getCourseQuery(getDefaultCourse());
+		elements = await wikibaseClient.getCourseQuery(course);
 	} else {
-		elements = await getElementsForDev(wikibaseClient);
+		elements = await getElementsForDev(wikibaseClient, course);
 	}
 
 	// init the application
@@ -171,7 +176,7 @@ function getDemoCredentials() {
  * @param wikibaseClient 
  * @returns elements
  */
-async function getElementsForDev(wikibaseClient: WikibaseClient) {
+async function getElementsForDev(wikibaseClient: WikibaseClient, course:string) {
 	const localStorageElements = localStorage.getItem("elements");
 	let elements: any;
 
@@ -181,7 +186,7 @@ async function getElementsForDev(wikibaseClient: WikibaseClient) {
 		elements = JSON.parse(localStorageElements);
 	} else {
 		console.log("[DEV] loading from wikibase");
-		elements = await wikibaseClient.getCourseQuery(getDefaultCourse());
+		elements = await wikibaseClient.getCourseQuery(course);
 		
 		// Store elements for the session
 		localStorage.setItem(

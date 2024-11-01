@@ -1,3 +1,4 @@
+import cytoscape from "cytoscape";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
 import { View } from "../../../../shared/ui/View";
