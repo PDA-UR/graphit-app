@@ -73,7 +73,7 @@ export class ActionExecuterService {
 			this.logger.info("existing claim");
 			if (doToggleOn) return; // no need to create an new relation since it already exists
 			// remove the claim since its marked as incomplete
-			const guid = existingClaim.id;
+			const guid = existingClaim.id; 
 			const action = () =>
 				this.executeClaimAction(
 					"claim",
@@ -85,11 +85,20 @@ export class ActionExecuterService {
 				);
 			actions.push(action);
 		} else if (doToggleOn) {
+			// let today = new Date().toLocaleDateString('en-CA'); // works
+			const today = new Date().toISOString().slice(0, 10); // NOTE: date format needs to be: "2024-11-04"
+
+			this.logger.info(`date string is: ${today}`);
 			const action = () =>
 				this.executeClaimAction(
 					"claim",
 					"create",
-					{ id: userId, property: propertyId, value: targetEntityId },
+					{ id: userId, property: propertyId, value: targetEntityId,
+						qualifiers: {
+							// P15: "comment", 
+							P19: today, // "on date"-Property
+						  },
+					},
 					credentials
 				);
 			actions.push(action);
