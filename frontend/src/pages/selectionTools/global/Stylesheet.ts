@@ -62,7 +62,7 @@ const selectedFontSize = (ele:any) => {
 const nodeDarken = (ele:any) => {
 	const degree = ele.degree()
 	if (degree > 8) return 0.8;
-	if (degree < 2) return 0.2;
+	if (degree < 2) return 0.4;
 	return ele.degree() / 10;
 
 }
@@ -79,11 +79,9 @@ export const stylesheet: Stylesheet[] = [
             "background-color": colors.default, //"#666", //"#D6D6D6",
             "background-opacity": nodeDarken,
             "label": "data(label)",
-            // TODO: update: "label" is deprecated
+            // NOTE: "label" is deprecated,, but still works
             "width": "label",
             "height": "label",
-            // "width": lineLength,
-            // "height": getHeight, // node size seems to work
             "shape": "round-rectangle",
 
             'text-halign': 'center',
@@ -95,9 +93,6 @@ export const stylesheet: Stylesheet[] = [
             "text-wrap": "wrap",
             "text-max-width": lineLength, //px -> use size of node
             "text-background-padding": "3px",
-            // "text-background-color": colors.default,
-            // "text-background-opacity": nodeDarken,
-            // "text-background-shape": "roundrectangle",
             "z-index": nodeSize,
 
             "border-width": "2px",
@@ -154,28 +149,27 @@ export const stylesheet: Stylesheet[] = [
     {
         selector: "node:selected",
         style: { // BLUE select, e.g. lasso
-            "background-color": colors.selected,
-            "background-opacity": 1,
-            // "border-opacity": 1,
-            // "border-color": "#2063c9", // "#4377c6",
             "z-index": 1,
+            "border-width": "2px",
+            "border-color": colors.lastClicked,
+            "border-opacity": 1,
         },
     },
     {
         selector: "node.last-clicked",
-        style: {
-            "background-color":  colors.lastClicked, // "#474747",
-            // "background-opacity": 1,
-            // "border-width": "3px",
-            // "border-color": "black",
+        style: { 
+            "border-width": "4px",
+            "border-color": colors.lastClicked,
+            "border-opacity": 1,
         },
     },
 
     {
         selector: "node:selected.last-clicked",
         style: {
-            "background-color": colors.lastClicked, // "#4377c6",
-            "background-opacity": 1,
+            "border-width": "4px",
+            "border-color": colors.lastClicked,
+            "border-opacity": 1,
         },
     },
 
