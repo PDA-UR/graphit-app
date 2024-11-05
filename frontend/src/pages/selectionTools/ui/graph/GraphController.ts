@@ -89,6 +89,8 @@ export abstract class GraphController<
 			})
 			.finally(() => {
 				console.log("finally");
+				// TODO: here
+				this.resetSaveCounter();
 			});
 		console.log("!!actions", individualActions, executions);
 	};
@@ -171,6 +173,7 @@ export abstract class GraphController<
 		this.updateSaveCounter()
 	};
 
+
 	private updateSaveCounter() {
 		const div = document.getElementById("save-counter") as HTMLElement;
 		const actions = this.view.getWikibaseActions();
@@ -186,6 +189,11 @@ export abstract class GraphController<
 			if (individualActions > 60) div.style.color = "red";
 			else div.style.color = "DarkOrange";
 		} else div.style.color = "black";
+	}
+
+	private resetSaveCounter() {
+		const div = document.getElementById("save-counter") as HTMLElement;
+		div.innerHTML = `<b>0</b> unsaved changes`;;
 	}
 
 	private initMouseListeners = (on = true) => {
