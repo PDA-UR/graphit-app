@@ -107,6 +107,15 @@ export default class WikibaseClient {
 		}
 	}
 
+	async getCoursesTaken(): Promise<ElementDefinition[]> {
+		try {
+			const result = await this.api.sparql.coursesTaken();
+			return result.data.results.bindings;
+		} catch (err) {
+			return [];
+		}
+	}
+
 	async getEntities(entityIds: string[]): Promise<any> {
 		// if more than 50 entityIds, split into multiple requests
 		if (entityIds.length > 50) {

@@ -12,8 +12,9 @@ import {
 import { Toast, ToastLength } from "./ui/toast/Toast";
 import { getCircularReplacer } from "../graphVis/global/DataManager";
 import { LoadingSpinner } from "../../shared/ui/LoadingSpinner/SpinnerManager";
-import { tryLogin } from "../../shared/util/GetCredentials";
+import { askDemoAccess, handleLogin } from "../../shared/util/GetCredentials";
 import { getEnvVar } from "../../shared/util/Env";
+import { PreselectCourseController } from "./ui/switchCourse/preselectCourseController";
 
 
 /**
@@ -50,17 +51,25 @@ const main = async() => {
  * @param isProd is the app in production?
  */
 const initApp = async (isProd: boolean) => {
+	
+	// show dimmer
 	const spinner = new LoadingSpinner();
+	spinner.startDimmer();
+	
+	const { wikibaseClient, userInfo } = await doLogin();
+	
 	spinner.start();
-
-	const { wikibaseClient, userInfo } = await doLogin()
+	
+	const preselectCourse = new PreselectCourseController(wikibaseClient);
+	let course = await preselectCourse.getCurrentCourse();
+	
 
 	// Get the elements for the graph
 	let elements: any;
 	if (isProd) {
-		elements = await wikibaseClient.getCourseQuery(getDefaultCourse());
+		elements = await wikibaseClient.getCourseQuery(course);
 	} else {
-		elements = await getElementsForDev(wikibaseClient);
+		elements = await getElementsForDev(wikibaseClient, course);
 	}
 
 	// init the application
@@ -117,13 +126,12 @@ async function doLogin() {
 
 	const api = createApiClient();
 
-	const demoText = "View Demo?\nYou can explore without editing."
-	const wantsDemo = confirm(demoText);
 	let userString = "[username]";
+	const wantsDemo = await askDemoAccess();
 
 	if (wantsDemo) {
-		console.log("[DEMO]")
-		credentials = getDemoCredentials()
+		console.log("[DEMO]");
+		credentials = getDemoCredentials();
 		wikibaseClient = new WikibaseClient(credentials, api);
 		userInfo = await wikibaseClient.login();
 		userString = "[DEMO]";
@@ -134,7 +142,7 @@ async function doLogin() {
 		userInfo = await wikibaseClient.login();
 		userString = "[" + userInfo.username + "]";
 	} else {
-		let logRes = await tryLogin(api)
+		let logRes = await handleLogin(api); 
 		wikibaseClient = logRes[0];
 		userInfo = logRes[1];
 		userString = "[" + userInfo.username + "]";
@@ -168,7 +176,7 @@ function getDemoCredentials() {
  * @param wikibaseClient 
  * @returns elements
  */
-async function getElementsForDev(wikibaseClient: WikibaseClient) {
+async function getElementsForDev(wikibaseClient: WikibaseClient, course:string) {
 	const localStorageElements = localStorage.getItem("elements");
 	let elements: any;
 
@@ -178,7 +186,7 @@ async function getElementsForDev(wikibaseClient: WikibaseClient) {
 		elements = JSON.parse(localStorageElements);
 	} else {
 		console.log("[DEV] loading from wikibase");
-		elements = await wikibaseClient.getCourseQuery(getDefaultCourse());
+		elements = await wikibaseClient.getCourseQuery(course);
 		
 		// Store elements for the session
 		localStorage.setItem(

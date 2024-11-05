@@ -4,6 +4,7 @@ export class LoadingSpinner {
 
     private spinner: HTMLElement;
     private dimmer: HTMLElement;
+    private isDimmed: boolean = false;
 
     constructor(){
         this.spinner = document.getElementById("ring") as HTMLElement;
@@ -12,11 +13,19 @@ export class LoadingSpinner {
     }
 
     /**
+     * Start showing the dimmer before the spinner starts
+     */
+    public startDimmer(){
+        document.body.appendChild(this.dimmer);
+        this.isDimmed = true;
+    }
+
+    /**
      * Start the spinner (call before awaiting results)
      */
     public start(){
         this.spinner.style.display = "inline-block";
-        document.body.appendChild(this.dimmer);
+        if (!this.isDimmed) document.body.appendChild(this.dimmer);
     }
 
     /**
@@ -25,6 +34,7 @@ export class LoadingSpinner {
     public stop(){
         this.spinner.style.display = "none";
         document.body.removeChild(this.dimmer);
+        this.isDimmed = false;
     }
 
     public setResourceSpinner(set: boolean) {

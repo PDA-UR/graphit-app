@@ -225,6 +225,26 @@ WHERE {
 }`
 
 /**
+ * Return all the courses a student "participates in"
+ * @param studentName 
+ */
+const coursesTaken = (
+  userId = "Q157",
+) => `
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+PREFIX wd: <https://graphit.ur.de/entity/>
+
+SELECT ?course ?courseLabel ?courseId WHERE {
+  VALUES ?student {wd:${userId}}
+  ?student wdt:P25 ?course.
+
+  # extract the last path segment of the URI (see: https://stackoverflow.com/a/74258245)
+  BIND(STRAFTER(STR(?course), STR(wd:)) AS ?courseId) .
+           
+SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}`
+
+/**
  * Service for retrieving SPARQL-Queries
  */
 @Service()
@@ -247,5 +267,9 @@ export class SparqlQueryTemplateService {
 
   public getItemResource(qid: string) {
     return itemResource(qid)
+  }
+
+  public getCoursesTaken(userId: string) {
+    return coursesTaken(userId);
   }
 }

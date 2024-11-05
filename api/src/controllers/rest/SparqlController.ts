@@ -121,4 +121,22 @@ export class Sparql {
 		return r;
 	}
 
+	@Get("/coursesTaken/")
+	@Description("Retrieve the resources attached to a single item")
+	@Returns(200, SparqlResult).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async getCoursesTaken(
+		@Session("user") credentials: Credentials
+	) {
+		this.logger.info("Checking credentials", credentials);
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		const userId = await this.wikibaseSdk.getUserItemId(credentials);
+		this.logger.info("UserId", userId);
+		if (userId == "")
+			return new BadRequest("No user item id found for this user");
+		const r = await this.wikibaseSdk.getCoursesTaken(credentials, userId);
+		return r;
+	}
+
 }

@@ -1,5 +1,5 @@
 import WikibaseClient from "../../../shared/WikibaseClient";
-import { tryLogin } from "../../../shared/util/GetCredentials";
+import { handleLogin } from "../../../shared/util/GetCredentials";
 import { createApiClient } from "../../../shared/util/getApiClient";
 import { LoadingSpinner } from "../../../shared/ui/LoadingSpinner/SpinnerManager";
 import { ApiClient, CredentialsModel } from "../../../shared/client/ApiClient";
@@ -53,7 +53,7 @@ export const getElements = async () => {
 	} else {
 		// credentials = getCredentials();
 		// localStorage.setItem(credetialsKey, JSON.stringify(credentials));
-		let logRes:Array<any> = await tryLogin(api);
+		let logRes:Array<any> = await handleLogin(api);
 		wikibaseClient = logRes[0];
 		userInfo = logRes[1];
 	}
