@@ -34,6 +34,11 @@ export class PreselectCourseController {
         this.$menu.value = this.courseQID;
     }
 
+    /**
+     * Get the most recent course a student currently "participates in"
+     * @param result the query result of all "participated" courses
+     * @returns the QID of the most recent course (by year and term)
+     */
     private findCurrentCourse(result:any) {
         let course:string = "";
         let currYear: number;
@@ -41,7 +46,6 @@ export class PreselectCourseController {
 
         result.forEach((obj:any) => {
             const label = obj.courseLabel.value as string;
-            console.log("course", label);
             
             const regexYear = /\d+/g;
             const regexTerm = /(WS)|(SS)/g;
@@ -65,7 +69,6 @@ export class PreselectCourseController {
                 course = obj.courseId.value;
                 currYear = year;
                 currTerm = term;
-                console.log(`current course: ${course}, ${currYear}, ${currTerm} `)
             }
         });
         return course;
@@ -85,8 +88,5 @@ export class PreselectCourseController {
     private getDefaultCourse() {
         return this.$menu.selectedOptions[0].value as string;
     }
-
-
-    // TODO: query for the course(s) a student "participates in"
 
 }

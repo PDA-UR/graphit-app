@@ -137,6 +137,7 @@ WHERE {
     BIND (wd:${courseId} as ?sourceCourse).
     # Retrieve all items in the course
     ?sourceCourse wdt:P14 ?item. # = session or category
+    ?item wdt:P3 wd:Q427. # session
     #?item wdt:P14 ?itemType.
     ?item wdt:P14 ?source.
   } 
