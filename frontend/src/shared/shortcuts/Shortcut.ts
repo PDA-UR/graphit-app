@@ -20,6 +20,7 @@ export type ShortcutInfo = {
 	shortcut: Shortcut;
 };
 
+// INFO: add shortcuts here
 export const SHARED_SHORTCUTS: ShortcutInfo[] = [
 	{
 		category: "Selektion - Aktion",
@@ -68,6 +69,14 @@ export const SHARED_SHORTCUTS_END: ShortcutInfo[] = [
 		description: "Dieses Hilfe-Menü öffnen",
 		shortcut: {
 			key: "?",
+			modifierKeys: [ModifierKey.CTRL],
+		},
+	},
+	{
+		category: "Speichern",
+		description: "Änderungen des Graphens speichern",
+		shortcut: {
+			key: "S",
 			modifierKeys: [ModifierKey.CTRL],
 		},
 	},
