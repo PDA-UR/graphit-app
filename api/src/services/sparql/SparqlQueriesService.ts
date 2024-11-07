@@ -137,19 +137,22 @@ WHERE {
     BIND (wd:${courseId} as ?sourceCourse).
     # Retrieve all items in the course
     ?sourceCourse wdt:P14 ?item. # = session or category
-    ?item wdt:P3 wd:Q427. # session
-    #?item wdt:P14 ?itemType.
+    # ?item wdt:P3 wd:Q427. # session
+    # ?item wdt:P14 ?itemType.
     ?item wdt:P14 ?source.
   } 
   }
   # Get dependencies of all items
   ?source wdt:P1 ?dependency. # was: wdt:P1+ (but this return a big mess for cgbv SS24)
+  
   # Get descriptions of all items
   OPTIONAL {
     ?source schema:description ?sourceDesc.
     ?dependency schema:description ?dependencyDesc.
+  }
 
-    # Get the date from the session the items are included in and parse them into a better format than the raw ISO
+  # Get the date from the session the items are included in and parse them into a better format than the raw ISO
+  OPTIONAL {
     ?source ^wdt:P14 ?session.
     ?session wdt:P19 ?sDate.
     BIND( (concat(substr(?sDate, 9, 2), '.', substr(?sDate, 6, 2), '.', substr(?sDate, 1, 4))) as ?sourceDate).
