@@ -300,7 +300,7 @@ export class ColumnComponent extends Component {
 			white-space: nowrap;
 		}
 		.spacer {
-			min-width: 1rem;
+			min-width: 0.2rem;
 		}
 		#delete-button {
 			opacity: 0;
@@ -312,6 +312,8 @@ export class ColumnComponent extends Component {
 			height: 1.5rem;
 			user-select: none;
 			cursor: pointer;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 		#column-title:hover {
 			text-decoration: underline;
