@@ -33,6 +33,9 @@ export default class SearchSidebar extends Component {
 	@state()
 	private searchResults: ColumnItemModel[] = [];
 
+	@state()
+	private searchLang = "en";
+
 	// --------- Tasks -------- //
 
 	private loadItemsTask = new Task(this, {
@@ -41,7 +44,7 @@ export default class SearchSidebar extends Component {
 				this.searchResults = [];
 				return;
 			}
-			const searchResults = await wikibaseClient.search(this.searchQuery);
+			const searchResults = await wikibaseClient.search(this.searchQuery, this.searchLang);
 			this.searchResults = searchResults.map((result: any) =>
 				newColumnItemModel(result.id, result.display.label.value, result.url)
 			);
@@ -53,6 +56,12 @@ export default class SearchSidebar extends Component {
 		],
 		autoRun: false,
 	});
+
+	private onSearchLanguageChanged(event:Event) {
+		const target = event.target as HTMLSelectElement;
+		this.searchLang = target.value;
+		console.log("search lang:", this.searchLang, typeof(this.searchLang))
+	}
 
 	// ------- Lifecycle ------ //
 
@@ -73,6 +82,11 @@ export default class SearchSidebar extends Component {
 				}}"
 				placeholder="Search..."
 			/>
+			
+			<select id="search-lang" @change="${this.onSearchLanguageChanged}" >
+  				<option value="en" selected>en</option>
+  				<option value="de">de</option>
+			</select>
 
 			<column-item-list
 				class="${choose(this.loadItemsTask.status, [

@@ -423,11 +423,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      *
      * @tags Entity
      * @name Search
-     * @request GET:/api/entity/search/{query}
+     * @request GET:/api/entity/search/{lang}/{query}
      */
-    search: (query: string, params: RequestParams = {}) =>
+    search: (query: string, lang: string, params: RequestParams = {}) =>
       this.request<Record<string, any>[], string>({
-        path: `/api/entity/search/${query}`,
+        path: `/api/entity/search/${lang}/${query}`,
         method: "GET",
         format: "json",
         ...params,

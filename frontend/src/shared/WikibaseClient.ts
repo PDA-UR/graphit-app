@@ -49,8 +49,8 @@ export default class WikibaseClient {
 		await this.api.auth.logout();
 	}
 
-	async search(search: string): Promise<any> {
-		const results = await this.api.entity.search(search);
+	async search(search: string, searchLang: string): Promise<any> {
+		const results = await this.api.entity.search(search, searchLang);
 		return results;
 	}
 

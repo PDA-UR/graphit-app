@@ -31,12 +31,13 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	 */
 	async search(
 		credentials: Credentials,
-		search: string
+		search: string,
+		lang: string,
 	): Promise<SparqlResult> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.searchEntities({
 			search,
-			language: "de",
+			language: lang, 
 			limit: 25,
 		});
 		const headers = {};
