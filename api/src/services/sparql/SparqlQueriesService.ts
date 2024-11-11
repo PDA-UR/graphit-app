@@ -121,94 +121,39 @@ const courseQuery = (
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
 PREFIX wd: <https://graphit.ur.de/entity/>
 SELECT DISTINCT 
-?sourceCourse ?sourceCourseLabel
-?item ?itemLabel
-?sourceDate ?dependencyDate
-# ?itemType ?itemTypeLabel
-?source ?sourceLabel
+?session ?sessionLabel
+?sourceDate
+?source ?sourceLabel ?sourceDesc
+?dependencyDate
 ?dependency ?dependencyLabel
-?sourceCompleted ?dependencyCompleted
-?sourceInterested ?dependencyInterested ?sourceGoal
-?sourceDesc ?dependencyDesc
+?sourceGoal ?sourceInterested ?sourceCompleted
 WHERE {
-{
   # SELECT ALL elements INCLUDED in <Course>
-  { SELECT distinct * WHERE {
-    BIND (wd:${courseId} as ?sourceCourse).
-    # Retrieve all items in the course
-    ?sourceCourse wdt:P14 ?item. # = session or category
-    # ?item wdt:P3 wd:Q427. # session
-    # ?item wdt:P14 ?itemType.
-    ?item wdt:P14 ?source.
-  } 
-  }
-  # Get dependencies of all items
-  ?source wdt:P1 ?dependency. # was: wdt:P1+ (but this return a big mess for cgbv SS24)
-  
-  # Get descriptions of all items
-  OPTIONAL {
-    ?source schema:description ?sourceDesc.
-    ?dependency schema:description ?dependencyDesc.
-  }
+  BIND (wd:${courseId} as ?sourceCourse).
+  ?sourceCourse wdt:P14 ?session. # = session or category
+  ?session wdt:P3 wd:Q427. # force session
+  ?session wdt:P14 ?source. 
 
-  # Get the date from the session the items are included in and parse them into a better format than the raw ISO
-  OPTIONAL {
-    ?source ^wdt:P14 ?session.
-    ?session wdt:P19 ?sDate.
-    BIND( (concat(substr(?sDate, 9, 2), '.', substr(?sDate, 6, 2), '.', substr(?sDate, 1, 4))) as ?sourceDate).
-    
-    ?dependency ^wdt:P14 ?session.
-    ?session wdt:P19 ?dDate.
-    BIND( (concat(substr(?dDate, 9, 2), '.', substr(?dDate, 6, 2), '.', substr(?dDate, 1, 4))) as ?dependencyDate).
-  }
+  # get date of session, the source is included in & parse it to a readable format
+  ?session wdt:P19 ?sDate.
+  BIND( (concat(substr(?sDate, 9, 2), '.', substr(?sDate, 6, 2), '.', substr(?sDate, 1, 4))) as ?sourceDate).
+  BIND(IF(BOUND(?sourceDate), ?sourceDate, "false") as ?sourceDate). # mark items not in a session
   
-  # BIND the session date, if it exists.
-  BIND(IF(BOUND(?sourceDate), ?sourceDate, "false") as ?sourceDate).
-  BIND(IF(BOUND(?dependencyDate), ?dependencyDate, "false") as ?dependencyDate).
-
-  # mark the items that are a "goal" of the course.
+  OPTIONAL { ?source wdt:P1 ?dependency.} 
+  OPTIONAL { ?source schema:description ?sourceDesc. }  
   OPTIONAL { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). }
+
+  # ----- USER QUERIES ----- #
+
+  # Check if ${userId} is interested in the source node (Property P23)
+  BIND(EXISTS { wd:${userId} wdt:P23 ?source } AS ?sourceInterested)
 
   # Check if the source node has completed (Property P12)
   BIND(EXISTS { wd:${userId} wdt:P12 ?source } AS ?sourceCompleted)
-  
-  # Check if the dependent node has completed (Property P12)
-  BIND(EXISTS { wd:${userId} wdt:P12 ?dependency } AS ?dependencyCompleted)
-  
-  # Check if ${userId} is interested in the source node (Property P23)
-  BIND(EXISTS { wd:${userId} wdt:P23 ?source } AS ?sourceInterested)
-  
-  # Check if ${userId} is interested in the dependent node (Property P23)
-  BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
 
-} UNION {
-  # get & mark the remaining goals that aren't "included" in course + union with rest
-  BIND (wd:${courseId} as ?sourceCourse). #rebind
-  ?sourceCourse wdt:P36 ?source.
-  MINUS { ?sourceCourse wdt:P14/wdt:P14 ?source }
-  #
-  { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). } 
-
-  # mark the items that are a "goal" of the course.
-  OPTIONAL { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). }
-
-  # Check if the source node has completed (Property P12)
-  BIND(EXISTS { wd:${userId} wdt:P12 ?source } AS ?sourceCompleted)
-  
-  # Check if the dependent node has completed (Property P12)
-  BIND(EXISTS { wd:${userId} wdt:P12 ?dependency } AS ?dependencyCompleted)
-  
-  # Check if ${userId} is interested in the source node (Property P23)
-  BIND(EXISTS { wd:${userId} wdt:P23 ?source } AS ?sourceInterested)
-  
-  # Check if ${userId} is interested in the dependent node (Property P23)
-  BIND(EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested)
-}
-  
   service wikibase:label { bd:serviceParam wikibase:language "en" }
 }
 `;
-// NOTE: query bit repetitive
 
 // Query returns all resources for one item
 const itemResource = (
