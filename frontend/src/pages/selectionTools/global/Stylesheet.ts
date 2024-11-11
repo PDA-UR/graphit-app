@@ -111,6 +111,15 @@ export const stylesheet: Stylesheet[] = [
             "opacity": 0.5,
         },
     },
+    // Nodes outside of sessions
+    {
+        selector: "node[date = 'false']", // style all nodes that don't have date-data
+        style: {
+            // "background-opacity": 0,
+            "background-color": "white",
+            // "font-size": 10,
+        },
+    },
     {
         selector: "node[completed = 'true']",
         style: {
@@ -202,6 +211,7 @@ export const stylesheet: Stylesheet[] = [
             opacity: 0.4,
         },
     },
+
 
 
     // STYLES FOR THE PATH-CORE (for easier separation)

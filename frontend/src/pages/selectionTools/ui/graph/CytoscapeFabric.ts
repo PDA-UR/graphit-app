@@ -1,6 +1,7 @@
 import cytoscape from "cytoscape-select";
 
 import fcose, { FcoseLayoutOptions } from "cytoscape-fcose";
+import layoutUtilities from "cytoscape-layout-utilities";
 
 import dagre from "cytoscape-dagre";
 import nodeHtmlLabel from "cytoscape-node-html-label";
@@ -11,7 +12,7 @@ import { stylesheet } from "../../global/Stylesheet";
 
 export const getExperimentCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("experiment-cy")!;
-	const extensions = [fcose, dagre, nodeHtmlLabel, lasso, undo];
+	const extensions = [fcose, dagre, nodeHtmlLabel, lasso, undo, layoutUtilities];
 	loadExtensions(extensions);
 	const mergedStyle = [
 		...(DEFAULT_OPTIONS.style as any[]),
@@ -29,7 +30,7 @@ export const getExperimentCy = (elements: any[]) => {
 
 export const getControlCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("control-cy")!;
-	const extensions = [fcose, dagre, nodeHtmlLabel, undo];
+	const extensions = [fcose, dagre, nodeHtmlLabel, undo, layoutUtilities];
 
 	loadExtensions(extensions);
 	const mergedStyle = [...(DEFAULT_OPTIONS.style as any[]), ...CONTROL_STYLE];
@@ -59,26 +60,7 @@ function loadExtensions(extensions: any[]) {
 }
 
 export const DEFAULT_OPTIONS: any = {
-	layout: {
-		name: 'fcose',
-		quality: "proof",
-		randomize: false,
-		animate: true,
-		fit: true, 
-		packComponents: false,
-		padding: 20,
-		nodeDimensionsIncludeLabels: true,
-		avoidOverlap: true,
-		nodeSeparation: 250,
-		nodeRepulsion: 5500,
-		// @ts-ignore
-		idealEdgeLength: 150,
-		// @ts-ignore
-		edgeElasticity: 0.3,
-		nestingFactor: 0.1,
-		tile: true,
-	},
-	//GLOBALS.courseLayout,
+	layout: GLOBALS.default_layout,
 	style: stylesheet,
 	selectionType: "single",
 };

@@ -70,7 +70,8 @@ export class SwitchCourseController extends View {
         } else {
             this.cy.add(elements);
         }
-        this.cy.layout(GLOBALS.courseLayout).run();
+        this.cy.layout(GLOBALS.default_layout).run(); 
+        // BUG: this is the same layout as at the start, but looks different 
 
         // Reset searchbar (if opened) and FilterBar
         this.filterManager.resetRoot(this.cy); // Reset all applied filters
