@@ -1,3 +1,4 @@
+import "./switchCourse.css";
 import cytoscape from "cytoscape";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
@@ -5,7 +6,7 @@ import { View } from "../../../../shared/ui/View";
 import { GLOBALS } from "../../../graphVis/global/config";
 import { experimentEventBus } from "../../global/ExperimentEventBus";
 import { FilterManager } from "../experiment/filter/Filter";
-import "./switchCourse.css";
+import { ExperimentGraphController } from "../experiment/graph/ExperimentGraphController";
 
 export enum SwitchCourseEvents {
     SWITCH_COURSE = "switchCourse"
@@ -16,17 +17,20 @@ export class SwitchCourseController extends View {
     private readonly client: WikibaseClient;
     private readonly cy: cytoscape.Core;
     private readonly filterManager: FilterManager;
+    private readonly graphController: ExperimentGraphController;
     private $switchMenu: HTMLSelectElement;
 
     constructor(
         client:WikibaseClient, 
         cy:cytoscape.Core,
         filterManager: FilterManager,
+        graphController: ExperimentGraphController
     ){
         super();
         this.client = client;
         this.cy = cy;
         this.filterManager = filterManager;
+        this.graphController = graphController;
 
         // Init events
         this.$switchMenu = document.getElementById(
@@ -71,7 +75,8 @@ export class SwitchCourseController extends View {
             this.cy.add(elements);
         }
         this.cy.layout(GLOBALS.default_layout).run(); 
-        // BUG: this is the same layout as at the start, but looks different 
+        this.graphController.reset();
+        // NOTE: applying reset() to match start behavior (see GraphView.ts)
 
         // Reset searchbar (if opened) and FilterBar
         this.filterManager.resetRoot(this.cy); // Reset all applied filters

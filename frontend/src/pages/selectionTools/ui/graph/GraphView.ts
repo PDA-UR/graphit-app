@@ -456,6 +456,8 @@ export abstract class GraphView extends View {
 
 		this.cy.elements().unselect();
 
+		console.log("resetting GraphView...");
+		// NOTE: (should) rerun the layout on top of the existing one (incremental)
 		this.cy
 			.layout({
 				name: "fcose",

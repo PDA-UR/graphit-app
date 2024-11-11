@@ -1,12 +1,12 @@
 import * as layouts from "../design/layouts";
 
-const DEFAULT_LAYOUT = {
+const DEFAULT_FCOSE = {
     name: 'fcose',
-    quality: "proof",
+    quality: "default",
     randomize: false,
     animate: false,
     fit: true, 
-    padding: 100,
+    padding: 30,
     nodeDimensionsIncludeLabels: true,
     avoidOverlap: true,
     nodeSeparation: 100, 
@@ -22,6 +22,20 @@ const DEFAULT_LAYOUT = {
     // via: layoutUtilities: https://github.com/iVis-at-Bilkent/cytoscape.js-layout-utilities
     packComponents: true,
     componentSpacing: 10,   
+}
+
+
+// The most default layout. Also used for resetting
+const DEFAULT_LAYOUT = {
+    name: "fcose",
+    // padding: 30,
+    packComponents: true,
+    componentSpacing: 10,
+    fit: true, 
+}
+
+const STANDARD_LAYOUT = {
+    name: "fcose",
 }
 
 export const GLOBALS = {
