@@ -28,9 +28,10 @@ export const getExperimentCy = (elements: any[]) => {
 	return cy;
 };
 
+// NOTE: control condition (not used)
 export const getControlCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("control-cy")!;
-	const extensions = [fcose, dagre, nodeHtmlLabel, undo, layoutUtilities];
+	const extensions = [fcose, dagre, nodeHtmlLabel, undo];
 
 	loadExtensions(extensions);
 	const mergedStyle = [...(DEFAULT_OPTIONS.style as any[]), ...CONTROL_STYLE];
