@@ -2,7 +2,7 @@ import * as layouts from "../design/layouts";
 
 const DEFAULT_FCOSE = {
     name: 'fcose',
-    quality: "default",
+    quality: 'proof',
     randomize: false,
     animate: false,
     fit: true, 
