@@ -25,13 +25,13 @@ const DEFAULT_FCOSE = {
 }
 
 
-// The most default layout. Also used for resetting
+// The most default layout.
 const DEFAULT_LAYOUT = {
     name: "fcose",
     // padding: 30,
     packComponents: true,
-    componentSpacing: 10,
-    fit: true, 
+    componentSpacing: 20,
+    fit: true,
 }
 
 const STANDARD_LAYOUT = {
@@ -47,5 +47,6 @@ export const GLOBALS = {
     gridLayout: layouts.grid,
     breadthLayout: layouts.breadthfirst,
     dagre: layouts.dagre,
-    default_layout: DEFAULT_LAYOUT,
+    // default_layout: DEFAULT_LAYOUT,
+    default_layout: DEFAULT_FCOSE,
 }
