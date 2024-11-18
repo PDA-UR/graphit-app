@@ -125,25 +125,61 @@ SELECT DISTINCT
 ?sourceDate
 ?source ?sourceLabel ?sourceDesc
 ?dependencyDate
-?dependency ?dependencyLabel
-?sourceGoal ?sourceInterested ?sourceCompleted
+?dependency ?dependencyLabel ?dependencyDesc
+?sourceGoal 
+?sourceInterested ?sourceCompleted
+?dependencyInterested ?dependencyCompleted
 WHERE {
   # SELECT ALL elements INCLUDED in <Course>
   BIND (wd:${courseId} as ?sourceCourse).
-  ?sourceCourse wdt:P14 ?session. # = session or category
+  ?sourceCourse wdt:P14 ?session.
   ?session wdt:P3 wd:Q427. # force session
-  ?session wdt:P14 ?source. 
+  ?session wdt:P14 ?item.  # use as stand-in for getting ?sources and ?dependencies (BIND these explicitly)
 
-  # get date of session, the source is included in & parse it to a readable format
-  ?session wdt:P19 ?sDate.
-  BIND( (concat(substr(?sDate, 9, 2), '.', substr(?sDate, 6, 2), '.', substr(?sDate, 1, 4))) as ?sourceDate).
-  BIND(IF(BOUND(?sourceDate), ?sourceDate, "false") as ?sourceDate). # mark items not in a session
+  # ----- (NON) DEPENDENCIES ----- #
+
+  # UNION the result of...
+  OPTIONAL {
+  {
+    # get the dependencies outside of sessions (i.e. items in session, dep. outside)
+    ?item wdt:P1+ ?topic.
+    ?topic wdt:P1 ?post.
+    BIND (?topic as ?source)
+    BIND (?post as ?dependency)
+  } UNION {
+    # get dependencies "recursively" as long as the ?item is in a session.
+    ?item wdt:P1 ?topic.
+    BIND (?item as ?source)
+    BIND (?topic as ?dependency) 
+  } 
+    # Check the User-Queries on the already existing ?dependencies [*]
+    BIND(EXISTS { wd:Q315 wdt:P12 ?dependency } AS ?dependencyCompleted) 
+    BIND( EXISTS { wd:Q315 wdt:P23 ?dependency } AS ?dependencyInterested) 
+  }
+  # NOTE: both operations don't seem to work without union...
+    
+  # get items that don't have any dependencies
+  OPTIONAL {
+    ?item !wdt:P1 ?topic.
+    BIND (?item as ?source)
+  }
   
-  OPTIONAL { ?source wdt:P1 ?dependency.} 
-  OPTIONAL { ?source schema:description ?sourceDesc. }  
+  # Query gets really slow with descriptions included
+  # OPTIONAL { ?source schema:description ?sourceDesc. }  
+  # OPTIONAL { ?dependency schema:description ?dependencyDesc. }  
+  # NOTE: goals are called ?sourceGoals for parsing later, but are just regular goals of the course
   OPTIONAL { BIND (EXISTS{ ?sourceCourse wdt:P36 ?source.} AS ?sourceGoal). }
 
-  # ----- USER QUERIES ----- #
+  # ----- PARSED DATES ----- #
+  # NOTE: any item that "has a date" is included in a session, and will at one point be queried as a ?source
+  # -> you shouldn't need to get the date of a ?dependency, that are only ?dependencies as they are not included in a session anyway
+  OPTIONAL { 
+    ?session wdt:P19 ?sDate.
+    BIND( (concat(substr(?sDate, 9, 2), '.', substr(?sDate, 6, 2), '.', substr(?sDate, 1, 4))) as ?sourceDate).
+  }
+
+
+  # ----- USER QUERIES (SOURCES) for dependencies see: [*]----- #
 
   # Check if ${userId} is interested in the source node (Property P23)
   BIND(EXISTS { wd:${userId} wdt:P23 ?source } AS ?sourceInterested)
@@ -154,6 +190,19 @@ WHERE {
   service wikibase:label { bd:serviceParam wikibase:language "en" }
 }
 `;
+
+/**
+ * [*]
+ * NOTE: on the User-Queries for ?dependency:
+ * Because not all ?sources have ?dependencies, checking if a user have "completed/is interested" removes all these ?dependency-less ?sources.
+ * So those checks are done before these ?sources get added to the result.
+ * Optionally you could BIND an arbitrary value to the empty ?dependencies and the use the same syntax as the ?sources.
+ * i.e:
+ * BIND (IF(!BOUND(?dependency), "1", ?dependency) as ?dependency) 
+ * BIND (IF(?dependency = "1", "false", EXISTS { wd:Q315 wdt:P23 ?dependency } ) AS ?dependencyInterested ) 
+ */ 
+
+
 
 // Query returns all resources for one item
 const itemResource = (

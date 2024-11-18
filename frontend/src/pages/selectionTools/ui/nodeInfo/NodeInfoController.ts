@@ -80,7 +80,7 @@ export class NodeInfoController {
         this.$nodeName.innerText = str; // Node name
 
         let date = node.data("date");
-        if (date == "false" || undefined) date = "";
+        if (date == "false" || date == undefined ) date = "";
         else date = "on: " + date
         this.$nodeDate.innerHTML = date;
 

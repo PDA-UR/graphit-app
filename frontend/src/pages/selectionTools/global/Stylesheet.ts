@@ -113,7 +113,7 @@ export const stylesheet: Stylesheet[] = [
     },
     // Nodes outside of sessions
     {
-        selector: "node[date = 'false']", // style all nodes that don't have date-data
+        selector: "node[^date]", // style all nodes that don't have date-data
         style: {
             // "background-opacity": 0,
             "background-color": "white",

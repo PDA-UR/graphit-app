@@ -37,7 +37,7 @@ export class SparqlParser {
 		const edges: ElementDefinition[] = [];
 		bindings.forEach((binding: any) => {
 			const sourceNode = binding[nodePrefixes[0]],
-				targetNode = binding[nodePrefixes[1]];
+				targetNode = binding[nodePrefixes[1]];  
 
 			if (!sourceNode || !targetNode) return;
 
@@ -72,6 +72,7 @@ export class SparqlParser {
 		const vars = results.head.vars; // e.g. "source", "sourceLabel"
 
 		bindings.forEach((binding: any) => {
+			// das müsste zuerst source durchgehen, oder?
 			nodePrefixes.forEach((prefix) => {
 				const node = this.parseNode(prefix, binding, vars);
 				if (node) {
@@ -92,12 +93,16 @@ export class SparqlParser {
 	 * @returns
 	 */
 	private mergeNodes(nodes: ElementDefinition[]): ElementDefinition {
+		// ?? Unterscheidung zw. source und dependency?
 		const node = nodes[0];
 		for (let i = 1; i < nodes.length; i++) {
 			const n = nodes[i];
 			for (const key in n.data) {
+				// if (k)
+				// if (n.data["id"] == "https://graphit.ur.de/entity/Q1082") console.log("merging...", key, n.data)
 				if (key in node.data) continue;
 				node.data[key] = n.data[key];
+				// if  (key == "date") console.log("merged dates", n.data[key], n.data["label"])
 			}
 		}
 		return node;
@@ -123,12 +128,22 @@ export class SparqlParser {
 			data: {},
 		};
 
-		console.log(prefix, binding, vars);
+
+		// SHOULD: make every [source], [dependency] an new node (+ later merge if duplicate)
+			// -> create edge between them
+
+		// console.log(prefix, binding, vars);
+
+		// Skips all variables that don't match the prefix
+			// e.g. skips ?sourceDate if prefix is dependency
 
 		for (const variable of vars) {
-			if (!variable.startsWith(prefix)) continue;
+			if (!variable.startsWith(prefix)){
+				if (variable == "source") console.log("skipped", variable, "for", prefix, ": ", binding[variable]?.value)
+				continue;
+			} 
 			let key = variable.slice(prefix.length); // slices of e.g. "source" from sourceLabel
-			if (key === "") key = "id";
+			if (key === "") key = "id"; // e.g. ?source
 			key = key.charAt(0).toLowerCase() + key.slice(1);
 
 			// To make parents work from inside of a node
@@ -139,9 +154,21 @@ export class SparqlParser {
 				key = "parent";
 			}
 
+			
 			const value = binding[variable]?.value;
-
+			
 			if (value) node.data[key] = value;
+			
+			// DEBUG
+
+			if (node.data["label"] == "Information Hiding") {
+				console.log(node.data["label"], prefix, binding)
+			}
+
+			
+			if (node.data["label"] == "UML"  || node.data["id"] == "https://graphit.ur.de/entity/Q1082") {
+				console.log(node.data["label"], "-> ", prefix, node.data["date"]);
+			} // ??: UML only has prefix dependency, even though it would have to been gotten as a source as well
 		}
 
 		node.data._originalData = node.data;
