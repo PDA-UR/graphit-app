@@ -24,7 +24,19 @@ The app is automatically built and deployed via GitHub actions:
 
 To test before deployment:
 - in /frontend: `npm run build` then `npm run preview`
+  - if you want to preview in a specific port: add `preview: { port: 8081},` to the `vite.config.js`-options
 - in /api: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
+
+### Additional Notes
+- **New Page**:
+  - add the `frontend/newSection/index.html` to the rollupOptions { input {...} } in `vite.config.js`
+  - add a link to the `frontend/index.html`-hub-page
+- **Add a SPARQL-Query**:
+  - `SparqlQueryService.ts`: add query as string + "get-function"
+  - `WikibaseSdkService.ts`: add pre-build query function
+  - `SparqlContoller.ts`: add request function
+  - `ApiClient.ts`: add request to backend
+  - `WikibaseClient.ts`: add operation function 
 
 #### Note:build api
 - to build the api you need to `npm install -g @tsed/cli`
