@@ -32,9 +32,18 @@ export default class AppRoot extends Component {
 	@state()
 	infoStyle = "hide";
 
+	@state()
+	isCopyToggleOn = false;
+
+	private dragType = "Move";
+
 	private setIsDragging = (isDragging: boolean) => {
 		this.isDragging = isDragging;
 	};
+
+	// private setCopyToggleOn = (isCopyToggleOn: boolean) => {
+	// 	this.isCopyToggleOn = isCopyToggleOn;
+	// }
 
 	private api = createApiClient();
 	private wikibaseClient: WikibaseClient = new WikibaseClient(
@@ -49,6 +58,7 @@ export default class AppRoot extends Component {
 		this,
 		this.wikibaseClient,
 		this.setIsDragging,
+		// this.isCopyToggleOn,
 		this.selectionController
 	);
 
@@ -103,6 +113,13 @@ export default class AppRoot extends Component {
 				e.preventDefault();
 				this.dragController.onDrop("trash", false);
 			}
+			// toggle copy on
+			if(e.key === "CapsLock") {
+				this.isCopyToggleOn = !this.isCopyToggleOn;
+				if (this.isCopyToggleOn) this.dragType = "Copy";
+				else this.dragType = "Move";
+				this.dragController.setCopyToggle(this.isCopyToggleOn);
+			}
 		});
 
 		document.addEventListener("click", (e) => {
@@ -153,20 +170,11 @@ export default class AppRoot extends Component {
 
 	onWindow() {
 		this.infoStyle = "hide";
-		// if(this.isInfo) {
-		// 	const $infoDiv = this.shadowRoot?.getElementById("main")?.children[2] as InfoBox;//?.getElementById("info");
-		// 	$infoDiv.style.display = "none";
-		// 	// this.isInfo = false;
-		// }
 	}
 
 	onInfo() {
 		if(this.infoStyle == "hide") this.infoStyle = "show";
 		else this.infoStyle = "hide";
-		// const $infoDiv = this.shadowRoot?.getElementById("main")?.children[2] as InfoBox;//?.getElementById("info");
-		// console.log($infoDiv);
-		// $infoDiv.style.display = "block";
-		// this.isInfo = true;
 	}
 
 	onLogout() {
@@ -201,6 +209,7 @@ export default class AppRoot extends Component {
 									() => "<"
 								)}
 							</button>
+							<div><b style="color: var(--bg-danger)">${this.dragType}</b> on drag</div>
 							<div class="spacer"></div>
 							<span id="username">${this.zustand.credentials?.username}</span>
 							<button
@@ -231,6 +240,7 @@ export default class AppRoot extends Component {
 							<table-view
 								.tableModel="${this.zustand.table}"
 								.isDragging="${this.isDragging}"
+								.isCopyToggledOn="${this.isCopyToggleOn}"
 							></table-view>
 							<info-box class="${this.infoStyle}"></info-box>
 						</div>`,

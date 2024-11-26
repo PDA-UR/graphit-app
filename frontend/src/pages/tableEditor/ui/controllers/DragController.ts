@@ -30,9 +30,10 @@ export interface ColumnItemInfo {
 export class DragController implements ReactiveController {
 	host: ReactiveControllerHost;
 
+	private isCopyToggleOn:  boolean = false;
 	private draggedItem: ColumnItemInfo | undefined;
 	private readonly setIsDragging: (isDragging: boolean) => void = () => {};
-
+	
 	private readonly selectionController: SelectionController;
 	private readonly itemOperator: ItemOperationController;
 
@@ -50,6 +51,14 @@ export class DragController implements ReactiveController {
 	}
 
 	hostConnected() {}
+
+	setCopyToggle(on: boolean) {
+		this.isCopyToggleOn = on;
+	}
+
+	getCopyToggle(){
+		return this.isCopyToggleOn;
+	}
 
 	// ------ Drag and Drop ------ //
 
@@ -70,7 +79,7 @@ export class DragController implements ReactiveController {
 	}
 
 	// an item has been dropped INTO A DROPZONE
-	onDrop(dropzone: ColumnModel | "trash" | "new-column", doCopy = false) {
+	onDrop(dropzone: ColumnModel | "trash" | "new-column", doCopy = this.isCopyToggleOn) {
 		this.setIsDragging(false);
 
 		const draggedItems = this.selectionController.getSelectedItems();

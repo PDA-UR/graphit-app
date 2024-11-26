@@ -125,6 +125,7 @@ export default class NewColumnDropzone extends Component {
 	};
 
 	ondrop = (event: DragEvent) => {
+		// gets called, when an item is dropped to the add-column zone
 		event.preventDefault();
 		this.classList.remove("highlight");
 		this.dispatchEvent(

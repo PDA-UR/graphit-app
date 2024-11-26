@@ -32,6 +32,9 @@ export class Table extends Component {
 	@property({ type: Boolean })
 	private isDragging!: boolean;
 
+	@property({ type: Boolean})
+	private isCopyToggleOn!: boolean;
+
 	@property({ type: Object, attribute: true })
 	tableModel!: TableModel;
 
@@ -59,6 +62,7 @@ export class Table extends Component {
 					<column-component
 						.isDragging="${this.isDragging}"
 						.columnModel="${columnModel}"
+						.isCopyToggleOn="${this.isCopyToggleOn}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
 					>
 					</column-component>
@@ -72,7 +76,7 @@ export class Table extends Component {
 				)}"
 				@itemDropped="${(e: any) => this.onItemDropped(e.detail.data, false)}"
 			></new-column-dropzone>
-		`;
+		`; // false -> doCopy is default false?
 	}
 
 	static styles = css`

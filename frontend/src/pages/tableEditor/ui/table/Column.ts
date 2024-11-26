@@ -46,6 +46,7 @@ export class ColumnComponent extends Component {
 	@state()
 	isDragover = false;
 
+
 	// --------- Properties -------- //
 
 	@property({ type: Object })
@@ -53,6 +54,9 @@ export class ColumnComponent extends Component {
 
 	@property({ type: Boolean })
 	private isDragging = false;
+
+	@property({ type: Boolean })
+	private isCopyToggleOn!: boolean;
 
 	// --------- Contexts -------- //
 
@@ -185,9 +189,14 @@ export class ColumnComponent extends Component {
 	};
 
 	ondrop = (event: DragEvent) => {
+		// Gets called, when an items gets dropped into an existing column
 		event.preventDefault();
-		const doCopy =
+
+		let doCopy =
 			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
+		const copyToggle = this.dragController.getCopyToggle();
+		if (copyToggle) doCopy = copyToggle; // override, if copy toggled on
+
 
 		this.dragController.onDrop(this.columnModel, doCopy);
 		this.isDragover = false;

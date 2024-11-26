@@ -68,8 +68,12 @@ export class InfoBox extends Component {
                         <td> Remove selected item </td>
                     </tr>
                     <tr>
-                        <td> SHIFT + <i>drag</i>
-                        <td> Paste items </td>
+                        <td> SHIFT/ALT/CTRL/META + <i>drag</i>
+                        <td> Copy and Paste items </td>
+                    </tr>
+                    <tr>
+                        <td> CAPSLOCK </td>
+                        <td> Toggle copy-paste on/off </td>
                     </tr>
                 </table>
             </div>
