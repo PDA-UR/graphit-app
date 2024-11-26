@@ -17,6 +17,7 @@ import { DragController } from "./controllers/DragController";
 import { sessionContext } from "../data/contexts/SessionContext";
 import { selectionControllerContext } from "../data/contexts/SelectionControllerContext";
 import { SelectionController } from "./controllers/SelectionController";
+import { InfoBox } from "./Components";
 
 /**
  * <app-root> is the root component of the application.
@@ -27,6 +28,9 @@ export default class AppRoot extends Component {
 
 	@state()
 	isDragging = false;
+
+	@state()
+	infoStyle = "hide";
 
 	private setIsDragging = (isDragging: boolean) => {
 		this.isDragging = isDragging;
@@ -147,6 +151,24 @@ export default class AppRoot extends Component {
 
 	// ------- Listeners ------ //
 
+	onWindow() {
+		this.infoStyle = "hide";
+		// if(this.isInfo) {
+		// 	const $infoDiv = this.shadowRoot?.getElementById("main")?.children[2] as InfoBox;//?.getElementById("info");
+		// 	$infoDiv.style.display = "none";
+		// 	// this.isInfo = false;
+		// }
+	}
+
+	onInfo() {
+		if(this.infoStyle == "hide") this.infoStyle = "show";
+		else this.infoStyle = "hide";
+		// const $infoDiv = this.shadowRoot?.getElementById("main")?.children[2] as InfoBox;//?.getElementById("info");
+		// console.log($infoDiv);
+		// $infoDiv.style.display = "block";
+		// this.isInfo = true;
+	}
+
 	onLogout() {
 		this.logoutTask.run();
 	}
@@ -194,9 +216,11 @@ export default class AppRoot extends Component {
 									() => "☼"
 								)}
 							</button>
+							<button id="info-toggle"
+								@click="${() => this.onInfo()}">Info</button>
 							<button @click="${() => this.onLogout()}">Logout</button>
 						</div>
-						<div id="main">
+						<div id="main" @click="${() => this.onWindow()}">
 							<search-sidebar
 								class="${when(
 									this.zustand.sidebarIsOpen,
@@ -208,6 +232,7 @@ export default class AppRoot extends Component {
 								.tableModel="${this.zustand.table}"
 								.isDragging="${this.isDragging}"
 							></table-view>
+							<info-box class="${this.infoStyle}"></info-box>
 						</div>`,
 					() =>
 						choose(this.logoutTask.status, [
