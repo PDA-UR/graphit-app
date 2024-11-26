@@ -192,11 +192,12 @@ export class ColumnComponent extends Component {
 		// Gets called, when an items gets dropped into an existing column
 		event.preventDefault();
 
+		// Allows user to modify drag with key -> i.e. change move to copy
+		// NOTE: Works, but does not seem the most robust (e.g: https://stackoverflow.com/q/72389012)
 		let doCopy =
-			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
+			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey; 
 		const copyToggle = this.dragController.getCopyToggle();
-		if (copyToggle) doCopy = copyToggle; // override, if copy toggled on
-
+		if (copyToggle) doCopy = copyToggle; // override modified drag, if "copy" toggled on
 
 		this.dragController.onDrop(this.columnModel, doCopy);
 		this.isDragover = false;
