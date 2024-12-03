@@ -51,7 +51,7 @@ export abstract class GraphController<
 	private onLogoutButtonClick = () => {
 		this.client.logout(); // Throws error, but works
 		localStorage.clear();
-		history.back();
+        window.location.href = window.location.hostname + "/app/src/pages/";
 	}
 
 	private onSaveButtonClick = () => {
