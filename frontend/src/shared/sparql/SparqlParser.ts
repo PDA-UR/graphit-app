@@ -93,16 +93,12 @@ export class SparqlParser {
 	 * @returns
 	 */
 	private mergeNodes(nodes: ElementDefinition[]): ElementDefinition {
-		// ?? Unterscheidung zw. source und dependency?
 		const node = nodes[0];
 		for (let i = 1; i < nodes.length; i++) {
 			const n = nodes[i];
 			for (const key in n.data) {
-				// if (k)
-				// if (n.data["id"] == "https://graphit.ur.de/entity/Q1082") console.log("merging...", key, n.data)
 				if (key in node.data) continue;
 				node.data[key] = n.data[key];
-				// if  (key == "date") console.log("merged dates", n.data[key], n.data["label"])
 			}
 		}
 		return node;
@@ -128,18 +124,8 @@ export class SparqlParser {
 			data: {},
 		};
 
-
-		// SHOULD: make every [source], [dependency] an new node (+ later merge if duplicate)
-			// -> create edge between them
-
-		// console.log(prefix, binding, vars);
-
-		// Skips all variables that don't match the prefix
-			// e.g. skips ?sourceDate if prefix is dependency
-
 		for (const variable of vars) {
 			if (!variable.startsWith(prefix)){
-				if (variable == "source") console.log("skipped", variable, "for", prefix, ": ", binding[variable]?.value)
 				continue;
 			} 
 			let key = variable.slice(prefix.length); // slices of e.g. "source" from sourceLabel
@@ -159,16 +145,6 @@ export class SparqlParser {
 			
 			if (value) node.data[key] = value;
 			
-			// DEBUG
-
-			if (node.data["label"] == "Information Hiding") {
-				console.log(node.data["label"], prefix, binding)
-			}
-
-			
-			if (node.data["label"] == "UML"  || node.data["id"] == "https://graphit.ur.de/entity/Q1082") {
-				console.log(node.data["label"], "-> ", prefix, node.data["date"]);
-			} // ??: UML only has prefix dependency, even though it would have to been gotten as a source as well
 		}
 
 		node.data._originalData = node.data;
@@ -185,8 +161,8 @@ export class SparqlParser {
 	public parseParents(results: SparqlResults): ElementDefinition[] {
 		const parents: ElementDefinition[] = [];
 
-		const bindings = results.results.bindings; // all query result objects
-		const vars = results.head.vars; // e.g. "source", "sourceLabel"
+		const bindings = results.results.bindings; 
+		const vars = results.head.vars; 
 
 		bindings.forEach((binding: any) => {
 			for (const variable of vars) {
@@ -194,7 +170,6 @@ export class SparqlParser {
 				parents.push(parent);
 			}
 		});
-		//console.log("parents: ", parents);
 		return parents;
 	}
 
