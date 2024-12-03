@@ -86,18 +86,22 @@
     opacity: .8;
 }
 
-.mouse-icon.right {
-    background-image: url(../pages/selectionTools/icons/mouse-right-button-svgrepo-com.svg);
+
+.mouse-icon.right, .mouse-icon.iright {
+    background-image: url("../../pages/selectionTools/icons/mouse-right-button-svgrepo-com.svg");
 }
 
 .mouse-icon.left, .mouse-icon.hleft, .mouse-icon.dleft {
-    background-image: url(../pages/selectionTools/icons/mouse-left-button-svgrepo-com.svg);
+    background-image: url("../../pages/selectionTools/icons/mouse-left-button-svgrepo-com.svg");
+}
+
+.mouse-icon.wheel {
+    background-image: url("../../pages/selectionTools/icons/mouse-scroll-wheel-svgrepo-com.svg");
 }
 
 .mouse-icon.hleft::after {
     content: "(halten)";
     margin-left: 25px;
-
     text-align: center;
     line-height: 30px;
     font-size: 12px;
@@ -106,6 +110,15 @@
 
 .mouse-icon.dleft::after {
     content: "(x2)";
+    margin-left: 25px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 12px;
+
+}
+
+.mouse-icon.iright::after {
+    content: "(Item)";
     margin-left: 25px;
     text-align: center;
     line-height: 30px;

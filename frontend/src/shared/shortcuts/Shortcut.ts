@@ -6,7 +6,7 @@ import "./shortcuts.css";
 // key = number or character (single one)
 type Key = string;
 
-type MouseButton = "hleft" | "left" | "dleft" | "middle" | "right";
+type MouseButton = "hleft" | "left" | "dleft" | "middle" | "right" | "iright" | "wheel";
 
 type Shortcut = {
 	key?: Key;
@@ -22,6 +22,31 @@ export type ShortcutInfo = {
 
 // INFO: add shortcuts here
 export const SHARED_SHORTCUTS: ShortcutInfo[] = [
+
+	{ 
+		category: "Interaktion",
+		description: "Graph bewegen (Pan)",
+		shortcut: {
+			mouseButton: "right",
+		}
+	},
+
+	{ 
+		category: "Interaktion",
+		description: "Zoom",
+		shortcut: {
+			mouseButton: "wheel",
+		}
+	},
+
+	{ 
+		category: "Interaktion",
+		description: "Öffnen der GraphIT Item-Seite",
+		shortcut: {
+			mouseButton: "iright",
+		}
+	},
+
 	{
 		category: "Selektion - Aktion",
 		description: "Einzelnen Knoten selektieren",
@@ -50,7 +75,7 @@ export const SHARED_SHORTCUTS: ShortcutInfo[] = [
 export const SHARED_SHORTCUTS_END: ShortcutInfo[] = [
 	{
 		category: "Informationen",
-		description: "Resourcen ansehen",
+		description: "Ressourcen ansehen",
 		shortcut: {
 			key: "+",
 			modifierKeys: [ModifierKey.ALT],
