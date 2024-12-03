@@ -114,11 +114,8 @@ export default class AppRoot extends Component {
 				this.dragController.onDrop("trash", false);
 			}
 			// toggle copy on
-			if(e.key === "CapsLock") {
-				this.isCopyToggleOn = !this.isCopyToggleOn;
-				if (this.isCopyToggleOn) this.dragType = "Copy";
-				else this.dragType = "Move";
-				this.dragController.setCopyToggle(this.isCopyToggleOn);
+			if(e.ctrlKey && e.key === "x") {
+				this.toggleCopy();
 			}
 		});
 
@@ -166,6 +163,13 @@ export default class AppRoot extends Component {
 		autoRun: false,
 	});
 
+	private toggleCopy() {
+		this.isCopyToggleOn = !this.isCopyToggleOn;
+		if (this.isCopyToggleOn) this.dragType = "Copy";
+		else this.dragType = "Move";
+		this.dragController.setCopyToggle(this.isCopyToggleOn);
+	}
+
 	// ------- Listeners ------ //
 
 	onWindow() {
@@ -209,7 +213,12 @@ export default class AppRoot extends Component {
 									() => "<"
 								)}
 							</button>
-							<div><b style="color: var(--bg-danger)">${this.dragType}</b> on drag</div>
+							<div>
+								<button @click="${() => this.toggleCopy()}">
+									<b style="color: var(--bg-danger)">${this.dragType}</b>
+								</button>
+								on drag
+							</div>
 							<div class="spacer"></div>
 							<span id="username">${this.zustand.credentials?.username}</span>
 							<button

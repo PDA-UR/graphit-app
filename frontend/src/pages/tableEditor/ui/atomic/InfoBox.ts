@@ -4,13 +4,11 @@ import { Component } from "./Component";
 import SearchSidebar from "../SearchSidebar";
 
 /**
- * <info-box> is a simple informational component of usage and shortcuts
+ * <info-box> is a simple informational component of that lists usage and shortcuts.
  */
 @customElement("info-box") // NOTE: can be used as: <info-box></info-box>
 export class InfoBox extends Component {
-// TODO: load on "info-toggle" click + close, when click outside of box
-    // i.e. include <info-box> in App.ts-html & change visibility/display css property on "info-toggle" click
-	static styles = css`
+static styles = css`
 		:host {
             position: absolute;
             left: 0;
@@ -72,7 +70,7 @@ export class InfoBox extends Component {
                         <td> Copy and Paste items </td>
                     </tr>
                     <tr>
-                        <td> CAPSLOCK </td>
+                        <td> CTRL + x </td>
                         <td> Toggle copy-paste on/off </td>
                     </tr>
                 </table>
@@ -82,18 +80,4 @@ export class InfoBox extends Component {
         `; 
 	}
 }
-
-
-/**
- * 
- * TABLE EDITOR:
- * Use this editor to add and copy links to items.
- * -----------------------------------------------
- * <kbd>CTRL+f</kbd> toggles sidebar
- * <kbd>Del</kbd> or <kbd>Backspace</kbd> removes a selected item
- * <kbd>Shift</kbd> + *drag* will paste items
- */
-
-// CTRL + f          |  toggles sidebar
-// DEL or BACKSPACE  |  Removes a selected item 
 
