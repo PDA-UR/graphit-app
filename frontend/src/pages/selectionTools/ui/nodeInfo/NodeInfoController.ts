@@ -130,14 +130,23 @@ export class NodeInfoController {
         this.$dropdownBtn.innerText = ""; //remove temporarily (looks better)
 
         let result;
+        let description;
         if (qid != null)
             result = await this.client.getItemResource(qid[0]); // NOTE returns [] on error  
+            const entities = await this.client.getEntityInfos(qid);
+            description = entities[0]["description"]
         this.createResourceList(result);
+        this.addDescription(description);
 
         // rm spinner
         spinner.stop();
         spinner.setResourceSpinner(false);
         this.$dropdownBtn.innerText = "-";
+    }
+
+    private addDescription(text:string) {
+        const div = document.getElementById("node-desc") as HTMLDivElement;
+        div.innerText = text;
     }
 
     private createResourceList(resources: any) {
