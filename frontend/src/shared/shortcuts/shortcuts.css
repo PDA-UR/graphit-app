@@ -15,12 +15,12 @@
     /* grid */
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
+    grid-gap: 5px;
 
 }
 
 .shortcut-category-container {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .shortcut-category-title {

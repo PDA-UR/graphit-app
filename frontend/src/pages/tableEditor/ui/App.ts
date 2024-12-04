@@ -217,7 +217,7 @@ export default class AppRoot extends Component {
 								<button @click="${() => this.toggleCopy()}">
 									<b style="color: var(--bg-danger)">${this.dragType}</b>
 								</button>
-								on drag
+								items on drag
 							</div>
 							<div class="spacer"></div>
 							<span id="username">${this.zustand.credentials?.username}</span>

@@ -61,6 +61,7 @@ export class PathViewController {
                 this.showPath()
         } else {
             this.onOpen(false);
+            this.toggle(false); // Failsafe
         }
     }
 

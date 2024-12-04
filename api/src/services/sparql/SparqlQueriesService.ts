@@ -142,7 +142,7 @@ WHERE {
   OPTIONAL {
   {
     # get the dependencies outside of sessions (i.e. items in session, dep. outside)
-    ?item wdt:P1+ ?topic.
+    ?item wdt:P1 ?topic.
     ?topic wdt:P1 ?post.
     BIND (?topic as ?source)
     BIND (?post as ?dependency)
