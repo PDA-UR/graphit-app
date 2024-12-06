@@ -1,12 +1,11 @@
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 import { Component } from "./Component";
-import SearchSidebar from "../SearchSidebar";
 
 /**
  * <info-box> is a simple informational component of that lists usage and shortcuts.
  */
-@customElement("info-box") // NOTE: can be used as: <info-box></info-box>
+@customElement("info-box")
 export class InfoBox extends Component {
 static styles = css`
 		:host {
@@ -48,7 +47,6 @@ static styles = css`
         
 	`;
 
-    // TODO
 	render() {
 		return html`
         <div>
@@ -72,6 +70,10 @@ static styles = css`
                     <tr>
                         <td> CTRL + x </td>
                         <td> Toggle copy-paste on/off </td>
+                    </tr>
+                    <tr>
+                        <td> CTRL + i </td>
+                        <td> Toggle info boy on/off </td>
                     </tr>
                 </table>
             </div>

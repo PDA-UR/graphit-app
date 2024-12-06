@@ -3,6 +3,8 @@ import { Component } from "./atomic/Component";
 import { PropertyValueMap, css, html } from "lit";
 import { fromStore, tableContext } from "../data/contexts/TableContext";
 import { provide } from "@lit-labs/context";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 
 import { zustandStore } from "../data/ZustandStore";
 import { getCredentials } from "../../../shared/util/GetCredentials";
@@ -17,7 +19,9 @@ import { DragController } from "./controllers/DragController";
 import { sessionContext } from "../data/contexts/SessionContext";
 import { selectionControllerContext } from "../data/contexts/SelectionControllerContext";
 import { SelectionController } from "./controllers/SelectionController";
-import { InfoBox } from "./Components";
+import { TOOLTIPS } from "../data/Tooltips";
+
+
 
 /**
  * <app-root> is the root component of the application.
@@ -35,15 +39,14 @@ export default class AppRoot extends Component {
 	@state()
 	isCopyToggleOn = false;
 
+	@state()
+	hasInitTippy = false;
+
 	private dragType = "Move";
 
 	private setIsDragging = (isDragging: boolean) => {
 		this.isDragging = isDragging;
 	};
-
-	// private setCopyToggleOn = (isCopyToggleOn: boolean) => {
-	// 	this.isCopyToggleOn = isCopyToggleOn;
-	// }
 
 	private api = createApiClient();
 	private wikibaseClient: WikibaseClient = new WikibaseClient(
@@ -58,7 +61,6 @@ export default class AppRoot extends Component {
 		this,
 		this.wikibaseClient,
 		this.setIsDragging,
-		// this.isCopyToggleOn,
 		this.selectionController
 	);
 
@@ -85,7 +87,25 @@ export default class AppRoot extends Component {
 
 	updated() {
 		this.onDarkmodeChange();
+		if(!this.hasInitTippy) this.initTippy()
 	}
+
+	/**
+	 * Init Tippy-Tooptips after all elements are rendered
+	 */
+	private initTippy() {
+		for (let [key, value] of Object.entries(TOOLTIPS)) {
+			const $div = this.renderRoot.querySelector("#"+key) as HTMLElement;
+			
+			if($div !== null) this.hasInitTippy = true;	
+			else return;
+
+			tippy($div, {
+				content: value,
+			});
+		}
+	}
+
 
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
@@ -115,7 +135,12 @@ export default class AppRoot extends Component {
 			}
 			// toggle copy on
 			if(e.ctrlKey && e.key === "x") {
-				this.toggleCopy();
+				this.toggleDragType();
+			}
+			// toggle info-box
+			if(e.ctrlKey && e.key === "i") {
+				e.preventDefault();
+				this.onInfo();
 			}
 		});
 
@@ -163,7 +188,7 @@ export default class AppRoot extends Component {
 		autoRun: false,
 	});
 
-	private toggleCopy() {
+	private toggleDragType() {
 		this.isCopyToggleOn = !this.isCopyToggleOn;
 		if (this.isCopyToggleOn) this.dragType = "Copy";
 		else this.dragType = "Move";
@@ -206,7 +231,7 @@ export default class AppRoot extends Component {
 				when(
 					this.logoutTask.status === TaskStatus.INITIAL,
 					() => html`<div id="top-bar">
-							<button @click="${() => this.zustand.toggleSidebar()}">
+							<button id="sidebar-toggle" @click="${() => this.zustand.toggleSidebar()}">
 								${when(
 									this.zustand.sidebarIsOpen,
 									() => ">",
@@ -214,7 +239,7 @@ export default class AppRoot extends Component {
 								)}
 							</button>
 							<div>
-								<button @click="${() => this.toggleCopy()}">
+								<button id="drag-toggle" @click="${() => this.toggleDragType()}">
 									<b style="color: var(--bg-danger)">${this.dragType}</b>
 								</button>
 								items on drag
