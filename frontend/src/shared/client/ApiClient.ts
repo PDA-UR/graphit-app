@@ -99,6 +99,7 @@ import { CookieJar } from "tough-cookie";
 import { wrapper } from "axios-cookiejar-support";
 
 const cookieJar = new tough.CookieJar();
+//@ts-ignore
 axios.defaults.jar = cookieJar;
 axios.defaults.withCredentials = true;
 
@@ -106,6 +107,7 @@ const jar = new CookieJar();
 
 const createAxiosInstance = (config: AxiosRequestConfig) => {
 	const jar = new CookieJar();
+  //@ts-ignore
 	return wrapper(axios.create({ ...config, jar }));
 };
 
@@ -151,6 +153,7 @@ export class HttpClient<SecurityDataType = unknown> {
   private format?: ResponseType;
 
   constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
+    //@ts-ignore
     this.instance = createAxiosInstance(axiosConfig);
     this.secure = secure;
     this.format = format;
