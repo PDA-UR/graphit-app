@@ -2,6 +2,16 @@
 
 Frontend + API server for the GraphIT project.
 
+### Installation
+```
+git clone https://github.com/PDA-UR/graphit-app.git
+
+cd graphit-app
+npm i
+npm i @tsed/cli@5.2.0 --no-save
+```
+> Last step is for test building the api
+
 ## Development
 
 1. download this .env file: https://files.mi.ur.de/smart-link/5001176f-e783-45c8-ae85-65895895cab1/
@@ -22,26 +32,51 @@ The app is automatically built and deployed via GitHub actions:
 - push to `dev` branch: https://test.graphit.ur.de/app
 - push to `main` branch: https://graph.graphit.ur.de/app
 
-To test before deployment:
-- in /frontend: `npm run build` then `npm run preview`
-  - if you want to preview in a specific port: add `preview: { port: 8081},` to the `vite.config.js`-options
-- in /api: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
+#### To test before deployment:
+Local:
+- Windows
+  - in /frontend: `npm run build` then `npm run preview`
+    - if you want to preview in a specific port: add `preview: { port: 8081},` to the `vite.config.js`-options
+  - in /api: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
+- Linux
+  - in root-folder: `npm run build`
+Docker:
+  - run `docker build -t graphit .` in the root folder (alt: docker build --no-cache -t graphit .) and run the container on ports "8081:8081" (see docker-compose.yml)
+  - or use use the `run.sh` (e.g. *run.sh ./api/.env 1*) (same links as in development)
+
+---
 
 ### Additional Notes
-- **New Page**:
+
+#### Add a new Page
   - add the `frontend/newSection/index.html` to the rollupOptions { input {...} } in `vite.config.js`
   - add a link to the `frontend/index.html`-hub-page
-- **Add a SPARQL-Query**:
+
+#### Add a SPARQL-Query
   - `SparqlQueryService.ts`: add query as string + "get-function"
   - `WikibaseSdkService.ts`: add pre-build query function
   - `SparqlContoller.ts`: add request function
   - `ApiClient.ts`: add request to backend
   - `WikibaseClient.ts`: add operation function 
 
-#### Note:build api
-- to build the api you need to `npm install -g @tsed/cli`
-- then you can `npm run build` in the api directory (see: *api/package.json*)
-- NOTE: (as of 24.07.2024)
-  - the latest release (5.2.1) of the cli produced: `Error [ERR_REQUIRE_ESM]`
+#### .env
+The env currently needs to be manually deployed and changed. For further information see the README.md of `/api`.
+
+#### build api
+- to build the api you need to install the *@tsed/cli*
+  - install this in the root or api folder with `npm i @tsed/cli@5.2.0 --no-save` (make sure the install does not change the `package(-lock).json`)
+- then you can `npm run build` in the root or api directory (see: *api/package.json*)
+- NOTE: (as of *07.01.2025*)
+  - the api still runs as a "commonjs"-module
+  - *@tsed* has shifted to support esm only with v8
+  - the @tsed/cli will install the recent version of several @tsed/packages as the dependencies are listed with **>=** in its `package.json`
+  - this will give a "ERR_REQUIRE_ESM"-error as the cjs-version of the package will try to *require()* esm-only packages
+  - the cli is installed separately and *extraneous*ly, so that it does not install any @tsed/packages with a higher version than the ones used in the project
+  - *In other words:* The `api` currently uses the @tsed-version: "7.14.2" (pre esm-only), these packages are installed via the regular `npm i`. @tsed/cli is installed afterwards (for build purposes only) and uses the same packages. If they don't exist previously it will install the needed @tsed-dependencies with the wrong versions for this project (i.e. installs the esm-only versions)
+- why @tsed/cli@5.2.0:
+  - the 5.2.1 release of the cli produced: `Error [ERR_REQUIRE_ESM]`
   - to fix this the Dockerfile currently installs the the 5.2.0 version, i.e: `npm install -g @tsed/cli@5.2.0`
   - also do this locally, if it's an issue for you
+  - package switched to esm-only with v6.0.0
+
+Possible next steps: update the api to esm-only to be able to use the latest version of @tsed 
