@@ -46,7 +46,7 @@ export default class SearchSidebar extends Component {
 			}
 			const searchResults = await wikibaseClient.search(this.searchQuery, this.searchLang);
 			this.searchResults = searchResults.map((result: any) =>
-				newColumnItemModel(result.id, result.display.label.value, result.url)
+				newColumnItemModel(result.id, result.display.label.value, result.url, []) // TODO: better qualifier?
 			);
 		},
 		args: () => [

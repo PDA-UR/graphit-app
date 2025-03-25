@@ -1,4 +1,4 @@
-import { html, css, PropertyValueMap } from "lit";
+import { html, css, PropertyValueMap, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Component } from "../atomic/Component";
 import { consume } from "@lit-labs/context";
@@ -6,6 +6,7 @@ import { selectionControllerContext } from "../../data/contexts/SelectionControl
 import { SelectionController } from "../controllers/SelectionController";
 
 import { ColumnItemInfo, ItemOrigin } from "../controllers/DragController";
+import { WikibaseQualifier } from "../../data/models/ColumnItemModel";
 
 /**
  * <column-item> is a single, draggable item in a column.
@@ -48,6 +49,28 @@ export class ColumnItem extends Component {
 		this.unregisterSelectionCallback();
 	}
 
+	/**
+	 * Parses the existing qualifiers of an item into displayable html strings.
+	 * @param qualifier -dictionary from the item
+	 * @returns an array of html TemplateResults or nothing (if no qualifiers exist)
+	 */
+	parseQualifiers(qualifier: WikibaseQualifier): TemplateResult[] | undefined {
+		if (qualifier == undefined) return;
+		console.log(qualifier);
+		let htmlArr : TemplateResult[] = [];
+		for (const [key, value] of Object.entries(qualifier)) {
+			let v = value as any;
+			let valueStr = v as string;
+
+			if (v.time != undefined) { // +2024-11-11T00:00:00Z
+				valueStr = v.time.match(/(\d*-\d*-\d*)/g)
+			}
+			let str = html`<div class="text">${key} -> ${valueStr} </div>`
+			htmlArr.push(str)
+		}
+		return htmlArr
+	}
+
 	// ------- Listeners ------ //
 
 	ondblclick = (e: MouseEvent) => {
@@ -79,6 +102,9 @@ export class ColumnItem extends Component {
 				<div class="content">
 					<div class="text">${this.columnItemInfo.item.itemId}</div>
 					<div class="text">${this.columnItemInfo.item.text}</div>
+					<div class="qualifier">
+						${this.parseQualifiers(this.columnItemInfo.item.qualifiers)}
+					</div>
 				</div>
 			</card-component>
 		`;
@@ -104,6 +130,10 @@ export class ColumnItem extends Component {
 		.text {
 			text-align: center;
 			user-select: none;
+		}
+		.qualifier {
+			overflow: scroll;
+			font-size: small;
 		}
 	`;
 }

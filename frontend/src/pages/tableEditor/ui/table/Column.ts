@@ -77,27 +77,17 @@ export class ColumnComponent extends Component {
 			const entities = await wikibaseClient.getEntities([
 				columnModel.item.itemId,
 			]);
-			// console.log("load entities", entities)
-			// NOTE: from the entity (that has all the data)
-				// get ids of all items connected by specific Property
 			const entityIds = parseEntitiesConnectedByProperty(
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId]
 			);
-			// console.log("entityIds", entityIds)
 			const qualifiers = parseQualifiersConnectedByProperty(
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId]
 			);
-
-			// NOTE: using ids, again get more info on the Items, like the Labels
 			const entityInfos = await wikibaseClient.getEntityInfos(entityIds);
-			// console.log("entity info: ", entityInfos);
 
-			// NOTE: create new Items to ad to the Column
 			const newItems = entityInfos.map((entityInfo) =>
-				// creates a new column item model with all ids, labels, urls
-				// TODO: add qualifier info here?
 				newColumnItemModel(entityInfo.id, entityInfo.label, entityInfo.url, qualifiers[entityInfo.id])
 			);
 			this.items = newItems;
@@ -173,8 +163,6 @@ export class ColumnComponent extends Component {
 		const newValue = (event.target as HTMLSelectElement).value,
 			newProperty = this.wikibaseClient.findCachedPropertyById(newValue);
 
-		// NOTE: here
-		// console.log("new prop", newProperty);
 		if (newProperty)
 			this.tableActions?.setColumnProperty(
 				this.columnModel.viewId,
@@ -403,6 +391,6 @@ export const parseQualifiersConnectedByProperty = (
 		qualifiers[targetElementId] = qualifierValues;
 	})
 
-	console.log("qualies!", qualifiers);
+	// console.log("qualies!", qualifiers);
 	return qualifiers
 }

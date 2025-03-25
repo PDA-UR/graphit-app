@@ -147,7 +147,7 @@ export default class WikibaseClient {
 	async entityDoesExist(entityId: string): Promise<boolean> {
 		try {
 			const e = await this.getEntities([entityId]);
-			console.log("exists?", e);
+			// console.log("exists?", e);
 			return e?.data !== undefined;
 		} catch (err) {
 			return false;
@@ -167,7 +167,7 @@ export default class WikibaseClient {
 	> {
 		if (eintityIds.length === 0) return [];
 		const entities = await this.getEntities(eintityIds);
-		console.log("got entities", entities, eintityIds);
+
 		const entityInfos = Object.values(entities.data.entities).map(
 			(entity: any) => {
 				const enLabel = entity.labels.en?.value,
@@ -180,7 +180,7 @@ export default class WikibaseClient {
 					description = enDescription ?? deDescription ?? "";
 
 				const url = this.getEntityUrl(entity.id);
-				return { label, description, id: entity.id, url };
+				return { label, description, id: entity.id, url};
 			}
 		);
 		return entityInfos;

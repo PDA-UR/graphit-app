@@ -46,6 +46,7 @@ export default class NewColumnDropzone extends Component {
 						entity.data.entities[input].labels?.de?.value ??
 						"",
 					url: wikibaseClient.getEntityUrl(entity.data.entities[input].id),
+					qualifiers: [],
 				};
 			});
 
