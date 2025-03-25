@@ -9,6 +9,7 @@ import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import {
 	ColumnItemModel,
+	WikibaseQualifier,
 	newColumnItemModel,
 } from "../../data/models/ColumnItemModel";
 import { Task, TaskStatus } from "@lit-labs/task";
@@ -76,13 +77,28 @@ export class ColumnComponent extends Component {
 			const entities = await wikibaseClient.getEntities([
 				columnModel.item.itemId,
 			]);
+			// console.log("load entities", entities)
+			// NOTE: from the entity (that has all the data)
+				// get ids of all items connected by specific Property
 			const entityIds = parseEntitiesConnectedByProperty(
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId]
 			);
+			// console.log("entityIds", entityIds)
+			const qualifiers = parseQualifiersConnectedByProperty(
+				columnModel.property,
+				entities.data.entities[columnModel.item.itemId]
+			);
+
+			// NOTE: using ids, again get more info on the Items, like the Labels
 			const entityInfos = await wikibaseClient.getEntityInfos(entityIds);
+			// console.log("entity info: ", entityInfos);
+
+			// NOTE: create new Items to ad to the Column
 			const newItems = entityInfos.map((entityInfo) =>
-				newColumnItemModel(entityInfo.id, entityInfo.label, entityInfo.url)
+				// creates a new column item model with all ids, labels, urls
+				// TODO: add qualifier info here?
+				newColumnItemModel(entityInfo.id, entityInfo.label, entityInfo.url, qualifiers[entityInfo.id])
 			);
 			this.items = newItems;
 		},
@@ -157,6 +173,8 @@ export class ColumnComponent extends Component {
 		const newValue = (event.target as HTMLSelectElement).value,
 			newProperty = this.wikibaseClient.findCachedPropertyById(newValue);
 
+		// NOTE: here
+		// console.log("new prop", newProperty);
 		if (newProperty)
 			this.tableActions?.setColumnProperty(
 				this.columnModel.viewId,
@@ -336,8 +354,10 @@ export const parseEntitiesConnectedByProperty = (
 	property: WikibasePropertyModel,
 	entity: any
 ): string[] => {
+	// NOTE:  this is where the Items linked to by the property are then gotten
 	const entityIds: string[] = [];
 	const claims = entity.claims[property.propertyId];
+	// console.log("e", entity, claims)
 	if (!claims) return entityIds;
 	claims.forEach((claim: any) => {
 		const targetElementId = claim.mainsnak.datavalue.value.id;
@@ -346,3 +366,43 @@ export const parseEntitiesConnectedByProperty = (
 
 	return entityIds;
 };
+
+/**
+ * Parse all qualifiers of an entity into a readable format.
+ * @param property The property linking to the entity
+ * @param entity 
+ * @returns A dictionary of each item and their linked qualifiers with values 
+ * (e.g. { Q105: { P15: "very good" } }) 
+ */
+export const parseQualifiersConnectedByProperty = (
+	property: WikibasePropertyModel,
+	entity: any
+): WikibaseQualifier => {
+	let qualifiers = {} as WikibaseQualifier;
+	const items = entity.claims[property.propertyId] as Array<any>
+
+	if (items == undefined) return {}; 
+
+	items.forEach((item:any) => {
+		if (item.qualifiers == null) return;
+		const targetElementId = item.mainsnak.datavalue.value.id;
+		const quals = item.qualifiers; 
+		var qualifierValues = {} as any;
+
+		for (const [key, value] of Object.entries(quals)) {
+			let v = value as any;
+			let val = v[0].datavalue.value;
+
+			// NOTE: for a qualifier linking to items, it only needs the QID, otherwise it throws an error
+			if (val["entity-type"] != undefined) {
+				qualifierValues[key] = val.id;
+			} else {
+				qualifierValues[key] = val;
+			}
+		}
+		qualifiers[targetElementId] = qualifierValues;
+	})
+
+	console.log("qualies!", qualifiers);
+	return qualifiers
+}

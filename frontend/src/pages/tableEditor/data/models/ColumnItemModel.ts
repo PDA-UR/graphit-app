@@ -4,6 +4,12 @@ export interface WikibaseItem {
 	itemId: string;
 	text: string;
 	url: string;
+	qualifiers: String[];
+}
+
+export interface WikibaseQualifier {
+	[propertyID: string] : string | any;
+	// TODO: better?
 }
 
 export interface ColumnItemModel extends WikibaseItem {
@@ -13,10 +19,12 @@ export interface ColumnItemModel extends WikibaseItem {
 export const newColumnItemModel = (
 	itemId: string,
 	text: string,
-	url: string
+	url: string,
+	qualifiers: any
 ): ColumnItemModel => ({
 	itemId,
 	text,
 	viewId: uuidv4(),
 	url,
+	qualifiers,
 });

@@ -122,6 +122,7 @@ export class DragController implements ReactiveController {
 		// Dropped in <column-component>
 		const convertClaimModels: MoveItemInfo[] = draggedItems.map(
 			(draggedItem) => {
+				console.log("dragged-Q", draggedItem.item.qualifiers); // qualifier should exist here
 				if (draggedItem.origin === "search")
 					return {
 						to: dropzone.item.itemId,
@@ -142,6 +143,7 @@ export class DragController implements ReactiveController {
 						newClaim: {
 							property: dropzone.property.propertyId,
 							value: draggedItem.item.itemId,
+							qualifiers: draggedItem.item.qualifiers, // [x]
 						},
 					};
 			}
