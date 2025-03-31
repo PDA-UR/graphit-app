@@ -10,6 +10,7 @@ import { StoreActions } from "../../data/ZustandStore";
 import {
 	ColumnItemModel,
 	WikibaseQualifier,
+	WikibaseQualifierModel,
 	newColumnItemModel,
 } from "../../data/models/ColumnItemModel";
 import { Task, TaskStatus } from "@lit-labs/task";
@@ -81,9 +82,12 @@ export class ColumnComponent extends Component {
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId]
 			);
+			// console.log("CQ", columnModel.property);
+			// console.log("WBQ", this.wikibaseClient.getCachedProperties());
 			const qualifiers = parseQualifiersConnectedByProperty(
 				columnModel.property,
-				entities.data.entities[columnModel.item.itemId]
+				entities.data.entities[columnModel.item.itemId],
+				this.wikibaseClient.getCachedProperties()
 			);
 			const entityInfos = await wikibaseClient.getEntityInfos(entityIds);
 
@@ -359,38 +363,50 @@ export const parseEntitiesConnectedByProperty = (
  * Parse all qualifiers of an entity into a readable format.
  * @param property The property linking to the entity
  * @param entity 
- * @returns A dictionary of each item and their linked qualifiers with values 
- * (e.g. { Q105: { P15: "very good" } }) 
+ * @returns A dictionary of each item and their linked qualifiers with values and labels
+ * (e.g. { Q105: { P15: {value: "very good", label: "comment" } }) 
  */
 export const parseQualifiersConnectedByProperty = (
 	property: WikibasePropertyModel,
-	entity: any
-): WikibaseQualifier => {
-	let qualifiers = {} as WikibaseQualifier;
+	entity: any,
+	cachedProps: WikibasePropertyModel[],
+) => {
+	let qualifiers = {} as any;
 	const items = entity.claims[property.propertyId] as Array<any>
 
 	if (items == undefined) return {}; 
 
 	items.forEach((item:any) => {
 		if (item.qualifiers == null) return;
+
+		var qualifierValues = {} as WikibaseQualifierModel;
+		
 		const targetElementId = item.mainsnak.datavalue.value.id;
 		const quals = item.qualifiers; 
-		var qualifierValues = {} as any;
 
 		for (const [key, value] of Object.entries(quals)) {
+			let entry = {} as WikibaseQualifier
+
+			let label = key;
+			cachedProps.forEach((element: WikibasePropertyModel) => {
+				if(element.propertyId == key) label = element.label;
+			});
+			entry.label = label;
+
 			let v = value as any;
 			let val = v[0].datavalue.value;
 
-			// NOTE: for a qualifier linking to items, it only needs the QID, otherwise it throws an error
 			if (val["entity-type"] != undefined) {
-				qualifierValues[key] = val.id;
+				entry.value = val.id;
+				// NOTE: for a qualifier linking to items, it only needs the QID, otherwise it throws an error
 			} else {
-				qualifierValues[key] = val;
+				entry.value = val;
 			}
+
+			qualifierValues[key] = entry;
 		}
 		qualifiers[targetElementId] = qualifierValues;
 	})
 
-	// console.log("qualies!", qualifiers);
 	return qualifiers
 }

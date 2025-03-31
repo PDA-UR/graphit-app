@@ -7,9 +7,13 @@ export interface WikibaseItem {
 	qualifiers: String[];
 }
 
+export interface WikibaseQualifierModel {
+	[propertyID: string] : WikibaseQualifier,
+}
+
 export interface WikibaseQualifier {
-	[propertyID: string] : string | any;
-	// TODO: better?
+	label: string;
+	value: string | any;
 }
 
 export interface ColumnItemModel extends WikibaseItem {

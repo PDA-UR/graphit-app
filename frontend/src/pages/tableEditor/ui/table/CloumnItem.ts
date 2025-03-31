@@ -6,7 +6,7 @@ import { selectionControllerContext } from "../../data/contexts/SelectionControl
 import { SelectionController } from "../controllers/SelectionController";
 
 import { ColumnItemInfo, ItemOrigin } from "../controllers/DragController";
-import { WikibaseQualifier } from "../../data/models/ColumnItemModel";
+import { WikibaseQualifierModel } from "../../data/models/ColumnItemModel";
 
 /**
  * <column-item> is a single, draggable item in a column.
@@ -54,18 +54,18 @@ export class ColumnItem extends Component {
 	 * @param qualifier -dictionary from the item
 	 * @returns an array of html TemplateResults or nothing (if no qualifiers exist)
 	 */
-	parseQualifiers(qualifier: WikibaseQualifier): TemplateResult[] | undefined {
+	parseQualifiers(qualifier: any): TemplateResult[] | undefined {
 		if (qualifier == undefined) return;
-		console.log(qualifier);
 		let htmlArr : TemplateResult[] = [];
-		for (const [key, value] of Object.entries(qualifier)) {
-			let v = value as any;
-			let valueStr = v as string;
 
-			if (v.time != undefined) { // +2024-11-11T00:00:00Z
-				valueStr = v.time.match(/(\d*-\d*-\d*)/g)
+		for (const [key, value] of Object.entries(qualifier)) {
+			let entry = value as any;
+			let val = entry.value as any | string;
+
+			if (val.time != undefined) { // is +2024-11-11T00:00:00Z
+				val = val.time.match(/(\d*-\d*-\d*)/g)
 			}
-			let str = html`<div class="text">${key} -> ${valueStr} </div>`
+			let str = html`<div class="text">${entry.label} (${key}): ${val} </div>`
 			htmlArr.push(str)
 		}
 		return htmlArr
@@ -102,7 +102,7 @@ export class ColumnItem extends Component {
 				<div class="content">
 					<div class="text">${this.columnItemInfo.item.itemId}</div>
 					<div class="text">${this.columnItemInfo.item.text}</div>
-					<div class="qualifier">
+					<div class="qualifier-container">
 						${this.parseQualifiers(this.columnItemInfo.item.qualifiers)}
 					</div>
 				</div>
@@ -131,9 +131,13 @@ export class ColumnItem extends Component {
 			text-align: center;
 			user-select: none;
 		}
-		.qualifier {
+		.qualifier-container {
 			overflow: scroll;
 			font-size: small;
+		}
+		.qualifier {
+			text-align: left;
+			user-select: none;
 		}
 	`;
 }
