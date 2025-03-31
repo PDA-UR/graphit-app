@@ -40,7 +40,7 @@ export class ColumnItem extends Component {
 					this.classList.add("selected");
 				} else {
 					this.classList.remove("selected");
-				}
+				}				
 			});
 	}
 

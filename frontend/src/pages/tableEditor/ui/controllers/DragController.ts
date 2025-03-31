@@ -31,6 +31,7 @@ export class DragController implements ReactiveController {
 	host: ReactiveControllerHost;
 
 	private isCopyToggleOn:  boolean = false;
+	private moveQualifiers: boolean = false;
 	private draggedItem: ColumnItemInfo | undefined;
 	private readonly setIsDragging: (isDragging: boolean) => void = () => {};
 	
@@ -54,6 +55,10 @@ export class DragController implements ReactiveController {
 
 	setCopyToggle(on: boolean) {
 		this.isCopyToggleOn = on;
+	}
+
+	setQualifierToggle(on: boolean) {
+		this.moveQualifiers = on
 	}
 
 	getCopyToggle(){
@@ -122,7 +127,9 @@ export class DragController implements ReactiveController {
 		// Dropped in <column-component>
 		const convertClaimModels: MoveItemInfo[] = draggedItems.map(
 			(draggedItem) => {
-				console.log("dragged-Q", draggedItem.item.qualifiers); // qualifier should exist here
+				let newQualifiers = draggedItem.item.qualifiers as String[] | undefined;
+				if (this.moveQualifiers == false) newQualifiers = undefined; // check if or ifn't copy
+
 				if (draggedItem.origin === "search")
 					return {
 						to: dropzone.item.itemId,
@@ -143,7 +150,7 @@ export class DragController implements ReactiveController {
 						newClaim: {
 							property: dropzone.property.propertyId,
 							value: draggedItem.item.itemId,
-							qualifiers: draggedItem.item.qualifiers, // [x]
+							qualifiers: newQualifiers, 
 						},
 					};
 			}

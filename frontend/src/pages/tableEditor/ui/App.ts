@@ -40,9 +40,13 @@ export default class AppRoot extends Component {
 	isCopyToggleOn = false;
 
 	@state()
+	isQualifierToggleOn = false;
+
+	@state()
 	hasInitTippy = false;
 
 	private dragType = "Move";
+	private qualifierType = "Discard";
 
 	private setIsDragging = (isDragging: boolean) => {
 		this.isDragging = isDragging;
@@ -195,6 +199,13 @@ export default class AppRoot extends Component {
 		this.dragController.setCopyToggle(this.isCopyToggleOn);
 	}
 
+	private toggleQualifierType() {
+		this.isQualifierToggleOn = !this.isQualifierToggleOn;
+		if (this.isQualifierToggleOn) this.qualifierType = "Move";
+		else this.qualifierType = "Discard";
+		this.dragController.setQualifierToggle(this.isQualifierToggleOn);
+	}
+
 	// ------- Listeners ------ //
 
 	onWindow() {
@@ -242,8 +253,16 @@ export default class AppRoot extends Component {
 								<button id="drag-toggle" @click="${() => this.toggleDragType()}">
 									<b style="color: var(--bg-danger)">${this.dragType}</b>
 								</button>
-								items on drag
+								items 
 							</div>
+							<span>,</span> 
+							<div>
+								<button id="qualifier-toggle" @click="${() => this.toggleQualifierType()}">
+								<b>${this.qualifierType}</b>
+								</button>
+								qualifiers 
+							</div>
+							<span> <i>on drag</i> </span>
 							<div class="spacer"></div>
 							<span id="username">${this.zustand.credentials?.username}</span>
 							<button
@@ -319,6 +338,10 @@ export default class AppRoot extends Component {
 		}
 		#username {
 			margin-right: 0.5rem;
+		}
+		span {
+			margin-right: 5px;
+			margin-left: 10px;
 		}
 	`;
 }
