@@ -9,4 +9,5 @@ export const TOOLTIPS : {[id:string]: string} =
     "info-toggle": "Toggle Info (CTRL+i)",
     "darkmode-toggle": "Toggle dark/light mode",
     "drag-toggle": "Change item drag-behavior (CTRL+x)",
+    "qualifier-toggle": "Toggle qualifiers (CTRL+q)",
 }

@@ -72,8 +72,12 @@ static styles = css`
                         <td> Toggle copy-paste on/off </td>
                     </tr>
                     <tr>
+                        <td> CTRL + q </td>
+                        <td> Toggle move or discard qualifiers </td>
+                    </tr>
+                    <tr>
                         <td> CTRL + i </td>
-                        <td> Toggle info boy on/off </td>
+                        <td> Toggle info box on/off </td>
                     </tr>
                 </table>
             </div>

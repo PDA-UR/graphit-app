@@ -146,6 +146,11 @@ export default class AppRoot extends Component {
 				e.preventDefault();
 				this.onInfo();
 			}
+			// toggle qualifier
+			if (e.ctrlKey && e.key === "q") {
+				e.preventDefault();
+				this.toggleQualifierType();
+			}
 		});
 
 		document.addEventListener("click", (e) => {
