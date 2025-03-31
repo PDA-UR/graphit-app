@@ -82,12 +82,9 @@ export class ColumnComponent extends Component {
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId]
 			);
-			// console.log("CQ", columnModel.property);
-			// console.log("WBQ", this.wikibaseClient.getCachedProperties());
 			const qualifiers = parseQualifiersConnectedByProperty(
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId],
-				this.wikibaseClient.getCachedProperties()
 			);
 			const entityInfos = await wikibaseClient.getEntityInfos(entityIds);
 
@@ -338,6 +335,17 @@ export class ColumnComponent extends Component {
 		#column-title:hover {
 			text-decoration: underline;
 		}
+
+		select option[value="P1"] {
+			background: rgba(255, 176, 213, 0.3);
+		}
+		select option[value="P12"] {
+  			background: rgba(134, 190, 134, 0.3);
+		}
+		select option[value="P23"] {
+			background: rgba(167, 150, 225, 0.3);
+		}
+
 	`;
 }
 
@@ -346,10 +354,8 @@ export const parseEntitiesConnectedByProperty = (
 	property: WikibasePropertyModel,
 	entity: any
 ): string[] => {
-	// NOTE:  this is where the Items linked to by the property are then gotten
 	const entityIds: string[] = [];
 	const claims = entity.claims[property.propertyId];
-	// console.log("e", entity, claims)
 	if (!claims) return entityIds;
 	claims.forEach((claim: any) => {
 		const targetElementId = claim.mainsnak.datavalue.value.id;
@@ -363,13 +369,12 @@ export const parseEntitiesConnectedByProperty = (
  * Parse all qualifiers of an entity into a readable format.
  * @param property The property linking to the entity
  * @param entity 
- * @returns A dictionary of each item and their linked qualifiers with values and labels
- * (e.g. { Q105: { P15: {value: "very good", label: "comment" } }) 
+ * @returns A dictionary of each item and their linked qualifiers as an array
+ * (e.g. { Q105: { P37: ["P12", "P14"], P15: ["very good"]) 
  */
 export const parseQualifiersConnectedByProperty = (
 	property: WikibasePropertyModel,
 	entity: any,
-	cachedProps: WikibasePropertyModel[],
 ) => {
 	let qualifiers = {} as any;
 	const items = entity.claims[property.propertyId] as Array<any>
@@ -385,28 +390,24 @@ export const parseQualifiersConnectedByProperty = (
 		const quals = item.qualifiers; 
 
 		for (const [key, value] of Object.entries(quals)) {
-			let entry = {} as WikibaseQualifier
 
-			let label = key;
-			cachedProps.forEach((element: WikibasePropertyModel) => {
-				if(element.propertyId == key) label = element.label;
-			});
-			entry.label = label;
+			let valueArr = value as any;
 
-			let v = value as any;
-			let val = v[0].datavalue.value;
-
-			if (val["entity-type"] != undefined) {
-				entry.value = val.id;
-				// NOTE: for a qualifier linking to items, it only needs the QID, otherwise it throws an error
-			} else {
-				entry.value = val;
+			let entries = [] as any;
+			for(let i = 0; i < valueArr.length; i++) {
+				let v = valueArr[i].datavalue.value;
+				if (v["entity-type"] != undefined ) {
+					entries.push(v.id);
+				} else if (v["time"] != undefined) {
+					entries.push(v.time);
+				} else entries.push(v);
 			}
-
-			qualifierValues[key] = entry;
+			
+			qualifierValues[key] = entries; 
 		}
 		qualifiers[targetElementId] = qualifierValues;
 	})
-
+	
+	// console.log("finished", qualifiers)
 	return qualifiers
 }

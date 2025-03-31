@@ -6,7 +6,9 @@ import { selectionControllerContext } from "../../data/contexts/SelectionControl
 import { SelectionController } from "../controllers/SelectionController";
 
 import { ColumnItemInfo, ItemOrigin } from "../controllers/DragController";
-import { WikibaseQualifierModel } from "../../data/models/ColumnItemModel";
+import WikibaseClient from "../../../../shared/WikibaseClient";
+import { wikibaseContext } from "../../data/contexts/WikibaseContext";
+import { WikibasePropertyModel } from "../../../../shared/client/ApiClient";
 
 /**
  * <column-item> is a single, draggable item in a column.
@@ -16,6 +18,12 @@ export class ColumnItem extends Component {
 	@consume({ context: selectionControllerContext })
 	selectionController!: SelectionController;
 
+	@consume({ context: wikibaseContext })
+	private wikibaseClient!: WikibaseClient;
+
+	@property({type: Object, attribute: false})
+	private cachedProperties: any;
+	
 	@property({ type: Object, attribute: false })
 	private columnItemInfo!: ColumnItemInfo;
 
@@ -30,7 +38,9 @@ export class ColumnItem extends Component {
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
-		console.log("first updated", this.origin);
+		console.log("first updated");
+
+		this.cachedProperties = this.wikibaseClient.getCachedProperties();
 
 		this.setAttribute("draggable", "true");
 		this.unregisterSelectionCallback =
@@ -59,13 +69,25 @@ export class ColumnItem extends Component {
 		let htmlArr : TemplateResult[] = [];
 
 		for (const [key, value] of Object.entries(qualifier)) {
-			let entry = value as any;
-			let val = entry.value as any | string;
 
-			if (val.time != undefined) { // is +2024-11-11T00:00:00Z
-				val = val.time.match(/(\d*-\d*-\d*)/g)
+			let label = key;
+			if (this.cachedProperties != undefined) {
+				this.cachedProperties.forEach((element: WikibasePropertyModel) => {
+					if(element.propertyId == key) label = element.label;
+				});
 			}
-			let str = html`<div class="text">${entry.label} (${key}): ${val} </div>`
+
+			let entry = value as String[];
+			let val = "";
+			entry.forEach(element => {	
+				let v = element;		
+				if (element.includes("T00:00:00Z")) {
+					v = element.match(/(\d*-\d*-\d*)/g)![0];
+				}
+				val += v + ", ";
+			});
+			val = val.slice(0, -2); // rm last ", "
+			let str = html`<div class="text"> <i>${label}</i> (${key}): ${val} </div>`
 			htmlArr.push(str)
 		}
 		return htmlArr
@@ -113,7 +135,7 @@ export class ColumnItem extends Component {
 	static styles = css`
 		:host {
 			width: 100%;
-			height: 5rem;
+			max-height: 10rem;
 			display: flex;
 			cursor: grab;
 		}
@@ -133,7 +155,8 @@ export class ColumnItem extends Component {
 		}
 		.qualifier-container {
 			overflow: scroll;
-			font-size: small;
+			font-size: 9pt;
+			max-height: 5em;
 		}
 		.qualifier {
 			text-align: left;
