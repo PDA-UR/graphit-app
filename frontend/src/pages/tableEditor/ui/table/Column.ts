@@ -9,7 +9,6 @@ import { Component } from "../atomic/Component";
 import { StoreActions } from "../../data/ZustandStore";
 import {
 	ColumnItemModel,
-	WikibaseQualifier,
 	WikibaseQualifierModel,
 	newColumnItemModel,
 } from "../../data/models/ColumnItemModel";
@@ -336,13 +335,13 @@ export class ColumnComponent extends Component {
 			text-decoration: underline;
 		}
 
-		select option[value="P1"] {
+		select option[value="P1"] { /* depends on */
 			background: rgba(255, 176, 213, 0.3);
 		}
-		select option[value="P12"] {
+		select option[value="P12"] { /* has completed */
   			background: rgba(134, 190, 134, 0.3);
 		}
-		select option[value="P23"] {
+		select option[value="P23"] { /* interested in */
 			background: rgba(167, 150, 225, 0.3);
 		}
 
@@ -370,7 +369,7 @@ export const parseEntitiesConnectedByProperty = (
  * @param property The property linking to the entity
  * @param entity 
  * @returns A dictionary of each item and their linked qualifiers as an array
- * (e.g. { Q105: { P37: ["P12", "P14"], P15: ["very good"]) 
+ * (e.g. { Q105: { P37: ["P12", "P14"], P15: ["very good"] } }
  */
 export const parseQualifiersConnectedByProperty = (
 	property: WikibasePropertyModel,
@@ -408,6 +407,5 @@ export const parseQualifiersConnectedByProperty = (
 		qualifiers[targetElementId] = qualifierValues;
 	})
 	
-	// console.log("finished", qualifiers)
 	return qualifiers
 }
