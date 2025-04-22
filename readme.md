@@ -1,6 +1,10 @@
 # Graphit App
 
-Frontend + API server for the GraphIT project.
+> Frontend + API server for the [GraphIT](https://graphit.ur.de/wiki/Main_Page) project.
+
+The project investigates how dependency graphs can be used to model courses, curricula, and personal learning progress. The initial focus lies on courses in higher education. The prototype is built on [Wikibase](https://wikiba.se), the knowledge-graph platform powering [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page). 
+
+This repo hosts several frontends to make accessing and modifying the dependency graph easier (see: frontend readme).
 
 ### Installation
 ```
@@ -8,9 +12,7 @@ git clone https://github.com/PDA-UR/graphit-app.git
 
 cd graphit-app
 npm i
-npm i @tsed/cli@5.2.0 --no-save
 ```
-> Last step is for test building the api
 
 ## Development
 
@@ -62,16 +64,17 @@ Docker:
 #### .env
 The env currently needs to be manually deployed and changed. For further information see the README.md of `/api`.
 
-#### build api
-- to build the api you need to install the *@tsed/cli*
+#### api build 
+- to build the api locally you need to install the *@tsed/cli*
   - install this in the root or api folder with `npm i @tsed/cli@5.2.0 --no-save` (make sure the install does not change the `package(-lock).json`)
-- then you can `npm run build` in the root or api directory (see: *api/package.json*)
+  - then you can `npm run build` in the root or api directory (see: *api/package.json*)
+- or build with docker
 - NOTE: (as of *07.01.2025*)
   - the api still runs as a "commonjs"-module
   - *@tsed* has shifted to support esm only with v8
   - the @tsed/cli will install the recent version of several @tsed/packages as the dependencies are listed with **>=** in its `package.json`
   - this will give a "ERR_REQUIRE_ESM"-error as the cjs-version of the package will try to *require()* esm-only packages
-  - the cli is installed separately and *extraneous*ly, so that it does not install any @tsed/packages with a higher version than the ones used in the project
+  - the cli should be installed separately and *extraneous*ly, so that it does not install any @tsed/packages with a higher version than the ones used in the project
   - *In other words:* The `api` currently uses the @tsed-version: "7.14.2" (pre esm-only), these packages are installed via the regular `npm i`. @tsed/cli is installed afterwards (for build purposes only) and uses the same packages. If they don't exist previously it will install the needed @tsed-dependencies with the wrong versions for this project (i.e. installs the esm-only versions)
 - why @tsed/cli@5.2.0:
   - the 5.2.1 release of the cli produced: `Error [ERR_REQUIRE_ESM]`
