@@ -344,6 +344,9 @@ export class ColumnComponent extends Component {
 		select option[value="P23"] { /* interested in */
 			background: rgba(167, 150, 225, 0.3);
 		}
+		select option[value="P14"] { /* includes */
+			background: rgba(162, 229, 255, 0.3)
+		}
 
 	`;
 }
