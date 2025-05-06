@@ -76,8 +76,7 @@ export class DragController implements ReactiveController {
 		}
 	};
 
-	// an item has been dropped somewhere
-	// called after onDrop
+	// an item has been dropped somewhere (called after onDrop)
 	onItemDragEnd() {
 		this.draggedItem = undefined;
 		this.setIsDragging(false);
@@ -129,6 +128,7 @@ export class DragController implements ReactiveController {
 			(draggedItem) => {
 				let newQualifiers = draggedItem.item.qualifiers as String[] | undefined;
 				if (this.moveQualifiers == false) newQualifiers = undefined; // check if or ifn't copy
+				if (newQualifiers?.length == 0) newQualifiers = undefined; // fallback, when empty qualifier arr
 
 				if (draggedItem.origin === "search")
 					return {
@@ -139,7 +139,7 @@ export class DragController implements ReactiveController {
 							value: draggedItem.item.itemId,
 						},
 					};
-				else
+				else 
 					return {
 						from: draggedItem.origin?.item?.itemId,
 						to: dropzone.item.itemId,

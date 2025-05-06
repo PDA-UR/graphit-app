@@ -6,7 +6,7 @@ import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { Component } from "../atomic/Component";
-import { StoreActions } from "../../data/ZustandStore";
+import zustandStore, { StoreActions } from "../../data/ZustandStore";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 
@@ -20,6 +20,8 @@ import { when } from "lit/directives/when.js";
 @customElement("table-view")
 export class Table extends Component {
 	// ------ Contexts ------ //
+
+	private zustand = zustandStore.getState();
 
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
@@ -53,6 +55,13 @@ export class Table extends Component {
 		this.dragController.onDrop(colummnModel, doCopy);
 	};
 
+	// check if the column is the logged in users Wikibase-item
+	isStudentsItem = (columnModel: ColumnModel) => {
+		// console.log(`${this.zustand.userQID} == ${columnModel.item.itemId}`)
+		if (this.zustand.userQID == columnModel.item.itemId) return true;
+		else return false;
+	}
+
 	// ------ Rendering ------ //
 
 	render() {
@@ -64,6 +73,11 @@ export class Table extends Component {
 						.columnModel="${columnModel}"
 						.isCopyToggleOn="${this.isCopyToggleOn}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
+						class="${when(
+							this.isStudentsItem(columnModel),
+								() => "student-item",
+								() => ""
+							)}"
 					>
 					</column-component>
 				`;
@@ -96,6 +110,10 @@ export class Table extends Component {
 			flex-direction: row;
 			justify-content: center;
 			align-items: center;
+		}
+		
+		.student-item {
+			background-color: var(--editing-rights);
 		}
 	`;
 }

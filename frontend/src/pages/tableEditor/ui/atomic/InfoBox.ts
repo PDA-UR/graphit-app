@@ -52,6 +52,8 @@ static styles = css`
         <div>
             <b>TABLE EDITOR</b> <br>
             Use this editor to add and copy links to items. <br>
+            <small>If you are a student, you can only make changes <br> 
+            to your personal Wikibase user-item (highlighted green). </small> <br>
             <br>
             <div id="info-container">
                 <table id="info-table">

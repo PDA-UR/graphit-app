@@ -172,11 +172,15 @@ export default class AppRoot extends Component {
 			const userRights = await this.wikibaseClient.userGroups(credentials);
 			zustand.setIsAdmin(userRights);
 
+			const login = await wikibaseClient.login()
+
+			// Needs login to work
 			const info = await this.wikibaseClient.getUserInfo();
 			const userQID = info.userItemId;
 			zustand.setUserQID(userQID);
 
-			return await wikibaseClient.login();
+			return login;
+			// return await wikibaseClient.login();
 		},
 		args: () => [
 			{
@@ -277,7 +281,8 @@ export default class AppRoot extends Component {
 							<span> <i>on drag</i> </span>
 							<div class="spacer"></div>
 							<span id="username">${this.zustand.credentials?.username}</span>
-							<span id="user-rights">${when(
+							<span id="admin-rights-${this.zustand.isAdmin}" class="user-rights">
+							${when(
 								this.zustand.isAdmin,
 								() => "Admin",
 								() => "Student"
@@ -360,7 +365,7 @@ export default class AppRoot extends Component {
 			margin-right: 5px;
 			margin-left: 10px;
 		}
-		#user-rights {
+		.user-rights {
 			color: dimgray;
 		}
 	`;
