@@ -35,7 +35,7 @@ export class Claim {
 		// this.logger.info("RIGHTS (create): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
 		
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
-		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		// if (isDemo(credentials)) return new Unauthorized("Demo User");
 		if(!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		const r = await this.actionExecutor.executeClaimAction(
@@ -67,7 +67,7 @@ export class Claim {
 		// this.logger.info("RIGHTS (remove): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
 
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
-		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		// if (isDemo(credentials)) return new Unauthorized("Demo User");
 		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		return await this.actionExecutor.executeClaimAction(
@@ -95,7 +95,7 @@ export class Claim {
 		// this.logger.info("RIGHTS (update): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
 
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
-		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		// if (isDemo(credentials)) return new Unauthorized("Demo User");
 		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		return await this.actionExecutor.executeClaimAction(
@@ -123,7 +123,7 @@ export class Claim {
 		// this.logger.info("RIGHTS (convert): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
 
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
-		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		// if (isDemo(credentials)) return new Unauthorized("Demo User");
 		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		const addResult = await this.actionExecutor.executeClaimAction(
