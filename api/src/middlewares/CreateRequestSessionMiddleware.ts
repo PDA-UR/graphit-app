@@ -11,6 +11,10 @@ export class CreateRequestSessionMiddleware {
 				username: "",
 				password: "",
 			};
+			request.session.rights = request.session.rights || {
+				isAdmin: false,
+				userQID: "",
+			}
 		}
 	}
 }

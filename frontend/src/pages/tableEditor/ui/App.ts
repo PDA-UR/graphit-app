@@ -169,6 +169,13 @@ export default class AppRoot extends Component {
 			if (!credentials) credentials = getCredentials();
 			zustand.setCredentials(credentials);
 			wikibaseClient.setCredentials(credentials);
+			const userRights = await this.wikibaseClient.userGroups(credentials);
+			zustand.setIsAdmin(userRights);
+
+			const info = await this.wikibaseClient.getUserInfo();
+			const userQID = info.userItemId;
+			zustand.setUserQID(userQID);
+
 			return await wikibaseClient.login();
 		},
 		args: () => [
@@ -270,6 +277,11 @@ export default class AppRoot extends Component {
 							<span> <i>on drag</i> </span>
 							<div class="spacer"></div>
 							<span id="username">${this.zustand.credentials?.username}</span>
+							<span id="user-rights">${when(
+								this.zustand.isAdmin,
+								() => "Admin",
+								() => "Student"
+							)}</span>
 							<button
 								id="darkmode-toggle"
 								@click="${(e: MouseEvent) => {
@@ -347,6 +359,9 @@ export default class AppRoot extends Component {
 		span {
 			margin-right: 5px;
 			margin-left: 10px;
+		}
+		#user-rights {
+			color: dimgray;
 		}
 	`;
 }

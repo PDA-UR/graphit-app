@@ -1,7 +1,7 @@
 import { Inject, Service } from "@tsed/di";
 import WBK, { EntityId, Wbk } from "wikibase-sdk";
 import { SessionService } from "./SessionService";
-import { Credentials } from "../models/CredentialsModel";
+import { Credentials, checkGroupsForRights } from "../models/CredentialsModel";
 import { SparqlQueryTemplateService } from "./sparql/SparqlQueriesService";
 import { SparqlResult } from "../models/SparqlResultModel";
 import { WikibaseProperty } from "../models/PropertyModel";
@@ -153,7 +153,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 			const json = await response.json();
 			return json.parse.wikitext;
 		} catch (error) {
-			this, this.logger.error("error", error);
+			this.logger.error("error", error);
 			return Promise.reject(error);
 		}
 	}
@@ -178,12 +178,36 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 		return "";
 	}
+
+	/**
+	 * Get the groups a user is part of (see: https://www.mediawiki.org/wiki/API:Users)
+	 * @returns the group a user is part of
+	 */
+	async getUserGroups(credentials:string): Promise<boolean> {
+		this.logger.info("user info for:", credentials)
+		const wikibaseUrl = this.info.instance;
+		const urlParams = new URLSearchParams({
+			action: "query",
+			list: "users",
+			ususers: credentials,
+			usprop: "blockinfo|groups",
+			format: "json"
+		});
+		const url = `${wikibaseUrl}/w/api.php?${urlParams.toString()}`;
+		this.logger.info("user groups info url", url);
+		const response = await fetch(url);
+		const json = await response.json();
+
+		// parse result to only return user groups
+		const groups = json.query.users[0].groups as Array<string>;
+		return checkGroupsForRights(groups);
+	}
+
 	/**
 	 * Get the user item id for a user.
 	 * @param credentials User credentials
 	 * @returns User item id
 	 */
-
 	async getUserItemId(credentials: Credentials): Promise<string> {
 		const htmlUserPage = await this.getWikibasePageContent(
 			credentials,

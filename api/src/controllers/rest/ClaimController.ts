@@ -4,7 +4,7 @@ import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Post, Required, Returns } from "@tsed/schema";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
-import { Credentials, isDemo, isValid } from "../../models/CredentialsModel";
+import { Credentials, UserRightsProperties, hasEditingPermission, isDemo, isValid } from "../../models/CredentialsModel";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { RemoveClaim } from "../../models/claim/RemoveClaimModel";
@@ -29,10 +29,14 @@ export class Claim {
 	async create(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() createClaim: CreateClaim,
-		@Session("user") credentials: Credentials
+		@Session("user") credentials: Credentials,
+		@Session("rights") rights: UserRightsProperties,
 	) {
+		// this.logger.info("RIGHTS (create): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
+		
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		if(!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		const r = await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -57,10 +61,14 @@ export class Claim {
 	async remove(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() removeClaim: RemoveClaim,
-		@Session("user") credentials: Credentials
+		@Session("user") credentials: Credentials,
+		@Session("rights") rights: UserRightsProperties,
 	) {
+		// this.logger.info("RIGHTS (remove): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
+
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -81,10 +89,14 @@ export class Claim {
 	async update(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() updateData: UpdateClaim,
-		@Session("user") credentials: Credentials
+		@Session("user") credentials: Credentials,
+		@Session("rights") rights: UserRightsProperties,
 	) {
+		// this.logger.info("RIGHTS (update): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
+
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -105,10 +117,14 @@ export class Claim {
 	async move(
 		@PathParams("id") id: string,
 		@Required() @BodyParams() convertData: ConvertClaim,
-		@Session("user") credentials: Credentials
+		@Session("user") credentials: Credentials,
+		@Session("rights") rights: UserRightsProperties,
 	) {
+		// this.logger.info("RIGHTS (convert): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
+
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		if (isDemo(credentials)) return new Unauthorized("Demo User");
+		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
 		const addResult = await this.actionExecutor.executeClaimAction(
 			"claim",

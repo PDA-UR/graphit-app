@@ -33,8 +33,13 @@ export default class WikibaseClient {
 		this.credentials.password = credentials.password;
 	}
 
+	async userGroups(credentials: Credentials): Promise<boolean> {
+		const adminrights = await this.api.auth.usergroups(credentials.username);
+		console.log("user info: Admin =", adminrights);
+		return adminrights;
+	}
+
 	async login() {
-		// console.log("send login with", this.credentials)
 		this.userSession = await this.api.auth.login(this.credentials);
 		if (!this.userSession.username) {
 			throw new Error("Login failed: " + JSON.stringify(this.userSession));
@@ -147,7 +152,6 @@ export default class WikibaseClient {
 	async entityDoesExist(entityId: string): Promise<boolean> {
 		try {
 			const e = await this.getEntities([entityId]);
-			// console.log("exists?", e);
 			return e?.data !== undefined;
 		} catch (err) {
 			return false;

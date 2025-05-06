@@ -1,7 +1,7 @@
 import { Controller, Inject } from "@tsed/di";
 import { BadRequest, Unauthorized } from "@tsed/exceptions";
 import { Logger } from "@tsed/logger";
-import { BodyParams, Session } from "@tsed/platform-params";
+import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Get, Post, Required, Returns } from "@tsed/schema";
 import { Credentials, isValid } from "../../models/CredentialsModel";
 import { WikibaseEditService } from "../../services/WikibaseEditService";
@@ -27,16 +27,35 @@ export class Auth {
 	@Description("Returns the current session")
 	@Returns(200, UserSession).ContentType("application/json")
 	@Returns(401, String).ContentType("text/plain")
-	whoAmI(@Session("user") credentials: Credentials) {
-		console.log("Session =>", credentials);
+	async whoAmI(@Session("user") credentials: Credentials) {
 		if (isValid(credentials)) {
-			const userItemId = this.wikibaseSdkService.getUserItemId(credentials);
+			const userItemId = await this.wikibaseSdkService.getUserItemId(credentials);
+			this.logger.info("userItemId", userItemId);
 			return {
 				...credentials,
 				userItemId,
 			};
 		} else {
 			return new Unauthorized("Not logged in");
+		}
+	}
+
+	@Get("/usergroups/:username")
+	@Description("Returns info about the current user")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async usergroups(
+		@PathParams("username") username: string,
+		@Session("rights") rights: any,
+	){
+		this.logger.info("userinfo-credentials", username)
+		try {
+			const hasAdminGroups = await this.wikibaseSdkService.getUserGroups(username);
+			rights.isAdmin = hasAdminGroups;
+			return hasAdminGroups;
+		} catch(e) {
+			this.logger.error("User info error", e.message);
+			return new BadRequest("Could not get user info");
 		}
 	}
 
@@ -47,7 +66,8 @@ export class Auth {
 	@Returns(401, String).ContentType("application/json")
 	async login(
 		@Required() @BodyParams() credentials: Credentials,
-		@Session("user") existingSession: Credentials
+		@Session("user") existingSession: Credentials,
+		@Session("rights") rights: any
 	) {
 		existingSession.username = credentials.username;
 		this.logger.info(credentials);
@@ -56,6 +76,7 @@ export class Auth {
 			this.logger.info("Demo login");
 		} else existingSession.password = credentials.password;
 		
+		rights.userQID = await this.wikibaseSdkService.getUserItemId(credentials);
 
 		this.logger.info("Logging in as", existingSession);
 		const wbEdit = this.wikibaseEditService.getSessionData(existingSession);
@@ -95,12 +116,16 @@ export class Auth {
 	@Description("Logout from the API (using Wikibase credentials)")
 	@Returns(200, String)//.ContentType("text/plain")
 	@Returns(401, String)//.ContentType("text/plain")
-	logout(@Session("user") session: Credentials) {
+	logout(
+		@Session("user") session: Credentials,
+		@Session("rights") rights: any,
+	) {
 		if (isValid(session)) {
 			this.logger.info("Successfully logged out from", session);
 			this.wikibaseEditService.removeSessionData(session);
 			session.username = "";
 			session.password = "";
+			rights.isAdmin = false;
 			return "Logged out";
 		}
 		return new Unauthorized("Not logged in");

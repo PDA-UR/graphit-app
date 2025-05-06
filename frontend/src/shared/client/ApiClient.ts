@@ -264,6 +264,21 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
+     * @description Returns wikibase user info
+     * 
+     * @tags Auth
+     * @name userinfo 
+     * @request GET:api/auth/usergroups
+     */
+    usergroups: (username: string, params: RequestParams = {}) =>
+      this.request<boolean>({
+        path: `/api/auth/usergroups/${username}`,
+        method: "GET",
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Login to the API (using Wikibase credentials)
      *
      * @tags Auth
