@@ -9,6 +9,7 @@ import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { RemoveClaim } from "../../models/claim/RemoveClaimModel";
 import { ConvertClaim } from "../../models/claim/MoveClaimModel";
+import { Sparql } from "./SparqlController";
 
 /**
  * Controller for claim related actions.
@@ -21,6 +22,9 @@ export class Claim {
 	@Inject()
 	actionExecutor: ActionExecuterService;
 
+	@Inject()
+	sparqlController: Sparql;
+
 	@Post("/:id/create")
 	@Description("Create a claim")
 	@Returns(200, String).ContentType("text/plain")
@@ -31,12 +35,18 @@ export class Claim {
 		@Required() @BodyParams() createClaim: CreateClaim,
 		@Session("user") credentials: Credentials,
 		@Session("rights") rights: UserRightsProperties,
-	) {
-		// this.logger.info("RIGHTS (create): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
-		
+	) {		
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
-		// if (isDemo(credentials)) return new Unauthorized("Demo User");
-		if(!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
+		// if(!hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded)) return new Unauthorized("Not enough rights");
+
+		const isIncluded = await this.sparqlController.getItemInclusion(credentials, id, rights.userQID);
+		const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
+		if (!flags.canEditItem) return new Unauthorized("Not enough rights");
+		
+		// If a student edits an item (not their user item), then flag with qualifier
+		if (flags.isStudentSuggestion) {
+			createClaim = flagClaimAsStudentEdit(createClaim, rights.userQID)
+		}
 
 		const r = await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -68,7 +78,11 @@ export class Claim {
 
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		// if (isDemo(credentials)) return new Unauthorized("Demo User");
-		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
+		// if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
+
+		const isIncluded = await this.sparqlController.getItemInclusion(credentials, id, rights.userQID);
+		const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
+		if (!flags.canEditItem) return new Unauthorized("Not enough rights");
 
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -92,12 +106,16 @@ export class Claim {
 		@Session("user") credentials: Credentials,
 		@Session("rights") rights: UserRightsProperties,
 	) {
-		// this.logger.info("RIGHTS (update): ", hasEditingPermission( rights.isAdmin, rights.userQID, id), rights.isAdmin, rights.userQID, id);
-
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		// if (isDemo(credentials)) return new Unauthorized("Demo User");
-		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
+		// if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
 
+		const isIncluded = await this.sparqlController.getItemInclusion(credentials, id, rights.userQID);
+		const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
+		if (!flags.canEditItem) return new Unauthorized("Not enough rights");
+		
+		// ?? FLAG updates
+		
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
 			"update",
@@ -124,7 +142,12 @@ export class Claim {
 
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		// if (isDemo(credentials)) return new Unauthorized("Demo User");
-		if (!hasEditingPermission(rights.isAdmin, rights.userQID, id)) return new Unauthorized("Not enough rights");
+		
+		const isIncluded = await this.sparqlController.getItemInclusion(credentials, id, rights.userQID);
+		const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
+		if (!flags.canEditItem) return new Unauthorized("Not enough rights");
+
+		// ?? ADD FLAGS
 
 		const addResult = await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -181,4 +204,21 @@ export class Claim {
 			convertData.to
 		);
 	}
+}
+
+
+/**
+ * Update the claim with a qualifier to flag it as a students additions
+ * @param createClaim the current claim about to be created
+ * @param userQID the current users wikibase-item QID
+ * @returns the updated claim
+ */
+function flagClaimAsStudentEdit(createClaim: CreateClaim, userQID: string): CreateClaim {
+	if (createClaim.qualifiers == undefined) {
+		createClaim.qualifiers = {P16: userQID}
+	} else {
+		createClaim.qualifiers.P16 = userQID
+		// P16 = created by
+	}
+	return createClaim;
 }

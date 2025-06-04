@@ -1,3 +1,4 @@
+import { Unauthorized } from "@tsed/exceptions";
 import { Property, Required } from "@tsed/schema";
 
 /**
@@ -19,6 +20,14 @@ export class UserRightsProperties {
 
 	@Property()
 	userQID: string;
+}
+
+export class EditingFlags {
+	@Property()
+	canEditItem: boolean;
+
+	@Property()
+	isStudentSuggestion: boolean;
 }
 
 export const isValid = (credentials: Credentials): boolean => {
@@ -57,11 +66,27 @@ export const checkGroupsForRights = (groups: Array<string>): boolean => {
  * @param isAdmin Session rights
  * @param userQID the QID of the wikibase user item of the user
  * @param itemQID the QID of the item the user wants to edit
- * @returns boolean
+ * @param isIncluded whether the item is "included in" a course the user "participates in"
+ * @returns A flag for editingRights and a flag for denoting a students addition (e.g. to a course)
  */
-export const hasEditingPermission = (isAdmin: boolean, userQID: string, itemQID: string): boolean => {
-	if (isAdmin) return true;
-	else {
-		return userQID === itemQID;
+export const hasEditingPermission = (
+	isAdmin: boolean, 
+	userQID: string, 
+	itemQID: string,
+	isIncluded: boolean | Unauthorized,
+): EditingFlags => {
+	let hasPermission = false;
+	let studentFlag = false;
+
+	if (isAdmin || userQID === itemQID) {
+		hasPermission = true;
 	}
+	else {
+		if (isIncluded) {
+			hasPermission = true;
+			studentFlag = true;
+		}
+	}
+	const result :EditingFlags = {canEditItem: hasPermission, isStudentSuggestion: true}
+	return result;
 }

@@ -4,7 +4,7 @@ import { Logger } from "@tsed/logger";
 import { PathParams, Session } from "@tsed/platform-params";
 import { Description, Get, Post, Returns } from "@tsed/schema";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
-import { Credentials, isValid } from "../../models/CredentialsModel";
+import { Credentials, UserRightsProperties, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
 
 /**
@@ -122,7 +122,7 @@ export class Sparql {
 	}
 
 	@Get("/coursesTaken/")
-	@Description("Retrieve the resources attached to a single item")
+	@Description("Retrieve the courses a user participates in")
 	@Returns(200, SparqlResult).ContentType("application/json")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
@@ -137,6 +137,25 @@ export class Sparql {
 			return new BadRequest("No user item id found for this user");
 		const r = await this.wikibaseSdk.getCoursesTaken(credentials, userId);
 		return r;
+	}
+
+	@Get("/itemInclusion/:qid/:userId")
+	@Description("Check if the item is included an a course the user participates it")
+	@Returns(200, SparqlResult).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async getItemInclusion(
+		@Session("user") credentials: Credentials,
+		@PathParams("qid") qid: string,
+		@PathParams("userId") userId: string,
+	) {
+		this.logger.info("Checking credentials", credentials);
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		const r = await this.wikibaseSdk.getItemInclusion(credentials, qid, userId);
+		
+		// Check if the result array is empty -> item is not included in any participated course
+		if (r.data.results.bindings.length !== 0) return true;
+		return false;
 	}
 
 }

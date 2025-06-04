@@ -240,7 +240,22 @@ SELECT ?course ?courseLabel ?courseId WHERE {
   BIND(STRAFTER(STR(?course), STR(wd:)) AS ?courseId) .
            
 SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-}`
+}`;
+
+const itemInclusion = (
+  qid: string,
+  userId: string,
+) => `
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+PREFIX wd: <https://graphit.ur.de/entity/>
+SELECT DISTINCT ?course ?courseLabel WHERE {
+  BIND (wd:${qid} as ?item)
+  BIND (wd:${userId} as ?user)
+  ?user wdt:P25 ?course.
+  ?course wdt:P14/wdt:P14 ?item.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+} LIMIT 100
+`;
 
 /**
  * Service for retrieving SPARQL-Queries
@@ -269,5 +284,9 @@ export class SparqlQueryTemplateService {
 
   public getCoursesTaken(userId: string) {
     return coursesTaken(userId);
+  }
+
+  public getItemInclusion(qid: string, userId:string ) {
+    return itemInclusion(qid, userId);
   }
 }
