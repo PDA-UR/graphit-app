@@ -242,6 +242,12 @@ SELECT ?course ?courseLabel ?courseId WHERE {
 SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 }`;
 
+/**
+ * Check if an item is "included in" a course the user "participates in"
+ * @param qid the QID of the item to check
+ * @param userId the QID of the current users wikibase-item
+ * @returns all courses that match
+ */
 const itemInclusion = (
   qid: string,
   userId: string,
@@ -255,6 +261,23 @@ SELECT DISTINCT ?course ?courseLabel WHERE {
   ?course wdt:P14/wdt:P14 ?item.
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 } LIMIT 100
+`;
+
+/**
+ * Check which role a user connected to them in the graph (i.e. their role or class)
+ * @param userId the QID of the current users wikibase-item
+ * @returns All items a user is an "instance of"
+ */
+const userRole = (
+  userId: string,
+) => `
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+PREFIX wd: <https://graphit.ur.de/entity/>
+SELECT ?user ?userLabel ?role ?roleLabel WHERE {
+  BIND (wd:${userId} as ?user)
+  ?user wdt:P3 ?role.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
 `;
 
 /**
@@ -289,4 +312,9 @@ export class SparqlQueryTemplateService {
   public getItemInclusion(qid: string, userId:string ) {
     return itemInclusion(qid, userId);
   }
+
+  public getUserRole(userId:string) {
+    return userRole(userId);
+  }
+
 }

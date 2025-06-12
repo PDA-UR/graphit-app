@@ -332,4 +332,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		const query = this.templateService.getItemInclusion(itemQID, userId);
 		return this.query(credentials, query);
 	}
+
+	async getUserRole(
+		credentials: Credentials,
+		userId: string,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getUserRole(userId);
+		return this.query(credentials, query);
+	}
 }

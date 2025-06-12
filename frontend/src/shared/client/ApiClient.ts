@@ -279,6 +279,21 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
+     * @description Returns a users role as modelled in the graph
+     * 
+     * @tags Auth
+     * @name userRole
+     * @request GET:api/auth/userRole
+     */
+    userRole: (params: RequestParams = {}) =>
+      this.request<UserSessionModel, string>({
+        path: `/api/auth/userRole`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Login to the API (using Wikibase credentials)
      *
      * @tags Auth
@@ -599,9 +614,9 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      * @request GET: /api/sparql/itemInclusion/:qid
      * @returns 
      */
-    itemInclusion: (qid: string, params: RequestParams = {}) =>
+    itemInclusion: (qid: string, userQid: string, params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
-        path: `/api/sparql/itemInclusion/${qid}`,
+        path: `/api/sparql/itemInclusion/${qid}/${userQid}`,
         method: "GET",
         format: "json",
         ...params,

@@ -9,6 +9,7 @@ import {
 	CredentialsModel,
 	RemoveClaimModel,
 	ServerInfoModel,
+	SparqlResultModel,
 	UserSessionModel,
 	WikibasePropertyModel,
 } from "./client/ApiClient";
@@ -75,6 +76,11 @@ export default class WikibaseClient {
 		return info;
 	}
 
+	async getUserRole(): Promise<any> {
+		const role = await this.api.auth.userRole();
+		return role;
+	}
+
 	// To handle cytoscape-parents
 	async getCategories(): Promise<ElementDefinition[]> {
 		const results = await this.api.sparql.categories();
@@ -121,10 +127,15 @@ export default class WikibaseClient {
 		}
 	}
 
-	async getItemInclusion(qid: string): Promise<ElementDefinition[]> {
+	/**
+	 * Check if an item in "included in" a course the current user "participates in" 
+	 * @param qid the QID of the item that is being checked
+	 * @returns 
+	 */
+	async getItemInclusion(qid: string, userQid: string): Promise<any> {
 		try {
-			const result = await this.api.sparql.itemInclusion(qid);
-			return result.data.results.bindings;
+			const result = await this.api.sparql.itemInclusion(qid, userQid);
+			return result;
 		} catch (err) {
 			return [];
 		}

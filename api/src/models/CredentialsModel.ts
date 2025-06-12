@@ -64,7 +64,7 @@ export const checkGroupsForRights = (groups: Array<string>): boolean => {
 /**
  * Check wether a user has the permission to make changes to an item
  * @param isAdmin Session rights
- * @param userQID the QID of the wikibase user item of the user
+ * @param userQID the QID of the Wikibase user item of the user
  * @param itemQID the QID of the item the user wants to edit
  * @param isIncluded whether the item is "included in" a course the user "participates in"
  * @returns A flag for editingRights and a flag for denoting a students addition (e.g. to a course)
@@ -78,14 +78,12 @@ export const hasEditingPermission = (
 	let hasPermission = false;
 	let studentFlag = false;
 
-	if (isAdmin || userQID === itemQID) {
+	if ( isAdmin ) { 
 		hasPermission = true;
-	}
-	else {
-		if (isIncluded) {
-			hasPermission = true;
-			studentFlag = true;
-		}
+	} else if ( userQID === itemQID ) {
+	} else if ( isIncluded ) {
+		hasPermission = true;
+		studentFlag = true;
 	}
 	const result :EditingFlags = {canEditItem: hasPermission, isStudentSuggestion: true}
 	return result;

@@ -3,11 +3,12 @@ import { BadRequest, Unauthorized } from "@tsed/exceptions";
 import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Get, Post, Required, Returns } from "@tsed/schema";
-import { Credentials, isValid } from "../../models/CredentialsModel";
+import { Credentials, UserRightsProperties, isValid } from "../../models/CredentialsModel";
 import { WikibaseEditService } from "../../services/WikibaseEditService";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { UserSession } from "../../models/UserSessionModel";
 import { demoPassword } from "../../config/envs/index" // "../envs/index";
+import { SparqlResult } from "src/models/SparqlResultModel";
 
 /**
  * Controller for authentication related actions.
@@ -40,6 +41,8 @@ export class Auth {
 		}
 	}
 
+	//NOTE: uses the Mediawiki API to query for Wikibase Usergroups
+	// was implemented for rights management, but that is now handled with userRole() using the graph structure
 	@Get("/usergroups/:username")
 	@Description("Returns info about the current user")
 	@Returns(200, String).ContentType("text/plain")
@@ -49,6 +52,7 @@ export class Auth {
 		@Session("rights") rights: any,
 	){
 		this.logger.info("userinfo-credentials", username)
+
 		try {
 			const hasAdminGroups = await this.wikibaseSdkService.getUserGroups(username);
 			rights.isAdmin = hasAdminGroups;
@@ -56,6 +60,26 @@ export class Auth {
 		} catch(e) {
 			this.logger.error("User info error", e.message);
 			return new BadRequest("Could not get user info");
+		}
+	}
+
+	@Get("/userRole")
+	@Description("Returns the users role as per graph structure ")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async userRole(
+		@Session("rights") rights: UserRightsProperties,
+		@Session("user") existingSession: Credentials,
+	){
+		this.logger.info("Getting ROLE for", rights.userQID, existingSession);
+		try {
+			const result = await this.wikibaseSdkService.getUserRole(existingSession, rights.userQID)
+			const role = parseUserRoles(result);
+			if (role === "Admin") rights.isAdmin = true;
+			return role;
+		} catch(e) {
+			this.logger.error("User role error", e.message);
+			return new BadRequest("Could not get user role");
 		}
 	}
 
@@ -114,8 +138,8 @@ export class Auth {
 
 	@Post("/logout")
 	@Description("Logout from the API (using Wikibase credentials)")
-	@Returns(200, String)//.ContentType("text/plain")
-	@Returns(401, String)//.ContentType("text/plain")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
 	logout(
 		@Session("user") session: Credentials,
 		@Session("rights") rights: any,
@@ -130,4 +154,21 @@ export class Auth {
 		}
 		return new Unauthorized("Not logged in");
 	}
+}
+
+/**
+ * Parse the SparqlResults to get the current highest role
+ * @param result the SparqlResult of the Role query
+ * @returns the role as a string
+ */
+function parseUserRoles(result: SparqlResult): string {
+	const roles = result.data.results.bindings;
+	let role = "Student"; // default role
+	for ( let i = 0; i < roles.length; i++ ) {
+		if (role !== undefined || role !== "Admin") {
+			role = roles[i].roleLabel.value;
+		}
+		// NOTE: check could be better, but works for now
+	}
+	return role;
 }
