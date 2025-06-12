@@ -10,6 +10,5 @@ export const TOOLTIPS : {[id:string]: string} =
     "darkmode-toggle": "Toggle dark/light mode",
     "drag-toggle": "Change item drag-behavior (CTRL+x)",
     "qualifier-toggle": "Toggle qualifiers (CTRL+q)",
-    "admin-rights-false": "Students can only modify their personal user item",
-    "admin-rights-true": "Admins can modify any items",
+    "admin-rights-false": "Modifiable items are marked green (🟩) ",
 }

@@ -12,7 +12,8 @@ They can be moved (default) or copied between each other as statements .
 Wikibase-Qualifiers don't carry over between items by default, but this can be enabled.
 
 
-Rights are manged using the Wikibase user-groups that can be assigned/changed by an admin and accessed using the Mediawiki API (see: [Users](https://www.mediawiki.org/wiki/API:Users)). Students can only modify their own wikibase user-item.
+Rights are managed using the graph structure itself. Any logged in user is being queried on their role (the class that they are an "instance of").
+Students can modify their own wikibase user-item and items "included" in any course they "participate in" (those changes will add a qualifier to denote the student who made the changes).
 
 
 ## Shortcuts
