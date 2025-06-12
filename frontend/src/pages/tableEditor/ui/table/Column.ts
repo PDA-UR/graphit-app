@@ -6,7 +6,7 @@ import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
 import { classMap } from "lit/directives/class-map.js";
 import { Component } from "../atomic/Component";
-import { StoreActions } from "../../data/ZustandStore";
+import { StoreActions, zustandStore } from "../../data/ZustandStore";
 import {
 	ColumnItemModel,
 	WikibaseQualifierModel,
@@ -59,7 +59,12 @@ export class ColumnComponent extends Component {
 	@property({ type: Boolean })
 	private isCopyToggleOn!: boolean;
 
+	@property({type: String})
+	private rightsIndicator = "?";
+
 	// --------- Contexts -------- //
+
+	private zustand = zustandStore.getState();
 
 	@consume({ context: tableContext })
 	public tableActions!: StoreActions;
@@ -102,6 +107,20 @@ export class ColumnComponent extends Component {
 		autoRun: false,
 	});
 
+	/**
+	 * Checks wether an item can be edited by a logged in user
+	 * @param itemId QID of the item to be edited
+	 * @param userQID QID of the users wikibase item
+	 * @returns boolean
+	 */
+	async checkEdibility(itemId: string, userQID: string): Promise<boolean> {
+		// NOTE: "manually" return true, as the query below doesn't check this case (returns false)
+		if (itemId === userQID) return true;
+
+		const editable = await this.wikibaseClient.getItemInclusion(itemId, userQID!);
+		return editable;
+	}
+
 	// --------- Lifecycle -------- //
 
 	protected firstUpdated(): void {
@@ -139,6 +158,14 @@ export class ColumnComponent extends Component {
 				this.onItemOperation(e);
 			}
 		);
+
+		if(!this.zustand.isAdmin) {
+			this.checkEdibility(this.columnModel.item.itemId, this.zustand.userQID!)
+				.then((value) => {
+					if(value) this.rightsIndicator = "🟩";
+					else this.rightsIndicator = "🟥"
+				});
+		} else this.rightsIndicator = ""; // omit feedback for admin (as it's always: 🟩)
 	}
 
 	updated(changedProperties: Map<string | number | symbol, unknown>) {
@@ -240,7 +267,7 @@ export class ColumnComponent extends Component {
 				>
 					${this.columnModel.item.text} (${this.columnModel.item.itemId})
 				</div>
-
+				<div id="rights-indicator">${this.rightsIndicator}</div>
 				<div class="spacer"></div>
 				<button id="delete-button" @click="${() => this.onDeleteColumn()}">
 					x
@@ -315,6 +342,9 @@ export class ColumnComponent extends Component {
 		#top-bar > * {
 			white-space: nowrap;
 		}
+		#rights-indicator {
+			margin-left: 5px;
+		}
 		.spacer {
 			min-width: 0.2rem;
 		}
@@ -351,7 +381,7 @@ export class ColumnComponent extends Component {
 	`;
 }
 
-// valid items are cleims that are of the same type as the column property
+// valid items are claims that are of the same type as the column property
 export const parseEntitiesConnectedByProperty = (
 	property: WikibasePropertyModel,
 	entity: any

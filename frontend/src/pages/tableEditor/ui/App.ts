@@ -169,18 +169,21 @@ export default class AppRoot extends Component {
 			if (!credentials) credentials = getCredentials();
 			zustand.setCredentials(credentials);
 			wikibaseClient.setCredentials(credentials);
-			const userRights = await this.wikibaseClient.userGroups(credentials);
-			zustand.setIsAdmin(userRights);
 
 			const login = await wikibaseClient.login()
 
-			// Needs login to work
+			// Get a users role from the graph
+			let adminRights = false;
+			const role = await this.wikibaseClient.getUserRole();
+			if(role === "Admin") adminRights = true;
+			zustand.setIsAdmin(adminRights);
+
+			// Get a users wikibase-item QID for visual feedback (mark personal item-column)
 			const info = await this.wikibaseClient.getUserInfo();
 			const userQID = info.userItemId;
 			zustand.setUserQID(userQID);
 
 			return login;
-			// return await wikibaseClient.login();
 		},
 		args: () => [
 			{

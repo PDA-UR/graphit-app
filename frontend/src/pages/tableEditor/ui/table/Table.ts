@@ -56,9 +56,8 @@ export class Table extends Component {
 	};
 
 	// check if the column is the logged in users Wikibase-item
-	isStudentsItem = (columnModel: ColumnModel) => {
-		// console.log(`${this.zustand.userQID} == ${columnModel.item.itemId}`)
-		if (this.zustand.userQID == columnModel.item.itemId) return true;
+	isStudentsItem = (columnModel: ColumnModel) => {		
+		if (this.zustand.userQID === columnModel.item.itemId) return true;
 		else return false;
 	}
 
@@ -90,7 +89,7 @@ export class Table extends Component {
 				)}"
 				@itemDropped="${(e: any) => this.onItemDropped(e.detail.data, false)}"
 			></new-column-dropzone>
-		`; // false -> doCopy is default false?
+		`;
 	}
 
 	static styles = css`

@@ -31,7 +31,7 @@ body  {
     --shadow-color-soft: rgba(0, 0, 0, 0.25);
     --shadow-color-hard: rgba(0, 0, 0, 1);
 
-    --editing-rights: lightgreen;
+    --editing-rights: rgba(180, 225, 180, 0.6);
   }
 
 /* Color-scheme: Dark */
@@ -57,5 +57,5 @@ body.dark {
     --shadow-color-soft: rgba(255, 255, 255, 0.05);
     --shadow-color-hard: rgba(255, 255, 255, 0.2);
 
-    --editing-rights: darkgreen;
+    --editing-rights: rgba(57, 127, 57, 0.6);
 }
