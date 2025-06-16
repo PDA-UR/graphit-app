@@ -39,7 +39,9 @@ export class Claim {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
 		if (!rights.isAdmin && id !== rights.userQID) { // NO checks for admin and personal user item
-			const isIncluded = await this.sparqlController.getItemInclusion(credentials, id, rights.userQID);
+
+			// NOTE: check inclusion using session -> Cached, when they are first added to a column
+			const isIncluded = rights.cachedItems.includes(id);
 			const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
 
 			if (!flags.canEditItem) return new Unauthorized("Not enough rights");
@@ -80,7 +82,8 @@ export class Claim {
 
 		// NOTE: (v1) students can delete items, from items they have editing permission for
 		if(!rights.isAdmin && rights.userQID !== id) {
-			const isIncluded = await this.sparqlController.getItemInclusion(credentials, id, rights.userQID);
+			const isIncluded = rights.cachedItems.includes(id);
+			// const isIncluded = await this.sparqlController.getItemInclusion(credentials, rights, id, rights.userQID);
 			const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
 			if (!flags.canEditItem) return new Unauthorized("Not enough rights");
 		}
@@ -112,7 +115,7 @@ export class Claim {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
 		if(!rights.isAdmin) {
-			const isIncluded = await this.sparqlController.getItemInclusion(credentials, id, rights.userQID);
+			const isIncluded = rights.cachedItems.includes(id);
 			const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
 			if (!flags.canEditItem) return new Unauthorized("Not enough rights");
 		}
@@ -141,26 +144,22 @@ export class Claim {
 	) {		
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 		
-		// NOTE: copy the item, if the student is moving a claim from an item,
-		//  that they don't have editing rights over, to an item that they have editing rights over
-		let copyDueToStudentEdit = false;
-
+		
 		if(!rights.isAdmin && convertData.to !== rights.userQID) {
-			console.log("move to non user item")
-			const isIncluded = await this.sparqlController.getItemInclusion(
-				credentials, convertData.to, rights.userQID)
+			console.log("move to non user item", convertData.to, "cached:", rights.cachedItems);
 			
+			const isIncluded = rights.cachedItems.includes(convertData.to);
 			if(!isIncluded) return new Unauthorized("Not enough rights");
-
+			
 			convertData.newClaim.qualifiers = flagMoveAsStudentEdit(
 				rights.userQID, convertData.newClaim.qualifiers
 			);
 		}
-
+		
 		// Force to copy the Claim, if it's originally from an "external" (no editing rights) item
+		let copyDueToStudentEdit = false;
 		if (id !== rights.userQID) {
-			const fromInternal = await this.sparqlController.getItemInclusion(
-				credentials, id, rights.userQID);
+			const fromInternal = rights.cachedItems.includes(id);
 			if(!fromInternal) copyDueToStudentEdit = true;
 		}
 		
@@ -237,8 +236,8 @@ function flagClaimAsStudentEdit(createClaim: CreateClaim, userQID: string): Crea
 			// P19: new Date().toISOString().slice(0, 10)
 		}
 	} else {
-		createClaim.qualifiers.P16 = userQID
-		// P16 = created by
+		createClaim.qualifiers.P16 = userQID;
+		// NOTE: P16 = created by
 	}
 	return createClaim;
 }

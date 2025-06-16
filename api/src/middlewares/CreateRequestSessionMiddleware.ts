@@ -14,6 +14,7 @@ export class CreateRequestSessionMiddleware {
 			request.session.rights = request.session.rights || {
 				isAdmin: false,
 				userQID: "",
+				cachedItems: [],
 			}
 		}
 	}

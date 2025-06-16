@@ -20,6 +20,10 @@ export class UserRightsProperties {
 
 	@Property()
 	userQID: string;
+
+	// cache the QID of items, that a user has editing rights to
+	@Property()
+	cachedItems: Array<string>;
 }
 
 export class EditingFlags {
@@ -29,6 +33,7 @@ export class EditingFlags {
 	@Property()
 	isStudentSuggestion: boolean;
 }
+
 
 export const isValid = (credentials: Credentials): boolean => {
 	return (

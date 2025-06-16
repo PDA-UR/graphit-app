@@ -146,6 +146,7 @@ export class Sparql {
 	@Returns(401, String).ContentType("text/plain")
 	async getItemInclusion(
 		@Session("user") credentials: Credentials,
+		@Session("rights") rights: UserRightsProperties,
 		@PathParams("qid") qid: string,
 		@PathParams("userId") userId: string,
 	) {
@@ -154,7 +155,11 @@ export class Sparql {
 		const r = await this.wikibaseSdk.getItemInclusion(credentials, qid, userId);
 		
 		// Check if the result array is empty -> item is not included in any participated course
-		if (r.data.results.bindings.length !== 0) return true;
+		if (r.data.results.bindings.length !== 0) {
+			// Cache the checked item for faster checks later (e.g in: ClaimController.ts)
+			rights.cachedItems.push(qid);
+			return true;
+		}
 		return false;
 	}
 
