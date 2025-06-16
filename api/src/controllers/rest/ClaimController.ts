@@ -80,15 +80,12 @@ export class Claim {
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
-		// NOTE: (v1) students can delete items, from items they have editing permission for
+		// NOTE: students can delete any items, from items they have editing permission for
 		if(!rights.isAdmin && rights.userQID !== id) {
 			const isIncluded = rights.cachedItems.includes(id);
-			// const isIncluded = await this.sparqlController.getItemInclusion(credentials, rights, id, rights.userQID);
 			const flags = hasEditingPermission(rights.isAdmin, rights.userQID, id, isIncluded);
 			if (!flags.canEditItem) return new Unauthorized("Not enough rights");
 		}
-		// NOTE: (v2) students can't delete items, even if they have editing permission
-		// if (!rights.isAdmin && rights.userQID !== id) return new Unauthorized("Not enough rights");
 
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -232,12 +229,11 @@ export class Claim {
 function flagClaimAsStudentEdit(createClaim: CreateClaim, userQID: string): CreateClaim {
 	if (createClaim.qualifiers == undefined) {
 		createClaim.qualifiers = {
-			P16: userQID,
+			P39: userQID, // P39 = created by
 			// P19: new Date().toISOString().slice(0, 10)
 		}
 	} else {
-		createClaim.qualifiers.P16 = userQID;
-		// NOTE: P16 = created by
+		createClaim.qualifiers.P39 = userQID;
 	}
 	return createClaim;
 }
@@ -250,7 +246,7 @@ function flagClaimAsStudentEdit(createClaim: CreateClaim, userQID: string): Crea
  */
 function flagMoveAsStudentEdit(userQID:string, existingQualifiers: any) {
 	return {
-		P16: userQID,
+		P39: userQID,
 		// P19: new Date().toISOString().slice(0, 10),
 		...existingQualifiers
 	}
