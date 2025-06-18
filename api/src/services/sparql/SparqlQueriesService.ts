@@ -281,6 +281,24 @@ SELECT ?user ?userLabel ?role ?roleLabel WHERE {
 `;
 
 /**
+ * Check if an item is a Person-Item (e.g. Student)
+ * @param qid of the item to check for
+ * @returns the role of the Person or Nothing (if not a person)
+ */
+const isPerson = (
+  qid: string,
+) => `
+#defaultView:Table
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+PREFIX wd: <https://graphit.ur.de/entity/>
+SELECT ?user ?userLabel ?role ?roleLabel WHERE {
+  BIND (wd:${qid} as ?user)
+  ?user wdt:P3 ?role.
+  ?role ^wdt:P14 wd:Q1985.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+`
+/**
  * Service for retrieving SPARQL-Queries
  */
 @Service()
@@ -315,6 +333,10 @@ export class SparqlQueryTemplateService {
 
   public getUserRole(userId:string) {
     return userRole(userId);
+  }
+
+  public getIsPerson(qid:string) {
+    return isPerson(qid);
   }
 
 }

@@ -2,13 +2,14 @@ import { Controller, Inject } from "@tsed/di";
 import { BadRequest, Unauthorized } from "@tsed/exceptions";
 import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
-import { Description, Get, Post, Required, Returns } from "@tsed/schema";
+import { Description, Get, Path, Post, Required, Returns } from "@tsed/schema";
 import { Credentials, UserRightsProperties, isValid } from "../../models/CredentialsModel";
 import { WikibaseEditService } from "../../services/WikibaseEditService";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
 import { UserSession } from "../../models/UserSessionModel";
 import { demoPassword } from "../../config/envs/index" // "../envs/index";
 import { SparqlResult } from "src/models/SparqlResultModel";
+import { Sparql } from "./SparqlController";
 
 /**
  * Controller for authentication related actions.
@@ -23,6 +24,9 @@ export class Auth {
 
 	@Inject()
 	logger: Logger;
+
+	@Inject()
+	sparqlService: Sparql;
 
 	@Get("/whoami")
 	@Description("Returns the current session")
@@ -81,6 +85,29 @@ export class Auth {
 			this.logger.error("User role error", e.message);
 			return new BadRequest("Could not get user role");
 		}
+	}
+
+	@Get("/checkViewability/:qid")
+	@Description("Check if an item is a user-item or if it can be viewed")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async checkViewability(
+		@Session("rights") rights: UserRightsProperties,
+		@Session("user") existingSession: Credentials,
+		@PathParams("qid") qid: string,
+	){
+		
+		if (!isValid(existingSession)) return new Unauthorized("Not logged in");
+		
+		if (!rights.isAdmin) {
+			const result = await this.sparqlService.getIsPerson(existingSession, qid);
+			if(typeof result !== "boolean") {
+				return new Unauthorized("Restricted Access (User item)");
+			}
+		}
+		
+		return true;
+
 	}
 
 	@Post("/login")

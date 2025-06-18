@@ -40,6 +40,11 @@ export default class WikibaseClient {
 		return adminrights;
 	}
 
+	async checkItemViewability(qid:string): Promise<boolean> {
+		const result = await this.api.auth.checkItemViewability(qid);
+		return result;
+	}
+
 	async login() {
 		this.userSession = await this.api.auth.login(this.credentials);
 		if (!this.userSession.username) {
@@ -137,6 +142,20 @@ export default class WikibaseClient {
 			const result = await this.api.sparql.itemInclusion(qid, userQid);
 			return result;
 		} catch (err) {
+			return [];
+		}
+	}
+
+	/**
+	 * Check if an item is a person-item (e.g. a Student) 
+	 * @param qid of the item to check
+	 * @returns the Label of the person-item or false (if not a person)
+	 */
+	async getIsPerson(qid: string): Promise<any> {
+		try {
+			const result = await this.api.sparql.isPerson(qid);
+			return result;
+		} catch(err) {
 			return [];
 		}
 	}

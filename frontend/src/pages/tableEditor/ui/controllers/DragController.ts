@@ -37,6 +37,7 @@ export class DragController implements ReactiveController {
 	
 	private readonly selectionController: SelectionController;
 	private readonly itemOperator: ItemOperationController;
+	private readonly wikibaseClient: WikibaseClient;
 
 	constructor(
 		host: ReactiveControllerHost,
@@ -46,6 +47,7 @@ export class DragController implements ReactiveController {
 	) {
 		(this.host = host).addController(this);
 		this.itemOperator = new ItemOperationController(host, wikibaseClient);
+		this.wikibaseClient = wikibaseClient;
 
 		this.setIsDragging = setIsDragging;
 		this.selectionController = selectionController;

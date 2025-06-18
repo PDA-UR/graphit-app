@@ -322,6 +322,15 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         method: "POST",
         ...params,
       }),
+
+    checkItemViewability: (qid: string, params: RequestParams = {}) =>
+      this.request<boolean, string>({
+        path: `api/auth/checkViewability/${qid}`,
+        method: "GET",
+        type: ContentType.Json,
+        ...params,
+      }),
+
   };
   claim = {
     /**
@@ -617,6 +626,22 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     itemInclusion: (qid: string, userQid: string, params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/sparql/itemInclusion/${qid}/${userQid}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Check if an item is a person-item (e.g. Student)
+     * 
+     * @tags Sparql
+     * @name isPerson
+     * @request GET: /api/sparql/isPerson/:qid
+     * @returns the label of the person-item or false (if not a person)
+     */
+    isPerson: (qid: string, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/isPerson/${qid}`,
         method: "GET",
         format: "json",
         ...params,

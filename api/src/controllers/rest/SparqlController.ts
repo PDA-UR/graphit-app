@@ -163,4 +163,28 @@ export class Sparql {
 		return false;
 	}
 
+	@Get("/isPerson/:qid")
+	@Description("Check if the item is a person-item and return which one")
+	@Returns(200, SparqlResult).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async getIsPerson(
+		@Session("user") credentials: Credentials,
+		@PathParams("qid") qid: string,
+	) {
+		this.logger.info("Checking credentials", credentials);
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		const r = await this.wikibaseSdk.getIsPerson(credentials, qid);
+		
+		// Check if the result array is empty -> item is not a person
+		const bindings = r.data.results.bindings as Array<any>;
+		if (bindings.length !== 0) {
+			const roles =  bindings.map((binding) => binding.roleLabel.value);
+			return roles;
+		}
+		return false;
+	}
+
+
 }

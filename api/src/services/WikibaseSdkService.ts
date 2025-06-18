@@ -340,4 +340,12 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		const query = this.templateService.getUserRole(userId);
 		return this.query(credentials, query);
 	}
+
+	async getIsPerson(
+		credentials: Credentials,
+		qid: string,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getIsPerson(qid);
+		return this.query(credentials, query);
+	}
 }
