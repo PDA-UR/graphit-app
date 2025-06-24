@@ -88,6 +88,8 @@ static styles = css`
                 </table>
             </div>
             <br>
+            To select multiple items hold CTRL/SHIFT and click.
+            <br>
         </div>
         `; 
 	}
