@@ -8,6 +8,8 @@ import {
 } from "./ItemOperationController";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import { SelectionController } from "./SelectionController";
+import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
+import { filterOnViewPermission } from "../table/NewColumnDropzone";
 
 /**
  * The origin, from which an item has been dragged from.
@@ -85,13 +87,15 @@ export class DragController implements ReactiveController {
 	}
 
 	// an item has been dropped INTO A DROPZONE
-	onDrop(dropzone: ColumnModel | "trash" | "new-column", doCopy = this.isCopyToggleOn) {
+	async onDrop(dropzone: ColumnModel | "trash" | "new-column", doCopy = this.isCopyToggleOn) {
 		this.setIsDragging(false);
 
-		const draggedItems = this.selectionController.getSelectedItems();
+		let draggedItems = this.selectionController.getSelectedItems();
 
 		// Dropped in <new-column-dropzone>
 		if (dropzone === "new-column") {
+			draggedItems = await filterOnViewPermission(draggedItems, this.wikibaseClient) as ColumnItemInfo[];
+			
 			console.log("new column event");
 			document.dispatchEvent(
 				new CustomEvent("ADD_COLUMN", {
@@ -129,7 +133,7 @@ export class DragController implements ReactiveController {
 		const convertClaimModels: MoveItemInfo[] = draggedItems.map(
 			(draggedItem) => {
 				let newQualifiers = draggedItem.item.qualifiers as String[] | undefined;
-				if (this.moveQualifiers == false) newQualifiers = undefined; // check if or ifn't copy
+				if (this.moveQualifiers == false) newQualifiers = undefined; // check if copy or not
 				if (newQualifiers?.length == 0) newQualifiers = undefined; // fallback, when empty qualifier arr
 
 				if (draggedItem.origin === "search")
@@ -160,4 +164,5 @@ export class DragController implements ReactiveController {
 		this.selectionController.deselectAll();
 		this.itemOperator.moveItems(convertClaimModels, doCopy);
 	}
+
 }

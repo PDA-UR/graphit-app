@@ -10,6 +10,7 @@ import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import { newColumnModel } from "../../data/models/ColumnModel";
 import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
 import { when } from "lit/directives/when.js";
+import { ColumnItemInfo } from "../controllers/DragController";
 
 /**
  * <new-column-dropzone> is the dropzone on the right side of the table
@@ -107,11 +108,17 @@ export default class NewColumnDropzone extends Component {
 
 	// ------- Listeners ------ //
 
-	onclick = () => {
+	onclick = async () => {
 		const id = prompt("Enter the id of the column you want to add");
 		if (!id) return;
 
 		this.columnIdsToBeAdded = [id.trim().toUpperCase()];
+
+		// TODO: check
+		console.log("check for", this.columnIdsToBeAdded);
+		this.columnIdsToBeAdded = await filterOnViewPermission(this.columnIdsToBeAdded, this.wikibaseClient) as string[];
+		
+
 		this.runAddColumnTask();
 	};
 
@@ -181,4 +188,35 @@ export default class NewColumnDropzone extends Component {
 			opacity: 0.5;
 		}
 	`;
+}
+
+/**
+ * Check over the dragged items and remove those that the current user can't view.
+ * A student for example can't view other people's user items.
+ * @param items an array of the items to check
+ * @param wikibaseClient 
+ * @returns an updated array (same type as input)
+ */
+export async function filterOnViewPermission(items: string[] | ColumnItemInfo[], wikibaseClient: WikibaseClient) {
+
+	// check if an item can even be viewed by the user (i.e. is not a foreign user-item)
+	for (let i = 0; i < items.length;i++) {
+		let itemId = "";
+
+		if (typeof items[i] === "string")  {
+			itemId = items[i] as string;
+		} else {
+			// @ts-ignore
+			itemId = items[i].item.itemId;
+		}
+
+		const result = await wikibaseClient.checkItemViewability(itemId) as boolean | any;
+		if(typeof result !== "boolean") {
+			items.splice(i, 1);
+			const msg = result.message + ` for [${itemId}]`; 
+			Toast.info(msg, ToastLength.MEDIUM).show();
+		}
+	}
+
+	return items;
 }

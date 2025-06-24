@@ -229,11 +229,11 @@ export class Claim {
 function flagClaimAsStudentEdit(createClaim: CreateClaim, userQID: string): CreateClaim {
 	if (createClaim.qualifiers == undefined) {
 		createClaim.qualifiers = {
-			P39: userQID, // P39 = created by
+			P16: userQID, // P16 = created by
 			// P19: new Date().toISOString().slice(0, 10)
 		}
 	} else {
-		createClaim.qualifiers.P39 = userQID;
+		createClaim.qualifiers.P16 = userQID;
 	}
 	return createClaim;
 }
@@ -246,7 +246,7 @@ function flagClaimAsStudentEdit(createClaim: CreateClaim, userQID: string): Crea
  */
 function flagMoveAsStudentEdit(userQID:string, existingQualifiers: any) {
 	return {
-		P39: userQID,
+		P16: userQID,
 		// P19: new Date().toISOString().slice(0, 10),
 		...existingQualifiers
 	}

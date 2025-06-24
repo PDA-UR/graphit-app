@@ -108,22 +108,6 @@ export class ColumnComponent extends Component {
 	});
 
 	/**
-	 * Check if a user can view an item or if it is someone elses user item.
-	 * If a student tries to view a foreign user item it will automatically 
-	 * be removed from the column and show an error
-	 * @param itemId 
-	 */
-	async checkItemViewability(itemId:string) {
-		const result = await this.wikibaseClient.checkItemViewability(itemId) as boolean | any;
-		
-		if(typeof result !== "boolean") {
-			this.onDeleteColumn();
-			const msg = result.message;
-			Toast.error(msg, ToastLength.MEDIUM).show();
-		}
-	}
-
-	/**
 	 * Checks wether an item can be edited by a logged in user
 	 * @param itemId QID of the item to be edited
 	 * @param userQID QID of the users wikibase item
@@ -174,8 +158,6 @@ export class ColumnComponent extends Component {
 				this.onItemOperation(e);
 			}
 		);
-
-		this.checkItemViewability(this.columnModel.item.itemId)
 
 		if(!this.zustand.isAdmin) {
 			this.checkEdibility(this.columnModel.item.itemId, this.zustand.userQID!)
