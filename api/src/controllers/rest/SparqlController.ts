@@ -152,6 +152,8 @@ export class Sparql {
 	) {
 		this.logger.info("Checking credentials", credentials);
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (rights.isAdmin) return true;
+
 		const r = await this.wikibaseSdk.getItemInclusion(credentials, qid, userId);
 		
 		// Check if the result array is empty -> item is not included in any participated course

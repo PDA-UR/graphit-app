@@ -2,7 +2,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { Component } from "../atomic/Component";
 import { PropertyValueMap, css, html } from "lit";
 import { consume } from "@lit-labs/context";
-import ZustandStore, { StoreActions } from "../../data/ZustandStore";
+import { StoreActions, zustandStore } from "../../data/ZustandStore";
 import { tableContext } from "../../data/contexts/TableContext";
 import { Task, TaskStatus } from "@lit-labs/task";
 import WikibaseClient from "../../../../shared/WikibaseClient";
@@ -27,6 +27,8 @@ export default class NewColumnDropzone extends Component {
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
 
+	private zustand = zustandStore.getState();
+
 	// --------- State -------- //
 
 	@state()
@@ -38,6 +40,14 @@ export default class NewColumnDropzone extends Component {
 		task: async ([{ wikibaseClient, addColumn }]) => {
 			this.classList.add("working");
 			const entity = await wikibaseClient.getEntities(this.columnIdsToBeAdded);
+
+			// check the editing permissions for each column
+			let permissions = {} as any;
+			for(let i = 0; i < this.columnIdsToBeAdded.length; i++) {
+				const qid = this.columnIdsToBeAdded[i];
+				const hasEditingPermission = await wikibaseClient.getItemInclusion(qid, this.zustand.userQID!);
+				permissions[qid] = hasEditingPermission;
+			}
 
 			const wikibaseItems = Object.keys(entity.data.entities).map((input) => {
 				return {
@@ -54,7 +64,8 @@ export default class NewColumnDropzone extends Component {
 			const columnModels = wikibaseItems.map((wikibaseItem) => {
 				return newColumnModel(
 					wikibaseItem,
-					wikibaseClient.getCachedProperties()[0]
+					wikibaseClient.getCachedProperties()[0],
+					permissions[wikibaseItem.itemId],
 				);
 			});
 
@@ -113,11 +124,9 @@ export default class NewColumnDropzone extends Component {
 		if (!id) return;
 
 		this.columnIdsToBeAdded = [id.trim().toUpperCase()];
-
-		// TODO: check
-		console.log("check for", this.columnIdsToBeAdded);
-		this.columnIdsToBeAdded = await filterOnViewPermission(this.columnIdsToBeAdded, this.wikibaseClient) as string[];
-		
+		this.columnIdsToBeAdded = await filterOnViewPermission(
+			this.columnIdsToBeAdded, this.wikibaseClient
+		) as string[];		
 
 		this.runAddColumnTask();
 	};
@@ -197,8 +206,10 @@ export default class NewColumnDropzone extends Component {
  * @param wikibaseClient 
  * @returns an updated array (same type as input)
  */
-export async function filterOnViewPermission(items: string[] | ColumnItemInfo[], wikibaseClient: WikibaseClient) {
-
+export async function filterOnViewPermission(
+	items: string[] | ColumnItemInfo[], 
+	wikibaseClient: WikibaseClient
+) {
 	// check if an item can even be viewed by the user (i.e. is not a foreign user-item)
 	for (let i = 0; i < items.length;i++) {
 		let itemId = "";

@@ -6,13 +6,16 @@ export interface ColumnModel {
 	viewId: string;
 	item: WikibaseItem;
 	property: WikibasePropertyModel;
+	editingPermission: boolean;
 }
 
 export const newColumnModel = (
 	item: WikibaseItem,
-	property: WikibasePropertyModel
+	property: WikibasePropertyModel,
+	editingPermission: boolean,
 ): ColumnModel => ({
 	viewId: uuidv4(),
 	item,
 	property,
+	editingPermission,
 });
