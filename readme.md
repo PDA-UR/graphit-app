@@ -26,7 +26,7 @@ npm i
       2. open a second Terminal and navigate to /frontend. Run `npm run dev` there as well
       3. Alternative: replace the dev script in the package.json file (root) with `"start npm run dev --workspace=api & start npm run dev --workspace=frontend"`
       4. Alternative: run the app on `wsl` (not tested)
-   2. visit (http://localhost:8081/app for the webapp, http://localhost:8081/doc for the api docs)
+4. visit (http://localhost:8081/app for the webapp, http://localhost:8081/doc for the api docs)
 
 ## Deployment
 
@@ -42,6 +42,7 @@ Local:
   - in /api: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
 - Linux
   - in root-folder: `npm run build`
+
 Docker:
   - run `docker build -t graphit .` in the root folder (alt: docker build --no-cache -t graphit .) and run the container on ports "8081:8081" (see docker-compose.yml)
   - or use use the `run.sh` (e.g. *run.sh ./api/.env 1*) (same links as in development)
