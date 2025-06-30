@@ -96,9 +96,10 @@ export class Auth {
 		@Session("user") existingSession: Credentials,
 		@PathParams("qid") qid: string,
 	){
-		
 		if (!isValid(existingSession)) return new Unauthorized("Not logged in");
 		
+		if (rights.userQID === qid) return true;
+
 		if (!rights.isAdmin) {
 			const result = await this.sparqlService.getIsPerson(existingSession, qid);
 			if(typeof result !== "boolean") {

@@ -45,8 +45,12 @@ export default class NewColumnDropzone extends Component {
 			let permissions = {} as any;
 			for(let i = 0; i < this.columnIdsToBeAdded.length; i++) {
 				const qid = this.columnIdsToBeAdded[i];
-				const hasEditingPermission = await wikibaseClient.getItemInclusion(qid, this.zustand.userQID!);
-				permissions[qid] = hasEditingPermission;
+				if(qid === this.zustand.userQID) {
+					permissions[qid] = true;
+				} else {
+					const hasEditingPermission = await wikibaseClient.getItemInclusion(qid, this.zustand.userQID!);
+					permissions[qid] = hasEditingPermission;
+				}
 			}
 
 			const wikibaseItems = Object.keys(entity.data.entities).map((input) => {
@@ -220,7 +224,6 @@ export async function filterOnViewPermission(
 			// @ts-ignore
 			itemId = items[i].item.itemId;
 		}
-
 		const result = await wikibaseClient.checkItemViewability(itemId) as boolean | any;
 		if(typeof result !== "boolean") {
 			items.splice(i, 1);
