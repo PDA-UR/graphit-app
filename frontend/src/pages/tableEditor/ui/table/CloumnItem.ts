@@ -154,7 +154,7 @@ export class ColumnItem extends Component {
 			user-select: none;
 		}
 		.qualifier-container {
-			overflow: scroll;
+			overflow: auto;
 			font-size: 9pt;
 			max-height: 5em;
 		}
