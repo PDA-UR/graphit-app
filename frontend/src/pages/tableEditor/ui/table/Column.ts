@@ -56,12 +56,6 @@ export class ColumnComponent extends Component {
 	@property({ type: Boolean })
 	private isDragging = false;
 
-	@property({ type: Boolean })
-	private isCopyToggleOn!: boolean;
-
-	@property({type: String})
-	private rightsIndicator = "?";
-
 	// --------- Contexts -------- //
 
 	private zustand = zustandStore.getState();
@@ -150,6 +144,12 @@ export class ColumnComponent extends Component {
 		super.updated(changedProperties);
 		if (changedProperties.has("columnModel")) {
 			const oldVal = changedProperties.get("columnModel") as ColumnModel;
+			
+			// re-get items, after deleting a previous column, to prevent issues with items carrying over
+			if(oldVal?.item.itemId !== this.columnModel.item.itemId) {
+				if(oldVal !== undefined) this.loadItemsTask.run()
+			} 
+			
 			if (oldVal?.property !== this.columnModel.property) {
 				this.loadItemsTask.run();
 			}
