@@ -155,7 +155,7 @@ export class Claim {
 		
 		// Force to copy the Claim, if it's originally from an "external" (no editing rights) item
 		let copyDueToStudentEdit = false;
-		if (id !== rights.userQID) {
+		if (!rights.isAdmin && id !== rights.userQID) {
 			const fromInternal = rights.cachedItems.includes(id);
 			if(!fromInternal) copyDueToStudentEdit = true;
 		}
