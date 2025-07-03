@@ -5,6 +5,12 @@ export interface WikibaseItem {
 	text: string;
 	url: string;
 	qualifiers: String[];
+	aliases: WikibaseAliases | undefined;
+}
+
+export interface WikibaseAliases {
+	en: string;
+	de: string
 }
 
 export interface WikibaseQualifierModel {
@@ -24,11 +30,13 @@ export const newColumnItemModel = (
 	itemId: string,
 	text: string,
 	url: string,
-	qualifiers: any
+	qualifiers: any,
+	aliases: WikibaseAliases | undefined = undefined,
 ): ColumnItemModel => ({
 	itemId,
 	text,
 	viewId: uuidv4(),
 	url,
 	qualifiers,
+	aliases
 });

@@ -62,9 +62,13 @@ export default class NewColumnDropzone extends Component {
 						"",
 					url: wikibaseClient.getEntityUrl(entity.data.entities[input].id),
 					qualifiers: [],
+					aliases: { 
+						en: entity.data.entities[input].aliases?.en ? entity.data.entities[input].aliases.en[0].value : "", 
+						de: entity.data.entities[input].aliases?.de ? entity.data.entities[input].aliases.de[0].value : ""
+					}
 				};
 			});
-
+			
 			const columnModels = wikibaseItems.map((wikibaseItem) => {
 				return newColumnModel(
 					wikibaseItem,

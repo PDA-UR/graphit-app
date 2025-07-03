@@ -24,6 +24,7 @@ body  {
 	--bb-loading-progress: #e5e5e5;
 
 	--bg-danger: red;
+    --bg-info: blue;
 
     --border-color: black;
     --border-color-light: #646464;
@@ -38,7 +39,7 @@ body  {
 
 body.dark {
     --fg-color: white;
-    --fg-danger: #black;
+    --fg-danger: black;
 
     --bg-color: black;
     --bg-selected: #333333;
@@ -50,6 +51,7 @@ body.dark {
     --bb-loading-progress: #444444;
 
     --bg-danger: #cc0000;
+    --bg-info: #9793dc;
 
     --border-color: #555555;
     --border-color-light: #2e2e2e;

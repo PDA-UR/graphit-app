@@ -45,7 +45,9 @@ export default class AppRoot extends Component {
 	@state()
 	hasInitTippy = false;
 
+	@state()
 	private dragType = "Move";
+	
 	private qualifierType = "Discard";
 
 	private setIsDragging = (isDragging: boolean) => {
@@ -152,6 +154,25 @@ export default class AppRoot extends Component {
 				this.toggleQualifierType();
 			}
 		});
+
+		// give dynamic feedback for holding CTRL/etc. and dragging => copy item
+		window.addEventListener("drag", (e) => {
+			if (this.dragController.getCopyToggle()) return;
+			if(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+				this.dragType = "Copy"
+			} else {
+				this.dragType = "Move";
+			}
+		})
+
+		// re-check (for robustness)
+		window.addEventListener("dragend", (e) => {
+			if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
+				if(!this.dragController.getCopyToggle()) {
+					this.dragType = "Move";
+				}
+			}
+		})
 
 		document.addEventListener("click", (e) => {
 			// called when the click event has not been used by any other component
@@ -277,7 +298,7 @@ export default class AppRoot extends Component {
 							<span>,</span> 
 							<div>
 								<button id="qualifier-toggle" @click="${() => this.toggleQualifierType()}">
-								<b>${this.qualifierType}</b>
+									<b style="color: var(--bg-info)">${this.qualifierType}</b>
 								</button>
 								qualifiers 
 							</div>

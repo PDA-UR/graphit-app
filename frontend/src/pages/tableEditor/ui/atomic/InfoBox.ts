@@ -67,11 +67,11 @@ static styles = css`
                     </tr>
                     <tr>
                         <td> DEL or BACKSPACE </td>
-                        <td> Remove selected item </td>
+                        <td> Remove selected item(s) </td>
                     </tr>
                     <tr>
-                        <td> SHIFT/ALT/CTRL/META + <i>drag</i>
-                        <td> Copy and Paste items </td>
+                        <td> CTRL/SHIFT/ALT/META + <i>drag</i>
+                        <td> Copy and paste items </td>
                     </tr>
                     <tr>
                         <td> CTRL + x </td>

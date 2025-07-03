@@ -56,6 +56,9 @@ export class ColumnComponent extends Component {
 	@property({ type: Boolean })
 	private isDragging = false;
 
+	@property({ type: String })
+	private aliases = "";
+
 	// --------- Contexts -------- //
 
 	private zustand = zustandStore.getState();
@@ -138,6 +141,14 @@ export class ColumnComponent extends Component {
 				this.onItemOperation(e);
 			}
 		);
+		this.parseAliases()		
+	}
+
+	parseAliases() {
+		const aliases = this.columnModel.item.aliases
+		this.aliases = `${aliases?.en} 
+			${(aliases?.en && aliases?.de ? "|" : "")} 
+			${aliases?.de}`
 	}
 
 	updated(changedProperties: Map<string | number | symbol, unknown>) {
@@ -256,6 +267,9 @@ export class ColumnComponent extends Component {
 					x
 				</button>
 			</div>
+			<div id="aliases">
+				Alias: ${this.aliases}
+			</div>
 			<select @change="${this.handlePropertyChange}">
 				${map(
 					this.wikibaseClient.getCachedProperties(),
@@ -347,7 +361,14 @@ export class ColumnComponent extends Component {
 		#column-title:hover {
 			text-decoration: underline;
 		}
-
+		#aliases {
+			font-size: small;
+			overflow: hidden;
+			height: 1.1rem;
+			line-height: 1rem;
+			text-overflow: ellipsis;
+			color: #444;
+		}
 		select option[value="P1"] { /* depends on */
 			background: rgba(255, 176, 213, 0.3);
 		}
