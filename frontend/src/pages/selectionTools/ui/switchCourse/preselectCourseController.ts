@@ -30,7 +30,7 @@ export class PreselectCourseController {
             if (course != "") this.courseQID = course;    
         }
 
-        console.log("current course", this.courseQID);
+        // console.log("current course", this.courseQID);
         this.$menu.value = this.courseQID;
     }
 

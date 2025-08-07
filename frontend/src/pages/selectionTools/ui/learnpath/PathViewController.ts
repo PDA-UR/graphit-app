@@ -33,7 +33,7 @@ export class PathViewController {
         dragSpacer(this.$spacer, this.cy, this.graph.getPathCore());
 
         tippy(this.$toggleBtn, {
-            content: "Lernpfad ein/ausblenden (Ctrl + L)",
+            content: "Lernpfad ein/ausblenden (ALT + p)",
             placement: "left",
             duration: 300,
             theme: "dark",
@@ -54,14 +54,12 @@ export class PathViewController {
     }
 
     public toggleView() {
-        // console.log("toggle path view", this.isVisible())
         if(this.isVisible()) {
             this.onOpen(true);
             if (this.selectedNode != undefined) 
                 this.showPath()
         } else {
             this.onOpen(false);
-            this.toggle(false); // Failsafe
         }
     }
 
@@ -70,7 +68,6 @@ export class PathViewController {
     }
 
     private setSelectedNode(target:any) {
-        console.log("multi-select", this.isMultiSelect)
         if (target == undefined || this.isMultiSelect) return;
         
         this.selectedNode = target;
@@ -84,7 +81,6 @@ export class PathViewController {
         if (!this.isOpen || this.selectedNode == null){
             return;
         }
-        console.log("show path for", this.selectedNode)
         this.createPath()
     }
 
@@ -103,7 +99,8 @@ export class PathViewController {
 
         experimentEventBus.on(
             PathViewControllerEvents.NODE_CLICK, 
-            (target) => this.setSelectedNode(target))
+            (target) => this.setSelectedNode(target)
+        )
         
         this.initKeyboardListeners(on)
     }
@@ -128,14 +125,13 @@ export class PathViewController {
 
 	private onKeydown = (e: KeyboardEvent) => {
         this.isMultiSelect = false
-		if (e.code === "KeyL" && e.ctrlKey) {
+		if (e.code === "KeyP" && e.altKey) {
 			e.preventDefault();
 			e.stopPropagation();
-			this.toggleView()
+			this.toggleView();
         } else if (e.code === "ShiftLeft" || e.code == "ControlLeft") {
             this.isMultiSelect = true; // Don't change the selection 
         }
-
 	};
 
     private onKeyUp = (e: KeyboardEvent) => {

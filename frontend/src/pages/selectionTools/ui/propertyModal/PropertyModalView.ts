@@ -74,6 +74,12 @@ export class PropertyModalView extends View {
             duration: 300,
             theme: "dark",
         });
+		tippy(this.$openButton, {
+			content: "ALT + '-'",
+			placement: "top",
+			duration: 300,
+			theme: "dark",
+		})
 	}
 
 	private $initListeners() {
@@ -84,7 +90,20 @@ export class PropertyModalView extends View {
 		this.$rateButton.addEventListener("click", this.onRateButtonClick);
 		this.$closeButton.addEventListener("click", this.onMinimizeModal);
 		this.$openButton.addEventListener("click", this.onMinimizeModal);
+		
+		this.initKeyboardListeners(true);
 	}
+
+	 private initKeyboardListeners = (on: boolean) => {
+		const fn = on ? window.addEventListener : window.removeEventListener;
+		fn("keydown", this.onKeydown);
+	};
+
+	private onKeydown = (e: KeyboardEvent) => {
+        if (e.key === "-" && e.altKey) { 
+            this.onMinimizeModal(e)
+        }
+	};
 
 	private onCompleteButtonClick = (event: MouseEvent) => {
 		event.stopPropagation();
@@ -101,7 +120,7 @@ export class PropertyModalView extends View {
 		this.emit(PropertyModalViewEvents.RATE_BUTTON_CLICK);
 	};
 
-	private onMinimizeModal = (event: MouseEvent) => {
+	private onMinimizeModal = (event: MouseEvent | KeyboardEvent) => {
 		if (this.$container.classList.contains("visible")) {
 			this.toggleVisibility(false);
 			this.toggleMinimizedModal(true);

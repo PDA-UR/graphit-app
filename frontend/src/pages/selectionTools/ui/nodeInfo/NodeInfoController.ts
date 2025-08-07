@@ -55,7 +55,7 @@ export class NodeInfoController {
         this.$pathContainer = document.getElementById("path-container") as HTMLDivElement;
 
         tippy(this.$dropdownBtn, {
-            content: "Zusätzliche Informationen (alt + '+')",
+            content: "Zusätzliche Informationen (ALT + '+')",
             placement: "top",
             duration: 300,
             theme: "dark",
@@ -63,15 +63,17 @@ export class NodeInfoController {
     }
 
     private setInfo(target: any) {
-        if(target.isNode) {
+        try { 
+            if(target.isNode()) {
             this.currentSelection = target;
             this.setMainInfo(target);
             this.setResources();
-        } else {
-            console.log("click on canvas")
-            this.currentSelection = null;
-            this.$content.innerHTML = "";
-            this.$nodeName.innerText = "Item";
+            } else {
+                this.currentSelection = null;
+            }
+        } catch {
+            // prevent errors in debug console, when the background (aka cy-core) is clicked
+            return
         }
     }
 
@@ -160,7 +162,7 @@ export class NodeInfoController {
         let key = "LINK";
         if (res.type != undefined) {
             const link = res.type.value;
-            console.log("resourceType", link);
+            // console.log("resourceType", link);
             const qid = link.match(/[Q]\d+/g)!;
             key = qid[0];
         }
@@ -231,6 +233,7 @@ export class NodeInfoController {
             this.setResources()
         } else {
             this.$dropdownBtn.innerText = "+";
+            this.$nodeDesc.innerText = ""; // rm. description as it's also not shown, when th dropdown isn't open
             this.isHidden = true
         }
         this.$content.classList.toggle("invisible", this.isHidden);
@@ -250,7 +253,7 @@ export class NodeInfoController {
 	};
 
 	private onKeydown = (e: KeyboardEvent) => {
-        if (e.code === "BracketRight" && e.altKey) {
+        if (e.key === "+" && e.altKey) {
             this.toggleDropDown()
         }
 	};
