@@ -34,8 +34,8 @@ export class Table extends Component {
 	@property({ type: Boolean })
 	private isDragging!: boolean;
 
-	@property({ type: Boolean})
-	private isCopyToggleOn!: boolean;
+	// @property({ type: Boolean})
+	// private isCopyToggleOn!: boolean;
 
 	@property({ type: Object, attribute: true })
 	tableModel!: TableModel;
@@ -70,7 +70,6 @@ export class Table extends Component {
 					<column-component
 						.isDragging="${this.isDragging}"
 						.columnModel="${columnModel}"
-						.isCopyToggleOn="${this.isCopyToggleOn}"
 						@onRemove="${() => this.removeColumn(columnModel.viewId)}"
 						class="${when(
 							this.isStudentsItem(columnModel),

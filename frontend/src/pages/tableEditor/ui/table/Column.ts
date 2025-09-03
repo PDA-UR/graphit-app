@@ -1,5 +1,6 @@
 import { html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import {live} from 'lit/directives/live.js';
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
@@ -156,13 +157,23 @@ export class ColumnComponent extends Component {
 		if (changedProperties.has("columnModel")) {
 			const oldVal = changedProperties.get("columnModel") as ColumnModel;
 			
-			// re-get items, after deleting a previous column, to prevent issues with items carrying over
+			// re-get items/alias, after deleting a previous column, to prevent issues with items carrying over
 			if(oldVal?.item.itemId !== this.columnModel.item.itemId) {
-				if(oldVal !== undefined) this.loadItemsTask.run()
+				if(oldVal !== undefined) {
+					this.loadItemsTask.run();
+					this.parseAliases();
+				}
+				if (oldVal?.property !== this.columnModel.property) {
+					const selectElement = this.shadowRoot?.querySelector("select") as HTMLSelectElement;
+					selectElement.value = this.columnModel.property.propertyId;
+					// NOTE: when Column A gets deleted and B "moves over" and their properties are different
+					// Column B will not update the render and shows the property selected for A
+					// so forces a manual re-render here
+				}
 			} 
 			
 			if (oldVal?.property !== this.columnModel.property) {
-				this.loadItemsTask.run();
+				this.loadItemsTask.run(); 
 			}
 		} else if (changedProperties.has("isDragging")) {
 			const oldVal = changedProperties.get("isDragging") as boolean;
@@ -216,11 +227,9 @@ export class ColumnComponent extends Component {
 
 		// Allows user to modify drag with key -> i.e. change move to copy
 		// NOTE: Works, but does not seem the most robust (e.g: https://stackoverflow.com/q/72389012)
-		let doCopy =
-			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey; 
-		const copyToggle = this.dragController.getCopyToggle();
-		if (copyToggle) doCopy = copyToggle; // override modified drag, if "copy" toggled on
-
+		// let doCopy =
+			// event.ctrlKey || event.metaKey || event.altKey || event.shiftKey; 
+		const doCopy = this.dragController.getCopyToggle();
 		this.dragController.onDrop(this.columnModel, doCopy);
 		this.isDragover = false;
 	};

@@ -1,4 +1,4 @@
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { Component } from "./atomic/Component";
 import { PropertyValueMap, css, html } from "lit";
 import { fromStore, tableContext } from "../data/contexts/TableContext";
@@ -37,7 +37,7 @@ export default class AppRoot extends Component {
 	infoStyle = "hide";
 
 	@state()
-	isCopyToggleOn = false;
+	dragToggleBeforeDrag = false;
 
 	@state()
 	isQualifierToggleOn = false;
@@ -45,8 +45,9 @@ export default class AppRoot extends Component {
 	@state()
 	hasInitTippy = false;
 
-	@state()
+	@property()
 	private dragType = "Move";
+	private dragTypeCanChange = true;
 	
 	private qualifierType = "Discard";
 
@@ -155,23 +156,37 @@ export default class AppRoot extends Component {
 			}
 		});
 
-		// give dynamic feedback for holding CTRL/etc. and dragging => copy item
+		// when dragging an item a user can hold CRTL to change the drag type from what was toggled
 		window.addEventListener("drag", (e) => {
-			if (this.dragController.getCopyToggle()) return;
-			if(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
-				this.dragType = "Copy"
-			} else {
-				this.dragType = "Move";
-			}
-		})
-
-		// re-check (for robustness)
-		window.addEventListener("dragend", (e) => {
-			if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {
-				if(!this.dragController.getCopyToggle()) {
-					this.dragType = "Move";
+			// NOTE: keys get called repeatedly so check to only 
+			// allow changing dragType again after the key has been released
+			if(e.ctrlKey) {
+				if (this.dragTypeCanChange) {
+					if(this.dragType === "Copy") {
+						this.setDragType(false)
+					} else { 
+						this.setDragType(true)
+					}
+					this.dragTypeCanChange = false;
 				}
 			}
+			else {
+				// if key not held down change back to original (once)
+				if (!this.dragTypeCanChange) {
+					this.dragTypeCanChange = true
+					this.setDragType(this.dragToggleBeforeDrag);
+				}
+			} 
+
+		}) 
+
+		// when drag starts save current dragToggle to change back to when drag ends
+		window.addEventListener("dragstart", (e) => {
+			this.dragToggleBeforeDrag = this.dragController.getCopyToggle();
+		})
+
+		window.addEventListener("dragend", (e) => {
+			this.setDragType(this.dragToggleBeforeDrag) // reset
 		})
 
 		document.addEventListener("click", (e) => {
@@ -232,16 +247,22 @@ export default class AppRoot extends Component {
 		autoRun: false,
 	});
 
+	private setDragType(copy:boolean) {
+		if(copy) {
+			this.dragType = "Copy";
+		} else {
+			this.dragType = "Move";	
+		}
+		this.dragController.setCopyToggle(copy)
+	}
+
 	private toggleDragType() {
-		this.isCopyToggleOn = !this.isCopyToggleOn;
-		if (this.isCopyToggleOn) this.dragType = "Copy";
-		else this.dragType = "Move";
-		this.dragController.setCopyToggle(this.isCopyToggleOn);
+		this.setDragType(!this.dragController.getCopyToggle())
 	}
 
 	private toggleQualifierType() {
 		this.isQualifierToggleOn = !this.isQualifierToggleOn;
-		if (this.isQualifierToggleOn) this.qualifierType = "Move";
+		if (this.isQualifierToggleOn) this.qualifierType = "Keep";
 		else this.qualifierType = "Discard";
 		this.dragController.setQualifierToggle(this.isQualifierToggleOn);
 	}
@@ -339,7 +360,6 @@ export default class AppRoot extends Component {
 							<table-view
 								.tableModel="${this.zustand.table}"
 								.isDragging="${this.isDragging}"
-								.isCopyToggledOn="${this.isCopyToggleOn}"
 							></table-view>
 							<info-box class="${this.infoStyle}"></info-box>
 						</div>`,
