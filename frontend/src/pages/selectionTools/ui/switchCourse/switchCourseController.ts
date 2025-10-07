@@ -19,6 +19,7 @@ export class SwitchCourseController extends View {
     private readonly filterManager: FilterManager;
     private readonly graphController: ExperimentGraphController;
     private $switchMenu: HTMLSelectElement;
+    private $courseLink: HTMLDivElement;
 
     constructor(
         client:WikibaseClient, 
@@ -32,25 +33,33 @@ export class SwitchCourseController extends View {
         this.filterManager = filterManager;
         this.graphController = graphController;
 
-        // Init events
-        this.$switchMenu = document.getElementById(
-            "switch-course"
-        ) as HTMLSelectElement;
+        this.$switchMenu = document.getElementById("switch-course") as HTMLSelectElement;
+        this.$courseLink = document.getElementById("switch-course-link") as HTMLDivElement;
+        
     }
 
     public toggleHtmlListeners(on: boolean): void {
         if(on) {
             this.$switchMenu.addEventListener("change", this.switchCourse);
+            this.$courseLink.addEventListener("click", this.openCourseWikiPage);
         } else {
             this.$switchMenu.removeEventListener("change",this.switchCourse);
+            this.$courseLink.removeEventListener("click", this.openCourseWikiPage);
         }
+    }
+
+    private openCourseWikiPage = (e:Event) => {
+        console.log("open course")
+        const courseQID = this.$switchMenu.selectedOptions[0].value;
+        const courseUrl = `https://graphit.ur.de/wiki/Item:${courseQID}`
+        window.open(courseUrl, "_blank")?.focus();
     }
 
     /**
      * Switches to the coures, selected in the drop-down menu
      * @param e event
      */
-    private switchCourse = async (e:Event) => {
+    private switchCourse = async (e:Event) => {        
         const target = e.target as HTMLSelectElement
         const courseQID = target.selectedOptions[0].value as string;
 
