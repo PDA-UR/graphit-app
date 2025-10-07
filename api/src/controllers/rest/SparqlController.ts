@@ -188,5 +188,20 @@ export class Sparql {
 		return false;
 	}
 
+	@Get("/existingCourses/")
+	@Description("Return all course-items that include at least one session")
+	@Returns(200, SparqlResult).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async getExistingCourses(
+		@Session("user") credentials: Credentials,
+	) {
+		this.logger.info("Checking credentials", credentials);
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		const r = await this.wikibaseSdk.getExistingCourses(credentials)
+		return r;
+	}
+
 
 }

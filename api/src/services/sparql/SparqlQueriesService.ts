@@ -298,6 +298,23 @@ SELECT ?user ?userLabel ?role ?roleLabel WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 }
 `
+
+/**
+ * @returns all exiting course, that contain at least one session
+ */
+const existingCourses = () => `
+  PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+  PREFIX wd: <https://graphit.ur.de/entity/>
+  SELECT DISTINCT ?course ?courseLabel
+  WHERE {
+  ?course wdt:P3 wd:Q170.
+  ?course wdt:P14 ?session.
+  ?session wdt:P3 wd:Q427.
+ 
+  service wikibase:label { bd:serviceParam wikibase:language "en".}
+} ORDER BY ASC(?courseLabel)
+`;
+
 /**
  * Service for retrieving SPARQL-Queries
  */
@@ -337,6 +354,10 @@ export class SparqlQueryTemplateService {
 
   public getIsPerson(qid:string) {
     return isPerson(qid);
+  }
+
+  public getExistingCourses() {
+    return existingCourses();
   }
 
 }

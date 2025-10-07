@@ -647,6 +647,22 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         ...params,
       }),
 
+    /**
+     * @description Get all items that are used as courses
+     * 
+     * @tags Sparql
+     * @name existingCourses
+     * @request GET: /api/sparql/existingCourses
+     * @returns course-items that include at least one session
+     */
+    existingCourses: (params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/existingCourses`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
   };
   user = {
     /**

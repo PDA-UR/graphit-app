@@ -59,6 +59,8 @@ const initApp = async (isProd: boolean) => {
 	const { wikibaseClient, userInfo } = await doLogin();
 	
 	spinner.start();
+
+	await addExistingCourseOptions(wikibaseClient);
 	
 	const preselectCourse = new PreselectCourseController(wikibaseClient);
 	let course = await preselectCourse.getCurrentCourse();
@@ -197,6 +199,24 @@ async function getElementsForDev(wikibaseClient: WikibaseClient, course:string) 
 
 	return elements;
 	
+}
+
+/**
+ * Query all existing courses (that include at least one session) from the wikibase instance 
+ * and add them as option to the course selection drop down
+ * @param wikibaseClient 
+ */
+async function addExistingCourseOptions(wikibaseClient: WikibaseClient) {
+	const existingCourses = await wikibaseClient.getExistingCourses();
+
+	const courseSelect = document.getElementById("switch-course") as HTMLSelectElement;
+	const bindings = existingCourses.data.results.bindings;
+	bindings.forEach((binding:any) => {
+		const key = binding.courseLabel.value;
+		let url = binding.course.value;
+		const value = url.match(/[Q]\d*/g)[0];
+		courseSelect.options.add(new Option(key, value));
+	});
 }
 
 

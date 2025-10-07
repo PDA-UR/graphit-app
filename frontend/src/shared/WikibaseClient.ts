@@ -160,6 +160,15 @@ export default class WikibaseClient {
 		}
 	}
 
+	async getExistingCourses(): Promise<any> {
+		try {
+			const result = await this.api.sparql.existingCourses();
+			return result;
+		} catch(err) {
+			return [];
+		}
+	}
+
 	async getEntities(entityIds: string[]): Promise<any> {
 		// if more than 50 entityIds, split into multiple requests
 		if (entityIds.length > 50) {
