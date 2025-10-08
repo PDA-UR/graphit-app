@@ -69,7 +69,8 @@ export class ColorLegendController {
     }
 
     private setClassesForLegend(node:cytoscape.NodeSingular, on: boolean, cssClass:string) {
-        const data = node.data()
+        const data = node.data();
+        if(data === undefined) return;
 
         if (data["completed"] == "true")
             this.$completeNode.classList.toggle(cssClass, on)
