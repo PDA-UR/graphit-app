@@ -142,17 +142,16 @@ async function doLogin() {
 		credentials = JSON.parse(localStorageCredentials);
 		wikibaseClient = new WikibaseClient(credentials, api);
 		userInfo = await wikibaseClient.login();
-		userString = "[" + userInfo.username + "]";
 	} else {
 		let logRes = await handleLogin(api); 
 		wikibaseClient = logRes[0];
 		userInfo = logRes[1];
-		userString = "[" + userInfo.username + "]";
 	}
 
-	// display username
-	const userDiv = document.getElementById("username") as HTMLDivElement;
-	userDiv.innerText = userString;
+	// display username 
+	const userDiv = document.getElementById("username") as HTMLAnchorElement;
+	userDiv.href = `https://graphit.ur.de/wiki/Item:${userInfo.userItemId}`
+	userDiv.innerText = "[" + userInfo.username + "]";
 
 	return {
 		wikibaseClient,
