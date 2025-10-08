@@ -48,7 +48,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	}
 
 	/**
-	 * Query the sparql endpoint.
+	 * Query the sparql endpoint (using the wikibase-sdk library)
 	 * @param credentials User credentials
 	 * @param query Sparql query
 	 * @returns Query results
@@ -56,19 +56,39 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	async query(credentials: Credentials, query: string): Promise<SparqlResult> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.sparqlQuery(query);
-		// const headers = {}; // old
 		const headers = new Headers({
-			"User-Agent": "Dev User Agent"
-		}); // HACK
-		// NOTE: not sure this is necessary
-		// had a bug, where the response had been a html-page, asking me to set my user-agent (see: https://foundation.wikimedia.org/wiki/Policy:User-Agent_policy)
-		// except: "Api-User-Agent" (as in official docs) does nothing
-		// and if you look at the request using the browser dev tool, its still the same user agent as before
-		// Also, was only an issue on localhost -> same code, but empty header worked on server
+			"User-Agent": "Visual Editor Agent"
+		}); // set user-agent (see: https://foundation.wikimedia.org/wiki/Policy:User-Agent_policy)
+		// could be a localhost issue -> same code, but empty header worked on server
 		// maybe helpful: https://stackoverflow.com/a/42815264
 
 		const response = await fetch(url, { headers });
 		const data = await response.json()
+		return { data };
+	}
+
+	/**
+	 * Uses a different (direct) way to fetch a SPARQL-Query, that should be faster (especially) for larger queries.
+	 * The Mediawiki Docs mention using POST for larger queries as the do not get cached.
+	 * See: https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual#SPARQL_endpoint
+	 * @param query Sparql query
+	 * @returns Query results
+	 */
+	async bigQuery(query:string): Promise<SparqlResult> {
+
+		const fullUrl = this.info.sparqlEndpoint;
+		const headers = { 
+			'Accept': 'application/sparql-results+json',
+			"User-Agent": "Visual Editor Agent"
+		};
+
+		const response = await fetch( fullUrl, { 
+			headers,
+			method: "POST",
+			body:  new URLSearchParams({ query: query }) // alternative: new URLSearchParams('query=' + query),
+			} )
+		console.log("sparql data", response);
+		const data = await response.json();
 		return { data };
 	}
 
@@ -305,7 +325,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		courseId: string,
 	): Promise<SparqlResult> {
 		const query = this.templateService.getCourseQuery(userId, courseId);
-		return this.query(credentials, query);
+		return this.bigQuery(query);
 	}
 
 	async getItemResource(
