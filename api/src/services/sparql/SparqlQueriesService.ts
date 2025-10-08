@@ -1,12 +1,11 @@
 import { Service } from "@tsed/di";
 
 /**
- * SPARQL-Query for retrieving the user graph.
- * ONLY WORKS IN PRODUCTION INSTANCE BECAUSE OF THE HARDCODED PROPERTY IDS
+ * SPARQL-Query for retrieving a graph for courses that connect to items using "subclass of" (e.g. CGBV 23SS)
  * @param userId Id of the user
  * @returns The user graph
  */
-const userGraph = (
+const subClassCourse = (
 	userId = "Q157"
 ) => `PREFIX wd: <https://graphit.ur.de/entity/>
 PREFIX wdt: <https://graphit.ur.de/prop/direct/>
@@ -320,8 +319,8 @@ const existingCourses = () => `
  */
 @Service()
 export class SparqlQueryTemplateService {
-	public getUserGraph(userId: string) {
-		return userGraph(userId);
+	public getSubClassCourse(userId: string) {
+		return subClassCourse(userId);
 	}
 
 	public getCategoriesQuery() {

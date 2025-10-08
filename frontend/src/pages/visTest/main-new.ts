@@ -24,7 +24,7 @@ async function main() {
 		alert(e);
 		return;
 	}
-	const elements = await wikibase.getUserGraph();
+	const elements = await wikibase.getSubClassCourse();
 	const parents = await wikibase.getCategories();
 	// const resources = await wikibase.getResource("Q171");
 

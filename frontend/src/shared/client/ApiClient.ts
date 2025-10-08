@@ -538,15 +538,15 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
-     * @description Retrieve the users graph (learning contents, completions, etc.)
+     * @description Retrieve the users graph for courses, that use "subclass of"
      *
      * @tags Sparql
-     * @name UserGraph
-     * @request GET:/api/sparql/userGraph
+     * @name subClassCourse
+     * @request GET:/api/sparql/subClassCourse
      */
-    userGraph: (params: RequestParams = {}) =>
+    subClassCourse: (params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
-        path: `/api/sparql/userGraph`,
+        path: `/api/sparql/subClassCourse`,
         method: "GET",
         format: "json",
         ...params,
@@ -568,13 +568,13 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
        /**
-     * @description Retrieve the Graph for Wissenschaftliches Arbeiten
+     * @description Retrieve a graph for courses, that "include" items
      *
      * @tags Sparql
      * @name courseQuery
      * @request GET:/api/sparql/courseQuery/${courseId}
      */
-    wissArb: (courseId: string, params: RequestParams = {}) =>
+    courseQuery: (courseId: string, params: RequestParams = {}) =>
     this.request<SparqlResultModel, string>({
       path: `/api/sparql/courseQuery/${courseId}`,
       method: "GET",

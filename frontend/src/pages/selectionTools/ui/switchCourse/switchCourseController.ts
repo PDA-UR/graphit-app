@@ -69,7 +69,7 @@ export class SwitchCourseController extends View {
 
         let elements;
         if(courseQID == "Q171") { // get CGBV -> has diff. query
-            elements = await this.client.getUserGraph();
+            elements = await this.client.getSubClassCourse();
         } else { // get all other courses
             elements = await this.client.getCourseQuery(courseQID);
         }

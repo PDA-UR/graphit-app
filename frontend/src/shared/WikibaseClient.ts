@@ -65,8 +65,8 @@ export default class WikibaseClient {
 		return results;
 	}
 
-	async getUserGraph(): Promise<ElementDefinition[]> {
-		const results = await this.api.sparql.userGraph();
+	async getSubClassCourse(): Promise<ElementDefinition[]> {
+		const results = await this.api.sparql.subClassCourse();
 		const graph = this.sparqlParser.parsePairs(
 			["source", "dependency"],
 			"depends on",
@@ -105,7 +105,7 @@ export default class WikibaseClient {
 	}
 
 	async getCourseQuery(courseId:string): Promise<ElementDefinition[]> {
-		const results = await this.api.sparql.wissArb(courseId);
+		const results = await this.api.sparql.courseQuery(courseId);
 		const graph = this.sparqlParser.parsePairs(
 			["source", "dependency"],
 			"depends on",

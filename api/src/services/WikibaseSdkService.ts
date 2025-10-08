@@ -297,11 +297,11 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 	// ~~~~~~~~~~ Pre built queries: ~~~~~~~~~ //
 
-	async getUserGraph(
+	async getSubClassCourse(
 		credentials: Credentials,
 		userId: string
 	): Promise<SparqlResult> {
-		const query = this.templateService.getUserGraph(userId);
+		const query = this.templateService.getSubClassCourse(userId);
 		return this.query(credentials, query);
 	}
 
