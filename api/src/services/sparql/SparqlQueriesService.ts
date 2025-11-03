@@ -152,8 +152,8 @@ WHERE {
     BIND (?topic as ?dependency) 
   } 
     # Check the User-Queries on the already existing ?dependencies [*]
-    BIND(EXISTS { wd:Q315 wdt:P12 ?dependency } AS ?dependencyCompleted) 
-    BIND( EXISTS { wd:Q315 wdt:P23 ?dependency } AS ?dependencyInterested) 
+    BIND(EXISTS { wd:${userId} wdt:P12 ?dependency } AS ?dependencyCompleted) 
+    BIND( EXISTS { wd:${userId} wdt:P23 ?dependency } AS ?dependencyInterested) 
   }
   # NOTE: both operations don't seem to work without union...
     
@@ -198,7 +198,7 @@ WHERE {
  * Optionally you could BIND an arbitrary value to the empty ?dependencies and the use the same syntax as the ?sources.
  * i.e:
  * BIND (IF(!BOUND(?dependency), "1", ?dependency) as ?dependency) 
- * BIND (IF(?dependency = "1", "false", EXISTS { wd:Q315 wdt:P23 ?dependency } ) AS ?dependencyInterested ) 
+ * BIND (IF(?dependency = "1", "false", EXISTS { wd:${userId} wdt:P23 ?dependency } ) AS ?dependencyInterested ) 
  */ 
 
 
