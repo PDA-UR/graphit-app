@@ -5,15 +5,21 @@ export class LoginController {
 
     private readonly $container: HTMLDivElement;
     private readonly $errorDiv: HTMLDivElement;
+    private readonly $root: ShadowRoot|Document;
 
-    constructor() {
-        this.$container = document.getElementById("login-module") as HTMLDivElement;
-        this.$errorDiv = document.getElementById("login-error") as HTMLDivElement;
+    constructor(root:ShadowRoot|Document) {
+        
+        this.$root = root;
+        this.$container = this.$root.getElementById("login-module") as HTMLDivElement;
+        this.$errorDiv = this.$root.getElementById("login-error") as HTMLDivElement;
+        console.log("document", document)
+        console.log("Login controller:", this.$container, this.$errorDiv);
     }
 
 
     public show() {
         this.$container.style.display = "block";
+        console.log("container", this.$container)
     }
 
     public hide() {
@@ -22,11 +28,11 @@ export class LoginController {
 
 
     public getCredentials(): Credentials | null {
-        const userDiv = document.getElementById("wb-username") as HTMLInputElement;
-        const pwDiv = document.getElementById("wb-pw") as HTMLInputElement;
+        const userDiv = this.$root.querySelector("#wb-username") as HTMLInputElement;
+        const pwDiv = this.$root.querySelector("#wb-pw") as HTMLInputElement;
         const username = userDiv.value;
         const password = pwDiv.value;
-    
+        
         if (username === "" || password === "") return null // catch
         return { username, password } as Credentials
     }

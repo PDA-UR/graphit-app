@@ -33,6 +33,7 @@ export const getCredentials = (errMsg:string=""): Credentials => {
 	};
 };
 
+// ---------------------------- //
 
 /**
  * Creates a promise for a event on an item and waits for that event to happen, before resolving
@@ -41,7 +42,7 @@ export const getCredentials = (errMsg:string=""): Credentials => {
  * @param event the event (string)
  * @returns Promise that resolve to the items is was created for
  */
-function getPromiseFromEvent(item:any, event:any) {
+export function getPromiseFromEvent(item:any, event:any) {
 	return new Promise<void>((resolve) => {
 		const listeners = () => {
 			item.removeEventListener(event, listeners);
@@ -58,7 +59,7 @@ function getPromiseFromEvent(item:any, event:any) {
  * Source: https://stackoverflow.com/a/70789108
  * @returns Promise that resolves when the key is pressed
  */
-function getPromiseFromEnterKeyPress() {
+export function getPromiseFromEnterKeyPress() {
 	return new Promise<void>((resolve) => {
 		document.addEventListener("keypress", onKeyHandler);
 		function onKeyHandler(e:KeyboardEvent) {
@@ -99,12 +100,22 @@ export const askDemoAccess = async(): Promise<any> => {
 /**
  * create a loginController and awaits the successful log in attempt.
  * @param api the wikibase api instance
+ * @param rootElement can be set to a shadow root, otherwise will use document
  * @returns logged in and created WikibaseClient and userInfo as array
 */
-export const handleLogin = async (api:any): Promise<any> => {
-	const loginController = new LoginController();
+export const handleLogin = async (
+	api:any, 
+	rootElement:ShadowRoot|undefined=undefined
+): Promise<any> => {
+
+	let root = document as Document | ShadowRoot
+	if (rootElement != undefined) {
+		root = rootElement as ShadowRoot
+	}
+
+	const loginController = new LoginController(root);
 	loginController.show();
-	return await tryLogin(api, loginController);
+	return await tryLogin(api, loginController, root);
 };
 
 
@@ -112,10 +123,11 @@ export const handleLogin = async (api:any): Promise<any> => {
  * (re-)tries logging into the wikibase client
  * @param api the wikibase api instance
  * @param controller the LoginController instance
+ * @param root the DOM root to use for the HTML elements
  * @returns logged in and created WikibaseClient and userInfo as array
  */
-async function tryLogin(api:any, controller:LoginController): Promise<any> {
-	const btn = document.getElementById("login-button") as HTMLDivElement;
+export async function tryLogin(api:any, controller:LoginController, root:Document|ShadowRoot): Promise<any> {
+	const btn = root.getElementById("login-button") as HTMLDivElement;
 	const clickPromise =  getPromiseFromEvent(btn, "click"); 
 	const keyPromise = getPromiseFromEnterKeyPress();
 
@@ -123,9 +135,10 @@ async function tryLogin(api:any, controller:LoginController): Promise<any> {
 	await Promise.any([clickPromise, keyPromise]);
 
 	const credentials = controller.getCredentials();
+
 	if (credentials == null) {
 		controller.setError("Empty credentials");
-		return tryLogin(api, controller);
+		return tryLogin(api, controller, root);
 	}
 
 	// Try to log in
@@ -137,15 +150,9 @@ async function tryLogin(api:any, controller:LoginController): Promise<any> {
 		controller.hide();
 		return [wikibaseClient, userInfo] as Array<any>;
 	} catch (error:any) { 
-		// parse the error into a readable message
 		let str = error.message
-		str = str.split('message":')
-		let errorMsg = str[1].replace("}", ""); // rm trailing "}" 
-		controller.setError(errorMsg);
-		
-		return tryLogin(api, controller) // try login again
+		controller.setError(str);		
+		return tryLogin(api, controller, root) // try login again
 	}
 
 }
-
-
