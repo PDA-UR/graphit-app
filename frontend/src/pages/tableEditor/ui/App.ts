@@ -7,7 +7,7 @@ import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 
 import { zustandStore } from "../data/ZustandStore";
-import { getCredentials } from "../../../shared/util/GetCredentials";
+import { getPromiseFromEnterKeyPress, getPromiseFromEvent } from "../../../shared/util/GetCredentials";
 import { createApiClient } from "../../../shared/util/getApiClient";
 import WikibaseClient from "../../../shared/WikibaseClient";
 import { Task, TaskStatus } from "@lit-labs/task";
@@ -20,6 +20,8 @@ import { sessionContext } from "../data/contexts/SessionContext";
 import { selectionControllerContext } from "../data/contexts/SelectionControllerContext";
 import { SelectionController } from "./controllers/SelectionController";
 import { TOOLTIPS } from "../data/Tooltips";
+import { LoginController } from "../../../shared/util/login/LoginController";
+import { Credentials } from "../../../shared/WikibaseEditConfig";
 
 
 
@@ -29,12 +31,15 @@ import { TOOLTIPS } from "../data/Tooltips";
 @customElement("app-root")
 export default class AppRoot extends Component {
 	private zustand = zustandStore.getState();
-
+	
 	@state()
 	isDragging = false;
 
 	@state()
 	infoStyle = "hide";
+
+	@state()
+	loginStyle = "hide";
 
 	@state()
 	dragToggleBeforeDrag = false;
@@ -70,6 +75,11 @@ export default class AppRoot extends Component {
 		this.setIsDragging,
 		this.selectionController
 	);
+
+	// const element = this.shadowRoot?.getElementById("login") as LoginPrompt;
+	private loginRoot = undefined as undefined|ShadowRoot;
+    private loginController = undefined as undefined|LoginController;
+	private loginCredentials = undefined as undefined|Credentials;
 
 	// ------- Contexts ------- //
 
@@ -200,13 +210,12 @@ export default class AppRoot extends Component {
 	// --------- Tasks -------- //
 
 	private loginTask = new Task(this, {
-		task: async ([{ wikibaseClient, zustand }]) => {
-			let credentials = zustand.credentials;
-			if (!credentials) credentials = getCredentials();
-			zustand.setCredentials(credentials);
-			wikibaseClient.setCredentials(credentials);
+		task: async ([{ wikibaseClient, zustand, loginCredentials }]) => {
+			zustand.setCredentials(loginCredentials);
+			wikibaseClient.setCredentials(loginCredentials);
 
 			const login = await wikibaseClient.login()
+			console.log("login", login)
 
 			// Get a users role from the graph
 			let adminRights = false;
@@ -225,6 +234,7 @@ export default class AppRoot extends Component {
 			{
 				wikibaseClient: this.wikibaseClient,
 				zustand: this.zustand,
+				loginCredentials: this.loginCredentials as Credentials,
 			},
 		],
 		autoRun: false,
@@ -282,9 +292,37 @@ export default class AppRoot extends Component {
 		this.logoutTask.run();
 	}
 
-	onLogin(error:any|null=null) {
-		// reset credentials if there was an error on login (e.g. invalid pw)
-		if(error) { this.zustand.credentials = undefined} 
+	async onLogin(error:any|null=null) {
+		if(error) { 
+			// TODO: better way to get back to initial render state, but after button click
+			this.zustand.logout();
+			window.location.reload(); // reload window to get back to initial render state, so that user can retry login
+			this.zustand.credentials = undefined
+		} 
+
+		let existingCredentials = this.zustand.credentials;
+		if (!existingCredentials) {
+			/* NOTE:
+			There is a LoginController.ts in shared/login that is used in the selectionEditor
+			But as lit.js works kinda different than regular html/js it's being separated a bit here,
+			to keep the code cleaner
+			*/
+
+			this.loginStyle = "show";	
+			this.loginRoot = this.shadowRoot?.getElementById("login")?.shadowRoot as ShadowRoot;
+			this.loginController = new LoginController(this.loginRoot);
+
+			// Show a login prompt and get the inputs
+			const btn = this.loginRoot.getElementById("login-button") as HTMLDivElement;
+			const clickPromise = getPromiseFromEvent(btn, "click"); 
+			const keyPromise = getPromiseFromEnterKeyPress();
+			await Promise.any([clickPromise, keyPromise]);
+			let credentials = this.loginController.getCredentials();
+			this.loginCredentials = {username: credentials!.username, password: credentials!.password}
+		} else {
+			this.loginCredentials = existingCredentials;
+		}
+
 		this.loginTask.run();
 	}
 
@@ -297,7 +335,10 @@ export default class AppRoot extends Component {
 	render() {
 		return this.loginTask.render({
 			initial: () =>
-				html`<button @click="${() => this.onLogin()}">Login</button>`,
+				html`
+					<button @click="${() => this.onLogin()}">Login</button>
+					<login-prompt class="${this.loginStyle}" id="login"></login-prompt>
+					`,
 			pending: () => html`Logging in...`,
 			complete: () =>
 				when(
