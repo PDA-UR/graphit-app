@@ -7,7 +7,6 @@ import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 
 import { zustandStore } from "../data/ZustandStore";
-import { getPromiseFromEnterKeyPress, getPromiseFromEvent } from "../../../shared/util/GetCredentials";
 import { createApiClient } from "../../../shared/util/getApiClient";
 import WikibaseClient from "../../../shared/WikibaseClient";
 import { Task, TaskStatus } from "@lit-labs/task";
@@ -315,13 +314,7 @@ export default class AppRoot extends Component {
 				this.loginController = new LoginController(this.loginRoot);
 			}
 
-			// Show a login prompt and get the inputs
-			const btn = this.loginRoot.getElementById("login-button") as HTMLDivElement;
-			const clickPromise = getPromiseFromEvent(btn, "click"); 
-			const keyPromise = getPromiseFromEnterKeyPress();
-			await Promise.any([clickPromise, keyPromise]);
-			let credentials = this.loginController.getCredentials();
-			this.loginCredentials = {username: credentials!.username, password: credentials!.password}
+			this.loginCredentials = await this.loginController.getCredentialsFromPrompt()
 		} else {
 			this.loginCredentials = existingCredentials;
 		}

@@ -1,6 +1,6 @@
 import WikibaseClient from "../WikibaseClient";
 import { Credentials } from "../WikibaseEditConfig";
-import { LoginController } from "./login/LoginController";
+import { LoginController, getPromiseFromEvent } from "./login/LoginController";
 
 /**
  * Let users input their credentials using prompt
@@ -36,43 +36,6 @@ export const getCredentials = (errMsg:string=""): Credentials => {
 // ---------------------------- //
 
 /**
- * Creates a promise for a event on an item and waits for that event to happen, before resolving
- * Source: https://stackoverflow.com/a/70789108
- * @param item The (HTML)Item to add the event listener to
- * @param event the event (string)
- * @returns Promise that resolve to the items is was created for
- */
-export function getPromiseFromEvent(item:any, event:any) {
-	return new Promise<void>((resolve) => {
-		const listeners = () => {
-			item.removeEventListener(event, listeners);
-			resolve(item); // return the item for differentiation
-			// resolve();
-		}
-		item.addEventListener(event, listeners);
-	})
-}
-
-
-/**
- * Create a promise for a keypress-event for the Enter-Key
- * Source: https://stackoverflow.com/a/70789108
- * @returns Promise that resolves when the key is pressed
- */
-export function getPromiseFromEnterKeyPress() {
-	return new Promise<void>((resolve) => {
-		document.addEventListener("keypress", onKeyHandler);
-		function onKeyHandler(e:KeyboardEvent) {
-			if(e.code === "Enter") {
-				document.removeEventListener("keypress", onKeyHandler);
-				resolve();
-			}
-		}
-	});
-}
-
-
-/**
  * Creates a "popup" to ask the User if they want to view a demo version of the 
  * @returns if the user wants to view the Demo or not (bool)
  */
@@ -94,7 +57,7 @@ export const askDemoAccess = async(): Promise<any> => {
 		return false
 	}
 	return true;
- }
+}
 
 
 /**
@@ -127,19 +90,7 @@ export const handleLogin = async (
  * @returns logged in and created WikibaseClient and userInfo as array
  */
 export async function tryLogin(api:any, controller:LoginController, root:Document|ShadowRoot): Promise<any> {
-	const btn = root.getElementById("login-button") as HTMLDivElement;
-	const clickPromise =  getPromiseFromEvent(btn, "click"); 
-	const keyPromise = getPromiseFromEnterKeyPress();
-
-	// Await a button-click or a enter keypress
-	await Promise.any([clickPromise, keyPromise]);
-
-	const credentials = controller.getCredentials();
-
-	if (credentials == null) {
-		controller.setError("Empty credentials");
-		return tryLogin(api, controller, root);
-	}
+	const credentials = await controller.getCredentialsFromPrompt();
 
 	// Try to log in
 	const wikibaseClient: WikibaseClient = new WikibaseClient(credentials, api);
