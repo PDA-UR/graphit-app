@@ -51,6 +51,13 @@ Docker:
 
 ### Additional Notes
 
+### Login Requirements
+  - a GraphIT-Account
+  - a [User Item](https://graphit.ur.de/wiki/Item:Q157), with statements
+    - *participates in* `<CourseID>` - if not: defaults to the first existing course alphabetically
+    - *instance of* `<Student/Admin>`  - if not: defaults to *Student*
+  - a [User-Page](https://graphit.ur.de/wiki/User:Max_Mustermann) with a link to the User Item
+
 #### Add a new Page
   - add the `frontend/newSection/index.html` to the rollupOptions { input {...} } in `vite.config.js`
   - add a link to the `frontend/index.html`-hub-page
