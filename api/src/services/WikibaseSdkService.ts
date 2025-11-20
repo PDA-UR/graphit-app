@@ -87,7 +87,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 			method: "POST",
 			body:  new URLSearchParams({ query: query }) // alternative: new URLSearchParams('query=' + query),
 			} )
-		console.log("sparql data", response);
+		// console.log("sparql data", response);
 		const data = await response.json();
 		return { data };
 	}
@@ -229,12 +229,16 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	 * @returns User item id
 	 */
 	async getUserItemId(credentials: Credentials): Promise<string> {
-		const htmlUserPage = await this.getWikibasePageContent(
-			credentials,
-			"User:" + credentials.username
-		);
-		const userItemId = await this.parseUserItemId(htmlUserPage);
-		return userItemId;
+		try {
+			const htmlUserPage = await this.getWikibasePageContent(
+				credentials,
+				"User:" + credentials.username
+			);
+			const userItemId = await this.parseUserItemId(htmlUserPage);
+			return userItemId;
+		} catch (error) {
+			return error
+		}
 	}
 
 	async getProperties(): Promise<Array<WikibaseProperty>> {

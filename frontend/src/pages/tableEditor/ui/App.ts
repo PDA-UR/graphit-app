@@ -215,7 +215,6 @@ export default class AppRoot extends Component {
 			wikibaseClient.setCredentials(loginCredentials);
 
 			const login = await wikibaseClient.login()
-			console.log("login", login)
 
 			// Get a users role from the graph
 			let adminRights = false;
@@ -297,7 +296,7 @@ export default class AppRoot extends Component {
 			// TODO: better way to get back to initial render state, but after button click
 			this.zustand.logout();
 			window.location.reload(); // reload window to get back to initial render state, so that user can retry login
-			this.zustand.credentials = undefined
+			this.zustand.credentials = undefined;
 		} 
 
 		let existingCredentials = this.zustand.credentials;
@@ -307,10 +306,14 @@ export default class AppRoot extends Component {
 			But as lit.js works kinda different than regular html/js it's being separated a bit here,
 			to keep the code cleaner
 			*/
-
-			this.loginStyle = "show";	
-			this.loginRoot = this.shadowRoot?.getElementById("login")?.shadowRoot as ShadowRoot;
-			this.loginController = new LoginController(this.loginRoot);
+			this.loginStyle = "show";
+			
+			if (this.loginRoot == undefined) {
+				this.loginRoot = this.shadowRoot?.getElementById("login")?.shadowRoot as ShadowRoot;
+			}
+			if(this.loginController == undefined) {
+				this.loginController = new LoginController(this.loginRoot);
+			}
 
 			// Show a login prompt and get the inputs
 			const btn = this.loginRoot.getElementById("login-button") as HTMLDivElement;

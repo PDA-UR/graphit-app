@@ -150,8 +150,7 @@ export async function tryLogin(api:any, controller:LoginController, root:Documen
 		controller.hide();
 		return [wikibaseClient, userInfo] as Array<any>;
 	} catch (error:any) { 
-		let str = error.message
-		controller.setError(str);		
+		controller.setError(error.message);		
 		return tryLogin(api, controller, root) // try login again
 	}
 

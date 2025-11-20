@@ -12,14 +12,11 @@ export class LoginController {
         this.$root = root;
         this.$container = this.$root.getElementById("login-module") as HTMLDivElement;
         this.$errorDiv = this.$root.getElementById("login-error") as HTMLDivElement;
-        console.log("document", document)
-        console.log("Login controller:", this.$container, this.$errorDiv);
     }
 
 
     public show() {
         this.$container.style.display = "block";
-        console.log("container", this.$container)
     }
 
     public hide() {

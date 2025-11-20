@@ -128,7 +128,7 @@ export class Auth {
 			this.logger.info("Demo login");
 		} else existingSession.password = credentials.password;
 		
-		rights.userQID = await this.wikibaseSdkService.getUserItemId(credentials);
+		// rights.userQID = await this.wikibaseSdkService.getUserItemId(credentials);
 
 		this.logger.info("Logging in as", existingSession);
 		const wbEdit = this.wikibaseEditService.getSessionData(existingSession);
@@ -146,6 +146,7 @@ export class Auth {
 					"Successfully retrieved user info for",
 					existingSession
 				);
+				rights.userQID = userItemId;
 				return {
 					...existingSession,
 					userItemId,
@@ -160,7 +161,7 @@ export class Auth {
 			this.logger.error("Login error", existingSession, e.message);
 			existingSession.username = "";
 			existingSession.password = "";
-			return new Unauthorized("Invalid credentials " + existingSession.password);
+			return new Unauthorized("Invalid credentials" + existingSession.password);
 		}
 	}
 
