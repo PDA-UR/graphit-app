@@ -15,25 +15,80 @@
 				</div>
 				<div id="search-results" class="search-results"></div>
 			</div>
+
+			<div id="ring" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+
 			<div id="main-pane">
 				<div id="filter-bar" class="base-container">
 					<div id="filter-bar-items"></div>
 					<div id="filter-bar-add-button">+</div>
 					<div class="spacer"></div>
+					<a id="username">[username]</a>
+					<div id="save-counter">
+						<b> 0 </b> unsaved changes
+					</div>
 				</div>
-				<div id="search-toggle-button" class="button"></div>
-				<div class="spacer"></div>
-				<div id="selection-type-indicator" class="base-container card"></div>
+
+				<div id="floating-menu" class="floating-menu">
+					<div id="search-toggle-button" class="button"></div>
+					<div class="spacer"></div>
+					<label for="switch-course">Course</label>
+					<select name="switch-course" class="switch-course" id="switch-course">
+					</select>
+					<div id="switch-course-link">🔗</div>
+				</div>
+
+				<div class="spacer"></div> 
+				<div id="legend-toggle-button" class="button"></div>
+				<div id="logout-button" class="base-item">Logout</div>
+				<div id="bottom-info-container">
+					<div id="selection-type-indicator" class="base-container card"></div>
+					<div id="color-legend" class="base-container card">
+						<!-- <div id="default-node" class="rect"></div> -->
+						<div id="goal-node" class="goal-node rect"></div>
+						<div id="complete-node" class="complete-node rect"></div>
+						<div id="interest-node" class="interest-node rect"></div>
+					</div>
+				</div>
+
 			</div>
 
+			<!-- <div id="right-sidebar"> -->
+				<div id="node-info-container">
+					<!-- <a id="wikibase-item-link" class="disabled-link"></a> -->
+					<div id="node-info-name-container">
+						<div id="node-info-icon"></div>
+						<div id="node-info-name">Item</div>
+					</div>
+					<div id="info-dropdown-btn">+</div>
+
+					<div id="node-info-additional-container">
+						<div id="node-desc"></div>
+						<div id="node-date"></div>
+					</div>
+
+					<div id="info-content" class="invisible">nichts ausgewählt</div>
+					<div id="path-toggle-button" class="button"></div>
+				</div>
+
+				<!-- <div id="path"> -->
+					<!-- <div id="path-toggle-button" class="button"></div> -->
+					<div id="path-container" class="slided-out-right hidden-cy">
+						<div id="path-spacer" draggable="true"></div>
+						<div id="path-info"></div>
+						<!-- <div id="path-view"></div> -->
+					</div>
+				<!-- </div> -->
+			<!-- </div> -->
+
 			<div id="property-modal" class="modal base-container">
-				<div id="complete" class="property base-item">
-					<span>Toggle completion</span>
+				<div id="interest" class="property base-item">
+					<span>Toggle interest</span>
 					<span class="spacer"></span>
 					<span class="keyboard-shortcut">1</span>
 				</div>
-				<div id="interest" class="property base-item">
-					<span>Toggle interest</span>
+				<div id="complete" class="property base-item">
+					<span>Toggle completion</span>
 					<span class="spacer"></span>
 					<span class="keyboard-shortcut">2</span>
 				</div>
@@ -41,12 +96,54 @@
 					<span>Rate</span>
 				</div>
 				<span class="disabled small-info">Coming soon™</span>
+				<button class="modal-closer">-</button>
 			</div>
+			<div id="modal-closed" class="base-container  invisible">
+				<div id="modal-interest-rect" class="interest-node rect"></div>
+				<button id="min-interest-button" class="keyboard-shortcut">1</button>
+				<span>|</span>
+				<div id="modal-complete-rect" class="complete-node rect"></div>
+				<button id="min-complete-button" class="keyboard-shortcut">2</button>
+				<button id="modal-opener" class="modal-closer">+</button>
+			</div>
+
 			<div id="save-button" class="base-item">Save</div>
 
 			<div id="experiment-cy" class="cy"></div>
 		</div>
 
+
+		<!-- DEMO-ACCESS -->
+		<div id="demo-module">
+			<div>Access a <b>Demo</b>?<br>
+				<small>You can explore without editing:</small>
+			</div>
+			<div id="demo-access-container">
+				<div id="sign-in-btn" class="base-item">Sign in</div>
+				<div id="demo-btn" class="base-item">View Demo</div>
+			</div>
+		</div>
+
+		<!-- LOGIN -->
+		<div id="login-module">
+			<div id="info-text">
+				<b>GraphIT Login:</b><br>
+				<small>Your GraphIT-Wikibase account:</small>
+			</div>
+			<input id="wb-username" name="username" class="login-input" placeholder="username" required> <br>
+			<input type="password" id="wb-pw" name="pw" class="login-input" placeholder="password" required> <br>
+			<div id="login-button" class="base-item">Login</div>
+			<div id="login-error"></div>
+		</div>
+
+		<!-- PRE-COURSE-SELECTION
+		<div id="pre-course-select">
+			<div id="pre-course-text">
+				Select a course:
+			</div>
+		</div> -->
+
 		<script type="module" src="./main.ts"></script>
+ 
 	</body>
 </html>

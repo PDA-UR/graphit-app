@@ -1,4 +1,4 @@
-import { html, css, PropertyValueMap } from "lit";
+import { html, css, PropertyValueMap, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Component } from "../atomic/Component";
 import { consume } from "@lit-labs/context";
@@ -6,6 +6,9 @@ import { selectionControllerContext } from "../../data/contexts/SelectionControl
 import { SelectionController } from "../controllers/SelectionController";
 
 import { ColumnItemInfo, ItemOrigin } from "../controllers/DragController";
+import WikibaseClient from "../../../../shared/WikibaseClient";
+import { wikibaseContext } from "../../data/contexts/WikibaseContext";
+import { WikibasePropertyModel } from "../../../../shared/client/ApiClient";
 
 /**
  * <column-item> is a single, draggable item in a column.
@@ -15,6 +18,12 @@ export class ColumnItem extends Component {
 	@consume({ context: selectionControllerContext })
 	selectionController!: SelectionController;
 
+	@consume({ context: wikibaseContext })
+	private wikibaseClient!: WikibaseClient;
+
+	@property({type: Object, attribute: false})
+	private cachedProperties: any;
+	
 	@property({ type: Object, attribute: false })
 	private columnItemInfo!: ColumnItemInfo;
 
@@ -29,7 +38,9 @@ export class ColumnItem extends Component {
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
-		console.log("first updated", this.origin);
+		console.log("first updated");
+
+		this.cachedProperties = this.wikibaseClient.getCachedProperties();
 
 		this.setAttribute("draggable", "true");
 		this.unregisterSelectionCallback =
@@ -39,13 +50,47 @@ export class ColumnItem extends Component {
 					this.classList.add("selected");
 				} else {
 					this.classList.remove("selected");
-				}
+				}				
 			});
 	}
 
 	disconnectedCallback(): void {
 		super.disconnectedCallback();
 		this.unregisterSelectionCallback();
+	}
+
+	/**
+	 * Parses the existing qualifiers of an item into displayable html strings.
+	 * @param qualifier -dictionary from the item
+	 * @returns an array of html TemplateResults or nothing (if no qualifiers exist)
+	 */
+	parseQualifiers(qualifier: any): TemplateResult[] | undefined {
+		if (qualifier == undefined) return;
+		let htmlArr : TemplateResult[] = [];
+
+		for (const [key, value] of Object.entries(qualifier)) {
+
+			let label = key;
+			if (this.cachedProperties != undefined) {
+				this.cachedProperties.forEach((element: WikibasePropertyModel) => {
+					if(element.propertyId == key) label = element.label;
+				});
+			}
+
+			let entry = value as String[];
+			let val = "";
+			entry.forEach(element => {	
+				let v = element;		
+				if (element.includes("T00:00:00Z")) {
+					v = element.match(/(\d*-\d*-\d*)/g)![0];
+				}
+				val += v + ", ";
+			});
+			val = val.slice(0, -2); // rm last ", "
+			let str = html`<div class="text"> <i>${label}</i> (${key}): ${val} </div>`
+			htmlArr.push(str)
+		}
+		return htmlArr
 	}
 
 	// ------- Listeners ------ //
@@ -79,6 +124,9 @@ export class ColumnItem extends Component {
 				<div class="content">
 					<div class="text">${this.columnItemInfo.item.itemId}</div>
 					<div class="text">${this.columnItemInfo.item.text}</div>
+					<div class="qualifier-container">
+						${this.parseQualifiers(this.columnItemInfo.item.qualifiers)}
+					</div>
 				</div>
 			</card-component>
 		`;
@@ -87,7 +135,7 @@ export class ColumnItem extends Component {
 	static styles = css`
 		:host {
 			width: 100%;
-			height: 5rem;
+			max-height: 10rem;
 			display: flex;
 			cursor: grab;
 		}
@@ -103,6 +151,15 @@ export class ColumnItem extends Component {
 		}
 		.text {
 			text-align: center;
+			user-select: none;
+		}
+		.qualifier-container {
+			overflow: auto;
+			font-size: 9pt;
+			max-height: 5em;
+		}
+		.qualifier {
+			text-align: left;
 			user-select: none;
 		}
 	`;

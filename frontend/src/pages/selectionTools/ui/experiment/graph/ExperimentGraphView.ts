@@ -1,3 +1,4 @@
+import cytoscape from "cytoscape";
 import { experimentEventBus } from "../../../global/ExperimentEventBus";
 import {
 	fromKeyboardEvent,
@@ -22,13 +23,14 @@ import {
 } from "../../graph/CytoscapeElements";
 import { initLassoSelection } from "../../graph/CytoscapeExtensions";
 import { GraphView } from "../../graph/GraphView";
+import { PathViewControllerEvents } from "../../learnpath/PathViewController";
 import {
 	sharedEventBus,
 	SharedEventBusEvent,
 } from "../../shared/SharedEventBus";
 import { Toast } from "../../toast/Toast";
 import { SearchViewControllerEvents } from "../search/SearchController";
-import cytoscape from "cytoscape-select";
+// import cytoscape from "cytoscape-select";
 
 export enum ExperimentGraphViewEvents {
 	INDICATE_NODE_START = "hoverNodeStart",
@@ -56,8 +58,8 @@ export class ExperimentGraphView extends GraphView {
 	protected onCyKeyDown = (e: any) => {
 		const modifierKeys = fromKeyboardEvent(e),
 			selectionType = getSelectionType(modifierKeys);
-		console.log("Key down", e);
-		if (e.key === "Shift") {
+		// console.log("Key down", e);
+		if (e.key === "Shift") { 
 			console.log("Shift pressed");
 			const hoveringNode = this.cy.$(".indicated").filter("node");
 			if (hoveringNode) {
@@ -117,7 +119,7 @@ export class ExperimentGraphView extends GraphView {
 		dataAtClick: any,
 		isSearch: boolean
 	) => {
-		console.log("normal click");
+		console.log("normal click on", clickedNode);
 		const doSelectShortestPathBetween = this.doSelectShortestPathBetween(
 				dataAtClick.modifierKeys
 			),
@@ -207,6 +209,15 @@ export class ExperimentGraphView extends GraphView {
 		console.log("_normal click");
 		const clickedNode = event.target!;
 		this.onNormalClickNode(clickedNode, dataAtClick, false);
+
+		const core = event.cy._private.container.id
+		if (core != "path-container") {
+			// resets the pathview (only when the click comes from the main core)
+			experimentEventBus.emit(
+				PathViewControllerEvents.NODE_CLICK,
+				clickedNode
+			)
+		}
 	};
 
 	public onDoubleClickNode = (clickedNode: any, dataAtClick: any) => {
@@ -417,7 +428,7 @@ export class ExperimentGraphView extends GraphView {
 		this.cy.elements().removeClass("indicated");
 	}
 
-	setNodeNeighborHighlight(rootNode: any, on: boolean) {
+	public setNodeNeighborHighlight(rootNode: any, on: boolean) {
 		const neighbors = rootNode.neighborhood(),
 			incomingElements: any[] = [],
 			outgoingElements: any[] = [];

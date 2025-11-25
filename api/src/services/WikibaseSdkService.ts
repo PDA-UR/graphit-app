@@ -1,7 +1,7 @@
 import { Inject, Service } from "@tsed/di";
 import WBK, { EntityId, Wbk } from "wikibase-sdk";
 import { SessionService } from "./SessionService";
-import { Credentials } from "../models/CredentialsModel";
+import { Credentials, checkGroupsForRights } from "../models/CredentialsModel";
 import { SparqlQueryTemplateService } from "./sparql/SparqlQueriesService";
 import { SparqlResult } from "../models/SparqlResultModel";
 import { WikibaseProperty } from "../models/PropertyModel";
@@ -31,12 +31,13 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	 */
 	async search(
 		credentials: Credentials,
-		search: string
+		search: string,
+		lang: string,
 	): Promise<SparqlResult> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.searchEntities({
 			search,
-			language: "de",
+			language: lang, 
 			limit: 25,
 		});
 		const headers = {};
@@ -47,7 +48,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	}
 
 	/**
-	 * Query the sparql endpoint.
+	 * Query the sparql endpoint (using the wikibase-sdk library)
 	 * @param credentials User credentials
 	 * @param query Sparql query
 	 * @returns Query results
@@ -55,9 +56,38 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 	async query(credentials: Credentials, query: string): Promise<SparqlResult> {
 		const wbk = this.getSessionData(credentials);
 		const url = wbk.sparqlQuery(query);
-		const headers = {};
+		const headers = new Headers({
+			"User-Agent": "Visual Editor Agent"
+		}); // set user-agent (see: https://foundation.wikimedia.org/wiki/Policy:User-Agent_policy)
+		// could be a localhost issue -> same code, but empty header worked on server
+		// maybe helpful: https://stackoverflow.com/a/42815264
 
 		const response = await fetch(url, { headers });
+		const data = await response.json()
+		return { data };
+	}
+
+	/**
+	 * Uses a different (direct) way to fetch a SPARQL-Query, that should be faster (especially) for larger queries.
+	 * The Mediawiki Docs mention using POST for larger queries as the do not get cached.
+	 * See: https://www.mediawiki.org/wiki/Wikidata_Query_Service/User_Manual#SPARQL_endpoint
+	 * @param query Sparql query
+	 * @returns Query results
+	 */
+	async bigQuery(query:string): Promise<SparqlResult> {
+
+		const fullUrl = this.info.sparqlEndpoint;
+		const headers = { 
+			'Accept': 'application/sparql-results+json',
+			"User-Agent": "Visual Editor Agent"
+		};
+
+		const response = await fetch( fullUrl, { 
+			headers,
+			method: "POST",
+			body:  new URLSearchParams({ query: query }) // alternative: new URLSearchParams('query=' + query),
+			} )
+		// console.log("sparql data", response);
 		const data = await response.json();
 		return { data };
 	}
@@ -143,7 +173,7 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 			const json = await response.json();
 			return json.parse.wikitext;
 		} catch (error) {
-			this, this.logger.error("error", error);
+			this.logger.error("error", error);
 			return Promise.reject(error);
 		}
 	}
@@ -168,19 +198,47 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 		return "";
 	}
+
+	/**
+	 * Get the groups a user is part of (see: https://www.mediawiki.org/wiki/API:Users)
+	 * @returns the group a user is part of
+	 */
+	async getUserGroups(credentials:string): Promise<boolean> {
+		this.logger.info("user info for:", credentials)
+		const wikibaseUrl = this.info.instance;
+		const urlParams = new URLSearchParams({
+			action: "query",
+			list: "users",
+			ususers: credentials,
+			usprop: "blockinfo|groups",
+			format: "json"
+		});
+		const url = `${wikibaseUrl}/w/api.php?${urlParams.toString()}`;
+		this.logger.info("user groups info url", url);
+		const response = await fetch(url);
+		const json = await response.json();
+
+		// parse result to only return user groups
+		const groups = json.query.users[0].groups as Array<string>;
+		return checkGroupsForRights(groups);
+	}
+
 	/**
 	 * Get the user item id for a user.
 	 * @param credentials User credentials
 	 * @returns User item id
 	 */
-
 	async getUserItemId(credentials: Credentials): Promise<string> {
-		const htmlUserPage = await this.getWikibasePageContent(
-			credentials,
-			"User:" + credentials.username
-		);
-		const userItemId = await this.parseUserItemId(htmlUserPage);
-		return userItemId;
+		try {
+			const htmlUserPage = await this.getWikibasePageContent(
+				credentials,
+				"User:" + credentials.username
+			);
+			const userItemId = await this.parseUserItemId(htmlUserPage);
+			return userItemId;
+		} catch (error) {
+			return error
+		}
 	}
 
 	async getProperties(): Promise<Array<WikibaseProperty>> {
@@ -243,11 +301,11 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 	// ~~~~~~~~~~ Pre built queries: ~~~~~~~~~ //
 
-	async getUserGraph(
+	async getSubClassCourse(
 		credentials: Credentials,
 		userId: string
 	): Promise<SparqlResult> {
-		const query = this.templateService.getUserGraph(userId);
+		const query = this.templateService.getSubClassCourse(userId);
 		return this.query(credentials, query);
 	}
 
@@ -258,9 +316,67 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 
 	async getResources(
 		credentials: Credentials,
+		userId: string, 
+		courseId: string,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getResources(userId, courseId);
+		return this.query(credentials, query);
+	}
+
+	async getCourseQuery(
+		credentials: Credentials,
+		userId: string,
+		courseId: string,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getCourseQuery(userId, courseId);
+		return this.bigQuery(query);
+	}
+
+	async getItemResource(
+		credentials: Credentials,
+		qid: string
+	): Promise<SparqlResult> {
+		const query = this.templateService.getItemResource(qid);
+		return this.query(credentials, query)
+	}
+
+	async getCoursesTaken(
+		credentials: Credentials,
 		userId: string
 	): Promise<SparqlResult> {
-		const query = this.templateService.getResources(userId);
+		const query = this.templateService.getCoursesTaken(userId);
+		return this.query(credentials, query)
+	}
+
+	async getItemInclusion(
+		credentials: Credentials,
+		itemQID: string,
+		userId: string,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getItemInclusion(itemQID, userId);
+		return this.query(credentials, query);
+	}
+
+	async getUserRole(
+		credentials: Credentials,
+		userId: string,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getUserRole(userId);
+		return this.query(credentials, query);
+	}
+
+	async getIsPerson(
+		credentials: Credentials,
+		qid: string,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getIsPerson(qid);
+		return this.query(credentials, query);
+	}
+
+	async getExistingCourses(
+		credentials: Credentials,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getExistingCourses();
 		return this.query(credentials, query);
 	}
 }

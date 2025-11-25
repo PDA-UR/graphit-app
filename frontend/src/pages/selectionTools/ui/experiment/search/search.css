@@ -57,6 +57,7 @@
     width: 3em;
     height: 3em;
     margin: 0.5em;
+    margin-top: 1em;
     z-index: 1000;
 
     background-image: url("../../../icons/magnifying-glass.svg");

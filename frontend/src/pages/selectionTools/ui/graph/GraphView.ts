@@ -21,10 +21,13 @@ import { getAllSelectionElements } from "./CytoscapeElements";
 import { initNodeHtmlLabel, initUndoRedo } from "./CytoscapeExtensions";
 import { zoom } from "./CytoscapeView";
 import { SelectionType } from "../../global/SelectionType";
+import { PathViewEvents } from "../learnpath/PathViewGraph";
+import cytoscape from "cytoscape";
 
 export enum GraphViewEvents {
 	SELECTION_CHANGED = "selectionChanged",
 	LAST_CLICKED_CHANGED = "lastClickedChanged",
+	PATH_SELECTION_CHANGED = "pathSelectionChanged",
 }
 
 export abstract class GraphView extends View {
@@ -41,7 +44,7 @@ export abstract class GraphView extends View {
 		super();
 		this.cy = cy;
 
-		initNodeHtmlLabel(this.cy);
+		// initNodeHtmlLabel(this.cy); // for adding images to a node
 		this.actionManager = initUndoRedo(this.cy);
 
 		this.cy.userPanningEnabled(false);
@@ -57,11 +60,13 @@ export abstract class GraphView extends View {
 	toggleHtmlListeners(on: boolean): void {
 		if (on) {
 			this.cy.on("click", this.onAtomicClick);
+			this.cy.on("cxttap", "node", this.onRightClick);
 			this.cy.on("select unselect", this.onSelectionChanged);
 			this.cy.on("multiSelect", this.onMultiSelect);
 			this.cy.on("mouseover", "node", this._onHoverNode);
 			this.cy.on("mouseout", "node", this.onHoverNodeEnd);
 			this.cy.on("boxselect", this._onBoxSelect);
+			experimentEventBus.on(PathViewEvents.NODE_SELECT, this.onAtomicClick);
 		} else {
 			this.cy.removeListener("click", this.onAtomicClick);
 			this.cy.removeListener("select unselect", this.onSelectionChanged);
@@ -69,6 +74,7 @@ export abstract class GraphView extends View {
 			this.cy.removeListener("mouseover", "node", this._onHoverNode);
 			this.cy.removeListener("mouseout", "node", this.onHoverNodeEnd);
 			this.cy.removeListener("boxselect", this._onBoxSelect);
+			experimentEventBus.on(PathViewEvents.NODE_SELECT, this.onAtomicClick);
 		}
 	}
 
@@ -136,7 +142,7 @@ export abstract class GraphView extends View {
 	// ~~~~~~~~~~ Keyboard Listeners ~~~~~~~~~ //
 
 	public onKeydown = (e: any) => {
-		console.log(e);
+		// console.log(e);
 		const isInputElement = e.target instanceof HTMLInputElement;
 
 		// return if ctrl a
@@ -245,6 +251,7 @@ export abstract class GraphView extends View {
 		if (isCanvas) this.onNormalClickCanvas();
 		else {
 			const isNode = event.target.isNode();
+			// console.log("clicked node:", event.target.data("label"), event.target.id());
 			if (isNode) this._onNormalClickNode(event, dataAtClick);
 		}
 		this.resetDataAtFirstClick();
@@ -278,6 +285,25 @@ export abstract class GraphView extends View {
 		dataAtClick: any
 	) => void;
 
+	// open WikibasePage for a selected Node
+	protected onRightClick = (event:any) => {
+		const node = event.target;
+		let url = node.id() as string;
+		console.log("open", url);
+		if(this.isValidUrl(url)) {
+			window.open(url, "_blank")?.focus();
+		} else { console.log("no valid url"); }
+	}
+
+	private isValidUrl(url:string) {
+		try {
+			new URL(url);
+			return true;
+		} catch (err) {
+			return false;
+		}
+	} // via: https://www.freecodecamp.org/news/how-to-validate-urls-in-javascript/ 
+
 	// --- Selection Events --- //
 
 	private onSelectionChanged = (event: any) => {
@@ -289,6 +315,10 @@ export abstract class GraphView extends View {
 						GraphViewEvents.SELECTION_CHANGED,
 						selectedNodes
 					);
+					experimentEventBus.emit(
+						GraphViewEvents.PATH_SELECTION_CHANGED,
+						this.cy.$(":selected").map((n: any) => n.data("label"))
+					)
 					this.selectEventTimeout = null;
 				}, 10);
 		}
@@ -323,6 +353,7 @@ export abstract class GraphView extends View {
 
 		this.actionManager.do(actionToDo);
 	};
+
 
 	// --- Hover Events --- //
 
@@ -425,9 +456,13 @@ export abstract class GraphView extends View {
 
 		this.cy.elements().unselect();
 
+		console.log("resetting GraphView....");
+		// NOTE: (should) rerun the layout on top of the existing one (incremental)
 		this.cy
 			.layout({
 				name: "fcose",
+				// quality: "proof",
+				// randomize: false,
 			})
 			.run();
 		this.isPanning = false;

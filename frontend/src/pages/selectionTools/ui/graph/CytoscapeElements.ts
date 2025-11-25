@@ -76,9 +76,9 @@ export function getPathSelectionElements(
 	}
 }
 
-import cytoscape from "cytoscape-select";
+// import cytoscape from "cytoscape-select";
 import { SelectionType } from "../../global/SelectionType";
-import { Collection } from "cytoscape";
+import cytoscape, { Collection } from "cytoscape";
 
 export function allShortestPaths(
 	cy: cytoscape.Core,

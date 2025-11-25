@@ -1,3 +1,4 @@
+import tippy from "tippy.js";
 import { View } from "../../../../shared/ui/View";
 import "./propertyModal.css";
 
@@ -15,6 +16,12 @@ export class PropertyModalView extends View {
 	private readonly $completeButton: HTMLButtonElement;
 	private readonly $interestButton: HTMLButtonElement;
 	private readonly $rateButton: HTMLButtonElement;
+	private readonly $closeButton: HTMLButtonElement;
+	private readonly $minimizedModal: HTMLDivElement;
+	private readonly $openButton: HTMLButtonElement;
+	private readonly $minCompleteButton: HTMLButtonElement;
+	private readonly $minInterestButton: HTMLButtonElement;
+	private isMinimized: boolean;
 
 	constructor() {
 		super();
@@ -30,15 +37,73 @@ export class PropertyModalView extends View {
 		this.$rateButton = this.$container.querySelector(
 			"#rate"
 		) as HTMLButtonElement;
+		this.$closeButton = this.$container.querySelector(
+			".modal-closer"
+		) as HTMLButtonElement;
+		this.$openButton = document.getElementById(
+			"modal-opener"
+		) as HTMLButtonElement;
+		this.$minimizedModal = document.getElementById(
+			"modal-closed"
+		) as HTMLDivElement;
+		this.$minCompleteButton = document.getElementById(
+			"min-complete-button"
+		) as HTMLButtonElement;
+		this.$minInterestButton = document.getElementById(
+			"min-interest-button"
+		) as HTMLButtonElement;
+		this.isMinimized = false;
+
+		this.$initTippy();
 
 		this.$initListeners();
 	}
 
+	private $initTippy() {
+		const $completeRect = document.getElementById("modal-complete-rect") as HTMLDivElement;
+		const $interestRect = document.getElementById("modal-interest-rect") as HTMLDivElement;
+		tippy($completeRect, {
+            content: "completed",
+            placement: "top",
+            duration: 300,
+            theme: "dark",
+        });
+        tippy($interestRect, {
+            content: "interest",
+            placement: "top",
+            duration: 300,
+            theme: "dark",
+        });
+		tippy(this.$openButton, {
+			content: "ALT + '-'",
+			placement: "top",
+			duration: 300,
+			theme: "dark",
+		})
+	}
+
 	private $initListeners() {
 		this.$completeButton.addEventListener("click", this.onCompleteButtonClick);
+		this.$minCompleteButton.addEventListener("click", this.onCompleteButtonClick);
 		this.$interestButton.addEventListener("click", this.onInterestButtonClick);
+		this.$minInterestButton.addEventListener("click", this.onInterestButtonClick);
 		this.$rateButton.addEventListener("click", this.onRateButtonClick);
+		this.$closeButton.addEventListener("click", this.onMinimizeModal);
+		this.$openButton.addEventListener("click", this.onMinimizeModal);
+		
+		this.initKeyboardListeners(true);
 	}
+
+	 private initKeyboardListeners = (on: boolean) => {
+		const fn = on ? window.addEventListener : window.removeEventListener;
+		fn("keydown", this.onKeydown);
+	};
+
+	private onKeydown = (e: KeyboardEvent) => {
+        if (e.key === "-" && e.altKey) { 
+            this.onMinimizeModal(e)
+        }
+	};
 
 	private onCompleteButtonClick = (event: MouseEvent) => {
 		event.stopPropagation();
@@ -55,8 +120,32 @@ export class PropertyModalView extends View {
 		this.emit(PropertyModalViewEvents.RATE_BUTTON_CLICK);
 	};
 
-	private toggleVisibility(isVisible: boolean) {
+	private onMinimizeModal = (event: MouseEvent | KeyboardEvent) => {
+		if (this.$container.classList.contains("visible")) {
+			this.toggleVisibility(false);
+			this.toggleMinimizedModal(true);
+			this.isMinimized = true;
+		} else {
+			this.isMinimized = false;
+			this.toggleVisibility(true);
+			this.toggleMinimizedModal(false);
+		}
+	}
+
+	private toggleMinimizedModal(isVisible: boolean) {
 		if (isVisible) {
+			this.$minimizedModal.classList.remove("invisible");
+			this.$closeButton.style.position = "initial";
+		} else {
+			this.$minimizedModal.classList.add("invisible");
+			this.$closeButton.style.position = "absolute";
+		}
+	}
+
+	private toggleVisibility(isVisible: boolean) {
+		if (this.isMinimized) {
+			this.toggleMinimizedModal(isVisible)	
+		} else if (isVisible) {
 			this.$container.classList.add("visible");
 		} else {
 			this.$container.classList.remove("visible");
@@ -70,4 +159,5 @@ export class PropertyModalView extends View {
 	public hide() {
 		this.toggleVisibility(false);
 	}
+
 }

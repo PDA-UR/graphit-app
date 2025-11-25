@@ -6,7 +6,7 @@ import "./shortcuts.css";
 // key = number or character (single one)
 type Key = string;
 
-type MouseButton = "hleft" | "left" | "dleft" | "middle" | "right";
+type MouseButton = "hleft" | "left" | "dleft" | "middle" | "right" | "iright" | "wheel";
 
 type Shortcut = {
 	key?: Key;
@@ -20,7 +20,33 @@ export type ShortcutInfo = {
 	shortcut: Shortcut;
 };
 
+// INFO: add shortcuts here
 export const SHARED_SHORTCUTS: ShortcutInfo[] = [
+
+	{ 
+		category: "Interaktion",
+		description: "Graph bewegen (Pan)",
+		shortcut: {
+			mouseButton: "right",
+		}
+	},
+
+	{ 
+		category: "Interaktion",
+		description: "Zoom",
+		shortcut: {
+			mouseButton: "wheel",
+		}
+	},
+
+	{ 
+		category: "Interaktion",
+		description: "Öffnen der GraphIT Item-Seite",
+		shortcut: {
+			mouseButton: "iright",
+		}
+	},
+
 	{
 		category: "Selektion - Aktion",
 		description: "Einzelnen Knoten selektieren",
@@ -48,10 +74,34 @@ export const SHARED_SHORTCUTS: ShortcutInfo[] = [
 
 export const SHARED_SHORTCUTS_END: ShortcutInfo[] = [
 	{
+		category: "Informationen",
+		description: "Ressourcen ansehen",
+		shortcut: {
+			key: "+",
+			modifierKeys: [ModifierKey.ALT],
+		}
+	},
+	{
+		category: "Informationen",
+		description: "Lernpfad öffnen",
+		shortcut: {
+			key: "L",
+			modifierKeys: [ModifierKey.CTRL],
+		}
+	},
+	{
 		category: "Hilfe",
 		description: "Dieses Hilfe-Menü öffnen",
 		shortcut: {
 			key: "?",
+			modifierKeys: [ModifierKey.CTRL],
+		},
+	},
+	{
+		category: "Speichern",
+		description: "Änderungen des Graphens speichern",
+		shortcut: {
+			key: "S",
 			modifierKeys: [ModifierKey.CTRL],
 		},
 	},

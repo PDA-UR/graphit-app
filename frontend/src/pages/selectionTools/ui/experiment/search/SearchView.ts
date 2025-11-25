@@ -230,12 +230,20 @@ export class SearchView extends View {
 			);
 		});
 
-		$resultContainer.addEventListener("DOMNodeRemoved", () => {
-			experimentEventBus.emit(
-				ExperimentGraphViewEvents.INDICATE_NODE_END,
-				result.id
-			);
-		});
+		// changed from "DOMNodeRemoved"
+		const observer = new MutationObserver(mutationList => 
+			mutationList.filter(m => m.type === "childList").forEach(m => {
+				m.addedNodes.forEach( () => {
+					experimentEventBus.emit(
+						ExperimentGraphViewEvents.INDICATE_NODE_END,
+						result.id
+					);
+				})
+			})
+		)
+		observer.observe($resultContainer, {childList: true, subtree: true});
+		// see: https://developer.chrome.com/blog/mutation-events-deprecation?hl=de
+
 
 		this.$searchResults.appendChild($resultContainer);
 	}
@@ -310,16 +318,23 @@ export class SearchView extends View {
 			this.createResultContainer(result, activeKey, selectedIds, lastClickedId)
 		);
 
-		this.$searchResults.addEventListener("DOMNodeRemoved", () => {
-			experimentEventBus.removeListener(
-				"selectionChanged",
-				this.onSelectionChanged
-			);
-			experimentEventBus.removeListener(
-				"lastClickedChanged",
-				this.onLastClickedChanged
-			);
-		});
+		// changed from "DOMNodeRemoved"
+		const observer = new MutationObserver(mutationList => 
+			mutationList.filter(m => m.type === "childList").forEach(m => {
+				m.addedNodes.forEach( () => {
+					experimentEventBus.removeListener(
+						"selectionChanged",
+						this.onSelectionChanged
+					);
+					experimentEventBus.removeListener(
+						"lastClickedChanged",
+						this.onLastClickedChanged
+					);
+				})
+			})
+		)
+		observer.observe(this.$searchResults, {childList: true, subtree: true});
+		// see: https://developer.chrome.com/blog/mutation-events-deprecation?hl=de
 	}
 
 	clearSearchResults() {

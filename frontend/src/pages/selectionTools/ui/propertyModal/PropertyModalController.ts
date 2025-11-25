@@ -72,8 +72,8 @@ export class PropertyModalController extends ViewController<PropertyModalView> {
 	};
 
 	private onKeydown = (event: KeyboardEvent) => {
-		if (event.key === "1") this.onCompletionActionClicked();
-		else if (event.key === "2") this.onInterestActionClicked();
+		if (event.key === "1") this.onInterestActionClicked();
+		else if (event.key === "2") this.onCompletionActionClicked();
 		else if (event.key === "3") this.onRateActionClicked();
 	};
 

@@ -24,19 +24,22 @@ body  {
 	--bb-loading-progress: #e5e5e5;
 
 	--bg-danger: red;
+    --bg-info: blue;
 
     --border-color: black;
     --border-color-light: #646464;
 
     --shadow-color-soft: rgba(0, 0, 0, 0.25);
     --shadow-color-hard: rgba(0, 0, 0, 1);
+
+    --editing-rights: rgba(180, 225, 180, 0.6);
   }
 
 /* Color-scheme: Dark */
 
 body.dark {
     --fg-color: white;
-    --fg-danger: #black;
+    --fg-danger: black;
 
     --bg-color: black;
     --bg-selected: #333333;
@@ -48,10 +51,13 @@ body.dark {
     --bb-loading-progress: #444444;
 
     --bg-danger: #cc0000;
+    --bg-info: #9793dc;
 
     --border-color: #555555;
     --border-color-light: #2e2e2e;
 
     --shadow-color-soft: rgba(255, 255, 255, 0.05);
     --shadow-color-hard: rgba(255, 255, 255, 0.2);
+
+    --editing-rights: rgba(57, 127, 57, 0.6);
 }

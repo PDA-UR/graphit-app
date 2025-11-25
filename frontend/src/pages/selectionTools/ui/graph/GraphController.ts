@@ -9,13 +9,17 @@ import {
 	PropertyModalControllerEvents,
 } from "../propertyModal/PropertyModalController";
 import { SaveButtonEvents } from "../saveButton/SaveButtonView";
+import { LogOutButtonEvents } from "../logoutButton/logoutButtonView";
 import { GraphView } from "./GraphView";
+import { PathViewEvents } from "../learnpath/PathViewGraph";
 
 export const GRAPH_SAVE_EVENT = "GRAPH_SAVE_EVENT";
 export enum GraphSaveProgress {
 	START,
 	COMPLETE,
 	ERROR,
+	COUNT_WARNING,
+	UNAUTHORIZED,
 }
 
 export abstract class GraphController<
@@ -37,6 +41,19 @@ export abstract class GraphController<
 			SaveButtonEvents.SAVE_BUTTON_CLICK,
 			this.onSaveButtonClick
 		);
+
+		experimentEventBus.addListener(
+			LogOutButtonEvents.LOGOUT_BUTTON_CLICK,
+			this.onLogoutButtonClick
+		);
+	}
+
+	private onLogoutButtonClick = () => {
+		this.client.logout(); 
+		setTimeout(() => {
+			localStorage.clear();
+			window.location.href = "/app/"; // Nav to main-page
+		}, 10); // Otherwise, logout gets interrupted and throws an error
 	}
 
 	private onSaveButtonClick = () => {
@@ -55,20 +72,28 @@ export abstract class GraphController<
 			.then((results) => {
 				this.view.clearActions();
 				this.view.applyChanges();
-				experimentEventBus.emit(GRAPH_SAVE_EVENT, {
-					progress: GraphSaveProgress.COMPLETE,
-				});
+				if (results[0].status === 401 ) { 
+					experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+						progress: GraphSaveProgress.UNAUTHORIZED,
+					});
+				} else {
+					experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+						progress: GraphSaveProgress.COMPLETE,
+					});
+				}
 			})
 			.catch((error) => {
 				experimentEventBus.emit(GRAPH_SAVE_EVENT, {
 					progress: GraphSaveProgress.ERROR,
 					error,
 				});
+				console.log("error")
 			})
 			.finally(() => {
 				console.log("finally");
+				this.resetSaveCounter();
 			});
-		// console.log("editActions", editActions);
+		console.log("!!actions", individualActions, executions);
 	};
 
 	private onEditPropertyActionClicked = (action: PropertyEditAction) => {
@@ -76,6 +101,9 @@ export abstract class GraphController<
 			this.onCompletedPropertyClicked();
 		else if (action === PropertyEditAction.INTEREST)
 			this.onInterestedPropertyClicked();
+
+		// update style in Path
+		experimentEventBus.emit(PathViewEvents.PROPERTY_ACTION_CLICKED, action)
 	};
 
 	private onCompletedPropertyClicked = () => {
@@ -104,14 +132,17 @@ export abstract class GraphController<
 			compositeAction = new CompositeAction(actions);
 
 		console.log(
-			"fond ",
+			"found ",
 			numCompleted,
 			" completed and ",
 			numUncompleted,
 			" uncompleted so setting to ",
 			newValue
 		);
+
 		this.view.do(compositeAction);
+	
+		this.updateSaveCounter();
 	};
 
 	private onInterestedPropertyClicked = () => {
@@ -139,7 +170,32 @@ export abstract class GraphController<
 			compositeAction = new CompositeAction(actions);
 
 		this.view.do(compositeAction);
+
+		this.updateSaveCounter()
 	};
+
+
+	private updateSaveCounter() {
+		const div = document.getElementById("save-counter") as HTMLElement;
+		const actions = this.view.getWikibaseActions();
+		const individualActions = actions.getActions().length;
+
+		div.innerHTML = `<b> ${individualActions} </b> unsaved changes`;
+
+		// Color-coding and warning
+		if(individualActions > 35){
+			experimentEventBus.emit(GRAPH_SAVE_EVENT, {
+				progress: GraphSaveProgress.COUNT_WARNING,
+			});
+			if (individualActions > 60) div.style.color = "red";
+			else div.style.color = "DarkOrange";
+		} else div.style.color = "black";
+	}
+
+	private resetSaveCounter() {
+		const div = document.getElementById("save-counter") as HTMLElement;
+		div.innerHTML = `<b>0</b> unsaved changes`;;
+	}
 
 	private initMouseListeners = (on = true) => {
 		const fn = on ? window.addEventListener : window.removeEventListener;

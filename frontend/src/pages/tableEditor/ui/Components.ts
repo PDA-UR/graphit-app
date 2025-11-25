@@ -7,6 +7,8 @@ import { ColumnItemList } from "./table/ColumnItemList";
 import { Trash } from "./atomic/Trash";
 import SearchSidebar from "./SearchSidebar";
 import NewColumnDropzone from "./table/NewColumnDropzone";
+import { InfoBox } from "./atomic/InfoBox";
+import { LoginPrompt } from "./atomic/Login";
 
 /**
  * Components are the building blocks of the UI.
@@ -24,6 +26,8 @@ export {
 	Trash,
 	SearchSidebar,
 	NewColumnDropzone,
+	InfoBox,
+	LoginPrompt,
 };
 
 // Optional type declarations for TypeScript consumers
@@ -38,5 +42,7 @@ declare global {
 		"trash-component": Trash;
 		"search-sidebar": SearchSidebar;
 		"new-column-dropzone": NewColumnDropzone;
+		"info-box": InfoBox;
+		"login-prompt": LoginPrompt;
 	}
 }

@@ -2,8 +2,8 @@ import EventEmitter from "events";
 import { v4 as uuidv4 } from "uuid";
 
 export class Filter {
-	private readonly nodesToShow: any[];
-	private readonly nodesToHide: any[];
+	public nodesToShow: any[]; // was readonly
+	public nodesToHide: any[]; // was readonly
 	private readonly cy: any;
 	private readonly id: string = uuidv4();
 
@@ -33,6 +33,12 @@ export class Filter {
 		this.cy.elements().show();
 		this.cy.elements().removeClass("filtered");
 	}
+
+	// resets the filter when the course gets switched to use the new data
+	public resetNodes(){
+		this.nodesToShow = this.cy.elements();
+		this.nodesToHide = this.cy.$(":visible").unmerge(this.nodesToShow);
+	} 
 
 	public startPreview() {
 		this.reset();
@@ -117,6 +123,15 @@ export class FilterManager extends EventEmitter {
 		}
 	}
 
+	//remove all active filters for a graph (used when course is switched)
+	public removeAllActiveFilters(){
+		const last = this.filters.length - 1;
+		for(let i = last ; i > 0; i--){
+			this.stopFilterPreview(i);
+			this.removeFilter(i);
+		}
+	}
+
 	public jumpToFilter(filterIndex: number) {
 		if (this.filters.length >= filterIndex) {
 			const filter = this.filters[filterIndex];
@@ -180,5 +195,16 @@ export class FilterManager extends EventEmitter {
 		this.filters.splice(1, this.filters.length - 1);
 		this.activeFilterIndex = 0;
 		// this.emit(FilterManagerEvents.FILTER_REMOVED, 1);
+	}
+
+	// ...to use the new graph data, when a new course gets pulled
+	public resetRoot(cy:any) { 
+		this.removeAllActiveFilters();
+		this.reset();
+		const rootFilter = this.filters[0];
+		rootFilter.resetNodes();
+		cy.elements().removeClass("dimmed"); // so that graph renders undimmed
+		cy.style().update();
+		this.startFilterPreview(0);
 	}
 }

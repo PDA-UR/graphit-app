@@ -13,5 +13,7 @@ export const fromStore = (store: Store): StoreActions => {
 		setCredentials: store.setCredentials,
 		toggleSidebar: store.toggleSidebar,
 		setIsDarkMode: store.setIsDarkMode,
+		setIsAdmin: store.setIsAdmin,
+		setUserQID: store.setUserQID,
 	};
 };

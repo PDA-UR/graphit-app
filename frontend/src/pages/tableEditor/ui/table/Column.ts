@@ -1,14 +1,16 @@
 import { html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import {live} from 'lit/directives/live.js';
 import { ColumnModel } from "../../data/models/ColumnModel";
 import { tableContext } from "../../data/contexts/TableContext";
 import { consume } from "@lit-labs/context";
 import { map } from "lit/directives/map.js";
 import { classMap } from "lit/directives/class-map.js";
 import { Component } from "../atomic/Component";
-import { StoreActions } from "../../data/ZustandStore";
+import { StoreActions, zustandStore } from "../../data/ZustandStore";
 import {
 	ColumnItemModel,
+	WikibaseQualifierModel,
 	newColumnItemModel,
 } from "../../data/models/ColumnItemModel";
 import { Task, TaskStatus } from "@lit-labs/task";
@@ -46,6 +48,7 @@ export class ColumnComponent extends Component {
 	@state()
 	isDragover = false;
 
+
 	// --------- Properties -------- //
 
 	@property({ type: Object })
@@ -54,7 +57,12 @@ export class ColumnComponent extends Component {
 	@property({ type: Boolean })
 	private isDragging = false;
 
+	@property({ type: String })
+	private aliases = "";
+
 	// --------- Contexts -------- //
+
+	private zustand = zustandStore.getState();
 
 	@consume({ context: tableContext })
 	public tableActions!: StoreActions;
@@ -76,9 +84,14 @@ export class ColumnComponent extends Component {
 				columnModel.property,
 				entities.data.entities[columnModel.item.itemId]
 			);
+			const qualifiers = parseQualifiersConnectedByProperty(
+				columnModel.property,
+				entities.data.entities[columnModel.item.itemId],
+			);
 			const entityInfos = await wikibaseClient.getEntityInfos(entityIds);
+
 			const newItems = entityInfos.map((entityInfo) =>
-				newColumnItemModel(entityInfo.id, entityInfo.label, entityInfo.url)
+				newColumnItemModel(entityInfo.id, entityInfo.label, entityInfo.url, qualifiers[entityInfo.id])
 			);
 			this.items = newItems;
 		},
@@ -129,14 +142,38 @@ export class ColumnComponent extends Component {
 				this.onItemOperation(e);
 			}
 		);
+		this.parseAliases()		
+	}
+
+	parseAliases() {
+		const aliases = this.columnModel.item.aliases
+		this.aliases = `${aliases?.en} 
+			${(aliases?.en && aliases?.de ? "|" : "")} 
+			${aliases?.de}`
 	}
 
 	updated(changedProperties: Map<string | number | symbol, unknown>) {
 		super.updated(changedProperties);
 		if (changedProperties.has("columnModel")) {
 			const oldVal = changedProperties.get("columnModel") as ColumnModel;
+			
+			// re-get items/alias, after deleting a previous column, to prevent issues with items carrying over
+			if(oldVal?.item.itemId !== this.columnModel.item.itemId) {
+				if(oldVal !== undefined) {
+					this.loadItemsTask.run();
+					this.parseAliases();
+				}
+				if (oldVal?.property !== this.columnModel.property) {
+					const selectElement = this.shadowRoot?.querySelector("select") as HTMLSelectElement;
+					selectElement.value = this.columnModel.property.propertyId;
+					// NOTE: when Column A gets deleted and B "moves over" and their properties are different
+					// Column B will not update the render and shows the property selected for A
+					// so forces a manual re-render here
+				}
+			} 
+			
 			if (oldVal?.property !== this.columnModel.property) {
-				this.loadItemsTask.run();
+				this.loadItemsTask.run(); 
 			}
 		} else if (changedProperties.has("isDragging")) {
 			const oldVal = changedProperties.get("isDragging") as boolean;
@@ -156,7 +193,7 @@ export class ColumnComponent extends Component {
 		if (newProperty)
 			this.tableActions?.setColumnProperty(
 				this.columnModel.viewId,
-				newProperty
+				newProperty,
 			);
 	}
 
@@ -185,10 +222,14 @@ export class ColumnComponent extends Component {
 	};
 
 	ondrop = (event: DragEvent) => {
+		// Gets called, when an items gets dropped into an existing column
 		event.preventDefault();
-		const doCopy =
-			event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
 
+		// Allows user to modify drag with key -> i.e. change move to copy
+		// NOTE: Works, but does not seem the most robust (e.g: https://stackoverflow.com/q/72389012)
+		// let doCopy =
+			// event.ctrlKey || event.metaKey || event.altKey || event.shiftKey; 
+		const doCopy = this.dragController.getCopyToggle();
 		this.dragController.onDrop(this.columnModel, doCopy);
 		this.isDragover = false;
 	};
@@ -224,11 +265,19 @@ export class ColumnComponent extends Component {
 				>
 					${this.columnModel.item.text} (${this.columnModel.item.itemId})
 				</div>
-
+				<div id="rights-indicator"> ${when(
+					this.columnModel.editingPermission,
+						() => "🟩",
+						() => "🟥"
+					)}
+				</div>
 				<div class="spacer"></div>
 				<button id="delete-button" @click="${() => this.onDeleteColumn()}">
 					x
 				</button>
+			</div>
+			<div id="aliases">
+				Alias: ${this.aliases}
 			</div>
 			<select @change="${this.handlePropertyChange}">
 				${map(
@@ -299,8 +348,11 @@ export class ColumnComponent extends Component {
 		#top-bar > * {
 			white-space: nowrap;
 		}
+		#rights-indicator {
+			margin-left: 5px;
+		}
 		.spacer {
-			min-width: 1rem;
+			min-width: 0.2rem;
 		}
 		#delete-button {
 			opacity: 0;
@@ -312,14 +364,37 @@ export class ColumnComponent extends Component {
 			height: 1.5rem;
 			user-select: none;
 			cursor: pointer;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 		#column-title:hover {
 			text-decoration: underline;
 		}
+		#aliases {
+			font-size: small;
+			overflow: hidden;
+			height: 1.1rem;
+			line-height: 1rem;
+			text-overflow: ellipsis;
+			color: #444;
+		}
+		select option[value="P1"] { /* depends on */
+			background: rgba(255, 176, 213, 0.3);
+		}
+		select option[value="P12"] { /* has completed */
+  			background: rgba(134, 190, 134, 0.3);
+		}
+		select option[value="P23"] { /* interested in */
+			background: rgba(167, 150, 225, 0.3);
+		}
+		select option[value="P14"] { /* includes */
+			background: rgba(162, 229, 255, 0.3)
+		}
+
 	`;
 }
 
-// valid items are cleims that are of the same type as the column property
+// valid items are claims that are of the same type as the column property
 export const parseEntitiesConnectedByProperty = (
 	property: WikibasePropertyModel,
 	entity: any
@@ -334,3 +409,49 @@ export const parseEntitiesConnectedByProperty = (
 
 	return entityIds;
 };
+
+/**
+ * Parse all qualifiers of an entity into a readable format.
+ * @param property The property linking to the entity
+ * @param entity 
+ * @returns A dictionary of each item and their linked qualifiers as an array
+ * (e.g. { Q105: { P37: ["P12", "P14"], P15: ["very good"] } }
+ */
+export const parseQualifiersConnectedByProperty = (
+	property: WikibasePropertyModel,
+	entity: any,
+) => {
+	let qualifiers = {} as any;
+	const items = entity.claims[property.propertyId] as Array<any>
+
+	if (items == undefined) return {}; 
+
+	items.forEach((item:any) => {
+		if (item.qualifiers == null) return;
+
+		var qualifierValues = {} as WikibaseQualifierModel;
+		
+		const targetElementId = item.mainsnak.datavalue.value.id;
+		const quals = item.qualifiers; 
+
+		for (const [key, value] of Object.entries(quals)) {
+
+			let valueArr = value as any;
+
+			let entries = [] as any;
+			for(let i = 0; i < valueArr.length; i++) {
+				let v = valueArr[i].datavalue.value;
+				if (v["entity-type"] != undefined ) {
+					entries.push(v.id);
+				} else if (v["time"] != undefined) {
+					entries.push(v.time);
+				} else entries.push(v);
+			}
+			
+			qualifierValues[key] = entries; 
+		}
+		qualifiers[targetElementId] = qualifierValues;
+	})
+	
+	return qualifiers
+}

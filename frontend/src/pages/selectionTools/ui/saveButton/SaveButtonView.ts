@@ -11,11 +11,13 @@ export class SaveButtonView extends View {
 	}
 	private readonly $saveButton: HTMLButtonElement;
 
-	constructor() {
+	constructor(userId: string) {
 		super();
 		this.$saveButton = document.getElementById(
 			"save-button"
 		) as HTMLButtonElement;
+
+		if (userId == "Q157") this.hideSaveButton();
 
 		this.$initListeners();
 	}
@@ -29,4 +31,8 @@ export class SaveButtonView extends View {
 		console.log("SaveButtonView.onSaveButtonClick");
 		this.emit(SaveButtonEvents.SAVE_BUTTON_CLICK);
 	};
+
+	private hideSaveButton() {
+		this.$saveButton.classList.add("invisible");
+	}
 }

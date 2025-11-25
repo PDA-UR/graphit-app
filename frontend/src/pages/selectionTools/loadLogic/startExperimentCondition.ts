@@ -7,9 +7,15 @@ import { FilterBarController } from "../ui/experiment/filter/FilterBarController
 import { ExperimentGraphController } from "../ui/experiment/graph/ExperimentGraphController";
 import { SearchViewController } from "../ui/experiment/search/SearchController";
 import { getExperimentCy } from "../ui/graph/CytoscapeFabric";
+import { PathViewController } from "../ui/learnpath/PathViewController";
+import { ColorLegendController } from "../ui/legend/colorLegendController";
+import LegendButtonController from "../ui/legend/legendButtonControler";
+import LogoutButtonController from "../ui/logoutButton/logoutButtonController";
+import { NodeInfoController } from "../ui/nodeInfo/NodeInfoController";
 import { PropertyModalController } from "../ui/propertyModal/PropertyModalController";
 import SaveButtonController from "../ui/saveButton/SaveButtonController";
 import { SelectionTypeIndicatorController } from "../ui/shared/selectionTypeIndicator/SelectionTypeIndicatorController";
+import { SwitchCourseController } from "../ui/switchCourse/switchCourseController";
 import { ExperimentStarter } from "./startExperiment";
 
 export const onStartExperimentCondition = (
@@ -32,20 +38,37 @@ export const onStartExperimentCondition = (
 		client,
 		userEntityId
 	);
+
 	//@ts-ignore
 	const searchController = new SearchViewController(cy);
 	const filterController = new FilterBarController(cy, filterManager);
 	const selectionTypeIndicatorController =
 		new SelectionTypeIndicatorController();
-	const propertyModalController = new PropertyModalController();
-	const saveButtonController = new SaveButtonController();
+	const propertyModalController = new PropertyModalController(); // flag demo
+	const saveButtonController = new SaveButtonController(userEntityId);
+	const logoutButtonController = new LogoutButtonController();
+	const legendButtonController = new LegendButtonController();
+	const switchCourseController = new SwitchCourseController(client, cy, filterManager, graphController);
+	const pathViewController = new PathViewController(cy);
+	const colorLegendController = new ColorLegendController(cy);
+	const nodeInfoController = new NodeInfoController(cy, client)
 
 	const toggleControllers = (on = true) => {
 		graphController.toggle(on);
 		searchController.toggle(on);
 		filterController.toggle(on);
-		propertyModalController.toggle(on);
-		saveButtonController.toggle(on);
+		if (userEntityId != "Q157") { // disable for demo
+			propertyModalController.toggle(on)
+			saveButtonController.toggle(on)
+		}
+		// saveButtonController.toggle(on);
+		logoutButtonController.toggle(on);
+		legendButtonController.toggle(on);
+		switchCourseController.toggleHtmlListeners(on);
+		pathViewController.toggle(on);
+		colorLegendController.toggle(on)
+		nodeInfoController.toggle(on)
+
 
 		app.classList.toggle("disabled", !on);
 	};

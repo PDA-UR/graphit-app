@@ -5,6 +5,7 @@ import {
 	RemoveClaimModel,
 } from "../../../../shared/client/ApiClient";
 import WikibaseClient from "../../../../shared/WikibaseClient";
+import { Toast, ToastLength } from "../../../selectionTools/ui/toast/Toast";
 
 /**
  * Information about an item that is being moved.
@@ -51,6 +52,12 @@ export interface ItemRemoveEventDetail {
 	removeItemsInfo: RemoveItemInfo[];
 	status: ItemOperationStatus;
 	error?: Error;
+}
+
+export interface Status {
+	name: string,
+	status: number,
+	message: string, 
 }
 
 /**
@@ -118,22 +125,24 @@ export class ItemOperationController implements ReactiveController {
 		this.updateMoveStatus(moveItemsInfo, ItemOperationStatus.IN_PROGRESS);
 
 		const jobs = moveItemsInfo.map(async (moveItemInfo) => {
+			let status = "pending..."
 			if (moveItemInfo.from === undefined || doCopy)
-				await this.wikibaseClient.createClaim(
+				status = await this.wikibaseClient.createClaim(
 					moveItemInfo.to,
 					moveItemInfo.newClaim
 				);
 			else
-				await this.wikibaseClient.convertClaim(
+				status = await this.wikibaseClient.convertClaim(
 					moveItemInfo.from,
 					moveItemInfo as ConvertClaimModel
 				);
+			this.displayErrorMessage(status);
 		});
 
 		Promise.all(jobs)
-			.then(() =>
+			.then(() => {
 				this.updateMoveStatus(moveItemsInfo, ItemOperationStatus.DONE)
-			)
+			})
 			.catch((e) => {
 				console.error(e);
 				this.updateMoveStatus(
@@ -152,23 +161,34 @@ export class ItemOperationController implements ReactiveController {
 		console.log("remove items", removeItems);
 		this.updateRemoveStatus(removeItems, ItemOperationStatus.IN_PROGRESS);
 
+		let status = "pending...";
 		const jobs = removeItems.map(async (removeItem) => {
-			await this.wikibaseClient.removeClaim(removeItem.id, {
+			status = await this.wikibaseClient.removeClaim(removeItem.id, {
 				property: removeItem.property,
 				value: removeItem.value,
 			});
+			this.displayErrorMessage(status);
 		});
-
+		
 		Promise.all(jobs)
-			.then((r) => {
-				this.updateRemoveStatus(removeItems, ItemOperationStatus.DONE);
-			})
-			.catch((e) =>
-				this.updateRemoveStatus(
-					removeItems,
-					ItemOperationStatus.ERROR,
-					new Error("Failed to remove.")
-				)
-			);
+		.then((r) => {
+			this.updateRemoveStatus(removeItems, ItemOperationStatus.DONE);
+		})
+		.catch((e) =>
+			this.updateRemoveStatus(
+				removeItems,
+				ItemOperationStatus.ERROR,
+				new Error("Failed to remove:" + status)
+			)
+		);
 	};
+
+
+	private displayErrorMessage(status: unknown) {
+		const result = status as Status;
+		if(result.status == 401) {
+			const msg = `${result.name}: ${result.message}`
+			Toast.error(msg, ToastLength.MEDIUM).show();
+		}
+	}
 }

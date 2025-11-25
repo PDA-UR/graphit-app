@@ -9,6 +9,7 @@ import {
 	CredentialsModel,
 	RemoveClaimModel,
 	ServerInfoModel,
+	SparqlResultModel,
 	UserSessionModel,
 	WikibasePropertyModel,
 } from "./client/ApiClient";
@@ -33,10 +34,22 @@ export default class WikibaseClient {
 		this.credentials.password = credentials.password;
 	}
 
+	async userGroups(credentials: Credentials): Promise<boolean> {
+		const adminrights = await this.api.auth.usergroups(credentials.username);
+		console.log("user info: Admin =", adminrights);
+		return adminrights;
+	}
+
+	async checkItemViewability(qid:string): Promise<boolean> {
+		const result = await this.api.auth.checkItemViewability(qid);
+		return result;
+	}
+
 	async login() {
 		this.userSession = await this.api.auth.login(this.credentials);
 		if (!this.userSession.username) {
-			throw new Error("Login failed: " + JSON.stringify(this.userSession));
+			const error = this.userSession as any
+			throw new Error("Failed: " + JSON.stringify(error.message));
 		}
 
 		const initJobs = [this.loadProperties(), this.loadServerInfo()];
@@ -48,13 +61,13 @@ export default class WikibaseClient {
 		await this.api.auth.logout();
 	}
 
-	async search(search: string): Promise<any> {
-		const results = await this.api.entity.search(search);
+	async search(search: string, searchLang: string): Promise<any> {
+		const results = await this.api.entity.search(search, searchLang);
 		return results;
 	}
 
-	async getUserGraph(): Promise<ElementDefinition[]> {
-		const results = await this.api.sparql.userGraph();
+	async getSubClassCourse(): Promise<ElementDefinition[]> {
+		const results = await this.api.sparql.subClassCourse();
 		const graph = this.sparqlParser.parsePairs(
 			["source", "dependency"],
 			"depends on",
@@ -69,6 +82,11 @@ export default class WikibaseClient {
 		return info;
 	}
 
+	async getUserRole(): Promise<any> {
+		const role = await this.api.auth.userRole();
+		return role;
+	}
+
 	// To handle cytoscape-parents
 	async getCategories(): Promise<ElementDefinition[]> {
 		const results = await this.api.sparql.categories();
@@ -76,15 +94,80 @@ export default class WikibaseClient {
 		return parents;
 	}
 
-	async getResource(): Promise<ElementDefinition[]> {
+	async getResource(courseId:string): Promise<ElementDefinition[]> {
 		// @ts-ignore
-		const results = await this.api.sparql.resources();
+		const results = await this.api.sparql.resources(courseId);
 		const resources = this.sparqlParser.parsePairs(
-			["dependency", "source"],
+			["resource", "source"],
 			"resource",
 			results.data
 		);
 		return resources;
+	}
+
+	async getCourseQuery(courseId:string): Promise<ElementDefinition[]> {
+		const results = await this.api.sparql.courseQuery(courseId);
+		const graph = this.sparqlParser.parsePairs(
+			["source", "dependency"],
+			"depends on",
+			results.data
+		);
+		return graph;
+	}
+
+	async getItemResource(qid: string): Promise<ElementDefinition[]> {
+		try {
+			const result = await this.api.sparql.itemResource(qid)
+			return result.data.results.bindings;
+		} catch (err) {
+			return [];
+		}
+	}
+
+	async getCoursesTaken(): Promise<ElementDefinition[]> {
+		try {
+			const result = await this.api.sparql.coursesTaken();
+			return result.data.results.bindings;
+		} catch (err) {
+			return [];
+		}
+	}
+
+	/**
+	 * Check if an item in "included in" a course the current user "participates in" 
+	 * @param qid the QID of the item that is being checked
+	 * @returns 
+	 */
+	async getItemInclusion(qid: string, userQid: string): Promise<any> {
+		try {
+			const result = await this.api.sparql.itemInclusion(qid, userQid);
+			return result;
+		} catch (err) {
+			return [];
+		}
+	}
+
+	/**
+	 * Check if an item is a person-item (e.g. a Student) 
+	 * @param qid of the item to check
+	 * @returns the Label of the person-item or false (if not a person)
+	 */
+	async getIsPerson(qid: string): Promise<any> {
+		try {
+			const result = await this.api.sparql.isPerson(qid);
+			return result;
+		} catch(err) {
+			return [];
+		}
+	}
+
+	async getExistingCourses(): Promise<any> {
+		try {
+			const result = await this.api.sparql.existingCourses();
+			return result;
+		} catch(err) {
+			return [];
+		}
 	}
 
 	async getEntities(entityIds: string[]): Promise<any> {
@@ -118,7 +201,6 @@ export default class WikibaseClient {
 	async entityDoesExist(entityId: string): Promise<boolean> {
 		try {
 			const e = await this.getEntities([entityId]);
-			console.log("exists?", e);
 			return e?.data !== undefined;
 		} catch (err) {
 			return false;
@@ -138,7 +220,7 @@ export default class WikibaseClient {
 	> {
 		if (eintityIds.length === 0) return [];
 		const entities = await this.getEntities(eintityIds);
-		console.log("got entities", entities, eintityIds);
+
 		const entityInfos = Object.values(entities.data.entities).map(
 			(entity: any) => {
 				const enLabel = entity.labels.en?.value,
@@ -151,7 +233,7 @@ export default class WikibaseClient {
 					description = enDescription ?? deDescription ?? "";
 
 				const url = this.getEntityUrl(entity.id);
-				return { label, description, id: entity.id, url };
+				return { label, description, id: entity.id, url};
 			}
 		);
 		return entityInfos;

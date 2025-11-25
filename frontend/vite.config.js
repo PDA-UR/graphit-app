@@ -16,6 +16,8 @@ export default defineConfig({
 				visTest: "./src/pages/visTest/index.html",
 				selectionTools: "src/pages/selectionTools/index.html",
 				tableEditor: "src/pages/tableEditor/index.html",
+				graphVis: "src/pages/graphVis/index.html",
+				learneyClone: "src/pages/learneyClone/index.html"
 			},
 		},
 	},

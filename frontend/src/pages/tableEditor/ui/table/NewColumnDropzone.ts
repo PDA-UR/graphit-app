@@ -2,7 +2,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { Component } from "../atomic/Component";
 import { PropertyValueMap, css, html } from "lit";
 import { consume } from "@lit-labs/context";
-import ZustandStore, { StoreActions } from "../../data/ZustandStore";
+import { StoreActions, zustandStore } from "../../data/ZustandStore";
 import { tableContext } from "../../data/contexts/TableContext";
 import { Task, TaskStatus } from "@lit-labs/task";
 import WikibaseClient from "../../../../shared/WikibaseClient";
@@ -10,6 +10,7 @@ import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import { newColumnModel } from "../../data/models/ColumnModel";
 import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
 import { when } from "lit/directives/when.js";
+import { ColumnItemInfo } from "../controllers/DragController";
 
 /**
  * <new-column-dropzone> is the dropzone on the right side of the table
@@ -26,6 +27,8 @@ export default class NewColumnDropzone extends Component {
 	@consume({ context: wikibaseContext })
 	private wikibaseClient!: WikibaseClient;
 
+	private zustand = zustandStore.getState();
+
 	// --------- State -------- //
 
 	@state()
@@ -38,6 +41,18 @@ export default class NewColumnDropzone extends Component {
 			this.classList.add("working");
 			const entity = await wikibaseClient.getEntities(this.columnIdsToBeAdded);
 
+			// check the editing permissions for each column
+			let permissions = {} as any;
+			for(let i = 0; i < this.columnIdsToBeAdded.length; i++) {
+				const qid = this.columnIdsToBeAdded[i];
+				if(qid === this.zustand.userQID) {
+					permissions[qid] = true;
+				} else {
+					const hasEditingPermission = await wikibaseClient.getItemInclusion(qid, this.zustand.userQID!);
+					permissions[qid] = hasEditingPermission;
+				}
+			}
+
 			const wikibaseItems = Object.keys(entity.data.entities).map((input) => {
 				return {
 					itemId: entity.data.entities[input].id,
@@ -46,13 +61,19 @@ export default class NewColumnDropzone extends Component {
 						entity.data.entities[input].labels?.de?.value ??
 						"",
 					url: wikibaseClient.getEntityUrl(entity.data.entities[input].id),
+					qualifiers: [],
+					aliases: { 
+						en: entity.data.entities[input].aliases?.en ? entity.data.entities[input].aliases.en[0].value : "", 
+						de: entity.data.entities[input].aliases?.de ? entity.data.entities[input].aliases.de[0].value : ""
+					}
 				};
 			});
-
+			
 			const columnModels = wikibaseItems.map((wikibaseItem) => {
 				return newColumnModel(
 					wikibaseItem,
-					wikibaseClient.getCachedProperties()[0]
+					wikibaseClient.getCachedProperties()[0],
+					permissions[wikibaseItem.itemId],
 				);
 			});
 
@@ -106,11 +127,15 @@ export default class NewColumnDropzone extends Component {
 
 	// ------- Listeners ------ //
 
-	onclick = () => {
+	onclick = async () => {
 		const id = prompt("Enter the id of the column you want to add");
 		if (!id) return;
 
 		this.columnIdsToBeAdded = [id.trim().toUpperCase()];
+		this.columnIdsToBeAdded = await filterOnViewPermission(
+			this.columnIdsToBeAdded, this.wikibaseClient
+		) as string[];		
+
 		this.runAddColumnTask();
 	};
 
@@ -125,6 +150,7 @@ export default class NewColumnDropzone extends Component {
 	};
 
 	ondrop = (event: DragEvent) => {
+		// gets called, when an item is dropped to the add-column zone
 		event.preventDefault();
 		this.classList.remove("highlight");
 		this.dispatchEvent(
@@ -179,4 +205,36 @@ export default class NewColumnDropzone extends Component {
 			opacity: 0.5;
 		}
 	`;
+}
+
+/**
+ * Check over the dragged items and remove those that the current user can't view.
+ * A student for example can't view other people's user items.
+ * @param items an array of the items to check
+ * @param wikibaseClient 
+ * @returns an updated array (same type as input)
+ */
+export async function filterOnViewPermission(
+	items: string[] | ColumnItemInfo[], 
+	wikibaseClient: WikibaseClient
+) {
+	// check if an item can even be viewed by the user (i.e. is not a foreign user-item)
+	for (let i = 0; i < items.length;i++) {
+		let itemId = "";
+
+		if (typeof items[i] === "string")  {
+			itemId = items[i] as string;
+		} else {
+			// @ts-ignore
+			itemId = items[i].item.itemId;
+		}
+		const result = await wikibaseClient.checkItemViewability(itemId) as boolean | any;
+		if(typeof result !== "boolean") {
+			items.splice(i, 1);
+			const msg = result.message + ` for [${itemId}]`; 
+			Toast.info(msg, ToastLength.MEDIUM).show();
+		}
+	}
+
+	return items;
 }

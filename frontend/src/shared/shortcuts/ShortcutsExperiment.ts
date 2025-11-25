@@ -17,14 +17,14 @@ export const ShortcutsExperiment: ShortcutInfo[] = [
 	},
 	{
 		category: "Selektion - Aktion",
-		description: "Nachbarn von Knoten selektiern",
+		description: "Nachbarn von Knoten selektieren",
 		shortcut: {
 			mouseButton: "dleft",
 		},
 	},
 	{
 		category: "Selektion - Aktion",
-		description: "Pfad zu Knoten selektiern",
+		description: "Pfad zu Knoten selektieren",
 		shortcut: {
 			mouseButton: "left",
 			modifierKeys: [ModifierKey.SHIFT],

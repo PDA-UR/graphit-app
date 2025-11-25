@@ -1,0 +1,116 @@
+import "./switchCourse.css";
+import cytoscape from "cytoscape";
+import WikibaseClient from "../../../../shared/WikibaseClient";
+import { LoadingSpinner } from "../../../../shared/ui/LoadingSpinner/SpinnerManager";
+import { View } from "../../../../shared/ui/View";
+import { GLOBALS } from "../../../graphVis/global/config";
+import { experimentEventBus } from "../../global/ExperimentEventBus";
+import { FilterManager } from "../experiment/filter/Filter";
+import { ExperimentGraphController } from "../experiment/graph/ExperimentGraphController";
+
+export enum SwitchCourseEvents {
+    SWITCH_COURSE = "switchCourse"
+}
+
+export class SwitchCourseController extends View {
+
+    private readonly client: WikibaseClient;
+    private readonly cy: cytoscape.Core;
+    private readonly filterManager: FilterManager;
+    private readonly graphController: ExperimentGraphController;
+    private $switchMenu: HTMLSelectElement;
+    private $courseLink: HTMLDivElement;
+
+    constructor(
+        client:WikibaseClient, 
+        cy:cytoscape.Core,
+        filterManager: FilterManager,
+        graphController: ExperimentGraphController
+    ){
+        super();
+        this.client = client;
+        this.cy = cy;
+        this.filterManager = filterManager;
+        this.graphController = graphController;
+
+        this.$switchMenu = document.getElementById("switch-course") as HTMLSelectElement;
+        this.$courseLink = document.getElementById("switch-course-link") as HTMLDivElement;
+        
+    }
+
+    public toggleHtmlListeners(on: boolean): void {
+        if(on) {
+            this.$switchMenu.addEventListener("change", this.switchCourse);
+            this.$courseLink.addEventListener("click", this.openCourseWikiPage);
+        } else {
+            this.$switchMenu.removeEventListener("change",this.switchCourse);
+            this.$courseLink.removeEventListener("click", this.openCourseWikiPage);
+        }
+    }
+
+    private openCourseWikiPage = (e:Event) => {
+        console.log("open course")
+        const courseQID = this.$switchMenu.selectedOptions[0].value;
+        const courseUrl = `https://graphit.ur.de/wiki/Item:${courseQID}`
+        window.open(courseUrl, "_blank")?.focus();
+    }
+
+    /**
+     * Switches to the coures, selected in the drop-down menu
+     * @param e event
+     */
+    private switchCourse = async (e:Event) => {        
+        const target = e.target as HTMLSelectElement
+        const courseQID = target.selectedOptions[0].value as string;
+
+        // Load the new graph elements
+        const spinner = new LoadingSpinner();
+	    spinner.start();
+
+        let elements;
+        if(courseQID == "Q171") { // get CGBV -> has diff. query
+            elements = await this.client.getSubClassCourse();
+        } else { // get all other courses
+            elements = await this.client.getCourseQuery(courseQID);
+        }
+
+        spinner.stop();
+
+        // Reset the graph
+        this.cy.elements().remove();
+        if(elements.length == 0) {
+            this.emptyCourseInfo();
+        } else {
+            this.cy.add(elements);
+        }
+        this.cy.layout(GLOBALS.default_layout).run(); 
+        this.graphController.reset();
+        // NOTE: applying reset() to match start behavior (see GraphView.ts)
+
+        // Reset searchbar (if opened) and FilterBar
+        this.filterManager.resetRoot(this.cy); // Reset all applied filters
+        experimentEventBus.emit(SwitchCourseEvents.SWITCH_COURSE);
+        console.log("switched course");        
+    }
+
+    private emptyCourseInfo(){
+        console.log("empty course");
+        this.cy.add({
+            group: "nodes",
+            data: { 
+                id: "construction",
+                label: "Still under construction...",
+            },
+            style: {
+                "shape": "diamond",
+                "background-color": "#FFE115",
+                "border-width": "1",
+                "border-color": "#000000",
+                "width": "10",
+                "height": "10",
+            },
+        });
+    }
+
+}
+

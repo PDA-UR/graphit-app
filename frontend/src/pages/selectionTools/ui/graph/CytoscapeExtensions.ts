@@ -8,6 +8,7 @@ export const initNodeHtmlLabel = (cy: any) => {
 			badges.push(
 				"<div class='badge'><img src='" + interestedNormal + "'/></div>"
 			);
+		// NOTE: adds images to nodes, but will just append a second different image
 
 		return `<div class="badges">${badges.join("")}</div>`;
 	};
@@ -27,6 +28,10 @@ export const initNodeHtmlLabel = (cy: any) => {
 export const initLassoSelection = (cy: any) => {
 	return cy.lassoSelectionEnabled(true);
 };
+
+export const toggleLassoSelection = (cy: any, on: boolean) => {
+	cy.lassoSelectionEnabled(on)
+}
 
 export const initUndoRedo = (cy: any) => {
 	return cy.undoRedo();

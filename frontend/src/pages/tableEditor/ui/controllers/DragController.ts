@@ -8,6 +8,8 @@ import {
 } from "./ItemOperationController";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import { SelectionController } from "./SelectionController";
+import { Toast, ToastLength } from "../../../../shared/ui/toast/Toast";
+import { filterOnViewPermission } from "../table/NewColumnDropzone";
 
 /**
  * The origin, from which an item has been dragged from.
@@ -30,11 +32,14 @@ export interface ColumnItemInfo {
 export class DragController implements ReactiveController {
 	host: ReactiveControllerHost;
 
+	private isCopyToggleOn:  boolean = false;
+	private moveQualifiers: boolean = false;
 	private draggedItem: ColumnItemInfo | undefined;
 	private readonly setIsDragging: (isDragging: boolean) => void = () => {};
-
+	
 	private readonly selectionController: SelectionController;
 	private readonly itemOperator: ItemOperationController;
+	private readonly wikibaseClient: WikibaseClient;
 
 	constructor(
 		host: ReactiveControllerHost,
@@ -44,12 +49,25 @@ export class DragController implements ReactiveController {
 	) {
 		(this.host = host).addController(this);
 		this.itemOperator = new ItemOperationController(host, wikibaseClient);
+		this.wikibaseClient = wikibaseClient;
 
 		this.setIsDragging = setIsDragging;
 		this.selectionController = selectionController;
 	}
 
 	hostConnected() {}
+
+	setCopyToggle(on: boolean) {
+		this.isCopyToggleOn = on;
+	}
+
+	setQualifierToggle(on: boolean) {
+		this.moveQualifiers = on
+	}
+
+	getCopyToggle(){
+		return this.isCopyToggleOn;
+	}
 
 	// ------ Drag and Drop ------ //
 
@@ -62,21 +80,22 @@ export class DragController implements ReactiveController {
 		}
 	};
 
-	// an item has been dropped somewhere
-	// called after onDrop
+	// an item has been dropped somewhere (called after onDrop)
 	onItemDragEnd() {
 		this.draggedItem = undefined;
 		this.setIsDragging(false);
 	}
 
 	// an item has been dropped INTO A DROPZONE
-	onDrop(dropzone: ColumnModel | "trash" | "new-column", doCopy = false) {
+	async onDrop(dropzone: ColumnModel | "trash" | "new-column", doCopy = this.isCopyToggleOn) {
 		this.setIsDragging(false);
 
-		const draggedItems = this.selectionController.getSelectedItems();
+		let draggedItems = this.selectionController.getSelectedItems();
 
 		// Dropped in <new-column-dropzone>
 		if (dropzone === "new-column") {
+			draggedItems = await filterOnViewPermission(draggedItems, this.wikibaseClient) as ColumnItemInfo[];
+			
 			console.log("new column event");
 			document.dispatchEvent(
 				new CustomEvent("ADD_COLUMN", {
@@ -113,6 +132,10 @@ export class DragController implements ReactiveController {
 		// Dropped in <column-component>
 		const convertClaimModels: MoveItemInfo[] = draggedItems.map(
 			(draggedItem) => {
+				let newQualifiers = draggedItem.item.qualifiers as String[] | undefined;
+				if (this.moveQualifiers == false) newQualifiers = undefined; // check if copy or not
+				if (newQualifiers?.length == 0) newQualifiers = undefined; // fallback, when empty qualifier arr
+
 				if (draggedItem.origin === "search")
 					return {
 						to: dropzone.item.itemId,
@@ -122,7 +145,7 @@ export class DragController implements ReactiveController {
 							value: draggedItem.item.itemId,
 						},
 					};
-				else
+				else 
 					return {
 						from: draggedItem.origin?.item?.itemId,
 						to: dropzone.item.itemId,
@@ -133,6 +156,7 @@ export class DragController implements ReactiveController {
 						newClaim: {
 							property: dropzone.property.propertyId,
 							value: draggedItem.item.itemId,
+							qualifiers: newQualifiers, 
 						},
 					};
 			}
@@ -140,4 +164,5 @@ export class DragController implements ReactiveController {
 		this.selectionController.deselectAll();
 		this.itemOperator.moveItems(convertClaimModels, doCopy);
 	}
+
 }

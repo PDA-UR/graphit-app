@@ -99,6 +99,7 @@ import { CookieJar } from "tough-cookie";
 import { wrapper } from "axios-cookiejar-support";
 
 const cookieJar = new tough.CookieJar();
+//@ts-ignore
 axios.defaults.jar = cookieJar;
 axios.defaults.withCredentials = true;
 
@@ -106,6 +107,7 @@ const jar = new CookieJar();
 
 const createAxiosInstance = (config: AxiosRequestConfig) => {
 	const jar = new CookieJar();
+  //@ts-ignore
 	return wrapper(axios.create({ ...config, jar }));
 };
 
@@ -151,6 +153,7 @@ export class HttpClient<SecurityDataType = unknown> {
   private format?: ResponseType;
 
   constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
+    //@ts-ignore
     this.instance = createAxiosInstance(axiosConfig);
     this.secure = secure;
     this.format = format;
@@ -261,6 +264,36 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
+     * @description Returns wikibase user info
+     * 
+     * @tags Auth
+     * @name userinfo 
+     * @request GET:api/auth/usergroups
+     */
+    usergroups: (username: string, params: RequestParams = {}) =>
+      this.request<boolean>({
+        path: `/api/auth/usergroups/${username}`,
+        method: "GET",
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Returns a users role as modelled in the graph
+     * 
+     * @tags Auth
+     * @name userRole
+     * @request GET:api/auth/userRole
+     */
+    userRole: (params: RequestParams = {}) =>
+      this.request<UserSessionModel, string>({
+        path: `/api/auth/userRole`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Login to the API (using Wikibase credentials)
      *
      * @tags Auth
@@ -289,6 +322,15 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         method: "POST",
         ...params,
       }),
+
+    checkItemViewability: (qid: string, params: RequestParams = {}) =>
+      this.request<boolean, string>({
+        path: `api/auth/checkViewability/${qid}`,
+        method: "GET",
+        type: ContentType.Json,
+        ...params,
+      }),
+
   };
   claim = {
     /**
@@ -423,11 +465,11 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      *
      * @tags Entity
      * @name Search
-     * @request GET:/api/entity/search/{query}
+     * @request GET:/api/entity/search/{lang}/{query}
      */
-    search: (query: string, params: RequestParams = {}) =>
+    search: (query: string, lang: string, params: RequestParams = {}) =>
       this.request<Record<string, any>[], string>({
-        path: `/api/entity/search/${query}`,
+        path: `/api/entity/search/${lang}/${query}`,
         method: "GET",
         format: "json",
         ...params,
@@ -496,15 +538,15 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
       }),
 
     /**
-     * @description Retrieve the users graph (learning contents, completions, etc.)
+     * @description Retrieve the users graph for courses, that use "subclass of"
      *
      * @tags Sparql
-     * @name UserGraph
-     * @request GET:/api/sparql/userGraph
+     * @name subClassCourse
+     * @request GET:/api/sparql/subClassCourse
      */
-    userGraph: (params: RequestParams = {}) =>
+    subClassCourse: (params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
-        path: `/api/sparql/userGraph`,
+        path: `/api/sparql/subClassCourse`,
         method: "GET",
         format: "json",
         ...params,
@@ -517,13 +559,110 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      * @name Resources
      * @request GET:/api/sparql/resources
      */
-    resources: (params: RequestParams = {}) =>
+    resources: (courseId: string, params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
-        path: `/api/sparql/resources`,
+        path: `/api/sparql/resources/${courseId}`,
         method: "GET",
         format: "json",
         ...params,
       }),
+
+       /**
+     * @description Retrieve a graph for courses, that "include" items
+     *
+     * @tags Sparql
+     * @name courseQuery
+     * @request GET:/api/sparql/courseQuery/${courseId}
+     */
+    courseQuery: (courseId: string, params: RequestParams = {}) =>
+    this.request<SparqlResultModel, string>({
+      path: `/api/sparql/courseQuery/${courseId}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    }),
+
+    /**
+     * @description Retrieve all resources and their types from a single item
+     * 
+     * @param qid the qid of the item to get the resources of (e.g. Q21)
+     * @tags Sparql
+     * @name itemResource
+     * @request GET: /api/sparql/itemResource/:qid
+     * @returns 
+     */
+    itemResource: (qid: string, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/itemResource/${qid}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+      /**
+     * @description Retrieve all the courses a logged in user "participates in"
+     * 
+     * @tags Sparql
+     * @name coursesTaken
+     * @request GET: /api/sparql/coursesTaken
+     * @returns 
+     */
+    coursesTaken: (params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/coursesTaken`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+      /**
+     * @description Retrieve all courses a specific item is "included in"
+     * 
+     * @tags Sparql
+     * @name itemInclusion
+     * @request GET: /api/sparql/itemInclusion/:qid
+     * @returns 
+     */
+    itemInclusion: (qid: string, userQid: string, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/itemInclusion/${qid}/${userQid}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Check if an item is a person-item (e.g. Student)
+     * 
+     * @tags Sparql
+     * @name isPerson
+     * @request GET: /api/sparql/isPerson/:qid
+     * @returns the label of the person-item or false (if not a person)
+     */
+    isPerson: (qid: string, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/isPerson/${qid}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Get all items that are used as courses
+     * 
+     * @tags Sparql
+     * @name existingCourses
+     * @request GET: /api/sparql/existingCourses
+     * @returns course-items that include at least one session
+     */
+    existingCourses: (params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/existingCourses`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
   };
   user = {
     /**

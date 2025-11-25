@@ -4,7 +4,7 @@ import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Get, Post, Required, Returns } from "@tsed/schema";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
-import { Credentials, isValid } from "../../models/CredentialsModel";
+import { Credentials, isDemo, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
 import { EntityId } from "wikibase-sdk";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
@@ -80,6 +80,7 @@ export class Entity {
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (isDemo(credentials)) return new Unauthorized("Demo User");
 
 		const r = await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -105,6 +106,7 @@ export class Entity {
 		@Session("user") credentials: Credentials
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (isDemo(credentials)) return new Unauthorized("Demo User");
 
 		return await this.actionExecutor.executeClaimAction(
 			"claim",
@@ -117,18 +119,19 @@ export class Entity {
 		);
 	}
 
-	@Get("/search/:query")
+	@Get("/search/:lang/:query")
 	@Description("Search for entities")
 	@Returns(200, Array).Of(Object).ContentType("application/json")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
 	async search(
 		@Session("user") credentials: Credentials,
+		@PathParams("lang") lang: string,
 		@PathParams("query") query: string
 	) {
 		if (!isValid(credentials)) return new Unauthorized("Not logged in");
 
-		const r = await this.wikibaseSdk.search(credentials, query);
+		const r = await this.wikibaseSdk.search(credentials, query, lang);
 		return r.data.search;
 	}
 

@@ -3,7 +3,7 @@ import {
 	ExperimentGraphViewEvents,
 } from "./ExperimentGraphView";
 import { experimentEventBus } from "../../../global/ExperimentEventBus";
-import cytoscape from "cytoscape-select";
+// import cytoscape from "cytoscape-select";
 
 import { SearchViewControllerEvents } from "../search/SearchController";
 import { ModifierKey } from "../../../global/KeyboardManager";
@@ -11,6 +11,7 @@ import { GraphController } from "../../graph/GraphController";
 import { SearchViewEvents } from "../search/SearchView";
 import { ApiClient } from "../../../../../shared/client/ApiClient";
 import WikibaseClient from "../../../../../shared/WikibaseClient";
+import cytoscape from "cytoscape";
 
 export class ExperimentGraphController extends GraphController<ExperimentGraphView> {
 	constructor(

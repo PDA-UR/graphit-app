@@ -1,0 +1,30 @@
+.switch-course {
+    /* margin-right: 5px; */
+    cursor: pointer;
+    z-index: 1000;
+    background: #77aeff;
+    border: 5px solid transparent;
+    box-shadow: 2px 2px 4px #00000026;
+    border-radius: 3px;
+    width: 223px;
+}
+
+#label{
+    font-size: small;
+}
+
+#switch-course-link {
+    /* background-image: url("../../icons/info.svg");   */
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+    margin-right: 5px;
+    z-index: 1000;
+    padding: 2px;
+}
+
+#switch-course-link:hover {
+    cursor: pointer;
+    background-color: rgb(216, 232, 236);
+    border-radius: 2px;
+}

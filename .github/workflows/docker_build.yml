@@ -25,10 +25,13 @@ jobs:
         uses: SpicyPizza/create-envfile@v2.0
         with:
           envkey_DEBUG: false
+          envkey_DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
           envkey_SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           envkey_PROD_INSTANCE: "https://graphit.ur.de"
           envkey_PROD_SPARQL_ENDPOINT: "https://query.graphit.ur.de/proxy/wdqs/bigdata/namespace/wdq/sparql"
           file_name: .env
+      # NOTE: .env-file is not yet updated on the server (29.07.24)
+      # changes have to be made manually (var/www/graphit-app/.env) + run deploy.sh (same folder)
 
       - name: Build Docker image
         run: ./build.sh "${{ github.run_number }}-${{ steps.extract_branch.outputs.branch }}" .env

@@ -37,7 +37,7 @@ export class SparqlParser {
 		const edges: ElementDefinition[] = [];
 		bindings.forEach((binding: any) => {
 			const sourceNode = binding[nodePrefixes[0]],
-				targetNode = binding[nodePrefixes[1]];
+				targetNode = binding[nodePrefixes[1]];  
 
 			if (!sourceNode || !targetNode) return;
 
@@ -72,6 +72,7 @@ export class SparqlParser {
 		const vars = results.head.vars; // e.g. "source", "sourceLabel"
 
 		bindings.forEach((binding: any) => {
+			// das müsste zuerst source durchgehen, oder?
 			nodePrefixes.forEach((prefix) => {
 				const node = this.parseNode(prefix, binding, vars);
 				if (node) {
@@ -123,12 +124,12 @@ export class SparqlParser {
 			data: {},
 		};
 
-		console.log(prefix, binding, vars);
-
 		for (const variable of vars) {
-			if (!variable.startsWith(prefix)) continue;
+			if (!variable.startsWith(prefix)){
+				continue;
+			} 
 			let key = variable.slice(prefix.length); // slices of e.g. "source" from sourceLabel
-			if (key === "") key = "id";
+			if (key === "") key = "id"; // e.g. ?source
 			key = key.charAt(0).toLowerCase() + key.slice(1);
 
 			// To make parents work from inside of a node
@@ -139,9 +140,11 @@ export class SparqlParser {
 				key = "parent";
 			}
 
+			
 			const value = binding[variable]?.value;
-
+			
 			if (value) node.data[key] = value;
+			
 		}
 
 		node.data._originalData = node.data;
@@ -158,8 +161,8 @@ export class SparqlParser {
 	public parseParents(results: SparqlResults): ElementDefinition[] {
 		const parents: ElementDefinition[] = [];
 
-		const bindings = results.results.bindings; // all query result objects
-		const vars = results.head.vars; // e.g. "source", "sourceLabel"
+		const bindings = results.results.bindings; 
+		const vars = results.head.vars; 
 
 		bindings.forEach((binding: any) => {
 			for (const variable of vars) {
@@ -167,7 +170,6 @@ export class SparqlParser {
 				parents.push(parent);
 			}
 		});
-		//console.log("parents: ", parents);
 		return parents;
 	}
 

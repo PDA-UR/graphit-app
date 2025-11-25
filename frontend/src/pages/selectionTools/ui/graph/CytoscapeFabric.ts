@@ -1,15 +1,18 @@
 import cytoscape from "cytoscape-select";
 
-import fcose from "cytoscape-fcose";
+import fcose, { FcoseLayoutOptions } from "cytoscape-fcose";
+import layoutUtilities from "cytoscape-layout-utilities";
 
 import dagre from "cytoscape-dagre";
 import nodeHtmlLabel from "cytoscape-node-html-label";
 import lasso from "../../../../shared/extensions/lasso-rectangle/lasso";
 import undo from "../../../../shared/extensions/undo/undo";
+import { GLOBALS } from "../../../graphVis/global/config";
+import { stylesheet } from "../../global/Stylesheet";
 
 export const getExperimentCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("experiment-cy")!;
-	const extensions = [fcose, dagre, nodeHtmlLabel, lasso, undo];
+	const extensions = [fcose, dagre, nodeHtmlLabel, lasso, undo, layoutUtilities];
 	loadExtensions(extensions);
 	const mergedStyle = [
 		...(DEFAULT_OPTIONS.style as any[]),
@@ -25,6 +28,7 @@ export const getExperimentCy = (elements: any[]) => {
 	return cy;
 };
 
+// NOTE: control condition (not used)
 export const getControlCy = (elements: any[]) => {
 	const $cyContainer = document.getElementById("control-cy")!;
 	const extensions = [fcose, dagre, nodeHtmlLabel, undo];
@@ -56,112 +60,16 @@ function loadExtensions(extensions: any[]) {
 	});
 }
 
-const nodeSize = (ele: any) => {
-	const degree = ele.degree();
-	return 7 + degree * 7;
-};
-
-export const DEFAULT_OPTIONS: cytoscape.CytoscapeOptions = {
-	layout: {
-		name: "fcose",
-	},
-
-	style: [
-		{
-			selector: "node",
-			style: {
-				"background-color": "#666",
-				label: "data(label)",
-				width: nodeSize,
-				height: nodeSize,
-			},
-		},
-		{
-			selector: "node:selected",
-			style: {
-				// BLUE select
-				"background-color": "#257AFD",
-				"text-background-color": "#81b3ff",
-				"text-background-opacity": 1,
-				"text-background-shape": "roundrectangle",
-				"text-background-padding": "3px",
-			},
-		},
-		// edges of selected nodes
-		{
-			selector: "node[label]",
-			style: {
-				// @ts-ignore
-				"text-margin-y": "-8px",
-			},
-		},
-		{
-			selector: "node.indicated[label]",
-			style: {
-				"z-index": 9999999999,
-			},
-		},
-		{
-			selector: "node[completed = 'true']",
-			style: {
-				"background-color": "#6DBB6D",
-			},
-		},
-		{
-			selector: "edge",
-			style: {
-				width: 3,
-				"line-color": "#ccc",
-				"target-arrow-color": "#ccc",
-				"target-arrow-shape": "triangle",
-				"curve-style": "bezier",
-			},
-		},
-
-		{
-			selector: "node.last-clicked",
-			style: {
-				backgroundColor: "#474747",
-				"border-width": "7px",
-				"border-color": "black",
-			},
-		},
-		{
-			selector: "node:selected.last-clicked",
-			style: {
-				backgroundColor: "#4377c6",
-			},
-		},
-		{
-			selector: "node.indicated",
-			style: {
-				"border-color": "#FEDD00",
-				"border-width": "3px",
-				"text-background-color": "#FEDD00",
-				"text-background-opacity": 1,
-				"z-index": 10,
-			},
-		},
-		{
-			selector: ".dimmed, .path-dimmed",
-			style: {
-				opacity: 0.4,
-			},
-		},
-		{
-			selector: ".filter-fade",
-			style: {
-				opacity: 0.4,
-			},
-		},
-	],
+export const DEFAULT_OPTIONS: any = {
+	layout: GLOBALS.default_layout,
+	style: stylesheet,
 	selectionType: "single",
 };
 
 const EXPERIMENT_STYLE: any[] = [
-	//
+	
 	{
-		selector: ".incoming, .outgoing",
+		selector: "edge.incoming, edge.outgoing",
 		style: {
 			"line-fill": "linear-gradient",
 			// @ts-ignore
@@ -169,6 +77,11 @@ const EXPERIMENT_STYLE: any[] = [
 			// @ts-ignore
 			"line-gradient-stop-colors": "black #FEDD00",
 			"target-arrow-color": "#FEDD00",
+			"width": 4,
+			"mid-target-arrow-shape": "triangle",
+			"mid-target-arrow-color": "#7F6F00",
+			"z-index": 1000,
+			"line-opacity": 1,
 		},
 	},
 
@@ -179,7 +92,10 @@ const EXPERIMENT_STYLE: any[] = [
 			// "text-background-color": "black",
 			// "text-background-opacity": 1,
 			"z-index": 10,
-			// "background-color": "black",
+			// "background-color": "#C8C3A1",
+			"border-color": "#FEDD00",
+			// "boder-color": "black",
+			"border-opacity": 1,
 		},
 	},
 	{
