@@ -210,9 +210,11 @@ export default class AppRoot extends Component {
 
 	private loginTask = new Task(this, {
 		task: async ([{ wikibaseClient, zustand, loginCredentials }]) => {
-			zustand.setCredentials(loginCredentials);
-			wikibaseClient.setCredentials(loginCredentials);
+			if (loginCredentials == undefined) { // throws an error otherwise (if reloading the page)
+				loginCredentials = this.zustand.credentials!
+			}
 
+			wikibaseClient.setCredentials(loginCredentials);			
 			const login = await wikibaseClient.login()
 
 			// Get a users role from the graph
@@ -220,11 +222,12 @@ export default class AppRoot extends Component {
 			const role = await this.wikibaseClient.getUserRole();
 			if(role === "Admin") adminRights = true;
 			zustand.setIsAdmin(adminRights);
-
+			
 			// Get a users wikibase-item QID for visual feedback (mark personal item-column)
 			const info = await this.wikibaseClient.getUserInfo();
 			const userQID = info.userItemId;
 			zustand.setUserQID(userQID);
+			zustand.setCredentials(loginCredentials);
 
 			return login;
 		},
@@ -292,14 +295,11 @@ export default class AppRoot extends Component {
 
 	async onLogin(error:any|null=null) {
 		if(error) { 
-			// TODO: better way to get back to initial render state, but after button click
-			this.zustand.logout();
 			window.location.reload(); // reload window to get back to initial render state, so that user can retry login
-			this.zustand.credentials = undefined;
 		} 
 
-		let existingCredentials = this.zustand.credentials;
-		if (!existingCredentials) {
+		this.loginCredentials = this.zustand.credentials;
+		if (this.loginCredentials == undefined) {
 			/* NOTE:
 			There is a LoginController.ts in shared/login that is used in the selectionEditor
 			But as lit.js works kinda different than regular html/js it's being separated a bit here,
@@ -315,11 +315,12 @@ export default class AppRoot extends Component {
 			}
 
 			this.loginCredentials = await this.loginController.getCredentialsFromPrompt()
-		} else {
-			this.loginCredentials = existingCredentials;
+			this.loginTask.run();
 		}
-
-		this.loginTask.run();
+		else {
+			this.loginCredentials = this.zustand.credentials;
+			this.loginTask.run();
+		}
 	}
 
 	onDarkmodeChange() {
