@@ -489,6 +489,21 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
         format: "json",
         ...params,
       }),
+
+      /**
+     * @description Create a new Item and return its QID
+     *
+     * @tags Entity
+     * @name createNewItem
+     * @request POST:/api/entity/new/{item}
+     */
+    createNewItem: (item: any, params: RequestParams = {}) =>
+      this.request<String>({
+        path: `/api/entity/new/${item}`,
+        method: "POST",
+        format: "json",
+        ...params,
+      })
   };
   info = {
     /**
@@ -658,6 +673,20 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
     existingCourses: (params: RequestParams = {}) =>
       this.request<SparqlResultModel, string>({
         path: `/api/sparql/existingCourses`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+      /* 
+     * @tags Sparql
+     * @name labelMatches
+     * @request GET: /api/sparql/labelMatches/:label/:lang/:limit
+     * @returns existing items that match the input label
+     */
+    labelMatches: (label:string, lang:string, limit:number, params: RequestParams = {}) =>
+      this.request<SparqlResultModel, string>({
+        path: `/api/sparql/labelMatches/${label}/${lang}/${limit}`,
         method: "GET",
         format: "json",
         ...params,

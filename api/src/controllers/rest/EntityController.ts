@@ -4,13 +4,14 @@ import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Get, Post, Required, Returns } from "@tsed/schema";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
-import { Credentials, isDemo, isValid } from "../../models/CredentialsModel";
+import { Credentials, UserRightsProperties, isDemo, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
 import { EntityId } from "wikibase-sdk";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
 import { WikibaseProperty } from "../../models/PropertyModel";
+import { WikibaseEditService } from "src/services/WikibaseEditService";
 
 /**
  * Controller for entity related actions.
@@ -22,6 +23,9 @@ export class Entity {
 
 	@Inject()
 	wikibaseSdk: WikibaseSdkService;
+
+	@Inject()
+	wikibaseEdit: WikibaseEditService;
 
 	@Inject()
 	actionExecutor: ActionExecuterService;
@@ -145,5 +149,30 @@ export class Entity {
 
 		const r = await this.wikibaseSdk.getProperties();
 		return r;
+	}
+
+	@Post("/new/:item")
+	@Description("Create a new Item and return its new QID")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async addNewItem(
+		@Session("user") credentials: Credentials,
+		@Session("rights") rights: UserRightsProperties,
+		@PathParams("item") item: any, // ?? (gibs oder erstellen)
+	) {
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+		if (!rights.isAdmin) return new Unauthorized("Not enough rights");
+
+		// NOTE: Dummy test
+		console.log("Create a new Item");
+
+		// to actually create the element
+		// const wbEdit = this.wikibaseEdit.createSessionData(credentials);
+		// const {entity} = await wbEdit.entity.create(item)
+		// const qID = entity.id;
+		
+		const qID = "[NEW QID]"
+		return qID
 	}
 }

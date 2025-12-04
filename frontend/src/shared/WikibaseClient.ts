@@ -170,6 +170,15 @@ export default class WikibaseClient {
 		}
 	}
 
+	async getLabelMatches(label:string, lang:string="en", limit:number=10): Promise<any> {
+		try {
+			const matches = await this.api.sparql.labelMatches(label, lang, limit);
+			return matches.data.results.bindings;
+		} catch(err) {
+			return [];
+		}
+	}
+
 	async getEntities(entityIds: string[]): Promise<any> {
 		// if more than 50 entityIds, split into multiple requests
 		if (entityIds.length > 50) {
@@ -315,5 +324,13 @@ export default class WikibaseClient {
 			entityId,
 			isCompleted
 		);
+	}
+
+	// async checkItemExists(item:any) {
+	// 	return await this.api.entity.checkItemExists(item);
+	// }
+
+	async createNewItem(item:any) {
+		return await this.api.entity.createNewItem(item);
 	}
 }
