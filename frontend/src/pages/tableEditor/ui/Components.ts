@@ -9,6 +9,7 @@ import SearchSidebar from "./SearchSidebar";
 import NewColumnDropzone from "./table/NewColumnDropzone";
 import { InfoBox } from "./atomic/InfoBox";
 import { LoginPrompt } from "./atomic/Login";
+import { ItemCreator } from "./atomic/ItemCreator";
 
 /**
  * Components are the building blocks of the UI.
@@ -28,6 +29,7 @@ export {
 	NewColumnDropzone,
 	InfoBox,
 	LoginPrompt,
+	ItemCreator,
 };
 
 // Optional type declarations for TypeScript consumers
@@ -44,5 +46,6 @@ declare global {
 		"new-column-dropzone": NewColumnDropzone;
 		"info-box": InfoBox;
 		"login-prompt": LoginPrompt;
+		"item-creator-component": ItemCreator;
 	}
 }

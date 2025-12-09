@@ -29,6 +29,7 @@ export interface Store extends StoreActions {
 	credentials?: Credentials;
 	isDarkMode?: boolean;
 	sidebarIsOpen: boolean;
+	itemCreatorIsOpen: boolean;
 	isAdmin?: boolean;
 	userQID: string|undefined;
 }
@@ -43,6 +44,7 @@ export const zustandStore = createStore<Store>(
 		immer((set, get) => ({
 			credentials: undefined,
 			sidebarIsOpen: true,
+			itemCreatorIsOpen:false,
 			isAdmin: false,
 			userQID: undefined,
 			table: newTableModel(),
