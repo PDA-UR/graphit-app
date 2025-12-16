@@ -47,6 +47,7 @@ export const zustandStore = createStore<Store>(
 			itemCreatorIsOpen:false,
 			isAdmin: false,
 			userQID: undefined,
+			isDarkMode: undefined,
 			table: newTableModel(),
 			setTable: (table: TableModel) => set({ table }),
 			setCredentials: (credentials: Credentials) => {

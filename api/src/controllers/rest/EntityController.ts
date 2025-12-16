@@ -12,6 +12,7 @@ import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
 import { WikibaseProperty } from "../../models/PropertyModel";
 import { WikibaseEditService } from "src/services/WikibaseEditService";
+import { isProduction } from "src/Server";
 
 /**
  * Controller for entity related actions.
@@ -164,15 +165,18 @@ export class Entity {
 		if (!isValid(credentials)) throw new Unauthorized("Not logged in");
 		if (!rights.isAdmin) throw new Unauthorized("Not enough rights");
 
-		console.log("Create a new Item", JSON.stringify(item));
-
-		// ?? Check if "exact" label already exists -> don't create if yes
-
-		// to actually create the element
-		const wbEdit = this.wikibaseEdit.createSessionData(credentials);
-		const {entity} = await wbEdit.entity.create(JSON.parse(item)); // works (without "")
-		const qID = entity.id;
-
+		let qID = "Q123" // placeholder
+		
+		// NOTE: only allow item creation in production or with locally hosted database
+		console.log("[INSTANCE]", process.env.DEV_INSTANCE, "[LOKAL]", process.env.DEV_INSTANCE!.includes("localhost"))
+		if (isProduction || process.env.DEV_INSTANCE!.includes("localhost")) {
+			console.log("[PROD] Create a new Item", JSON.stringify(item));
+			const wbEdit = this.wikibaseEdit.createSessionData(credentials);
+			const {entity} = await wbEdit.entity.create(JSON.parse(item));
+			const qID = entity.id;
+		} else {
+			console.log("No item creation in [DEV], will return a placeholder")
+		}
 		return qID
 	}
 }

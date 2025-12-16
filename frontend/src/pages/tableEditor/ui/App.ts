@@ -21,6 +21,7 @@ import { SelectionController } from "./controllers/SelectionController";
 import { TOOLTIPS } from "../data/Tooltips";
 import { LoginController } from "../../../shared/util/login/LoginController";
 import { Credentials } from "../../../shared/WikibaseEditConfig";
+import { Toast, ToastLength } from "../../selectionTools/ui/toast/Toast";
 
 
 
@@ -35,7 +36,7 @@ export default class AppRoot extends Component {
 	isDragging = false;
 
 	@state()
-	itemCreatorStyle = "closed";
+	itemCreatorStyle = "close";
 
 	@state()
 	infoStyle = "hide";
@@ -135,10 +136,11 @@ export default class AppRoot extends Component {
 			this.zustand = state;
 			this.requestUpdate();
 		});
-
+		
 		if (this.zustand.credentials) {
 			this.loginTask.run();
 		}
+		this.zustand.itemCreatorIsOpen = false; // default back to closed
 
 		// handle keyboard shortcuts
 		window.addEventListener("keydown", (e) => {
@@ -231,7 +233,8 @@ export default class AppRoot extends Component {
 			let adminRights = false;
 			const role = await this.wikibaseClient.getUserRole();
 			if(role === "Admin") adminRights = true;
-			zustand.setIsAdmin(adminRights);
+			zustand.isAdmin = adminRights;
+			zustand.setIsAdmin(adminRights); // ??
 			
 			// Get a users wikibase-item QID for visual feedback (mark personal item-column)
 			const info = await this.wikibaseClient.getUserInfo();
@@ -340,20 +343,19 @@ export default class AppRoot extends Component {
 	// Toggle the sidebar fo item creation
 	onCreateNewItem() {
 		if (!this.zustand.isAdmin) {
-			console.log("Admin only");
+			Toast.error("Admin only", ToastLength.MEDIUM).show();
 			return;
 		}
-
-		this.zustand.itemCreatorIsOpen = !this.zustand.itemCreatorIsOpen;
 		
-		if (this.zustand.itemCreatorIsOpen) {
+		if (!this.zustand.itemCreatorIsOpen) {
 			this.itemCreatorStyle = "open"
-		} else this.itemCreatorStyle = "closed"
+		} else this.itemCreatorStyle = "close"
 		
 		// event to populate sidebar
 		document.dispatchEvent(
 			new CustomEvent("POPULATE_ITEM_CREATOR")
 		);
+		this.zustand.itemCreatorIsOpen = !this.zustand.itemCreatorIsOpen;
 	}
 
 	// -------- Render -------- //
@@ -431,7 +433,7 @@ export default class AppRoot extends Component {
 								class="${when(
 									this.zustand.sidebarIsOpen,
 									() => "open",
-									() => "closed"
+									() => "close"
 								)}"
 							></search-sidebar>
 							<table-view

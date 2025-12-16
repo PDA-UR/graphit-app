@@ -11,6 +11,7 @@ import { wikibaseContext } from "../../data/contexts/WikibaseContext";
 import { ItemOperationController, MoveItemInfo } from "../controllers/ItemOperationController";
 import { DragController } from "../controllers/DragController";
 import { dragControllerContext } from "../../data/contexts/DragControllerContext";
+import { getEnvVar } from "../../../../shared/util/Env";
 
 /**
  * <item-creator-component> is the sidebar that pops up when you want to create a new item for a column
@@ -82,6 +83,7 @@ export class ItemCreator extends Component {
     }
 
     private async onAddItem(event:Event) {
+        this.$feedbackField!.innerHTML = ""; // reset feedback text
         const labelEn = this.$labelEn?.value;
         if (!labelEn) {
             this.setError("English label is required")
@@ -102,6 +104,8 @@ export class ItemCreator extends Component {
             this.setError("No Client");
             return;
         }
+
+        this.$feedbackField?.classList.add("container-filled")
 
         const label = this.$labelEn?.value;
         if (!label) return;
@@ -155,7 +159,7 @@ export class ItemCreator extends Component {
         let result;
         try {
             result = await this.wikibaseClient.createNewItem(item)
-            this.setFeedback("new [ITEM]: " + result);
+            this.setFeedback(result, true);
             console.log("[ITEM] -> added", result);
         } catch(error:any) {
             if (error.response != undefined) error = error.response.data.message            
@@ -169,16 +173,15 @@ export class ItemCreator extends Component {
             return;
         }
 
-        // result = "Q2" // Test
         const claim = this.createClaimFromInput(result);
 
         // Add the Claims to connect it to the specified columns
         console.log("create claim:", claim)
-        let status;
         try {
             this.itemOperator!.moveItems([claim], false);
-            this.setFeedback("new [CLAIM]: " + claim);
-            console.log("[CLAIM] -> status", status);
+            const claimText = `${claim.value} --${claim.newClaim.property}-> ${claim.to}`
+            this.setFeedback("new [CLAIM]: " + claimText);
+            console.log("[CLAIM] -> added", claimText);
         } catch (error: any) {
             if (error.response != undefined) error = error.response.data.message
             const info = "[ERROR] -> Claim "
@@ -249,10 +252,19 @@ export class ItemCreator extends Component {
         console.log(error + " " + msg);
     }
 
-    private setFeedback(text:string) {
-        const el = document.createElement("div")
-        el.innerText = text;
-        this.$feedbackField!.appendChild(el);
+    private setFeedback(text:string, isQID:boolean=false) {
+        this.$feedbackField?.classList.add("container-filled")
+
+        if (isQID) { // If QID make link
+            const el = document.createElement("a") as HTMLAnchorElement;
+            el.href = `https://graphit.ur.de/wiki/Item:${text}`;
+            el.innerText = `new [ITEM]: (${text}) ${this.$labelEn!.value}`;
+            this.$feedbackField!.appendChild(el);
+        } else {
+            const el = document.createElement("div")
+            el.innerText = text;
+            this.$feedbackField!.appendChild(el);
+        }
     }
 
     // ------ Rendering ------ //
@@ -262,6 +274,8 @@ export class ItemCreator extends Component {
 
         <div id="creator-container" class="container">
             NEW ITEM:
+            </br>
+            <small>Make sure it doesn't exist yet</small>
 
             <div id="label-container" class="container">
                 <input id="label-en" type="text" placeholder="Label @en" required/>            
@@ -315,7 +329,7 @@ export class ItemCreator extends Component {
             border-bottom: solid 1px var(--border-color);
             box-shadow: 2px 2px 4px var(--shadow-color);
         }
-        :host(.closed) {
+        :host(.close) {
             display: none;
         }
         
@@ -333,6 +347,10 @@ export class ItemCreator extends Component {
             display: flex;
             flex-direction: column;
             overflow-x: scroll;
+            padding: 5px;
+        }
+
+        .container-filled {
             border: dashed 1px black;
             padding: 5px;
         }
