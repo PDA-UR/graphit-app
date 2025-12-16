@@ -156,23 +156,23 @@ export class Entity {
 	@Returns(200, String).ContentType("text/plain")
 	@Returns(400, String).ContentType("text/plain")
 	@Returns(401, String).ContentType("text/plain")
-	async addNewItem(
+	async createNewItem(
 		@Session("user") credentials: Credentials,
 		@Session("rights") rights: UserRightsProperties,
-		@PathParams("item") item: any, // ?? (gibs oder erstellen)
+		@PathParams("item") item: any,
 	) {
-		if (!isValid(credentials)) return new Unauthorized("Not logged in");
-		if (!rights.isAdmin) return new Unauthorized("Not enough rights");
+		if (!isValid(credentials)) throw new Unauthorized("Not logged in");
+		if (!rights.isAdmin) throw new Unauthorized("Not enough rights");
 
-		// NOTE: Dummy test
-		console.log("Create a new Item");
+		console.log("Create a new Item", JSON.stringify(item));
+
+		// ?? Check if "exact" label already exists -> don't create if yes
 
 		// to actually create the element
-		// const wbEdit = this.wikibaseEdit.createSessionData(credentials);
-		// const {entity} = await wbEdit.entity.create(item)
-		// const qID = entity.id;
-		
-		const qID = "[NEW QID]"
+		const wbEdit = this.wikibaseEdit.createSessionData(credentials);
+		const {entity} = await wbEdit.entity.create(JSON.parse(item)); // works (without "")
+		const qID = entity.id;
+
 		return qID
 	}
 }

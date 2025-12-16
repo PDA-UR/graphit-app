@@ -498,7 +498,7 @@ export class ApiClient<SecurityDataType extends unknown> extends HttpClient<Secu
      * @request POST:/api/entity/new/{item}
      */
     createNewItem: (item: any, params: RequestParams = {}) =>
-      this.request<String>({
+      this.request<string, string>({
         path: `/api/entity/new/${item}`,
         method: "POST",
         format: "json",

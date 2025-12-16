@@ -4,7 +4,7 @@ export interface WBItem {
         en: string,
         de: string | undefined,
     },
-    description: {
+    descriptions: {
         en: string | undefined,
         de: string | undefined,
     },

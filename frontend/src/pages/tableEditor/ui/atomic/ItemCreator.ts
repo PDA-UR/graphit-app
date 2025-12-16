@@ -6,9 +6,11 @@ import zustandStore from "../../data/ZustandStore";
 import { TableModel } from "../../data/models/TableModel";
 import { WBItem } from "../../data/models/WBItemModel";
 import WikibaseClient from "../../../../shared/WikibaseClient";
-import { CreateClaimModel } from "../../../../shared/client/ApiClient";
 import { consume } from "@lit-labs/context";
 import { wikibaseContext } from "../../data/contexts/WikibaseContext";
+import { ItemOperationController, MoveItemInfo } from "../controllers/ItemOperationController";
+import { DragController } from "../controllers/DragController";
+import { dragControllerContext } from "../../data/contexts/DragControllerContext";
 
 /**
  * <item-creator-component> is the sidebar that pops up when you want to create a new item for a column
@@ -24,8 +26,9 @@ export class ItemCreator extends Component {
     private $descriptionDe: HTMLInputElement | undefined;
     private $aliasEn: HTMLInputElement | undefined;
     private $aliasDe: HTMLInputElement | undefined;
-    private $errorField: HTMLDivElement | undefined;
     private $feedbackField: HTMLDivElement | undefined;
+    private $errorField: HTMLDivElement | undefined;
+    private $errorMsgField: HTMLDivElement | undefined;
 
     private zustand = zustandStore.getState();
 
@@ -34,6 +37,11 @@ export class ItemCreator extends Component {
 
     @consume({ context: wikibaseContext })
     private wikibaseClient!: WikibaseClient;
+
+    @consume({ context: dragControllerContext})
+    private dragController!: DragController;
+
+    private itemOperator: ItemOperationController | undefined;
 
     // ------ Lifecycle ------ //
     
@@ -47,44 +55,49 @@ export class ItemCreator extends Component {
         this.$descriptionDe = this.shadowRoot?.querySelector("#description-de") as HTMLInputElement;
         this.$aliasEn = this.shadowRoot?.querySelector("#alias-en") as HTMLInputElement;
         this.$aliasDe = this.shadowRoot?.querySelector("#alias-de") as HTMLInputElement;
-        this.$errorField = this.shadowRoot?.querySelector("#creator-error") as HTMLDivElement;
         this.$feedbackField = this.shadowRoot?.querySelector("#creator-feedback") as HTMLDivElement;
+        this.$errorField = this.shadowRoot?.querySelector("#creator-error") as HTMLDivElement;
+        this.$errorMsgField = this.shadowRoot?.querySelector("#creator-error-msg") as HTMLDivElement;
 
         document.addEventListener("POPULATE_ITEM_CREATOR", (e:Event) => this.onOpen(e))
+        this.itemOperator = this.dragController.getItemOperator()
     }
 
     // ------ Listeners ------ //
 
     private onOpen(event:Event) {
-        if (!this.zustand.itemCreatorIsOpen) return
-        // NOTE: does this twice
-
         const columns = this.zustand.table.columns;
         columns.forEach(column => {
             this.$columnSelect!.options[this.$columnSelect!.options.length] = new Option(column.item.text, column.item.itemId)
-            this.$propertySelect!.options[this.$propertySelect!.options.length] = new Option(column.property.label, column.property.propertyId)
         });
+
+        const properties = this.wikibaseClient.getCachedProperties()
+        properties.forEach(prop => {
+            this.$propertySelect!.options[this.$propertySelect!.options.length] = new Option(prop.label, prop.propertyId)
+        });
+        
+        const selected_property = columns[0].property.propertyId; // preselect the current prop of the first column
+        this.$propertySelect!.value = selected_property
+        
     }
 
     private async onAddItem(event:Event) {
-        console.log("check inputs and then create + feedback", event)
-
-        // needs MIN. an english label
         const labelEn = this.$labelEn?.value;
         if (!labelEn) {
             this.setError("English label is required")
             return;
         }
-        // check if exact label exists ?
-        // check if exact description exists ?
 
         const item = this.createItemFromInput()
-        // const claim = this.createClaimFromInput()
         this.handleItemCreation(item)
     }
     
-    // Manually check the label
-    private async onCheckLabel() {
+    /**
+     * Queries for matching labels that already exist in the database
+     */
+    private async onMatchLabel() {
+        this.$feedbackField!.innerHTML = ""
+        
         if (!this.wikibaseClient) {
             this.setError("No Client");
             return;
@@ -92,18 +105,45 @@ export class ItemCreator extends Component {
 
         const label = this.$labelEn?.value;
         if (!label) return;
+       
+        let limit = 5;
+        const lang = "en";
+        let matches;
+        try {
+            matches = await this.wikibaseClient.getLabelMatches(label, lang, limit);
+        } catch(error: any) {
+            console.log("[ERROR] - SPARQL", error);
+            this.setError(error)
+        }
 
-        // ?? Match every word
-        console.log("[TODO] Check the english label:", label);
-        const matches = await this.wikibaseClient?.getLabelMatches(label, "en", 5);
-        console.log("matches", matches)
-        // Check label (if exists) and return
-        // TODO + add info/tooltips 
+        // Parse the result into a readable format
+        if (matches.length == 0) {
+            this.$feedbackField!.textContent = "No matches"
+        } else {
+            if (matches.length < limit) limit = matches.length
+
+            this.$feedbackField!.textContent = "First " + limit + " entries:"
+
+            matches.forEach((match:any) => {
+                const link = match.item.value
+                const label = match.itemLabel.value
+                const qid = link.match(/Q\d*/g)
+                const el = document.createElement("a") as HTMLAnchorElement;
+                el.href = link;
+                if (qid == null) el.innerText = `Prop: ${label}` // handle returned properties
+                else el.innerText = `(${qid[0]}) ${label}`;
+                this.$feedbackField?.appendChild(el);
+            });
+        }
     }
 
     // ------ Helpers ------ //
 
-    // Handle backend interaction
+    /**
+     * Handle the backend interaction to create a new item and connect it to a column
+     * @param item 
+     * @returns 
+     */
     private async handleItemCreation(item:WBItem) {
         if(!this.wikibaseClient) {
             this.setError("Missing Client");
@@ -115,42 +155,47 @@ export class ItemCreator extends Component {
         let result;
         try {
             result = await this.wikibaseClient.createNewItem(item)
-            console.log("[ADDED]", result);
+            this.setFeedback("new [ITEM]: " + result);
+            console.log("[ITEM] -> added", result);
         } catch(error:any) {
-            console.log("[ERROR] - item creation", error);
-            this.setError(error);
+            if (error.response != undefined) error = error.response.data.message            
+            const info = "[ERROR] -> Item "
+            this.setError(info, error); 
             return;
         }
 
         if (!this.$columnSelect?.value) {
-            this.setError("Missing Claim QID")
+            this.setError("Missing Claim QID");
             return;
         }
 
+        // result = "Q2" // Test
         const claim = this.createClaimFromInput(result);
-        const qid = this.$columnSelect.value; // where to move
 
         // Add the Claims to connect it to the specified columns
         console.log("create claim:", claim)
         let status;
         try {
-            status = await this.wikibaseClient.createClaim(qid, claim)
+            this.itemOperator!.moveItems([claim], false);
+            this.setFeedback("new [CLAIM]: " + claim);
+            console.log("[CLAIM] -> status", status);
         } catch (error: any) {
-            console.log("[ERROR] - claim creation", error);
-            this.setError(error);
+            if (error.response != undefined) error = error.response.data.message
+            const info = "[ERROR] -> Claim "
+            this.setError(info, error);
         }
 
-        // If all successful = return qid + render in column
-        this.setFeedback(result)
     }
 
-    private createClaimFromInput(qid:String): CreateClaimModel {
-        // TODO: handle empty selects
-        const claim = {
-            property: this.$propertySelect?.value, // what to use
-            value: qid, // what to move
-        } as CreateClaimModel
-        return claim
+    private createClaimFromInput(qid:String): MoveItemInfo {
+        return { 
+            to: this.$columnSelect!.value,
+            value: qid,
+            newClaim: {
+                property: this.$propertySelect?.value,
+                value: qid, 
+            }
+        } as MoveItemInfo
     }
 
     /**
@@ -158,18 +203,17 @@ export class ItemCreator extends Component {
      * @returns the Item-Model needed for Item creation later
      */
     private createItemFromInput(): WBItem {
-        // NOTE: if no value then ""
+        // NOTE: fields need to either be strings with content, or undefined.
 
-        // all except labels en is optional -> ist "" dann okay, oder braucht undefined, oder braucht weglassen?
         const item = {
             type: 'item',
             labels: {
-                en: this.$labelEn?.value,
-                de: this.$labelDe?.value,
+                en: this.$labelEn?.value, // required field
+                de: this.$labelDe?.value ? this.$labelDe?.value : undefined,
             },
-            description: {
-                en: this.$descriptionEn?.value,
-                de: this.$descriptionDe?.value,
+            descriptions: {
+                en: this.$descriptionEn?.value ? this.$descriptionEn?.value : undefined,
+                de: this.$descriptionDe?.value ? this.$descriptionDe?.value : undefined,
             },
             aliases: {
                 en: this.parseAlias(this.$aliasEn?.value),
@@ -188,8 +232,8 @@ export class ItemCreator extends Component {
      * @param alias the value of the alias input field
      * @returns a parsed array
      */
-    private parseAlias(alias:string|undefined): string[] | string {
-        if (!alias) return "" // undefined
+    private parseAlias(alias:string|undefined): string[] | string | undefined {
+        if (!alias) return undefined
 
         let parsed =  alias.split("|");
         parsed.forEach((alias, index) => {
@@ -199,12 +243,16 @@ export class ItemCreator extends Component {
         return parsed
     }
 
-    private setError(text:string) {
-        this.$errorField!.textContent = text;
+    private setError(error:string, msg: string ="") {
+        this.$errorField!.textContent = error;
+        this.$errorMsgField!.textContent = msg;
+        console.log(error + " " + msg);
     }
 
     private setFeedback(text:string) {
-        this.$feedbackField!.textContent = text;
+        const el = document.createElement("div")
+        el.innerText = text;
+        this.$feedbackField!.appendChild(el);
     }
 
     // ------ Rendering ------ //
@@ -219,7 +267,7 @@ export class ItemCreator extends Component {
                 <input id="label-en" type="text" placeholder="Label @en" required/>            
                 <input id="label-de" type="text" placeholder="Label @de"/>
 
-                <button @click=${this.onCheckLabel}>Match label @en</button>
+                <button id="match-label-button" @click=${this.onMatchLabel}>Match label @en</button>
             </div>
 
             <div id="description-container" class="container">
@@ -246,11 +294,13 @@ export class ItemCreator extends Component {
             </select>
         <div>
 
-        <button id="add-item-btn" @click="${this.onAddItem}">ADD</button>
+        <button id="create_item_btn" @click="${this.onAddItem}">ADD</button>
 
-        <div id="creator-error"></div>
-        <div id="creator-feedback"></div>
-
+        <div id="feedback-container">
+            <div id="creator-feedback"></div>
+            <div id="creator-error"></div>
+            <div id="creator-error-msg"></div>
+        </div>
         `;
     }
 
@@ -275,13 +325,35 @@ export class ItemCreator extends Component {
             padding: 10px;
         }
 
-        #add-item-btn {
+        #create_item_btn {
             color: red;
+        }
+
+        #feedback-container {
+            display: flex;
+            flex-direction: column;
+            overflow-x: scroll;
+            border: dashed 1px black;
+            padding: 5px;
+        }
+        
+        #creator-feedback {
+            font-size: small;
+            margin-bottom: 5px;
+            display: flex;
+            flex-direction: column;
         }
 
         #creator-error {
             color: red;
         }
+        
+        #creator-error-msg {
+            font-size:small;
+            color: #c90000;
+            margin-left: 10px;
+        }
+
 
         `;
 }

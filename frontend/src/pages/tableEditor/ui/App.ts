@@ -344,6 +344,8 @@ export default class AppRoot extends Component {
 			return;
 		}
 
+		this.zustand.itemCreatorIsOpen = !this.zustand.itemCreatorIsOpen;
+		
 		if (this.zustand.itemCreatorIsOpen) {
 			this.itemCreatorStyle = "open"
 		} else this.itemCreatorStyle = "closed"
@@ -352,8 +354,6 @@ export default class AppRoot extends Component {
 		document.dispatchEvent(
 			new CustomEvent("POPULATE_ITEM_CREATOR")
 		);
-		
-		this.zustand.itemCreatorIsOpen = !this.zustand.itemCreatorIsOpen;
 	}
 
 	// -------- Render -------- //

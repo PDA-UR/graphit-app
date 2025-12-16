@@ -326,11 +326,7 @@ export default class WikibaseClient {
 		);
 	}
 
-	// async checkItemExists(item:any) {
-	// 	return await this.api.entity.checkItemExists(item);
-	// }
-
 	async createNewItem(item:any) {
-		return await this.api.entity.createNewItem(item);
+		return await this.api.entity.createNewItem(JSON.stringify(item));
 	}
 }
