@@ -166,6 +166,15 @@ export class Entity {
 		if (!rights.isAdmin) throw new Unauthorized("Not enough rights");
 
 		let qID = "Q123" // placeholder
+
+		// CHECK if an item with the exact label already exists
+		const parsed = JSON.parse(item)
+		const searchLabel = parsed.labels.en;
+		const r = await this.wikibaseSdk.search(credentials, searchLabel, "en");
+		const searchResult = r.data.search[0]
+		if (searchResult.label === searchLabel) {
+			throw new Unauthorized("Exact label already exists (" + searchResult.id + ")")
+		}
 		
 		// NOTE: only allow item creation in production or with locally hosted database
 		console.log("[INSTANCE]", process.env.DEV_INSTANCE, "[LOKAL]", process.env.DEV_INSTANCE!.includes("localhost"))
@@ -173,7 +182,7 @@ export class Entity {
 			console.log("[PROD] Create a new Item", JSON.stringify(item));
 			const wbEdit = this.wikibaseEdit.createSessionData(credentials);
 			const {entity} = await wbEdit.entity.create(JSON.parse(item));
-			const qID = entity.id;
+			qID = entity.id;
 		} else {
 			console.log("No item creation in [DEV], will return a placeholder")
 		}
