@@ -58,6 +58,19 @@ Docker:
     - *instance of* `<Student/Admin>`  - if not: defaults to *Student*
   - a [User-Page](https://graphit.ur.de/wiki/User:Max_Mustermann) with a link to the User Item
 
+### Match label
+This is an option that can be used when creating an item to be added to a column. Open the "Create a new Item" Menu via the <kbd>></kbd> button on the top left or <kbd>CTRL+<kbd>.
+- Uses a SPARQL query to match Regex Strings to item Labels in the database
+  - The regex is case insensitive, but requires escaping
+  - Escaping is done automatically in the frontend before making the API call !
+  - e.g. Find Items with "ER" at the start
+    -  `^(er)\w+` **won't** work
+    -  `^(er)\\w+` works
+-  The query is somewhat hardcoded to return only the first 5 results, to save time and resources 
+   -  this value is currently only hardcoded in the frontend
+
+### Development
+
 #### Add a new Page
   - add the `frontend/newSection/index.html` to the rollupOptions { input {...} } in `vite.config.js`
   - add a link to the `frontend/index.html`-hub-page
