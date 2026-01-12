@@ -344,10 +344,8 @@ export class ItemCreator extends Component {
 
     static styles = css`
         :host(.open) {
-            position: absolute;
-            right: 0;
+            width: 25rem;
             overflow-x: auto;
-            width: 15rem;
             background-color: var(--bg-color);
             border-left: solid 1px var(--border-color);
             border-bottom: solid 1px var(--border-color);

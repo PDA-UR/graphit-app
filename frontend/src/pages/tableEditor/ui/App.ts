@@ -233,8 +233,7 @@ export default class AppRoot extends Component {
 			let adminRights = false;
 			const role = await this.wikibaseClient.getUserRole();
 			if(role === "Admin") adminRights = true;
-			zustand.isAdmin = adminRights;
-			zustand.setIsAdmin(adminRights); // ??
+			zustand.setIsAdmin(adminRights); 
 			
 			// Get a users wikibase-item QID for visual feedback (mark personal item-column)
 			const info = await this.wikibaseClient.getUserInfo();
@@ -433,7 +432,7 @@ export default class AppRoot extends Component {
 								class="${when(
 									this.zustand.sidebarIsOpen,
 									() => "open",
-									() => "close"
+									() => "closed"
 								)}"
 							></search-sidebar>
 							<table-view
