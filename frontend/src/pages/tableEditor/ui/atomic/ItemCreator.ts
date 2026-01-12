@@ -62,17 +62,28 @@ export class ItemCreator extends Component {
 
         document.addEventListener("POPULATE_ITEM_CREATOR", (e:Event) => this.onOpen(e))
         this.itemOperator = this.dragController.getItemOperator()
+    
+        // subscribe to keep updated, when e.g. columns change
+        zustandStore.subscribe((state) => {
+			this.zustand = state;
+			this.requestUpdate();
+		});
     }
 
     // ------ Listeners ------ //
 
     private onOpen(event:Event) {
+        this.$columnSelect!.innerHTML = ""
         const columns = this.zustand.table.columns;
+        console.log("cols", this.zustand.table.columns);
         columns.forEach(column => {
             this.$columnSelect!.options[this.$columnSelect!.options.length] = new Option(column.item.text, column.item.itemId)
         });
 
-        const properties = this.wikibaseClient.getCachedProperties()
+        if (this.$propertySelect!.options.length >= 1) {
+            return;
+        }
+        const properties = this.wikibaseClient.getCachedProperties();
         properties.forEach(prop => {
             this.$propertySelect!.options[this.$propertySelect!.options.length] = new Option(prop.label, prop.propertyId)
         });
@@ -80,6 +91,16 @@ export class ItemCreator extends Component {
         const selected_property = columns[0].property.propertyId; // preselect the current prop of the first column
         this.$propertySelect!.value = selected_property
         
+    }
+
+    private clearInputFields(event:Event) {
+        console.log("clear", this.$labelEn)
+        this.$labelEn!.value = "";
+        this.$labelDe!.value = "";
+        this.$descriptionEn!.value = "";
+        this.$descriptionDe!.value = "";
+        this.$aliasEn!.value = "";
+        this.$aliasDe!.value = "";
     }
 
     private async onAddItem(event:Event) {
@@ -294,7 +315,6 @@ export class ItemCreator extends Component {
                 <input id="alias-de" type="text" placeholder="Alias1|Alias2 @de"/>
             </div>
 
-            <!-- CLAIMS?? -->
         </div>
 
         <div id="attach-container" class="container">
@@ -308,9 +328,13 @@ export class ItemCreator extends Component {
             </select>
         <div>
 
-        <button id="create_item_btn" @click="${this.onAddItem}">ADD</button>
+        <div id="btn-container">
+            <button id="create-item-btn" @click="${this.onAddItem}">ADD</button>
+            <div class="spacer"></div>
+            <button id="clear-item-btn" @click="${this.clearInputFields}">CLEAR</button>
+        </div>
 
-        <div id="feedback-container">
+        <div id="feedback-container" class="container">
             <div id="creator-feedback"></div>
             <div id="creator-error"></div>
             <div id="creator-error-msg"></div>
@@ -339,13 +363,16 @@ export class ItemCreator extends Component {
             padding: 10px;
         }
 
-        #create_item_btn {
+        #btn-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #create-item-btn {
             color: red;
         }
 
         #feedback-container {
-            display: flex;
-            flex-direction: column;
             overflow-x: scroll;
             padding: 5px;
         }
