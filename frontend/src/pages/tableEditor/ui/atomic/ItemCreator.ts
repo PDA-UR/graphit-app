@@ -62,6 +62,7 @@ export class ItemCreator extends Component {
         this.itemOperator = this.dragController.getItemOperator();
 
         document.addEventListener("UPDATED_COLUMNS", (e:Event) => this.updateColumnOptions());
+        this.$labelEn.addEventListener("blur", (e:Event) => this.autoMatch());
     
         // subscribe to keep updated, when e.g. columns change
         zustandStore.subscribe((state) => {
@@ -124,7 +125,16 @@ export class ItemCreator extends Component {
         const item = this.createItemFromInput()
         this.handleItemCreation(item)
     }
-    
+
+    /**
+     * Automatically match the labels when the input field looses focus (and isn't empty)
+     */
+    private async autoMatch() {
+        if (this.$labelEn!.value.length > 0) {
+            this.onMatchLabel();
+        }
+    }
+
     /**
      * Queries for matching labels that already exist in the database
      */
