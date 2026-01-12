@@ -350,10 +350,6 @@ export default class AppRoot extends Component {
 			this.itemCreatorStyle = "open"
 		} else this.itemCreatorStyle = "close"
 		
-		// event to populate sidebar
-		document.dispatchEvent(
-			new CustomEvent("POPULATE_ITEM_CREATOR")
-		);
 		this.zustand.itemCreatorIsOpen = !this.zustand.itemCreatorIsOpen;
 	}
 

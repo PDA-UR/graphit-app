@@ -46,7 +46,6 @@ export class ItemCreator extends Component {
 
     // ------ Lifecycle ------ //
     
-    // TODO -> update when opened
     protected firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         this.$columnSelect = this.shadowRoot?.querySelector("#attach-column") as HTMLSelectElement;
         this.$propertySelect = this.shadowRoot?.querySelector("#attach-property") as HTMLSelectElement;
@@ -59,30 +58,41 @@ export class ItemCreator extends Component {
         this.$feedbackField = this.shadowRoot?.querySelector("#creator-feedback") as HTMLDivElement;
         this.$errorField = this.shadowRoot?.querySelector("#creator-error") as HTMLDivElement;
         this.$errorMsgField = this.shadowRoot?.querySelector("#creator-error-msg") as HTMLDivElement;
+        
+        this.itemOperator = this.dragController.getItemOperator();
 
-        document.addEventListener("POPULATE_ITEM_CREATOR", (e:Event) => this.onOpen(e))
-        this.itemOperator = this.dragController.getItemOperator()
+        document.addEventListener("UPDATED_COLUMNS", (e:Event) => this.updateColumnOptions());
     
         // subscribe to keep updated, when e.g. columns change
         zustandStore.subscribe((state) => {
 			this.zustand = state;
 			this.requestUpdate();
 		});
+
+        this.initialPopulateOptions();
     }
 
     // ------ Listeners ------ //
 
-    private onOpen(event:Event) {
+    // Update dynamically, when a new column is added
+    private updateColumnOptions = () => {
+        console.log("update");
         this.$columnSelect!.innerHTML = ""
         const columns = this.zustand.table.columns;
-        console.log("cols", this.zustand.table.columns);
         columns.forEach(column => {
             this.$columnSelect!.options[this.$columnSelect!.options.length] = new Option(column.item.text, column.item.itemId)
         });
+        // NOTE: force rerender so that the options are up to date
+        this.$columnSelect!.style.display = "none";
+        this.$columnSelect!.style.display = "block";
+        return columns
+    }
 
-        if (this.$propertySelect!.options.length >= 1) {
-            return;
-        }
+    // private onOpen(event:Event) {
+    private initialPopulateOptions() {
+        this.updateColumnOptions();
+
+        const columns = this.zustand.table.columns;
         const properties = this.wikibaseClient.getCachedProperties();
         properties.forEach(prop => {
             this.$propertySelect!.options[this.$propertySelect!.options.length] = new Option(prop.label, prop.propertyId)
@@ -93,7 +103,7 @@ export class ItemCreator extends Component {
         
     }
 
-    private clearInputFields(event:Event) {
+    private clearInputFields(event:Event|null) {
         console.log("clear", this.$labelEn)
         this.$labelEn!.value = "";
         this.$labelDe!.value = "";
