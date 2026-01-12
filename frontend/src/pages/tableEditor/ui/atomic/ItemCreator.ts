@@ -12,6 +12,7 @@ import { ItemOperationController, MoveItemInfo } from "../controllers/ItemOperat
 import { DragController } from "../controllers/DragController";
 import { dragControllerContext } from "../../data/contexts/DragControllerContext";
 import { getEnvVar } from "../../../../shared/util/Env";
+import { Toast, ToastLength } from "../../../selectionTools/ui/toast/Toast";
 
 /**
  * <item-creator-component> is the sidebar that pops up when you want to create a new item for a column
@@ -30,6 +31,9 @@ export class ItemCreator extends Component {
     private $feedbackField: HTMLDivElement | undefined;
     private $errorField: HTMLDivElement | undefined;
     private $errorMsgField: HTMLDivElement | undefined;
+    private $quickAddCheckbox: HTMLInputElement | undefined;
+
+    private isQuickAdd: boolean | undefined = false;
 
     private zustand = zustandStore.getState();
 
@@ -58,11 +62,15 @@ export class ItemCreator extends Component {
         this.$feedbackField = this.shadowRoot?.querySelector("#creator-feedback") as HTMLDivElement;
         this.$errorField = this.shadowRoot?.querySelector("#creator-error") as HTMLDivElement;
         this.$errorMsgField = this.shadowRoot?.querySelector("#creator-error-msg") as HTMLDivElement;
+        this.$quickAddCheckbox = this.shadowRoot?.querySelector("#quick-add") as HTMLInputElement;
         
         this.itemOperator = this.dragController.getItemOperator();
 
         document.addEventListener("UPDATED_COLUMNS", (e:Event) => this.updateColumnOptions());
         this.$labelEn.addEventListener("blur", (e:Event) => this.autoMatch());
+        this.$quickAddCheckbox.addEventListener("change", (e:Event) => this.enableQuickAdd());
+
+        document.addEventListener("keypress", (e:KeyboardEvent) => this.doQuickAdd(e));
     
         // subscribe to keep updated, when e.g. columns change
         zustandStore.subscribe((state) => {
@@ -75,9 +83,31 @@ export class ItemCreator extends Component {
 
     // ------ Listeners ------ //
 
+    private enableQuickAdd() {                
+        if(!this.zustand.isAdmin) return; // very simple sanity check
+
+        this.isQuickAdd = this.$quickAddCheckbox?.checked;
+
+        if (this.isQuickAdd) {
+            Toast.warning("Quick-Add ENABLED", length=ToastLength.SHORT).show();
+        } else {
+            Toast.info("Quick-Add DISABLED", length=ToastLength.SHORT).show();
+        }
+    }
+
+    private doQuickAdd(e:KeyboardEvent) {
+        if (e.key == "Enter") {
+            e.preventDefault();
+            if (this.isQuickAdd) {
+                console.log("QUICK ADD")
+                //this.onAddItem(e);
+            }
+        }
+        
+    }
+
     // Update dynamically, when a new column is added
-    private updateColumnOptions = () => {
-        console.log("update");
+    private updateColumnOptions() {
         this.$columnSelect!.innerHTML = ""
         const columns = this.zustand.table.columns;
         columns.forEach(column => {
@@ -348,6 +378,11 @@ export class ItemCreator extends Component {
             </select>
         <div>
 
+        <div id="quick-add-container">
+            <input type="checkbox" id="quick-add" name="quick-add" value="Enable">
+            <label for="quick-add" id="quick-add-label">Quick-Add with Enter?</label>
+        </div>
+
         <div id="btn-container">
             <button id="create-item-btn" @click="${this.onAddItem}">ADD</button>
             <div class="spacer"></div>
@@ -379,6 +414,11 @@ export class ItemCreator extends Component {
             display: flex;
             flex-direction:column;
             padding: 10px;
+        }
+
+        #quick-add-container {
+            margin: 20px 0 0 5px;
+            font-size: smaller;
         }
 
         #btn-container {
