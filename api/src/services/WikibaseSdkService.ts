@@ -379,4 +379,14 @@ export class WikibaseSdkService extends SessionService<Wbk> {
 		const query = this.templateService.getExistingCourses();
 		return this.query(credentials, query);
 	}
+
+	async getLabelMatches(
+		credentials: Credentials,
+		label: string,
+		lang: string = "en",
+		limit: number = 10,
+	): Promise<SparqlResult> {
+		const query = this.templateService.getLabelMatches(label, lang, limit);
+		return this.query(credentials, query);
+	}
 }

@@ -85,6 +85,9 @@ static styles = css`
                         <td> CTRL + i </td>
                         <td> Toggle info box on/off </td>
                     </tr>
+                    <tr>
+                        <td> CTRL + '+' </td>
+                        <td> Toggle item creator </td>
                 </table>
             </div>
             <br>

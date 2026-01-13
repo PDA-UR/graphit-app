@@ -10,5 +10,8 @@ export const TOOLTIPS : {[id:string]: string} =
     "darkmode-toggle": "Toggle dark/light mode",
     "drag-toggle": "Change item drag-behavior (CTRL+x)",
     "qualifier-toggle": "Toggle qualifiers (CTRL+q)",
+    "creator-btn": "Create a new item (CTRL + '+')",
     "admin-rights-false": "Modifiable items are marked green (🟩) ",
 }
+
+// NOTE: "admin-rights-false" has to be last, anything below it won't render

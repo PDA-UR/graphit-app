@@ -248,6 +248,7 @@ export class ColumnComponent extends Component {
 
 	onDeleteColumn = () => {
 		this.tableActions.removeColumn(this.columnModel.viewId);
+		document.dispatchEvent(new CustomEvent("UPDATED_COLUMNS"));
 	};
 
 	onDoubleClickColumnTitle = () => {

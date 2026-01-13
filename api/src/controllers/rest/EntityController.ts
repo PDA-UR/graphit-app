@@ -4,13 +4,15 @@ import { Logger } from "@tsed/logger";
 import { BodyParams, PathParams, Session } from "@tsed/platform-params";
 import { Description, Get, Post, Required, Returns } from "@tsed/schema";
 import { WikibaseSdkService } from "../../services/WikibaseSdkService";
-import { Credentials, isDemo, isValid } from "../../models/CredentialsModel";
+import { Credentials, UserRightsProperties, isDemo, isValid } from "../../models/CredentialsModel";
 import { SparqlResult } from "../../models/SparqlResultModel";
 import { EntityId } from "wikibase-sdk";
 import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
 import { WikibaseProperty } from "../../models/PropertyModel";
+import { WikibaseEditService } from "src/services/WikibaseEditService";
+import { isProduction } from "src/Server";
 
 /**
  * Controller for entity related actions.
@@ -22,6 +24,9 @@ export class Entity {
 
 	@Inject()
 	wikibaseSdk: WikibaseSdkService;
+
+	@Inject()
+	wikibaseEdit: WikibaseEditService;
 
 	@Inject()
 	actionExecutor: ActionExecuterService;
@@ -145,5 +150,37 @@ export class Entity {
 
 		const r = await this.wikibaseSdk.getProperties();
 		return r;
+	}
+
+	@Post("/new/:item")
+	@Description("Create a new Item and return its new QID")
+	@Returns(200, String).ContentType("text/plain")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async createNewItem(
+		@Session("user") credentials: Credentials,
+		@Session("rights") rights: UserRightsProperties,
+		@PathParams("item") item: any,
+	) {
+		if (!isValid(credentials)) throw new Unauthorized("Not logged in");
+		if (!rights.isAdmin) throw new Unauthorized("Not enough rights");
+
+		let qID = "Q123" // placeholder
+
+		// CHECK if an item with the exact label already exists
+		const parsed = JSON.parse(item)
+		const searchLabel = parsed.labels.en;
+		const r = await this.wikibaseSdk.search(credentials, searchLabel, "en");
+		const searchResult = r.data.search
+		if (searchResult.label === searchLabel[0]) {
+			throw new Unauthorized("Exact label already exists (" + searchResult.id + ")")
+		}
+		
+		// NOTE: only allow item creation in production or with locally hosted database
+		console.log("Create a new Item", JSON.stringify(item));
+		const wbEdit = this.wikibaseEdit.createSessionData(credentials);
+		const {entity} = await wbEdit.entity.create(JSON.parse(item));
+		qID = entity.id;
+		return qID
 	}
 }

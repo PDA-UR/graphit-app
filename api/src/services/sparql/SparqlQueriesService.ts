@@ -315,6 +315,30 @@ const existingCourses = () => `
 `;
 
 /**
+ * Returns all labels that contain a given string (case-insensitive)
+ * NOTE: does also return properties currently
+ * @param label The string to check against
+ * @param lang The language of the labels to match, e.g.: en, de (default: en)
+ * @param limit How many results to return (default: 10)
+ * @returns 
+ */
+const getLabelMatches = (
+  label: string,
+  lang: string = "en",
+  limit: number = 10,
+) => `
+PREFIX wd: <https://graphit.ur.de/entity/>
+PREFIX wdt: <https://graphit.ur.de/prop/direct/>
+SELECT DISTINCT ?item ?itemLabel WHERE {
+  ?item rdfs:label ?itemLabel.
+  FILTER (LANG(?itemLabel) = "${lang}") # only return labels of one language
+  FILTER REGEX( ?itemLabel, "${label}", "i" )
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],${lang}". }
+} LIMIT ${limit}
+`;
+
+
+/**
  * Service for retrieving SPARQL-Queries
  */
 @Service()
@@ -359,4 +383,7 @@ export class SparqlQueryTemplateService {
     return existingCourses();
   }
 
+  public getLabelMatches(label:string, lang:string = "en", limit:number = 10) {
+    return getLabelMatches(label, lang, limit)
+  }
 }
