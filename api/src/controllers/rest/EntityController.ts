@@ -171,21 +171,16 @@ export class Entity {
 		const parsed = JSON.parse(item)
 		const searchLabel = parsed.labels.en;
 		const r = await this.wikibaseSdk.search(credentials, searchLabel, "en");
-		const searchResult = r.data.search[0]
-		if (searchResult.label === searchLabel) {
+		const searchResult = r.data.search
+		if (searchResult.label === searchLabel[0]) {
 			throw new Unauthorized("Exact label already exists (" + searchResult.id + ")")
 		}
 		
 		// NOTE: only allow item creation in production or with locally hosted database
-		console.log("[INSTANCE]", process.env.DEV_INSTANCE, "[LOKAL]", process.env.DEV_INSTANCE!.includes("localhost"))
-		if (isProduction || process.env.DEV_INSTANCE!.includes("localhost")) {
-			console.log("[PROD] Create a new Item", JSON.stringify(item));
-			const wbEdit = this.wikibaseEdit.createSessionData(credentials);
-			const {entity} = await wbEdit.entity.create(JSON.parse(item));
-			qID = entity.id;
-		} else {
-			console.log("No item creation in [DEV], will return a placeholder")
-		}
+		console.log("Create a new Item", JSON.stringify(item));
+		const wbEdit = this.wikibaseEdit.createSessionData(credentials);
+		const {entity} = await wbEdit.entity.create(JSON.parse(item));
+		qID = entity.id;
 		return qID
 	}
 }

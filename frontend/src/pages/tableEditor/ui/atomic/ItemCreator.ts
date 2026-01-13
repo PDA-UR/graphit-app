@@ -100,7 +100,7 @@ export class ItemCreator extends Component {
             e.preventDefault();
             if (this.isQuickAdd) {
                 console.log("QUICK ADD")
-                //this.onAddItem(e);
+                this.onAddItem(e);
             }
         }
         
@@ -116,7 +116,6 @@ export class ItemCreator extends Component {
         // NOTE: force rerender so that the options are up to date
         this.$columnSelect!.style.display = "none";
         this.$columnSelect!.style.display = "block";
-        return columns
     }
 
     // private onOpen(event:Event) {
@@ -259,6 +258,8 @@ export class ItemCreator extends Component {
             this.setError(info, error);
         }
 
+        this.clearInputFields(null);
+
     }
 
     private createClaimFromInput(qid:String): MoveItemInfo {
@@ -294,8 +295,9 @@ export class ItemCreator extends Component {
                 de: this.parseAlias(this.$aliasDe?.value),
             },
             claims: {
+                P16: "Q2741", // TableEditor Item
                 P19: new Date().toISOString().slice(0, 10),	// on date
-				P15: "via TableEditor", // comment
+				// P15: "via TableEditor", // comment
             }
         } as WBItem
         return item
