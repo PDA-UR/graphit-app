@@ -11,8 +11,7 @@ import { CreateClaim } from "../../models/claim/CreateClaimModel";
 import { UpdateClaim } from "../../models/claim/UpdateClaimModel";
 import { ActionExecuterService } from "../../services/ActionExecuterService";
 import { WikibaseProperty } from "../../models/PropertyModel";
-import { WikibaseEditService } from "src/services/WikibaseEditService";
-import { isProduction } from "src/Server";
+import { WikibaseEditService } from "../../services/WikibaseEditService";
 
 /**
  * Controller for entity related actions.
