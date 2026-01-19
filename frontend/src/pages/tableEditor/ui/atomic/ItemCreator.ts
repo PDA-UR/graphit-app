@@ -295,11 +295,14 @@ export class ItemCreator extends Component {
                 de: this.parseAlias(this.$aliasDe?.value),
             },
             claims: {
-                P16: "Q2741", // TableEditor Item
+                P16: ["Q2741", this.zustand.userQID], // TableEditor Item
                 P19: new Date().toISOString().slice(0, 10),	// on date
 				// P15: "via TableEditor", // comment
             }
         } as WBItem
+
+        this.$errorField!.innerHTML = "";
+        this.$errorMsgField!.innerHTML = "";
 
         return item
     }

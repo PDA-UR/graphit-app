@@ -167,11 +167,11 @@ export class Entity {
 		let qID = "Q123" // placeholder
 
 		// CHECK if an item with the exact label already exists
-		const parsed = JSON.parse(item)
+		const parsed = JSON.parse(item);		
 		const searchLabel = parsed.labels.en;
 		const r = await this.wikibaseSdk.search(credentials, searchLabel, "en");
 		const searchResult = r.data.search
-		if (searchResult.label === searchLabel[0]) {
+		if (searchResult?.label === searchLabel[0]) {
 			throw new Unauthorized("Exact label already exists (" + searchResult.id + ")")
 		}
 		
