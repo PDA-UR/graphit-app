@@ -283,12 +283,12 @@ export class ItemCreator extends Component {
         const item = {
             type: 'item',
             labels: {
-                en: this.$labelEn?.value, // required field
-                de: this.$labelDe?.value ? this.$labelDe?.value : undefined,
+                en: encodeURIComponent(this.$labelEn!.value), // required field
+                de: this.$labelDe?.value ? encodeURIComponent(this.$labelDe!.value) : undefined,
             },
             descriptions: {
-                en: this.$descriptionEn?.value ? this.$descriptionEn?.value : undefined,
-                de: this.$descriptionDe?.value ? this.$descriptionDe?.value : undefined,
+                en: this.$descriptionEn?.value ? encodeURIComponent(this.$descriptionEn!.value) : undefined,
+                de: this.$descriptionDe?.value ? encodeURIComponent(this.$descriptionDe!.value) : undefined,
             },
             aliases: {
                 en: this.parseAlias(this.$aliasEn?.value),
@@ -300,6 +300,7 @@ export class ItemCreator extends Component {
 				// P15: "via TableEditor", // comment
             }
         } as WBItem
+
         return item
     }
 
@@ -313,7 +314,8 @@ export class ItemCreator extends Component {
 
         let parsed =  alias.split("|");
         parsed.forEach((alias, index) => {
-            parsed[index] = alias.trim()
+            alias = alias.trim()
+            parsed[index] = encodeURIComponent(alias)
         });
 
         return parsed
