@@ -4,7 +4,7 @@
 
 The project investigates how dependency graphs can be used to model courses, curricula, and personal learning progress. The initial focus lies on courses in higher education. The prototype is built on [Wikibase](https://wikiba.se), the knowledge-graph platform powering [Wikidata](https://www.wikidata.org/wiki/Wikidata:Main_Page). 
 
-This repo hosts several frontends to make accessing and modifying the dependency graph easier (see: frontend readme).
+This repo hosts several frontends to make accessing and modifying the dependency graph easier. For more detailed information see the `Readme.md`-File in the `frontend` or `api`-folder.
 
 ### Installation
 ```
@@ -20,6 +20,7 @@ npm i
 2. save it in `api/.env`.
    1. (set `DEV_INSTANCE` in the env file also to `https://graphit.ur.de` if you don't have to run Wikibase locally)
    2. however, note that you will work with the LIVE wikibase instance, so be careful not to mess up the data there
+   3. for notes on running a local wikibase instance see [here](#local-wikibase-instance)
 3. run `npm run dev` in the project root directory to start the api and the webapp
    1. to run on Windows: 
       1. navigate to /api and run `npm run dev`
@@ -45,7 +46,7 @@ Local:
 
 Docker:
   - run `docker build -t graphit .` in the root folder (alt: docker build --no-cache -t graphit .) and run the container on ports "8081:8081" (see docker-compose.yml)
-  - or use use the `run.sh` (e.g. *run.sh ./api/.env 1*) (same links as in development)
+  - or use use the `run.sh` to automatically build and run (e.g. *./run.sh ./api/.env 1*) (same website links as in development)
 
 ---
 
@@ -57,17 +58,6 @@ Docker:
     - *participates in* `<CourseID>` - if not: defaults to the first existing course alphabetically
     - *instance of* `<Student/Admin>`  - if not: defaults to *Student*
   - a [User-Page](https://graphit.ur.de/wiki/User:Max_Mustermann) with a link to the User Item
-
-### Match label
-This is an option that can be used when creating an item to be added to a column. Open the "Create a new Item" Menu via the <kbd>></kbd> button on the top left or <kbd>CTRL+<kbd>.
-- Uses a SPARQL query to match Regex Strings to item Labels in the database
-  - [Documentation](https://en.wikibooks.org/wiki/SPARQL/Expressions_and_Functions#REGEX)
-  - The regex is case insensitive, but requires escaping the "\" backslash
-  - Escaping is done automatically in the frontend before making the API call!
-  - e.g. Find Items with "ER" at the start
-    -  `^(er)\w+` **won't** work
-    -  `^(er)\\w+` works
--  The query is hardcoded (in the frontend) to return only the first 5 results, to save time and resources
 
 ### Development
 
@@ -95,7 +85,7 @@ The env currently needs to be manually deployed and changed. For further informa
   - *@tsed* has shifted to support esm only with v8
   - the @tsed/cli will install the recent version of several @tsed/packages as the dependencies are listed with **>=** in its `package.json`
   - this will give a "ERR_REQUIRE_ESM"-error as the cjs-version of the package will try to *require()* esm-only packages
-  - the cli should be installed separately and *extraneous*ly, so that it does not install any @tsed/packages with a higher version than the ones used in the project
+  - therefore the cli should be installed separately and *extraneous*ly, so that it does not install any @tsed/packages with a higher version than the ones used in the project
   - *In other words:* The `api` currently uses the @tsed-version: "7.14.2" (pre esm-only), these packages are installed via the regular `npm i`. @tsed/cli is installed afterwards (for build purposes only) and uses the same packages. If they don't exist previously it will install the needed @tsed-dependencies with the wrong versions for this project (i.e. installs the esm-only versions)
 - why @tsed/cli@5.2.0:
   - the 5.2.1 release of the cli produced: `Error [ERR_REQUIRE_ESM]`
@@ -103,4 +93,9 @@ The env currently needs to be manually deployed and changed. For further informa
   - also do this locally, if it's an issue for you
   - package switched to esm-only with v6.0.0
 
-Possible next steps: update the api to esm-only to be able to use the latest version of @tsed 
+### Local Wikibase Instance
+- follow the instruction from the GraphIT_Wikibase Repo (private)
+  - bulk importing might not work
+- or follow the guide [here](https://github.com/wmde/wikibase-release-pipeline/tree/main/deploy#can-i-host-wbs-deploy-locally)
+- Note, that several functions require a domain name, that resolves to an IP address and is accessible to the internet
+  - see also: the wikibase [FAQs](https://github.com/wmde/wikibase-release-pipeline/blob/main/deploy/FAQs.md)
