@@ -111,7 +111,8 @@ export default class WikibaseClient {
 		const graph = this.sparqlParser.parsePairs(
 			["source", "dependency"],
 			"depends on",
-			results.data
+			results.data,
+			"relation"
 		);
 		return graph;
 	}

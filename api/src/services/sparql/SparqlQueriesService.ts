@@ -128,6 +128,7 @@ SELECT DISTINCT
 ?sourceGoal 
 ?sourceInterested ?sourceCompleted
 ?dependencyInterested ?dependencyCompleted
+?relation ?relationLabel
 WHERE {
   # SELECT ALL elements INCLUDED in <Course>
   BIND (wd:${courseId} as ?sourceCourse).
@@ -148,6 +149,7 @@ WHERE {
   } UNION {
     # get dependencies "recursively" as long as the ?item is in a session.
     ?item wdt:P1 ?topic.
+    OPTIONAL { ?item wdt:P4 ?relation } # get "related to" items
     BIND (?item as ?source)
     BIND (?topic as ?dependency) 
   } 

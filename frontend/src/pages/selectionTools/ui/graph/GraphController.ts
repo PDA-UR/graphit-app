@@ -46,6 +46,10 @@ export abstract class GraphController<
 			LogOutButtonEvents.LOGOUT_BUTTON_CLICK,
 			this.onLogoutButtonClick
 		);
+
+		const $relationToggle = document.getElementById("relations-toggle") as HTMLInputElement;
+		$relationToggle.addEventListener("change", this.view.toggleRelations)
+		
 	}
 
 	private onLogoutButtonClick = () => {

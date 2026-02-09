@@ -111,6 +111,19 @@ export const stylesheet: Stylesheet[] = [
             "opacity": 0.5,
         },
     },
+    { // "relation" edge style
+        selector: 'edge[label = "relation"]',
+        style: {
+            "line-color": "#7fb2b2",
+            "target-arrow-color" : "#00A6A6",
+            "target-arrow-shape": "triangle-tee",
+            "opacity": 0.3,
+            "text-rotation": "autorotate",
+            "label": "related to",
+            "font-size": 8,
+            "color": "#003a3a", // does not work
+        }
+    },
     // Nodes outside of sessions
     {
         selector: "node[^date]", // style all nodes that don't have date-data
@@ -119,6 +132,15 @@ export const stylesheet: Stylesheet[] = [
             "background-color": "white",
             // "font-size": 10,
         },
+    },
+    { // "relation" node style (override the "no-date" rule above)
+        selector: 'node[type = "relation"]',
+        style: {
+            // "display": "none", // does not work initially
+            "color": "#00A6A6",
+            "opacity": 0.7,
+            "font-size": 10,
+        }
     },
     {
         selector: "node[completed = 'true']",

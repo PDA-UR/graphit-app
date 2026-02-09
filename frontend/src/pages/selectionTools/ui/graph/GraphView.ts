@@ -78,6 +78,15 @@ export abstract class GraphView extends View {
 		}
 	}
 
+	// Change wether the "related to" elements are displayed or not
+	toggleRelations = (e:any) => {
+		const isChecked = e.target.checked;
+		const relations = this.cy.elements('node[type = "relation"], edge[label = "relation"]')
+
+		if (isChecked) relations.style("display", "none")
+		else relations.style("display", "element")
+	}
+
 	private readonly boxSelectElementBuffer: any[] = [];
 	boxSelectElementTimeout: any = null;
 

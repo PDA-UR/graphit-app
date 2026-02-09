@@ -189,6 +189,11 @@ label {
 	font-size: small;
 }
 
+#label-relations-toggle {
+	font-size: small;
+	color: gray;
+}
+
 /* DEMO-MODULE */
 #demo-module {
 	display: none;
