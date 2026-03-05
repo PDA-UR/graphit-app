@@ -117,5 +117,8 @@ export class Server {
 			console.log("req.url", req.url);
 			res.sendFile(join(REPO_DIR, "out/frontend/dist/index.html"));
 		});
+		this.app.get(`/`, (req:any, res:Res) => {
+			res.redirect(301, "/app/")
+		});
 	}
 }
