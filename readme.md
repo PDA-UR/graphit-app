@@ -17,8 +17,8 @@ npm i
 ## Development
 
 1. download this .env file: https://files.mi.ur.de/smart-link/5001176f-e783-45c8-ae85-65895895cab1/
-2. save it in `api/.env`.
-   1. (set `DEV_INSTANCE` in the env file also to `https://graphit.ur.de` if you don't have to run Wikibase locally)
+2. save it in `api/.env` (rename to `.env`, if necessary)
+   1. (set `DEV_INSTANCE` in the env file also to `https://graphit.ur.de` if you don't, you have to run Wikibase locally)
    2. however, note that you will work with the LIVE wikibase instance, so be careful not to mess up the data there
    3. for notes on running a local wikibase instance see [here](#local-wikibase-instance)
 3. run `npm run dev` in the project root directory to start the api and the webapp
@@ -40,7 +40,7 @@ Local:
 - Windows
   - in /frontend: `npm run build` then `npm run preview`
     - if you want to preview in a specific port: add `preview: { port: 8081},` to the `vite.config.js`-options
-  - in /api: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#notebuild-api))
+  - in /api: `npm run build` then `npm run start` (requires *@tsed/cli* see: [below](#api-build))
 - Linux
   - in root-folder: `npm run build`
 
