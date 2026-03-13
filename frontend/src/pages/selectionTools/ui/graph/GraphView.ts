@@ -83,8 +83,8 @@ export abstract class GraphView extends View {
 		const isChecked = e.target.checked;
 		const relations = this.cy.elements('node[type = "relation"], edge[label = "relation"]')
 
-		if (isChecked) relations.style("display", "none")
-		else relations.style("display", "element")
+		if (isChecked) relations.style("display", "element")
+		else relations.style("display", "none")
 	}
 
 	private readonly boxSelectElementBuffer: any[] = [];
