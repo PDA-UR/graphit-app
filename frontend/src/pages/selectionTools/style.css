@@ -189,9 +189,22 @@ label {
 	font-size: small;
 }
 
-#label-relations-toggle {
-	font-size: small;
-	color: gray;
+#relations-container{
+	display:flex
+}
+
+#relations-toggle-icon{
+	background-image: url("icons/dashed-arrow.svg");
+    background-color: #00a6a67d;
+	transform: rotate(90deg);
+}
+
+#relations-toggle {
+	z-index: 1000;
+}
+
+#relations-toggle:checked {
+	accent-color: #00a6a67d;
 }
 
 /* DEMO-MODULE */

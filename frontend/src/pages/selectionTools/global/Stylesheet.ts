@@ -114,14 +114,12 @@ export const stylesheet: Stylesheet[] = [
     { // "relation" edge style
         selector: 'edge[label = "relation"]',
         style: {
-            "line-color": "#7fb2b2",
-            "target-arrow-color" : "#00A6A6",
-            "target-arrow-shape": "triangle-tee",
+            "line-style": "dashed",
+            "line-dash-pattern": [6,3],
+            "line-color": "#00a6a6",
+            "target-arrow-color" : "#00a6a6",
+            "target-arrow-shape": "chevron",
             "opacity": 0.3,
-            "text-rotation": "autorotate",
-            "label": "related to",
-            "font-size": 8,
-            "color": "#003a3a", // does not work
         }
     },
     // Nodes outside of sessions
@@ -233,8 +231,6 @@ export const stylesheet: Stylesheet[] = [
             opacity: 0.4,
         },
     },
-
-
 
     // STYLES FOR THE PATH-CORE (for easier separation)
     {
