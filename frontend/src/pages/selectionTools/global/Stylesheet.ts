@@ -205,7 +205,7 @@ export const stylesheet: Stylesheet[] = [
     {
         selector: "node.indicated",
         style: {
-            "background-color": colors.indicated,
+            //"background-color": colors.indicated,
             "background-opacity": 1,
             "z-index": 500,
         },
@@ -255,6 +255,15 @@ export const stylesheet: Stylesheet[] = [
 			"border-opacity": 1,
 		},
 	},
+	//keep selection border visible even when hovering over neighboring node
+	{
+        selector: "node.path_neighbor:selected",
+        style: { 
+            "border-color": colors.selected,
+            "border-opacity": 1,
+        },
+    },
+	
     {
         selector: ".neighbor-preview",
         style: {
