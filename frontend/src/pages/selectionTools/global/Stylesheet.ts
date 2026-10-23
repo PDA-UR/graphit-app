@@ -8,7 +8,11 @@ const colors = {
     indicated: "#FEDD00",
     lastClicked: "#77aeff",
     selected: "#92b0dd", //"#4377c6",
-    parent: "#f7f7f7"
+    parent: "#f7f7f7",
+    //changed magical number of relation, edge, neighbor_preview to const
+    relation: "#00a6a6",
+    edge: "#ccc",
+    neighbor_preview: "#FFF",
 }
 
 const getHeight = (ele: any) => {
@@ -104,8 +108,8 @@ export const stylesheet: Stylesheet[] = [
         selector: "edge",
         style: {
             width: 3,
-            "line-color": "#ccc",
-            "target-arrow-color": "#ccc",
+            "line-color": colors.edge,
+            "target-arrow-color": colors.edge,
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
             "opacity": 0.5,
@@ -116,8 +120,8 @@ export const stylesheet: Stylesheet[] = [
         style: {
             "line-style": "dashed",
             "line-dash-pattern": [6,3],
-            "line-color": "#00a6a6",
-            "target-arrow-color" : "#00a6a6",
+            "line-color": colors.relation,
+            "target-arrow-color" : colors.relation,
             "target-arrow-shape": "chevron",
             "opacity": 0.3,
         }
@@ -135,7 +139,7 @@ export const stylesheet: Stylesheet[] = [
         selector: 'node[type = "relation"]',
         style: {
             // "display": "none", // does not work initially
-            "color": "#00A6A6",
+            "color": colors.relation,
             "opacity": 0.7,
             "font-size": 10,
         }
@@ -240,24 +244,25 @@ export const stylesheet: Stylesheet[] = [
 			// @ts-ignore
 			"line-gradient-stop-positions": "0 100%",
 			// @ts-ignore
-			"line-gradient-stop-colors": "black #FEDD00",
-			"target-arrow-color": "#FEDD00",
+			"line-gradient-stop-colors": `black ${colors.indicated}`,
+			"target-arrow-color": colors.indicated,
 			"width": 4,
 			"z-index": 1000,
 			"line-opacity": 1,
 		},
 	},
+    //changed .neighbor to .neighbor:unselected to keep selected border color visible when hovering over neighboring node
 	{
-		selector: ".path-neighbor",
+		selector: ".path-neighbor:unselected",
 		style: {
 			"z-index": 10,
-			"border-color": "#FEDD00",
+			"border-color": colors.indicated,
 			"border-opacity": 1,
 		},
 	},
 	//keep selection border visible even when hovering over neighboring node
 	{
-        selector: "node.path_neighbor:selected",
+        selector: ".path-neighbor:selected",
         style: { 
             "border-color": colors.selected,
             "border-opacity": 1,
@@ -267,7 +272,7 @@ export const stylesheet: Stylesheet[] = [
     {
         selector: ".neighbor-preview",
         style: {
-            "backgroundColor": "#FFF",
+            "backgroundColor": colors.neighbor_preview,
             "border-color": colors.default,
         }
     },
