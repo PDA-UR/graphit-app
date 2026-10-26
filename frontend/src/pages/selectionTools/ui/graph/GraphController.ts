@@ -1,3 +1,4 @@
+import tippy from "tippy.js";
 import WikibaseClient from "../../../../shared/WikibaseClient";
 import { ApiClient } from "../../../../shared/client/ApiClient";
 import { CompositeAction } from "../../../../shared/extensions/undo/actions/CompositeAction";
@@ -46,6 +47,17 @@ export abstract class GraphController<
 			LogOutButtonEvents.LOGOUT_BUTTON_CLICK,
 			this.onLogoutButtonClick
 		);
+
+		const $relationsToggleIcon = document.getElementById("relations-toggle-icon") as HTMLDivElement;
+		const $relationsToggle = document.getElementById("relations-toggle") as HTMLInputElement;
+		$relationsToggle.addEventListener("change", this.view.toggleRelations)
+		tippy($relationsToggleIcon, {
+            content: 'hide "related to" edges',
+            placement: "top",
+            duration: 300,
+            theme: "dark",
+        });
+		
 	}
 
 	private onLogoutButtonClick = () => {

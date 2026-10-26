@@ -203,5 +203,24 @@ export class Sparql {
 		return r;
 	}
 
+	@Get("/labelMatches/:label/:lang/:limit")
+	@Description("Check a label for existing matches")
+	@Returns(200, SparqlResult).ContentType("application/json")
+	@Returns(400, String).ContentType("text/plain")
+	@Returns(401, String).ContentType("text/plain")
+	async getLabelMatches(
+		@Session("user") credentials: Credentials,
+		@PathParams("label") label: string,
+		@PathParams("lang") lang: string,
+		@PathParams("limit") limit: number,
+	) {
+		this.logger.info("Checking credentials", credentials);
+		if (!isValid(credentials)) return new Unauthorized("Not logged in");
+
+		const r = await this.wikibaseSdk.getLabelMatches(credentials, label, lang, limit);
+		console.log("MATCHES", r)
+		return r;
+	}
+
 
 }

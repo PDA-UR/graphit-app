@@ -11,12 +11,6 @@ import { Component } from "./Component";
 @customElement("login-prompt")
 export class LoginPrompt extends Component {
     
-    // ------ Listeners ------ //
-
-    do_login() {
-        console.log("no actually do...")
-    }
-
     // ------ Rendering ------ //
     
     static styles = css`

@@ -81,6 +81,7 @@ export default class NewColumnDropzone extends Component {
 				addColumn(columnModel);
 			});
 
+			document.dispatchEvent(new CustomEvent("UPDATED_COLUMNS"));
 			this.columnIdsToBeAdded = [];
 		},
 		args: () => [

@@ -21,6 +21,7 @@ import { SelectionController } from "./controllers/SelectionController";
 import { TOOLTIPS } from "../data/Tooltips";
 import { LoginController } from "../../../shared/util/login/LoginController";
 import { Credentials } from "../../../shared/WikibaseEditConfig";
+import { Toast, ToastLength } from "../../selectionTools/ui/toast/Toast";
 
 
 
@@ -33,6 +34,9 @@ export default class AppRoot extends Component {
 	
 	@state()
 	isDragging = false;
+
+	@state()
+	itemCreatorStyle = "close";
 
 	@state()
 	infoStyle = "hide";
@@ -48,6 +52,9 @@ export default class AppRoot extends Component {
 
 	@state()
 	hasInitTippy = false;
+
+	@state()
+	creatorHasClient = false;
 
 	@property()
 	private dragType = "Move";
@@ -122,7 +129,6 @@ export default class AppRoot extends Component {
 		}
 	}
 
-
 	protected firstUpdated(
 		_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
 	): void {
@@ -130,10 +136,11 @@ export default class AppRoot extends Component {
 			this.zustand = state;
 			this.requestUpdate();
 		});
-
+		
 		if (this.zustand.credentials) {
 			this.loginTask.run();
 		}
+		this.zustand.itemCreatorIsOpen = false; // default back to closed
 
 		// handle keyboard shortcuts
 		window.addEventListener("keydown", (e) => {
@@ -162,6 +169,11 @@ export default class AppRoot extends Component {
 			if (e.ctrlKey && e.key === "q") {
 				e.preventDefault();
 				this.toggleQualifierType();
+			}
+			// toggle item creator
+			if (e.ctrlKey && e.key === "+") {
+				e.preventDefault();
+				this.onCreateNewItem();
 			}
 		});
 
@@ -210,21 +222,24 @@ export default class AppRoot extends Component {
 
 	private loginTask = new Task(this, {
 		task: async ([{ wikibaseClient, zustand, loginCredentials }]) => {
-			zustand.setCredentials(loginCredentials);
-			wikibaseClient.setCredentials(loginCredentials);
+			if (loginCredentials == undefined) { // throws an error otherwise (if reloading the page)
+				loginCredentials = this.zustand.credentials!
+			}
 
+			wikibaseClient.setCredentials(loginCredentials);			
 			const login = await wikibaseClient.login()
 
 			// Get a users role from the graph
 			let adminRights = false;
 			const role = await this.wikibaseClient.getUserRole();
 			if(role === "Admin") adminRights = true;
-			zustand.setIsAdmin(adminRights);
-
+			zustand.setIsAdmin(adminRights); 
+			
 			// Get a users wikibase-item QID for visual feedback (mark personal item-column)
 			const info = await this.wikibaseClient.getUserInfo();
 			const userQID = info.userItemId;
 			zustand.setUserQID(userQID);
+			zustand.setCredentials(loginCredentials);
 
 			return login;
 		},
@@ -292,14 +307,11 @@ export default class AppRoot extends Component {
 
 	async onLogin(error:any|null=null) {
 		if(error) { 
-			// TODO: better way to get back to initial render state, but after button click
-			this.zustand.logout();
 			window.location.reload(); // reload window to get back to initial render state, so that user can retry login
-			this.zustand.credentials = undefined;
 		} 
 
-		let existingCredentials = this.zustand.credentials;
-		if (!existingCredentials) {
+		this.loginCredentials = this.zustand.credentials;
+		if (this.loginCredentials == undefined) {
 			/* NOTE:
 			There is a LoginController.ts in shared/login that is used in the selectionEditor
 			But as lit.js works kinda different than regular html/js it's being separated a bit here,
@@ -315,15 +327,30 @@ export default class AppRoot extends Component {
 			}
 
 			this.loginCredentials = await this.loginController.getCredentialsFromPrompt()
-		} else {
-			this.loginCredentials = existingCredentials;
+			this.loginTask.run();
 		}
-
-		this.loginTask.run();
+		else {
+			this.loginCredentials = this.zustand.credentials;
+			this.loginTask.run();
+		}
 	}
 
 	onDarkmodeChange() {
 		document.body.classList.toggle("dark", this.zustand.isDarkMode === true);
+	}
+
+	// Toggle the sidebar fo item creation
+	onCreateNewItem() {
+		if (!this.zustand.isAdmin) {
+			Toast.error("Admin only", ToastLength.MEDIUM).show();
+			return;
+		}
+		
+		if (!this.zustand.itemCreatorIsOpen) {
+			this.itemCreatorStyle = "open"
+		} else this.itemCreatorStyle = "close"
+		
+		this.zustand.itemCreatorIsOpen = !this.zustand.itemCreatorIsOpen;
 	}
 
 	// -------- Render -------- //
@@ -361,7 +388,10 @@ export default class AppRoot extends Component {
 								qualifiers 
 							</div>
 							<span> <i>on drag</i> </span>
+							
 							<div class="spacer"></div>
+
+							<button id="logout-btn" @click="${() => this.onLogout()}">Logout</button>
 							<span id="username">${this.zustand.credentials?.username}</span>
 							<span id="admin-rights-${this.zustand.isAdmin}" class="user-rights">
 							${when(
@@ -384,7 +414,14 @@ export default class AppRoot extends Component {
 							</button>
 							<button id="info-toggle"
 								@click="${() => this.onInfo()}">Info</button>
-							<button @click="${() => this.onLogout()}">Logout</button>
+							<button id="creator-btn" 
+								@click="${() => this.onCreateNewItem()}">
+								${when(
+									this.zustand.itemCreatorIsOpen,
+									() => "+",
+									() => ">"
+								)}
+							</button>
 						</div>
 						<div id="main" @click="${() => this.onWindow()}">
 							<search-sidebar
@@ -399,6 +436,7 @@ export default class AppRoot extends Component {
 								.isDragging="${this.isDragging}"
 							></table-view>
 							<info-box class="${this.infoStyle}"></info-box>
+							<item-creator-component class="${this.itemCreatorStyle}"><item-creator-component/>
 						</div>`,
 					() =>
 						choose(this.logoutTask.status, [
@@ -448,6 +486,10 @@ export default class AppRoot extends Component {
 		}
 		.user-rights {
 			color: dimgray;
+		}
+
+		#logout-btn {
+			color: red;
 		}
 	`;
 }

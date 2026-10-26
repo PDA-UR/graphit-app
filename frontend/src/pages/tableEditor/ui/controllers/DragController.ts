@@ -69,6 +69,10 @@ export class DragController implements ReactiveController {
 		return this.isCopyToggleOn;
 	}
 
+	getItemOperator() {
+		return this.itemOperator
+	}
+
 	// ------ Drag and Drop ------ //
 
 	// an item is dragged

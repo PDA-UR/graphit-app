@@ -13,6 +13,7 @@ import {
 	UserSessionModel,
 	WikibasePropertyModel,
 } from "./client/ApiClient";
+import { match } from "assert";
 
 export default class WikibaseClient {
 	private readonly sparqlParser: SparqlParser;
@@ -110,7 +111,8 @@ export default class WikibaseClient {
 		const graph = this.sparqlParser.parsePairs(
 			["source", "dependency"],
 			"depends on",
-			results.data
+			results.data,
+			"relation"
 		);
 		return graph;
 	}
@@ -165,6 +167,20 @@ export default class WikibaseClient {
 		try {
 			const result = await this.api.sparql.existingCourses();
 			return result;
+		} catch(err) {
+			return [];
+		}
+	}
+
+	async getLabelMatches(label:string, lang:string="en", limit:number=10): Promise<any> {
+		// NOTE: SPARQL requires escaped regex -> so replace all "\" with "\\"
+		if (label.includes("\\")) { 
+			label = label.replaceAll("\\", "\\\\");
+		}
+		label = encodeURIComponent(label)
+		try {
+			const matches = await this.api.sparql.labelMatches(label, lang, limit);
+			return matches.data.results.bindings;
 		} catch(err) {
 			return [];
 		}
@@ -315,5 +331,9 @@ export default class WikibaseClient {
 			entityId,
 			isCompleted
 		);
+	}
+
+	async createNewItem(item:any) {
+		return await this.api.entity.createNewItem(JSON.stringify(item));
 	}
 }

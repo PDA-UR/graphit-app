@@ -86,7 +86,7 @@ const EXPERIMENT_STYLE: any[] = [
 	},
 
 	{
-		selector: ".neighbor",
+		selector: ".neighbor:unselected",
 		style: {
 			// color: "white",
 			// "text-background-color": "black",

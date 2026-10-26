@@ -13,10 +13,15 @@ export class SparqlParser {
 	parsePairs(
 		nodePrefixes: [string, string],
 		edgeLabel: string,
-		results: SparqlResults
+		results: SparqlResults,
+		optionalRelation: string | undefined = undefined,
 	): ElementDefinition[] {
-		const nodes = this.parseNodes(nodePrefixes, results);
-		const edges = this.parseEdges(nodePrefixes, edgeLabel, results);
+		let nodes = this.parseNodes(nodePrefixes, results);
+		let edges = this.parseEdges(nodePrefixes, edgeLabel, results);
+
+		const result = this.parseOptionalLink(nodePrefixes, edges, nodes, optionalRelation, results);
+		// const allEdges = this.parseOptionalEdge(nodePrefixes, edges, optionalEdge, results);
+		nodes = result[0], edges = result[1];
 		return nodes.concat(edges);
 	}
 
@@ -31,7 +36,7 @@ export class SparqlParser {
 	parseEdges(
 		nodePrefixes: [string, string],
 		edgeLabel: string,
-		results: SparqlResults
+		results: SparqlResults,
 	): ElementDefinition[] {
 		const bindings = results.results.bindings;
 		const edges: ElementDefinition[] = [];
@@ -55,6 +60,49 @@ export class SparqlParser {
 		return edges;
 	}
 
+	// Parse an optional link (of form e.g. ?relation ?relationLabel)
+	/**
+	 * Parse on optional node/edge relation 
+	 * (such as "related to" for ?relation ?relationLabel)
+	 * @returns updated array of [Nodes, Edges]
+	 */
+	parseOptionalLink(
+		nodePrefixes: [string, string],
+		existingEdges: ElementDefinition[],
+		existingNodes: ElementDefinition[],
+		label: string|undefined,
+		results: SparqlResults,
+	): [ElementDefinition[], ElementDefinition[]] {
+		// do nothing if no optional relation was given
+		if (label == undefined) return [existingNodes, existingEdges];
+		
+		// parse Nodes into format
+		const bindings = results.results.bindings;
+		const vars = results.head.vars;
+		
+		const nodes: ElementDefinition[] = [];
+		bindings.forEach((binding: any) => {
+			const node = this.parseNode(label, binding, vars);
+			if (node) {
+				node.data.type = label // for differentiation
+				const existingNode = nodes.find((n) => n.data.id === node.data.id);
+				if (existingNode) {
+					const mergedNode = this.mergeNodes([existingNode, node]);
+					nodes.splice(nodes.indexOf(existingNode), 1, mergedNode);
+				} else nodes.push(node);
+			}
+		});
+
+		// parse Edges into format
+		const optionalPrefixes = [nodePrefixes[0], label] as [string, string]
+		const edges = this.parseEdges(optionalPrefixes, label, results)
+
+		// add to existing nodes & edges
+		const allNodes = existingNodes.concat(nodes);
+		const allEdges = existingEdges.concat(edges);
+		return [allNodes, allEdges];
+	}
+
 	/**
 	 * Parses the results of a SPARQL query into an array of edges
 	 * The results must be of a query that returns pairs of nodes prefixed with the given prefixes.
@@ -72,7 +120,6 @@ export class SparqlParser {
 		const vars = results.head.vars; // e.g. "source", "sourceLabel"
 
 		bindings.forEach((binding: any) => {
-			// das müsste zuerst source durchgehen, oder?
 			nodePrefixes.forEach((prefix) => {
 				const node = this.parseNode(prefix, binding, vars);
 				if (node) {
