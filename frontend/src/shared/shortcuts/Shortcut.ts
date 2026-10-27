@@ -218,6 +218,22 @@ export const toggleShortcutCheatsheet = (
 		const dimmer = document.createElement("div");
 		dimmer.className = "dimmer";
 
+		//Block Mousewheel input -> kein zoom im Graph
+		dimmer.addEventListener(
+			"wheel",
+			(e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			},
+			{ passive: false }
+		);
+
+		//enable scrolling im info kasten aber verhindert im normalen fenster
+		shortcutsContainer.addEventListener("wheel", (e) => {
+    		e.stopPropagation();
+    		if (e.ctrlKey) e.preventDefault();
+  		});
+
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") {
 				onClose();
