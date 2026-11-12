@@ -211,7 +211,7 @@ export abstract class GraphController<
 
 	private initMouseListeners = (on = true) => {
 		const fn = on ? window.addEventListener : window.removeEventListener;
-		fn("wheel", this.view.onWheel);
+		fn("wheel", this.view.onWheel, { passive: false });
 		fn("mousedown", this.view.onMousedown);
 		fn("mouseup", this.view.onMouseUp);
 		fn("mousemove", this.view.onMouseMove);

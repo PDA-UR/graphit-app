@@ -114,7 +114,12 @@ export abstract class GraphView extends View {
 	// ~~~~~~~~~~~ Mouse listeners ~~~~~~~~~~~ //
 
 	public onWheel = (e: any) => {
-		if (isModifierActive(fromEvent(e), ModifierKey.SHIFT)) {
+		if (e.ctrlKey) e.preventDefault(); // Browser-Zoom unterdrücken
+		// Pinch: ctrlKey + kleine Deltas (Ctrl + Mausrad liefert ~100 pro Raste)
+		const isPinch = e.ctrlKey && Math.abs(e.deltaY) < 50;
+		if (isPinch) {
+			zoom(this.cy, -e.deltaY, 0.01, e);
+		} else if (isModifierActive(fromEvent(e), ModifierKey.SHIFT)) {
 			zoom(this.cy, -e.deltaY, 0.0004, e);
 		} else {
 			zoom(this.cy, -e.deltaY, 0.002, e);
